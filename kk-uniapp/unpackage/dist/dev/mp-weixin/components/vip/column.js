@@ -79,9 +79,11 @@ var render = function() {
 
   var l0 = _vm.__map(_vm.obj.child, function(list, key) {
     var g2 = JSON.parse(list.data)
+    var g3 = JSON.parse(list.data)
     return {
       $orig: _vm.__get_orig(list),
-      g2: g2
+      g2: g2,
+      g3: g3
     }
   })
 

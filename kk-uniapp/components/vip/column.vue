@@ -6,10 +6,10 @@
 		</navigator>
 		<view class="contentList">
 			<view v-for="(list,key) in obj.child" :key="key">
-				<view :class="key == 0?'lists':'listTop'" :url="'/pages/index/vip/course/details/details?id='+list.id+'&id1='+list._id"
-				 v-if="list.type == 3" @click="navigator(list)">
+				<view class="lists" @click="navigator(list)">
 					<view class="imgBox">
-						<image :src="JSON.parse(list.data).imgSrc" mode="aspectFill"></image>
+						<image v-if="obj.type == this.$constData.contentType[1].key" :src="JSON.parse(list.data).imgList[0].src" mode="aspectFill"></image>
+						<image v-else :src="JSON.parse(list.data).imgSrc" mode="aspectFill"></image>
 					</view>
 					<view class="rightBox">
 						<view class="title">{{ list.title }}</view>
@@ -24,7 +24,7 @@
 
 <script>
 	export default {
-		props:['obj'],
+		props: ['obj'],
 		data() {
 			return {
 
@@ -43,7 +43,7 @@
 				// 	url:`/pages/index/vip/course/${url}/${url}?id=${list.id}&id1=$(list._id)`
 				// })
 			},
-			getTime(date){
+			getTime(date) {
 				let time = new Date(date)
 				let localTime = time.toLocaleString()
 				return localTime
@@ -60,20 +60,19 @@
 	.columnTitle {
 		padding-top: 60upx;
 		margin-left: 20upx;
-		color: #FFFFFF;
-		font-size: 50upx;
+		color: rgb(234, 242, 248);
+		font-size: $list-title-l;
 		font-weight: bold;
 	}
 
 	.columnTime {
 		padding: 10upx 0 60upx 20upx;
-		color: #FFFFFF;
-		font-size: 28upx;
+		color: rgb(212, 228, 245);
+		font-size: $list-info;
 	}
 
 	.contentBox {
-		background-color: #f0f0f0;
-		padding: 10px 0;
+		background-color: rgb(105, 181, 225);
 		border-radius: 5px;
 		overflow: hidden;
 		letter-spacing: 1px;
@@ -86,20 +85,26 @@
 			background-color: #fff;
 			width: 94%;
 			border-radius: 5px;
-			margin: 0 auto;
-			margin-top: 10upx;
+			margin: 10upx auto;
+
 
 			.lists {
 				position: relative;
 				padding: 2vw;
-				height: 29vw;
+				height: 24vw;
 				font-size: 18px;
 				line-height: 18px;
 
 				.title {
 					margin-bottom: 50upx;
-					color: #000;
-					font-size: 20px;
+					color: $list-title-color;
+					font-size: $list-title;
+					line-height: $list-title-line;
+					box-sizing: border-box;
+					display: -webkit-box;
+					-webkit-box-orient: vertical;
+					-webkit-line-clamp: 2; //需要显示时文本行数
+					overflow: hidden;
 				}
 
 
@@ -112,9 +117,9 @@
 			.imgBox {
 				position: absolute;
 				top: 50%;
-				margin-top: -12.5vw;
-				width: 25vw;
-				height: 25vw;
+				margin-top: -10vw;
+				width: 20vw;
+				height: 20vw;
 				border-radius: 5px;
 				overflow: hidden;
 
@@ -130,8 +135,9 @@
 
 	.rightBox {
 		position: absolute;
-		margin-left: 29vw;
+		margin-left: 24vw;
+		margin-right: 20upx;
 		top: 50%;
-		margin-top: -30px;
+		margin-top: -50upx;
 	}
 </style>
