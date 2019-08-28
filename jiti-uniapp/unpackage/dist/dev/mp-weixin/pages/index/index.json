@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "集体经济小程序",
+  "usingComponents": {
+    "uni-notice-bar": "/components/uni-notice-bar/uni-notice-bar"
+  }
+}
