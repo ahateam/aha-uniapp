@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "vip",
+  "usingComponents": {
+    "column": "/components/vip/column"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "夸夸奇谈",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 0
+}

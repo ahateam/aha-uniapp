@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "夸夸奇谈",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 0,
+  "usingComponents": {
+    "trans-video": "/components/video/transVideo",
+    "only-text": "/components/article/onlyText",
+    "right-video": "/components/video/rightVideo",
+    "three-img": "/components/article/threeImg",
+    "uni-load-more": "/components/uni-load-more/uni-load-more"
+  }
+}
