@@ -141,8 +141,31 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     getChannel: function getChannel(cnt) {var _this = this;
       this.$api.getChannel(cnt, function (res) {
         if (res.data.rc == _this.$util.RC.SUCCESS) {
-          _this.columnList = JSON.parse(res.data.c).list;
-          console.log(_this.columnList);
+          _this.columnList = JSON.parse(res.data.c).list;var _loop = function _loop(
+          i) {
+            var cnt1 = {
+              module: 'kkqt', // String 隶属
+              channelId: _this.columnList[i].id, // Long 专栏id
+              status: 4, // Byte 专栏状态
+              count: 3, // Integer 
+              offset: 0 // Integer 
+            };
+            _this.$api.getContentByChannelId(cnt1, function (res) {
+              var arr = [];
+              if (res.data.rc == _this.$util.RC.SUCCESS) {
+                arr = JSON.parse(res.data.c).list;
+              } else {
+                arr = [];
+              }
+
+              var obj = JSON.parse(JSON.stringify(_this.columnList[i]));
+              obj.child = arr;
+              _this.columnList.splice(i, 1, obj);
+            });
+            _this.$nextTick(function () {
+              console.log(this.columnList[0].child); // => '已更新'
+            });};for (var i = 0; i < _this.columnList.length; i++) {_loop(i);
+          }
         }
       });
     } } };exports.default = _default;

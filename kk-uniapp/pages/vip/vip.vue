@@ -37,7 +37,30 @@
 				this.$api.getChannel(cnt,(res=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
 						this.columnList = JSON.parse(res.data.c).list
-						console.log(this.columnList)
+						for (let i = 0; i < this.columnList.length; i++) {
+							let cnt1 = {
+								module: 'kkqt', // String 隶属
+								channelId: this.columnList[i].id, // Long 专栏id
+								status: 4, // Byte 专栏状态
+								count: 3, // Integer 
+								offset: 0, // Integer 
+							}
+							this.$api.getContentByChannelId(cnt1, (res) => {
+								let arr = []
+								if (res.data.rc == this.$util.RC.SUCCESS) {
+									arr = JSON.parse(res.data.c).list
+								} else {
+									arr = []
+								}
+						
+								let obj = JSON.parse(JSON.stringify(this.columnList[i]))
+								obj.child = arr
+								this.columnList.splice(i, 1, obj)
+							})
+							this.$nextTick(function() {
+								console.log(this.columnList[0].child) // => '已更新'
+							})
+						}
 					}
 				}))
 			},
