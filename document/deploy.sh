@@ -3,6 +3,7 @@
 # 确保脚本抛出遇到的错误
 set -e
 
+cd ..
 
 #更新项目代码
 git pull git@github.com:ahateam/aha-uniapp.git master
