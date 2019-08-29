@@ -1,6 +1,7 @@
 <template>
-	<view class="contentBox" :style="{backgroundImage: 'url(' + JSON.parse(obj.data).src + ')' }">
-		<navigator :url="'/pages/index/vip/column/column?id='+obj.id+'&title='+obj.title+'&time='+obj.createTime+'&img='+JSON.parse(obj.data).src">
+	<!-- :style="{backgroundImage: 'url(' + JSON.parse(obj.data).src + ')' }" -->
+	<view class="contentBox" :style="'background:'+randomColor">
+		<navigator :url="'/pages/vip/column/columnInfo/columnInfo?id='+obj.id+'&title='+obj.title+'&time='+obj.createTime+'&color='+randomColor">
 			<view class="columnTitle">{{ obj.title }}</view>
 			<view class="columnTime">{{ getTime(obj.createTime) }}</view>
 		</navigator>
@@ -27,7 +28,7 @@
 		props: ['obj'],
 		data() {
 			return {
-
+				randomColor:'',
 			}
 		},
 		methods: {
@@ -38,15 +39,19 @@
 				} else if (list.type == this.$constData.contentType[1].key) {
 					url = 'detailsAtc'
 				}
-				console.log(`/pages/index/vip/course/${url}/${url}?id=${list.id}&id1=$(list._id)`)
+				console.log(`/pages/vip/course/${url}/${url}?id=${list.id}&id1=$(list._id)`)
 				// uni.navigateTo({
-				// 	url:`/pages/index/vip/course/${url}/${url}?id=${list.id}&id1=$(list._id)`
+				// 	url:`/pages/vip/course/${url}/${url}?id=${list.id}&id1=$(list._id)`
 				// })
 			},
 			getTime(date) {
+				this.getrandomColor()
 				let time = new Date(date)
 				let localTime = time.toLocaleString()
 				return localTime
+			},
+			getrandomColor(){//随机赋值一种渐变色
+				this.randomColor = this.$constData.colorData[Math.floor(Math.random()*this.$constData.colorData.length)]
 			},
 		}
 	}
@@ -72,7 +77,7 @@
 	}
 
 	.contentBox {
-		background-color: rgb(105, 181, 225);
+		// background:linear-gradient(#69b5e1,#bedbed);
 		border-radius: 5px;
 		overflow: hidden;
 		letter-spacing: 1px;
@@ -86,7 +91,7 @@
 			width: 94%;
 			border-radius: 5px;
 			margin: 10upx auto;
-
+			margin-bottom:20upx;
 
 			.lists {
 				position: relative;

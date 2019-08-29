@@ -34,6 +34,22 @@
             "path" : "pages/index/videoView/videoView",
             "style" : {}
         }
+        ,{
+            "path" : "pages/vip/column/column",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/vip/column/details/details",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/vip/column/detailsVideo/detailsVideo",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/vip/column/columnInfo/columnInfo",
+            "style" : {}
+        }
     ],
 		"tabBar" : {
 	    "color" : "#C0C4CC",

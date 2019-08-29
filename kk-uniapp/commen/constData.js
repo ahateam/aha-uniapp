@@ -66,4 +66,17 @@ constData.contentPaid = [{
 	val: '付费'
 }]
 
+/* 渐变色数组 */
+constData.colorData = [
+	'linear-gradient(120deg,#69b5e1,#bedbed)',
+	'linear-gradient(90deg,#ff9a9e,#fad0c4)',
+	'linear-gradient(151deg,#a18cd1,#fbc2eb)',
+	'linear-gradient(65deg,#465EFB,#C2FFD8)',
+	'linear-gradient(71deg,#fcb69f,#ffecd2)',
+	'linear-gradient(123deg,#ff8177,#b12a5b)',
+	'linear-gradient(30deg,#114357,#F29492)',
+	'linear-gradient(40deg,#64b3f4,#c2e59c)',
+	'linear-gradient(50deg,#fc00ff,#00dbde)'
+]
+
 export default constData
