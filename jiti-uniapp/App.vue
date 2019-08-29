@@ -14,4 +14,8 @@
 
 <style>
 	/*每个页面公共css */
+	.maincon{
+		width: 90%;
+		margin: 50rpx auto;
+	}
 </style>

@@ -24,13 +24,13 @@
 			<view class="content_box" @click="toPoll">
 				<view class="content_box_text">我的投票</view>
 			</view>
-			<view class="content_box" style="background-color: #9788ff;">
+			<view class="content_box" @click="toAssets" style="background-color: #9788ff;">
 				<view class="content_box_text">集体资产</view>
 			</view>
-			<view class="content_box" style="background-color: #fb7eb8;">
+			<view class="content_box" @click="toMoney" style="background-color: #fb7eb8;">
 				<view class="content_box_text">我的分红</view>
 			</view>
-			<view class="content_box">
+			<view class="content_box" @click="toOrg">
 				<view class="content_box_text">我的机构</view>
 			</view>
 			<view class="content_box" style="background-color: #9788ff;">
@@ -71,6 +71,21 @@
 			toPoll(){
 				uni.navigateTo({
 					url:"../poll/poll"
+				})
+			},
+			toAssets(){
+				uni.navigateTo({
+					url:"../assets/assets"
+				})
+			},
+			toOrg(){
+				uni.navigateTo({
+					url:"../org/org"
+				})
+			},
+			toMoney(){
+				uni.navigateTo({
+					url:"../bonus/bonus"
 				})
 			}
 		}

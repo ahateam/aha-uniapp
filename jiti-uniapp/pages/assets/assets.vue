@@ -9,7 +9,7 @@
 		<view>
 			<template v-for="(item,index) in contents">
 				<view :key="index">
-					<view class="item-box">
+					<view class="item-box" @click="toAssetsInfo">
 						<view class="item-box-text">
 							<view class="box-text1">黄莲组长岭杠林地</view>
 							<view class="box-text2">松林居黄莲组</view>
@@ -28,7 +28,7 @@
 			return {
 				tagsList: [
 					{
-						id:1,
+						id:0,
 						name:"a"
 					},
 					{
@@ -36,23 +36,23 @@
 						name:"a"
 					},
 					{
-						id:1,
+						id:2,
 						name:"a"
 					},
 					{
-						id:1,
+						id:3,
 						name:"a"
 					},
 					{
-						id:1,
+						id:4,
 						name:"a"
 					},
 					{
-						id:1,
+						id:5,
 						name:"a"
 					},
 					{
-						id:1,
+						id:6,
 						name:"a"
 					}
 				], //标签列表
@@ -62,7 +62,7 @@
 
 				userId: '',
 
-				contents: [1,2,3],		//内容列表
+				contents: [0,1,2,3],		//内容列表
 				
 				//上拉加载 ---分页
 				offset: 0,
@@ -74,79 +74,19 @@
 
 			}
 		},
-		onLoad() {  // created() mounted()
-			
-			if (!uni.getStorageSync('userId')) {
-				uni.setStorageSync('userId', '1234567890')
-			}
-			
-			this.userId = uni.getStorageSync('userId')
-			
-			console.log(this.$constData)
-			/* 获取标签列表*/
-			let cnt = {
-				module: this.$constData.module, // String 隶属
-				status: this.$constData.tagStatus[1].key, // Byte 标签状态
-				keyword: '首页', // String 标签
-				count: 500, // Integer 
-				offset: 0, // Integer 
-			}
-			this.getTagsList(cnt)
-
-			/* 根据默认标签获取内容列表*/
-			let cnt1 = {
-				userId: this.userId, // Long 用户编号
-				module: this.$constData.module, // String 所属模块
-				// tags: this.tagActiveId,
-				status: this.$constData.contentStatus[4].key,
-				count: this.count,
-				offset: this.offset
-			}
-			this.getContentsByTag(cnt1)
-
-
-		},
+		onLoad() {},
 		methods: {
 
-			/* 获取标签列表*/
-			getTagsList(cnt) {
-				this.$api.getTags(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-					this.tagsList= this.$util.tryParseJson(res.data.c)
-					} else {
-					this.tagsList= []
-					}
-				})
-			},
-			/*根据标签获取内容列表*/
-			getContentsByTag(cnt) {
-				this.$api.getContents(cnt, (res) => {
-					let list = []
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						list = this.$util.tryParseJson(res.data.c)
-						
-						this.tryDataList(list)
-						
-						
-					} else {
-						list = []
-					}
-					if(list.length && list.length<this.count){
-						this.pageOver = true
-					}else{
-						this.pageOver = false
-					}
-				
-					this.contents.push(list)
-					console.log('1111')
-					console.log(this.contents)
-				})
-
-			},
+			
 
 			/* 触发改变选中标签*/
 			changeTag(_index) {
 				this.tabCurrentIndex = _index
+			},
+			toAssetsInfo(){
+				uni.navigateTo({
+					url:"assetsInfo"
+				})
 			}
 		}
 	}

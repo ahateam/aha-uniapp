@@ -5,8 +5,8 @@
 		//     "style" : {}
 		// },
 		{
-		    "path" : "pages/login/login",
-		    "style" : {}
+			"path": "pages/login/login",
+			"style": {}
 		},
 		{
 			"path": "pages/index/index",
@@ -26,18 +26,32 @@
 				"navigationBarTitleText": "我的信息"
 			}
 		}
-        
-        ,{
-            "path" : "pages/poll/poll",
-            "style" : {}
-        }
-		,
+
+		, {
+			"path": "pages/poll/poll",
+			"style": {}
+		},
 		{
 			"path": "pages/poll/pollInfo",
 			"style": {}
+		}, {
+			"path": "pages/assets/assets",
+			"style": {}
+		}, {
+			"path": "pages/assets/assetsInfo",
+			"style": {}
+		}, {
+			"path": "pages/org/org",
+			"style": {}
+		}, {
+			"path": "pages/org/orgInfo",
+			"style": {}
+		}, {
+			"path": "pages/org/orgMoney",
+			"style": {}
 		}
-        ,{
-            "path" : "pages/assets/assets",
+	    ,{
+            "path" : "pages/bonus/bonus",
             "style" : {}
         }
     ],
