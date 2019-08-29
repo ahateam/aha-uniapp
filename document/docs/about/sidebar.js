@@ -2,10 +2,8 @@ module.exports = [
     {
       title:'文档简介',
       collapsable: true,
-	   children:[
-	    '/aha/info/',
+	  children:[
 		'about/info/write'
 	  ]
-
     }
 ]
