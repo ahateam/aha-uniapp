@@ -1,7 +1,7 @@
 <template>
 	<!-- :style="{backgroundImage: 'url(' + JSON.parse(obj.data).src + ')' }" -->
 	<view class="contentBox" :style="'background:'+randomColor">
-		<navigator :url="'/pages/vip/column/column?id='+obj.id+'&title='+obj.title+'&time='+obj.createTime+'&color='+randomColor">
+		<navigator :url="'/pages/vip/column/columnInfo/columnInfo?id='+obj.id+'&title='+obj.title+'&time='+obj.createTime+'&color='+randomColor">
 			<view class="columnTitle">{{ obj.title }}</view>
 			<view class="columnTime">{{ getTime(obj.createTime) }}</view>
 		</navigator>
@@ -9,8 +9,8 @@
 			<view v-for="(list,key) in obj.child" :key="key">
 				<view class="lists" @click="navigator(list)">
 					<view class="imgBox">
-						<image v-if="obj.type == contentType[1].key" :src="JSON.parse(list.data).imgList[0].src" mode="aspectFill"></image>
-						<image v-else :src="JSON.parse(list.data).imgSrc" mode="aspectFill"></image>
+						<image v-if="list.type == contentType[2].key" :src="list.imgList[0].src" mode="aspectFill"></image>
+						<image v-else-if="list.type == contentType[1].key" :src="list.imgSrc" mode="aspectFill"></image>
 					</view>
 					<view class="rightBox">
 						<view class="title">{{ list.title }}</view>
@@ -28,8 +28,8 @@
 		props: ['obj'],
 		data() {
 			return {
-				randomColor:'',
-				contentType:this.$constData.contentType
+				randomColor: '',
+				contentType: this.$constData.contentType,
 			}
 		},
 		methods: {
@@ -40,10 +40,9 @@
 				} else if (list.type == this.$constData.contentType[1].key) {
 					url = 'detailsAtc'
 				}
-				console.log(`/pages/vip/course/${url}/${url}?id=${list.id}&id1=$(list._id)`)
-				// uni.navigateTo({
-				// 	url:`/pages/vip/course/${url}/${url}?id=${list.id}&id1=$(list._id)`
-				// })
+				uni.navigateTo({
+					url: `/pages/vip/column/${url}/${url}?id=${list.id}&id1=${list._id}`
+				})
 			},
 			getTime(date) {
 				this.getrandomColor()
@@ -55,8 +54,8 @@
 				var time = y + '年' + m + '月' + d + '日'
 				return time
 			},
-			getrandomColor(){//随机赋值一种渐变色
-				this.randomColor = this.$constData.colorData[Math.floor(Math.random()*this.$constData.colorData.length)]
+			getrandomColor() { //随机赋值一种渐变色
+				this.randomColor = this.$constData.colorData[Math.floor(Math.random() * this.$constData.colorData.length)]
 			},
 		}
 	}
@@ -96,7 +95,7 @@
 			width: 94%;
 			border-radius: 5px;
 			margin: 10upx auto;
-			margin-bottom:20upx;
+			margin-bottom: 20upx;
 
 			.lists {
 				position: relative;

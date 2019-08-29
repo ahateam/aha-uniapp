@@ -49,6 +49,13 @@
 								let arr = []
 								if (res.data.rc == this.$util.RC.SUCCESS) {
 									arr = JSON.parse(res.data.c).list
+									for(let n=0;n<arr.length;n++){
+										if(arr[n].type == this.$constData.contentType[2].key){
+											arr[n].imgList = JSON.parse(arr[n].data).imgList
+										}else if(arr[n].type == this.$constData.contentType[1].key){
+											arr[n].imgSrc = JSON.parse(arr[n].data).imgSrc
+										}
+									}
 								} else {
 									arr = []
 								}

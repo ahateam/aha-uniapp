@@ -50,6 +50,10 @@
             "path" : "pages/vip/column/columnInfo/columnInfo",
             "style" : {}
         }
+        ,{
+            "path" : "pages/vip/column/payView/payView",
+            "style" : {}
+        }
     ],
 		"tabBar" : {
 	    "color" : "#C0C4CC",

@@ -44,11 +44,47 @@
 						</view>
 					</view>
 				</view>
+				<!-- 所属课程 -->
+				<view>
+					<view class="courseText">所属课程</view>
+					<view class="columnBox">
+						<image class="columnImg" src="/static/tab-home-current.png" mode="scaleToFill"></image>
+					</view>
+					<view>
+						<view class="courseText blodFont">
+							课程名
+						</view>
+						<view class="upName">
+							<text >作者:</text><text>作者名</text>
+						</view>
+					</view>
+				</view>
+
+				<!-- 其他内容列表 -->
+				<view>
+					<view class="courseText">课程内容</view>
+					<view v-for="(item,index) in courseList" :key="index" v-if="index <moreCourse">
+						<view class="lists" @click="navigator(item)">
+							<view class="imgBox">
+								<image v-if="item.type == constData.contentType[2].key" :src="JSON.parse(item.data).imgList[0].src" mode="aspectFill"></image>
+								<image v-else-if="item.type == constData.contentType[1].key" :src="JSON.parse(item.data).imgSrc" mode="aspectFill"></image>
+							</view>
+							<view class="rightBox">
+								<view class="title">{{ item.title }}</view>
+								<text class="msg">{{ item.time }}</text>
+							</view>
+							<view class="clearBoth"></view>
+						</view>
+					</view>
+					<view class="moreCourseBtn">
+						<button type="primary" @click="moreCourseBtn()" v-if="moreCourse == 2&&courseList.length>2">查看更多</button>
+					</view>
+				</view>
 
 				<view class="container" v-show="loading === false">
 					<!-- 评论 -->
 					<view class="s-header">
-						<text class="tit">网友评论</text>
+						<text>网友评论</text>
 					</view>
 					<view class="evalution">
 						<view class="noEva" v-if="evaList.length == 0">
@@ -98,6 +134,10 @@
 				id1: '',
 				newsList: [],
 				evaList: [],
+				courseList: [],
+				channelId: '',
+				constData: this.$constData,
+				moreCourse: 2,
 			}
 		},
 		onLoad(res) {
@@ -105,13 +145,64 @@
 			this.contentId = res.id
 			this.id1 = res.id1
 			this.getContentById()
+
 		},
 		methods: {
-			//获取评论列表
-			// async loadEvaList(){
-			// 	this.evaList = await json.evaList;
-			// }
+			moreCourseBtn() {
+				this.moreCourse = 5;
+			},
 
+			//跳转其他课程详情
+			navigator(list) {
+				if (list.paid == this.$constData.contentPaid[1].key) {
+					uni.showToast({
+						title: '购买后可观看',
+						duration: 2000,
+						icon: 'none'
+					});
+				}
+				let url = ''
+				if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
+					url = 'details'
+				} else if (list.type == this.$constData.contentType[1].key) {
+					url = 'detailsVideo'
+				}
+				uni.redirectTo({
+					url: `/pages/vip/column/${url}/${url}?id=${list.id}&id1=${list._id}`
+				})
+			},
+			/* 获取课程对应专栏 */
+			getChannel() {
+
+			},
+			// 从专栏id获取课程列表
+			getContentByChannelId() {
+				let cnt = {
+					module: this.$constData.module, // String 隶属
+					channelId: this.channelId, // Long 专栏id
+					status: 4, // Byte 专栏状态
+					count: 10, // Integer 
+					offset: 0, // Integer 
+				}
+				this.$api.getContentByChannelId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = JSON.parse(res.data.c).list
+
+						for (let i = 0; i < arr.length; i++) {
+							let date = new Date(arr[i].createTime)
+							let y = date.getFullYear()
+							let m = date.getMonth() + 1
+							let d = date.getDate()
+							arr[i].time = `${y}年${m}月${d}日`
+						}
+						this.courseList = arr
+						console.log(this.courseList)
+					} else {
+						this.courseList = []
+						console.log('error')
+					}
+				})
+			},
 			/* 获取id对应内容 */
 			getContentById() {
 				let cnt = {
@@ -128,6 +219,8 @@
 						this.flow = JSON.parse(this.detailData.data).editor
 						console.log(this.detailData)
 						this.getUserById(this.detailData.upUserId)
+						this.channelId = this.detailData.upChannelId
+						this.getContentByChannelId()
 					}
 				}))
 			},
@@ -143,14 +236,15 @@
 						this.upInfo = JSON.parse(res.data.c)
 					}
 				}))
-			}
+			},
+
 		},
 		onShareAppMessage(res) {
 			var pages = getCurrentPages() //获取加载的页面
 			var currentPage = pages[pages.length - 1] //获取当前页面的对象
 			console.log(currentPage)
 			var url = currentPage.route //当前页面url
-			if(url == undefined){
+			if (url == undefined) {
 				url = currentPage.__route__
 			}
 			var options = currentPage.options //如果要获取url中所带的参数可以查看options 
@@ -238,9 +332,10 @@
 				font-size: 24upx;
 				color: #999;
 				background-color: #fff;
+
 				&:after {
 					border: none;
-					
+
 				}
 			}
 		}
@@ -399,5 +494,89 @@
 
 	.articleInfo {
 		margin-top: 20upx;
+	}
+
+	.lists {
+		position: relative;
+		padding: 2vw;
+		height: 24vw;
+		font-size: 18px;
+		padding: $box-margin-top $box-margin-left;
+		line-height: 18px;
+		background-color: #fff;
+
+		.title {
+			margin-bottom: 10upx;
+			color: $list-title-color;
+			font-size: $list-title;
+			line-height: $list-title-line;
+			font-weight: bold;
+			box-sizing: border-box;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2; //需要显示时文本行数
+			overflow: hidden;
+		}
+
+
+		.msg {
+			font-size: 14px;
+			color: $list-info-color;
+		}
+	}
+
+	.imgBox {
+		position: absolute;
+		top: 50%;
+		margin-top: -10vw;
+		width: 20vw;
+		height: 20vw;
+		border-radius: 5px;
+		overflow: hidden;
+
+		image {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	.rightBox {
+		position: absolute;
+		margin-left: 24vw;
+		margin-right: 20upx;
+		top: 50%;
+		margin-top: -50upx;
+	}
+
+	.moreCourseBtn {
+		button {
+			width: auto;
+			font-size: $list-title;
+			background: #f0f0f0;
+		}
+	}
+
+	.courseText {
+		background: #fff;
+		padding: 0 $box-margin-left;
+		padding-top: $box-margin-top;
+		font-size: $list-title;
+		margin-top: 5upx;
+	}
+
+	.columnBox {
+		position: relative;
+		padding: $box-margin-top $box-margin-left;
+	}
+	
+	.columnImg{
+		position: absolute;
+		width: 32vw;
+		height: 18vw;
+	}
+	
+	.upName{
+		font-size: $list-info;
+		color: $list-info-color;
 	}
 </style>

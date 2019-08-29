@@ -9,11 +9,10 @@
 		</view>
 
 		<!-- 头条监听不了值的变化 不能在变化之后去更新视图  list 字符串-->
-		<button type="primary" @click="pushdata">sadasdsad</button>
-		<view class="contentBox" v-if="newDataList1.length && newDataList1.length>0">
+		<view class="contentBox">
 
 			<!-- 课程列表 -->
-			<!-- <view v-for="(item,index) in list" :key="index">
+			<view v-for="(item,index) in list" :key="index">
 				<view class="lists" @click="navigator(item)">
 					<view class="imgBox">
 						<image v-if="item.type == constData.contentType[2].key" :src="JSON.parse(item.data).imgList[0].src" mode="aspectFill"></image>
@@ -33,9 +32,11 @@
 					</view>
 					<view class="clearBoth"></view>
 				</view>
-			</view> -->
+			</view>
 		</view>
-
+		<view class="bottomBtn">
+			<button type="primary" >立即支付</button>
+		</view>
 	</view>
 </template>
 
@@ -47,21 +48,15 @@
 		},
 		data() {
 			return {
-				dataitem: '111',
 				curry: 0,
-				constData: {},
+				constData: this.$constData,
+				list: {}, //内容列表
 
 				id: '',
-				titleText: 'Tony',
+				titleText: '',
 				titleTime: '',
-				type: 3,
 				color: '',
 
-				fixedBox: '',
-				fixeTag: '',
-				windowHeight: '',
-				newDataList1: [],
-				list: [1, 2, 2, 3],
 				tagList: [{
 						name: '全部',
 						type: 2
@@ -75,16 +70,21 @@
 						type: 1
 					}
 				],
-
 			}
 		},
 		methods: {
-			//路由跳转
+			//跳转支付页
+			navToPay(){
+				uni.navigateTo({
+					url: `/pages/vip/column/payView/payView?id=${this.id}`
+				})
+			},
+			//跳转详情
 			navigator(list) {
 				if (list.paid == this.$constData.contentPaid[1].key) {
 					uni.showToast({
 						title: '购买后可观看',
-						duration: 2000,
+						duration: 1500,
 						icon: 'none'
 					});
 				}
@@ -98,92 +98,42 @@
 					url: `/pages/vip/column/${url}/${url}?id=${list.id}&id1=${list._id}`
 				})
 			},
-			pushdata() {
-				console.log('1111111111111111111111111111')
-				console.log(this.dataitem)
-			},
 			// 从专栏id获取课程列表
 			getContentByChannelId() {
-
 				let cnt = {
-					module: 'kkqt', // String 隶属
+					module: this.$constData.module, // String 隶属
 					channelId: this.id, // Long 专栏id
 					status: 4, // Byte 专栏状态
 					count: 10, // Integer 
 					offset: 0, // Integer 
 				}
-
-				// 
-				// 				let cnt1 = {
-				// 					c: JSON.stringify(cnt)
-				// 				}
-				// 				let that = this
-				// 				uni.request({
-				// 						url: 'http://192.168.1.181:8053/content/content/getContentByChannelId',
-				// 						data: cnt1,
-				// 						header: {
-				// 							"Content-Type": "text/plain"
-				// 						},
-				// 						method: 'POST',
-				// 						success: (res) => {
-				// 							// let arr = JSON.parse(res.data.c)
-				// 							that.newDataList1 = JSON.parse(res.data.c).list
-				// 							console.log('11111')
-				// 							console.log(that.newDataList1)
-				// 							this.dataitem = '22222'
-				// 							this.pushdata()
-				// 						},
-				// 						fail: (err) => {
-				// 							console.log(err)
-				// 						}
-				// 					}
-				// 
-				// 				)
-
-
-
-
-
 				this.$api.getContentByChannelId(cnt, (res) => {
 					let arr = []
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						arr = JSON.parse(res.data.c).list
-						console.log('12321321213213213213')
-
+						this.list = JSON.parse(res.data.c).list
 					} else {
 						arr = []
 						console.log('error')
 					}
-
-					this.list = arr
-					console.log(this)
-					console.log(this.list.length)
-
-					this.$nextTick(function() {
-						console.log(this.list) // => '已更新'
-					})
-
 				})
 			},
+			getTime(e) {
+				let t = parseInt(e)
+				let a = new Date(t)
+				let y = a.getFullYear()
+				let m = 1 + a.getMonth()
+				let d = a.getDate()
+				let time = y + '年' + m + '月' + d + '日'
+				this.titleTime = time
+			}
 		},
 		onLoad(options) {
-
-			console.log('222')
 			console.log(options)
 			this.id = options.id
-
+			this.titleText = options.title
+			this.color = options.color
+			this.getTime(options.time)
 			this.getContentByChannelId()
-				console.log('11111')
-				this.titleText = options.title
-				this.color = options.color
-				var t = parseInt(options.time)
-				var a = new Date(t)
-				var y = a.getFullYear()
-				var m = 1 + a.getMonth()
-				var d = a.getDate()
-				var time = y + '年' + m + '月' + d + '日'
-				this.titleTime = time
-				this.constData = this.$constData
 		},
 
 	}
@@ -324,5 +274,19 @@
 		top: 50%;
 		font-size: $list-info;
 		margin-top: -20upx;
+		color: $list-info-color;
+	}
+
+	.bottomBtn {
+		position: fixed;
+		width: 100vw;
+		bottom: 0;
+
+		button {
+			width: 100%;
+			border-radius: 0;
+			font-size: $list-title;
+			line-height: 100upx;
+		}
 	}
 </style>
