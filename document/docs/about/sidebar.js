@@ -1,10 +1,8 @@
-module.exports = [
-    {
-      title:'文档简介',
-   
-	  children:[
-		'about/info/',
-		'about/info/write'
-	  ]
-    }
-]
+module.exports = [{
+	title: '文档简介',
+	collapsable: true,
+	children: [
+		'/about/info/',
+		'/about/info/write'
+	]
+}]
