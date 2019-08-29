@@ -2,24 +2,27 @@
 title: 文档写法
 author: cometang
 date: 2019-8-29
-
+keys:
+ - '123456'
 ---
 
-## 快速上手
+## 快速起步
 
 - 必须要有团队(ahateam)项目的开发权限
 
 	```
 	aha-uniapp document 
 	```
-	
+
 - 必须在本地安装了vuepress
 	```
 	npm install -g vuepress
 	```
 
 - 必须在本地有能够运行git脚本的工具如
-	``` git Bash ```
+	```
+	git Bash
+	```
 
 - 每次修改或者创建文档之后必须要在document文件夹下 使用git脚本工具运行deploy.sh脚本
 	```
