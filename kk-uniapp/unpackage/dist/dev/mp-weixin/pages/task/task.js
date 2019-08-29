@@ -109,14 +109,19 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 //
 //
 //
+//
+//
 var _default =
 {
   data: function data() {
-    return {};
-
+    return {
+      data: '' };
 
   },
-  methods: {} };exports.default = _default;
+  methods: {
+    showData: function showData() {
+      console.log(this.data);
+    } } };exports.default = _default;
 
 /***/ })
 

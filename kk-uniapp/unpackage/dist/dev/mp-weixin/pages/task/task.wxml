@@ -1,1 +1,1 @@
-<view>task</view>
+<view>{{''+data+''}}<input data-event-opts="{{[['input',[['__set_model',['','data','$event',[]]]]]]}}" value="{{data}}" bindinput="__e"/><button type="primary" data-event-opts="{{[['tap',[['showData',['$event']]]]]}}" bindtap="__e">点击</button></view>

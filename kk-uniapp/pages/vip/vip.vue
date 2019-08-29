@@ -16,9 +16,10 @@
 			return {
 				count: 10,
 				offset: 0,
-				page:1,
-				
+				page: 1,
+
 				columnList: [],
+				data: '123',
 			}
 		},
 		onLoad() {
@@ -33,8 +34,8 @@
 		},
 		methods: {
 			getChannel(cnt) {
-				this.$api.getChannel(cnt,(res=>{
-					if(res.data.rc == this.$util.RC.SUCCESS){
+				this.$api.getChannel(cnt, (res => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let columnList = JSON.parse(res.data.c).list
 						for (let i = 0; i < columnList.length; i++) {
 							let cnt1 = {
@@ -51,7 +52,7 @@
 								} else {
 									arr = []
 								}
-						
+
 								let obj = JSON.parse(JSON.stringify(columnList[i]))
 								obj.child = arr
 								columnList.splice(i, 1, obj)

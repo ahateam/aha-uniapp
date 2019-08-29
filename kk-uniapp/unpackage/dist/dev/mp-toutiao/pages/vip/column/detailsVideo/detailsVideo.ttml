@@ -1,0 +1,2 @@
+<import src="./detailsVideo.vue.ttml" />
+    <template is="021423d2" data="{{ ...$root['0'], $root }}"/>

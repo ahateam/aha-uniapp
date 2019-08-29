@@ -104,11 +104,11 @@
 /******/
 /******/
 /******/ 		// mini-css-extract-plugin CSS loading
-/******/ 		var cssChunks = {"components/article/onlyText":1,"components/article/threeImg":1,"components/uni-load-more/uni-load-more":1,"components/video/rightVideo":1,"components/video/transVideo":1,"components/vip/column":1};
+/******/ 		var cssChunks = {"components/article/onlyText":1,"components/article/threeImg":1,"components/uni-load-more/uni-load-more":1,"components/video/rightVideo":1,"components/video/transVideo":1,"components/vip/column":1,"components/uni-tag/uni-tag":1};
 /******/ 		if(installedCssChunks[chunkId]) promises.push(installedCssChunks[chunkId]);
 /******/ 		else if(installedCssChunks[chunkId] !== 0 && cssChunks[chunkId]) {
 /******/ 			promises.push(installedCssChunks[chunkId] = new Promise(function(resolve, reject) {
-/******/ 				var href = "" + ({"components/article/onlyText":"components/article/onlyText","components/article/threeImg":"components/article/threeImg","components/uni-load-more/uni-load-more":"components/uni-load-more/uni-load-more","components/video/rightVideo":"components/video/rightVideo","components/video/transVideo":"components/video/transVideo","components/vip/column":"components/vip/column"}[chunkId]||chunkId) + ".wxss";
+/******/ 				var href = "" + ({"components/article/onlyText":"components/article/onlyText","components/article/threeImg":"components/article/threeImg","components/uni-load-more/uni-load-more":"components/uni-load-more/uni-load-more","components/video/rightVideo":"components/video/rightVideo","components/video/transVideo":"components/video/transVideo","components/vip/column":"components/vip/column","components/uni-tag/uni-tag":"components/uni-tag/uni-tag"}[chunkId]||chunkId) + ".wxss";
 /******/ 				var fullhref = __webpack_require__.p + href;
 /******/ 				var existingLinkTags = document.getElementsByTagName("link");
 /******/ 				for(var i = 0; i < existingLinkTags.length; i++) {

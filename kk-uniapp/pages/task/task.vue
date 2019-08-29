@@ -1,6 +1,8 @@
 <template>
 	<view>
-		task
+		{{data}}
+		<input v-model="data" />
+		<button type="primary" @click="showData">点击</button>
 	</view>
 </template>
 
@@ -8,11 +10,13 @@
 	export default {
 		data() {
 			return {
-				
+				data:'',
 			}
 		},
 		methods: {
-			
+			showData(){
+				console.log(this.data)
+			}
 		}
 	}
 </script>

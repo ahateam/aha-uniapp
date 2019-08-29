@@ -1,2 +1,2 @@
 <import src="./articleView.vue.ttml" />
-    <template is="5efafd06" data="{{ ...$root['0'], $root }}"/>
+    <template is="1a12fb20" data="{{ ...$root['0'], $root }}"/>

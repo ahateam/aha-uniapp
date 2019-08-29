@@ -1,7 +1,7 @@
 <template>
 	<!-- :style="{backgroundImage: 'url(' + JSON.parse(obj.data).src + ')' }" -->
 	<view class="contentBox" :style="'background:'+randomColor">
-		<navigator :url="'/pages/vip/column/columnInfo/columnInfo?id='+obj.id+'&title='+obj.title+'&time='+obj.createTime+'&color='+randomColor">
+		<navigator :url="'/pages/vip/column/column?id='+obj.id+'&title='+obj.title+'&time='+obj.createTime+'&color='+randomColor">
 			<view class="columnTitle">{{ obj.title }}</view>
 			<view class="columnTime">{{ getTime(obj.createTime) }}</view>
 		</navigator>
@@ -46,9 +46,13 @@
 			},
 			getTime(date) {
 				this.getrandomColor()
-				let time = new Date(date)
-				let localTime = time.toLocaleString()
-				return localTime
+				var t = parseInt(date)
+				var a = new Date(t)
+				var y = a.getFullYear()
+				var m = 1 + a.getMonth()
+				var d = a.getDate()
+				var time = y + '年' + m + '月' + d + '日'
+				return time
 			},
 			getrandomColor(){//随机赋值一种渐变色
 				this.randomColor = this.$constData.colorData[Math.floor(Math.random()*this.$constData.colorData.length)]

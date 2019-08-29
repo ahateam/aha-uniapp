@@ -5,7 +5,11 @@
     "pages/task/task",
     "pages/about/about",
     "pages/index/articleView/articleView",
-    "pages/index/videoView/videoView"
+    "pages/index/videoView/videoView",
+    "pages/vip/column/column",
+    "pages/vip/column/details/details",
+    "pages/vip/column/detailsVideo/detailsVideo",
+    "pages/vip/column/columnInfo/columnInfo"
   ],
   "subPackages": [],
   "window": {
@@ -47,5 +51,5 @@
     ]
   },
   "usingComponents": {},
-  "sitemapLocation": "sitemap72.json"
+  "sitemapLocation": "sitemap13.json"
 }
