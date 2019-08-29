@@ -9,7 +9,7 @@
 			<view v-for="(list,key) in obj.child" :key="key">
 				<view class="lists" @click="navigator(list)">
 					<view class="imgBox">
-						<image v-if="obj.type == this.$constData.contentType[1].key" :src="JSON.parse(list.data).imgList[0].src" mode="aspectFill"></image>
+						<image v-if="obj.type == contentType[1].key" :src="JSON.parse(list.data).imgList[0].src" mode="aspectFill"></image>
 						<image v-else :src="JSON.parse(list.data).imgSrc" mode="aspectFill"></image>
 					</view>
 					<view class="rightBox">
@@ -29,6 +29,7 @@
 		data() {
 			return {
 				randomColor:'',
+				contentType:this.$constData.contentType
 			}
 		},
 		methods: {

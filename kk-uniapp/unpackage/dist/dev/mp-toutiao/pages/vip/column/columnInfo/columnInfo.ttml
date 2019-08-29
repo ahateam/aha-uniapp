@@ -1,2 +1,2 @@
 <import src="./columnInfo.vue.ttml" />
-    <template is="2a93a5f2" data="{{ ...$root['0'], $root }}"/>
+    <template is="305db73b" data="{{ ...$root['0'], $root }}"/>

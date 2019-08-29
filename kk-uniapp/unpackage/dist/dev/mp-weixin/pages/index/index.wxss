@@ -24,14 +24,14 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-page.data-v-35213347,
-.body.data-v-35213347 {
+page.data-v-28e37482,
+.body.data-v-28e37482 {
   background-color: #f8f8f8;
   min-height: 100vh;
   overflow: hidden;
 }
 /* 顶部tabbar */
-.nav-bar.data-v-35213347 {
+.nav-bar.data-v-28e37482 {
   position: relative;
   z-index: 10;
   height: 90rpx;
@@ -40,7 +40,7 @@ page.data-v-35213347,
           box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
   background-color: #fff;
 }
-.nav-bar .nav-item.data-v-35213347 {
+.nav-bar .nav-item.data-v-28e37482 {
     display: inline-block;
     width: 150rpx;
     height: 90rpx;
@@ -50,7 +50,7 @@ page.data-v-35213347,
     color: #303133;
     position: relative;
 }
-.nav-bar .nav-item.data-v-35213347:after {
+.nav-bar .nav-item.data-v-28e37482:after {
       content: '';
       width: 0;
       height: 0;
@@ -65,13 +65,13 @@ page.data-v-35213347,
       -o-transition: .3s;
       transition: .3s;
 }
-.nav-bar .current.data-v-35213347 {
+.nav-bar .current.data-v-28e37482 {
     color: #007aff;
 }
-.nav-bar .current.data-v-35213347:after {
+.nav-bar .current.data-v-28e37482:after {
       width: 50%;
 }
-.item-box.data-v-35213347 {
+.item-box.data-v-28e37482 {
   width: 750rpx;
   height: 200rpx;
   background: #fff;

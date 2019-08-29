@@ -24,7 +24,7 @@
 		},
 		onLoad() {
 			let cnt = {
-				module: this.$constData.module, // String 隶属
+				module: 'kkqt', // String 隶属
 				status: 0, // Byte <选填> 状态
 				// tags: tags, // String <选填> 标签
 				count: this.count, // Integer 
