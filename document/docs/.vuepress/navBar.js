@@ -21,7 +21,7 @@ module.exports = [
 		link: '/about/',
 		items: [{
 			text: '文档介绍',
-			link: '/about/info/'
+			link: '/about/info/write'
 		},
 		{
 			text: '项目GitHub',
