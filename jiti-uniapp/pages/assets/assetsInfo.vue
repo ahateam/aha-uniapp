@@ -1,6 +1,117 @@
 <template>
-	<view>
+	<view class="box">
 		
+		<view class="con-box">
+			<view class="box-title">基础信息</view>
+			<view class="org-item">
+				<view class="org-name">资产名称：</view>
+				<view class="org-res">黄土高坡红树林</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">资产证件：</view>
+				<view class="org-res">HJ64545454GGH545454</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">资源类型：</view>
+				<view class="org-res">木材</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">资产类型：</view>
+				<view class="org-res">不动产</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">资产位置：</view>
+				<view class="org-res">红花组</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">资产权属：</view>
+				<view class="org-res">黄晓明</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">保管人：</view>
+				<view class="org-res">暂无</view>
+			</view>
+		</view>
+		
+		<view class="con-box">
+			<view class="box-title">经营属性</view>
+			<view class="org-item">
+				<view class="org-name">经营方式：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">起止时间：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">投资对象：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">年收益：</view>
+				<view class="org-res">10万</view>
+			</view>
+			
+		</view>
+		<view class="con-box">
+			<view class="box-title">不动产属性</view>
+			<view class="org-item">
+				<view class="org-name">不动产类型：</view>
+				<view class="org-res">10万</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">建筑面积：</view>
+				<view class="org-res">10万</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">占地面积：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item" style="border: none;">
+				<view class="org-name" style="font-size: 36rpx;">四至边界：</view>
+				
+			</view>
+			<view class="org-item">
+				<view class="org-name">东面：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">西面：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">南面：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">北面：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">起点位置：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">终点位置：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">起点坐标：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">终点坐标：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">房产蓄积：</view>
+				<view class="org-res">暂无</view>
+			</view>
+			<view class="org-item">
+				<view class="org-name">棵树：</view>
+				<view class="org-res">暂无</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -8,5 +119,37 @@
 </script>
 
 <style>
+	page{
+		background-color: #f2f2f2;
+	}
+	.con-box{
+		width: 100%;
+		margin-bottom: 10rpx;
+		background-color: #FFFFFF;
+		border-radius: 20rpx;
+	}
+	.con-box view{
+		margin-left: 20rpx;
+	}
 	
+	.org-item{
+		width: 100%;
+		height: 88rpx;
+		border-bottom: 20rpx;
+		display: flex;
+		flex-direction: row;
+		border-bottom: 1rpx solid #DDDDDD;
+	}
+	.org-item view{
+		height: 88rpx;
+		line-height: 88rpx;
+		font-size: 28rpx;
+	}
+	.org-name{
+		width: 40%;
+	}
+	.org-res{
+		width: 60%;
+		color: #969799;
+	}
 </style>

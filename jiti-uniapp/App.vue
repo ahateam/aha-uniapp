@@ -18,4 +18,7 @@
 		width: 90%;
 		margin: 50rpx auto;
 	}
+	button{
+		margin: 40rpx auto 40rpx;
+	}
 </style>

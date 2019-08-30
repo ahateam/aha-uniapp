@@ -33,13 +33,13 @@
 			<view class="content_box" @click="toOrg">
 				<view class="content_box_text">我的机构</view>
 			</view>
-			<view class="content_box" style="background-color: #9788ff;">
+			<view class="content_box" @click="toNotice" style="background-color: #9788ff;">
 				<view class="content_box_text">我的公告</view>
 			</view>
-			<view class="content_box" style="background-color: #fb7eb8;">
+			<view class="content_box" @click="toExamine" style="background-color: #fb7eb8;">
 				<view class="content_box_text">我的审批</view>
 			</view>
-			<view class="content_box">
+			<view class="content_box" @click="toVote">
 				<view class="content_box_text">发起投票</view>
 			</view>
 			<view class="content_box" style="background-color: #9788ff;">
@@ -48,7 +48,7 @@
 			<view class="content_box" style="background-color: #fb7eb8;">
 				<view class="content_box_text">个人信息</view>
 			</view>
-			<view class="content_box">
+			<view class="content_box" @click="toChooseOrg">
 				<view class="content_box_text">更换组织</view>
 			</view>
 		</view>
@@ -86,6 +86,26 @@
 			toMoney(){
 				uni.navigateTo({
 					url:"../bonus/bonus"
+				})
+			},
+			toNotice(){
+				uni.navigateTo({
+					url:"../notice/notice"
+				})
+			},
+			toExamine(){
+				uni.navigateTo({
+					url:"../examine/examine"
+				})
+			},
+			toChooseOrg(){
+				uni.navigateTo({
+					url:"../chooseOrg/chooseOrg"
+				})
+			},
+			toVote(){
+				uni.navigateTo({
+					url:"../vote/vote"
 				})
 			}
 		}

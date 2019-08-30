@@ -19,7 +19,7 @@
 
 			<view class="input_box">
 				<view class="input-text">
-					<input type="text" class="text" placeholder="请输入密码" placeholder-class="place-holder" v-model="pwd">
+					<input type="text" password="true" class="text" placeholder="请输入密码" placeholder-class="place-holder" v-model="pwd">
 				</view>
 			</view>
 

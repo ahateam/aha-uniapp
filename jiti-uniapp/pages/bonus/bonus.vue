@@ -3,7 +3,7 @@
 		<view class="box">
 			<view class="money-box">
 				<view class="money-img">
-					<image src="../../static/money.png" mode="aspectFit"></image>
+					<image src="../../static/mon.png" mode="aspectFit"></image>
 				</view>
 				<view class="money-text">我的分红总额</view>
 				<view class="money-num">￥0.00</view>
@@ -40,7 +40,7 @@
 		height: 350rpx;
 	}
 	.money-img image{
-		width: 386rpx
+		width: 400rpx
 	}
 	.money-text{
 		width: 100%;
