@@ -40,6 +40,49 @@
 					</view>
 				</view>
 				
+				<!-- 所属课程 -->
+				<view class="courseText">所属课程</view>
+				<view class="courseBox">
+					<view class="columnImgBox">
+						<image class="columnImg" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1567139311188&di=b309ce828b72d42a2c9318f26f7115c7&imgtype=0&src=http%3A%2F%2Fwww.pclady.com.cn%2Fstyle%2Fmovie%2F0509%2Fpic%2Fbb20050920_shjz_06_thumb.jpg"
+						 mode="scaleToFill"></image>
+					</view>
+					<view class="courseRight">
+						<view class="courseText blodFont noPadding">
+							课程名
+						</view>
+						<view class="upName">
+							<text>作者:</text><text>作者名</text>
+						</view>
+						<view class="payCourse">
+							<text class="courseMoney">45元</text>
+							<text class="courseInfo">233人购买</text>
+							<button type="primary">购买课程</button>
+						</view>
+					</view>
+				</view>
+				
+				<!-- 其他内容列表 -->
+				<view>
+					<view class="courseText">课程内容</view>
+					<view v-for="(item,index) in courseList" :key="index" v-if="index <moreCourse">
+						<view class="lists" @click="navigator(item)">
+							<view class="imgBox">
+								<image v-if="item.type == constData.contentType[2].key" :src="JSON.parse(item.data).imgList[0].src" mode="aspectFill"></image>
+								<image v-else-if="item.type == constData.contentType[1].key" :src="JSON.parse(item.data).imgSrc" mode="aspectFill"></image>
+							</view>
+							<view class="rightBox">
+								<view class="title">{{ item.title }}</view>
+								<text class="msg">{{ item.time }}</text>
+							</view>
+							<view class="clearBoth"></view>
+						</view>
+					</view>
+					<view class="moreCourseBtn">
+						<button type="primary" @click="moreCourseBtn()" v-if="moreCourse == 2&&courseList.length>2">查看更多</button>
+					</view>
+				</view>
+				
 				<view class="container">
 					<!-- 评论 -->
 					<view class="s-header">
@@ -125,6 +168,7 @@
 						console.log(this.contentObj)
 						console.log(this.detailData)
 						// this.getUserById(this.detailData.upUserId)
+						this.getContentByChannelId()
 					}
 				}))
 			},
@@ -141,6 +185,59 @@
 			// 		}
 			// 	}))
 			// }
+			
+			// 从专栏id获取课程列表
+			getContentByChannelId() {
+				let cnt = {
+					module: this.$constData.module, // String 隶属
+					channelId: this.channelId, // Long 专栏id
+					status: 4, // Byte 专栏状态
+					count: 10, // Integer 
+					offset: 0, // Integer 
+				}
+				this.$api.getContentByChannelId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = JSON.parse(res.data.c).list
+			
+						for (let i = 0; i < arr.length; i++) {
+							let date = new Date(arr[i].createTime)
+							let y = date.getFullYear()
+							let m = date.getMonth() + 1
+							let d = date.getDate()
+							arr[i].time = `${y}年${m}月${d}日`
+						}
+						this.courseList = arr
+						console.log(this.courseList)
+					} else {
+						this.courseList = []
+						console.log('error')
+					}
+				})
+			},
+			
+			//跳转其他课程详情
+			navigator(list) {
+				if (list.paid == this.$constData.contentPaid[1].key) {
+					uni.showToast({
+						title: '购买后可观看',
+						duration: 2000,
+						icon: 'none'
+					});
+				}
+				let url = ''
+				if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
+					url = 'details'
+				} else if (list.type == this.$constData.contentType[1].key) {
+					url = 'detailsVideo'
+				}
+				uni.redirectTo({
+					url: `/pages/vip/column/${url}/${url}?id=${list.id}&id1=${list._id}`
+				})
+			},
+			
+			moreCourseBtn() {
+				this.moreCourse = 5;
+			},
 		},
 		onShareAppMessage(res) {
 			var pages = getCurrentPages() //获取加载的页面
@@ -382,5 +479,140 @@
 			padding-left: 20upx;
 			color: #0d9fff;
 		}
+	}
+	
+	.lists {
+		position: relative;
+		padding: 2vw;
+		height: 24vw;
+		font-size: 18px;
+		padding: $box-margin-top $box-margin-left;
+		line-height: 18px;
+		background-color: #fff;
+	
+		.title {
+			margin-bottom: 10upx;
+			color: $list-title-color;
+			font-size: $list-title;
+			line-height: $list-title-line;
+			font-weight: bold;
+			box-sizing: border-box;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2; //需要显示时文本行数
+			overflow: hidden;
+		}
+	
+	
+		.msg {
+			font-size: 14px;
+			color: $list-info-color;
+		}
+	}
+	
+	.imgBox {
+		position: absolute;
+		top: 50%;
+		margin-top: -10vw;
+		width: 20vw;
+		height: 20vw;
+		border-radius: 5px;
+		overflow: hidden;
+	
+		image {
+			width: 100%;
+			height: 100%;
+		}
+	}
+	
+	.rightBox {
+		position: absolute;
+		margin-left: 24vw;
+		margin-right: 20upx;
+		top: 50%;
+		margin-top: -50upx;
+	}
+	
+	.moreCourseBtn {
+		button {
+			width: auto;
+			font-size: $list-title;
+			background: #f0f0f0;
+		}
+	}
+	
+	.courseText {
+		background: #fff;
+		padding: 0 $box-margin-left;
+		padding-top: $box-margin-top;
+		font-size: $list-title;
+		margin-top: 5upx;
+	}
+	
+	.columnImgBox{
+		position: absolute;
+		top: 50%;
+		margin-top: -7vw;
+	}
+	
+	.columnImg {
+		
+		width: 25vw;
+		height: 14vw;
+	}
+	
+	.upName {
+		font-size: $list-info;
+		color: $list-info-color;
+		padding: 15upx 0;
+	}
+	
+	.courseBox {
+		position: relative;
+		background-color: #fff;
+		padding: $box-margin-top $box-margin-left;
+	}
+	
+	.courseRight {
+		margin-left: 30vw;
+	}
+	
+	.payCourse {
+		position: relative;
+		font-size: $list-title;
+	
+		button {
+			position: absolute;
+			font-size:$list-info;
+			right: 0;
+			bottom: -7.5upx;
+			display: inline-block;
+			line-height: $list-title-line;
+			padding: 8upx 15upx;
+			background-color: #ec706b;
+		}
+		.button-hover{
+			background-color:rgba(236,112,107,0.5);
+			color:rgba(255,255,255,0.5)
+		}
+	}
+	
+	.courseMoney {
+		font-weight: bold;
+		color: #ec706b;
+	}
+	
+	.courseInfo {
+		font-size: $list-info;
+		color: $list-info-color;
+		margin-left: 10upx;
+	}
+	
+	.noPadding {
+		padding: 0;
+	}
+	
+	.blodFont{
+		font-weight: bold;
 	}
 </style>

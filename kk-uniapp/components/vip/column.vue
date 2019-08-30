@@ -38,7 +38,7 @@
 				if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
 					url = 'details'
 				} else if (list.type == this.$constData.contentType[1].key) {
-					url = 'detailsAtc'
+					url = 'detailsVideo'
 				}
 				uni.navigateTo({
 					url: `/pages/vip/column/${url}/${url}?id=${list.id}&id1=${list._id}`

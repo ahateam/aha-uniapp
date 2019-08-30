@@ -54,6 +54,14 @@
             "path" : "pages/vip/column/payView/payView",
             "style" : {}
         }
+        ,{
+            "path" : "pages/index/addArticle/addArticle",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/index/addVideo/addVideo",
+            "style" : {}
+        }
     ],
 		"tabBar" : {
 	    "color" : "#C0C4CC",

@@ -66,6 +66,29 @@ constData.contentPaid = [{
 	val: '付费'
 }]
 
+/* 任务类型 */
+constData.taskType = [
+	{
+		key:'0',
+		val:'视频'
+	},{
+		key:'1',
+		val:'图文'
+	},{
+		key:'2',
+		val:'语音'
+	},{
+		key:'3',
+		val:'万众瞩目'
+	},{
+		key:'4',
+		val:'本地'
+	},{
+		key:'5',
+		val:'分享'
+	}
+]
+
 /* 渐变色数组 */
 constData.colorData = [
 	'linear-gradient(120deg,#69b5e1,#bedbed)',

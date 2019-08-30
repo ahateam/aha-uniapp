@@ -1,8 +1,6 @@
 <template>
 	<view>
-		{{data}}
-		<input v-model="data" />
-		<button type="primary" @click="showData">点击</button>
+		
 	</view>
 </template>
 
@@ -14,9 +12,7 @@
 			}
 		},
 		methods: {
-			showData(){
-				console.log(this.data)
-			}
+			
 		}
 	}
 </script>

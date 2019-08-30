@@ -23,7 +23,15 @@ api.getContentById = function(cnt, callback) {
 	util.call(baseUrl + '/content/getContentById', cnt, callback)
 }
 
+// <获取发布类型> 
+api.returnTabBar = function(cnt, callback) {
+	util.call(baseUrl + '/content/returnTabBar', cnt, callback)
+}
 
+//添加内容 
+api.addContent = function(cnt, callback) {
+	util.call(baseUrl + '/content/addContent', cnt, callback)
+}
 
 /********************* 专栏接口 ******************************/ 
 //获取专栏列表 

@@ -24,6 +24,8 @@
 			</view>
 		</view>
 		<uni-load-more :status="pageStatus"></uni-load-more>
+		<uni-fab :pattern="pattern" :content="content" :horizontal="horizontal" :vertical="vertical" :direction="direction"
+		 @trigger="trigger"></uni-fab>
 	</view>
 </template>
 
@@ -33,8 +35,7 @@
 	import rightVideo from '@/components/video/rightVideo.vue'
 	import threeImg from '@/components/article/threeImg.vue'
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
-
-	import constData from '@/commen/constData.js'
+	import uniFab from '@/components/uni-fab/uni-fab.vue'
 
 	export default {
 		components: {
@@ -43,10 +44,11 @@
 			rightVideo,
 			threeImg,
 			uniLoadMore,
+			uniFab
 		},
 		data() {
 			return {
-				constData: {}, //全局变量引入
+				constData: this.$constData, //全局变量引入，防止头条html中报错
 
 				tagsList: [], //标签列表
 				tabCurrentIndex: 0, //当前选项卡索引
@@ -56,7 +58,7 @@
 				userId: '',
 
 				contents: [], //显示列表
-				tagName:'',
+				tagName: '', //当前选中标签名字
 
 				//上拉加载 ---分页
 				offset: 0,
@@ -64,10 +66,21 @@
 				page: 1,
 
 				pageStatus: '', //加载状态 more（loading前）、loading（loading中）、noMore（没有更多了）
+
+				//悬浮按钮组件数据
+				horizontal: 'right',
+				vertical: 'bottom',
+				direction: 'horizontal',
+				pattern: {
+					color: '#7A7E83',
+					backgroundColor: '#fff',
+					selectedColor: '#007AFF',
+					buttonColor: "#007AFF"
+				},
+				content: []
 			}
 		},
 		onLoad() { // created() mounted()
-			this.constData = constData
 
 			if (!uni.getStorageSync('userId')) {
 				uni.setStorageSync('userId', '1234567890')
@@ -75,25 +88,52 @@
 
 			this.userId = uni.getStorageSync('userId')
 
-			// console.log(this.$constData)
+			// console.log(this.constData)
 			/* 获取标签列表*/
 			let cnt = {
-				module: this.$constData.module, // String 隶属
-				status: this.$constData.tagStatus[1].key, // Byte 标签状态
+				module: this.constData.module, // String 隶属
+				status: this.constData.tagStatus[1].key, // Byte 标签状态
 				keyword: '首页', // String 标签
 				count: 500, // Integer 
 				offset: 0, // Integer 
 			}
 			this.getTagsList(cnt)
-
+			this.returnTabBar()
 		},
 		methods: {
+			//按钮点击跳转
+			 trigger(e) {
+				 console.log(e)
+			            this.content[e.index].active = !e.item.active;
+			            if(e.item.url == '/pages/index/addContent/addContent?type=1'){
+							uni.navigateTo({
+								url:'/pages/index/addArticle/addArticle'
+							})
+						}else if(e.item.url == '/pages/index/addContent/addContent?type=0'){
+							uni.navigateTo({
+								url:'/pages/index/addVideo/addVideo'
+							})
+						}
+			        },
+			
+			//获取按钮数据
+			returnTabBar() {
+				let cnt = {}
+				this.$api.returnTabBar(cnt, (res => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.content = JSON.parse(res.data.c)
+					}else{
+						this.content = []
+					}
+				}))
+			},
+
 			/* 获取标签列表*/
 			getTagsList(cnt) {
 				this.$api.getTags(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let tagsList = this.$util.tryParseJson(res.data.c)
-						for(let i =0;i<tagsList.length;i++){
+						for (let i = 0; i < tagsList.length; i++) {
 							tagsList[i].pageOver = false
 							tagsList[i].page = 1
 						}
@@ -101,9 +141,9 @@
 						/* 根据默认标签获取内容列表*/
 						let cnt1 = {
 							userId: this.userId, // Long 用户编号
-							module: this.$constData.module, // String 所属模块
+							module: this.constData.module, // String 所属模块
 							// tags: this.tagActiveId,
-							status: this.$constData.contentStatus[4].key,
+							status: this.constData.contentStatus[4].key,
 							count: this.count,
 							offset: this.offset
 						}
@@ -148,20 +188,20 @@
 				})
 
 			},
-			
+
 			/* 添加新数据进数组并显示 */
-			tryDataList(list){
+			tryDataList(list) {
 				let index = this.tabCurrentIndex
-				if (list.length < this.count) {//判断长度是否为等于设定this.count，是则可能还有剩余数据，否则无
-					this.tagsList[index].pageOver = true//结束拉取
+				if (list.length < this.count) { //判断长度是否为等于设定this.count，是则可能还有剩余数据，否则无
+					this.tagsList[index].pageOver = true //结束拉取
 					this.tagsList[index].pageStatus = 'nomore'
 				} else {
 					this.tagsList[index].pageOver = false
 					this.tagsList[index].pageStatus = 'more'
 				}
-				
-				this.pageStatus = this.tagsList[index].pageStatus//改变'uni-load-more'组件的状态
-				
+
+				this.pageStatus = this.tagsList[index].pageStatus //改变'uni-load-more'组件的状态
+
 				let arr = this.contents.concat(list)
 				this.contents = arr
 				console.log(this.contents)
@@ -177,19 +217,19 @@
 				this.tabCurrentIndex = _index
 				this.tagName = this.tagsList[_index].name
 				this.page = this.tagsList[_index].page
-				
-				if(undefined != this.tagsList[_index].child){
+
+				if (undefined != this.tagsList[_index].child) {
 					this.pageStatus = this.tagsList[_index].pageStatus
 					this.contents = this.tagsList[_index].child
 					console.log(this.contents)
 					return
 				}
-				
+
 				let cnt = {
 					userId: this.userId, // Long 用户编号
-					module: this.$constData.module, // String 所属模块
-					status: this.$constData.contentStatus[4].key, // Byte <选填> 状态
-					// paid: this.$constData.contentPaid[0].key, // Byte <选填> 是否付费
+					module: this.constData.module, // String 所属模块
+					status: this.constData.contentStatus[4].key, // Byte <选填> 状态
+					// paid: this.constData.contentPaid[0].key, // Byte <选填> 是否付费
 					// type: type, // Byte <选填> 类型
 					tags: this.tagName, // String <选填> 标签
 					count: this.count, // Integer
@@ -198,17 +238,17 @@
 				this.contents = []
 				this.getContentsByTag(cnt)
 			},
-			
+
 			/* 跳转至详情 */
-			navToInfo(info){
+			navToInfo(info) {
 				console.log(info)
-				if(info.type == this.$constData.contentType[2].key||info.type == this.$constData.contentType[0].key){
+				if (info.type == this.constData.contentType[2].key || info.type == this.constData.contentType[0].key) {
 					uni.navigateTo({
-						url:`/pages/index/articleView/articleView?id=${info.id}&id1=${info._id}`
+						url: `/pages/index/articleView/articleView?id=${info.id}&id1=${info._id}`
 					})
-				}else if(info.type == this.$constData.contentType[1].key){
+				} else if (info.type == this.constData.contentType[1].key) {
 					uni.navigateTo({
-						url:`/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
+						url: `/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
 					})
 				}
 			}
@@ -219,16 +259,16 @@
 			this.tagsList.page = 1
 			this.contents = []
 			this.tagsList[this.tabCurrentIndex].pageOver = false
-			let cnt ={
+			let cnt = {
 				userId: this.userId, // Long 用户编号
-				module: this.$constData.module, // String 所属模块
-				status: this.$constData.contentStatus[4].key, // Byte <选填> 状态
-				// paid: this.$constData.contentPaid[0].key, // Byte <选填> 是否付费
+				module: this.constData.module, // String 所属模块
+				status: this.constData.contentStatus[4].key, // Byte <选填> 状态
+				// paid: this.constData.contentPaid[0].key, // Byte <选填> 是否付费
 				// type: type, // Byte <选填> 类型
 				count: this.count, // Integer
 				offset: this.offset, // Integer
 			}
-			if(this.tagName!='' && this.tagName!= '全部' ){
+			if (this.tagName != '' && this.tagName != '全部') {
 				cnt.tags = this.tagName
 			}
 			this.getContentsByTag(cnt)
@@ -237,21 +277,21 @@
 		onReachBottom: function() {
 			this.page += 1
 			this.tagsList[this.tabCurrentIndex].page = this.page
-			let cnt ={
+			let cnt = {
 				userId: this.userId, // Long 用户编号
-				module: this.$constData.module, // String 所属模块
-				status: this.$constData.contentStatus[4].key, // Byte <选填> 状态
-				// paid: this.$constData.contentPaid[0].key, // Byte <选填> 是否付费
+				module: this.constData.module, // String 所属模块
+				status: this.constData.contentStatus[4].key, // Byte <选填> 状态
+				// paid: this.constData.contentPaid[0].key, // Byte <选填> 是否付费
 				// type: type, // Byte <选填> 类型
 				count: this.count, // Integer
-				offset:(this.page-1)*this.count, // Integer
+				offset: (this.page - 1) * this.count, // Integer
 			}
-			if(this.tagName!=''&&this.tagName!='全部'){
+			if (this.tagName != '' && this.tagName != '全部') {
 				cnt.tags = this.tagName
 			}
 			this.getContentsByTag(cnt)
 		},
-		
+
 	}
 </script>
 

@@ -44,18 +44,25 @@
 						</view>
 					</view>
 				</view>
+
 				<!-- 所属课程 -->
-				<view>
-					<view class="courseText">所属课程</view>
-					<view class="columnBox">
-						<image class="columnImg" src="/static/tab-home-current.png" mode="scaleToFill"></image>
+				<view class="courseText">所属课程</view>
+				<view class="courseBox">
+					<view class="columnImgBox">
+						<image class="columnImg" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1567139311188&di=b309ce828b72d42a2c9318f26f7115c7&imgtype=0&src=http%3A%2F%2Fwww.pclady.com.cn%2Fstyle%2Fmovie%2F0509%2Fpic%2Fbb20050920_shjz_06_thumb.jpg"
+						 mode="scaleToFill"></image>
 					</view>
-					<view>
-						<view class="courseText blodFont">
+					<view class="courseRight">
+						<view class="courseText blodFont noPadding">
 							课程名
 						</view>
 						<view class="upName">
-							<text >作者:</text><text>作者名</text>
+							<text>作者:</text><text>作者名</text>
+						</view>
+						<view class="payCourse">
+							<text class="courseMoney">45元</text>
+							<text class="courseInfo">233人购买</text>
+							<button type="primary">购买课程</button>
 						</view>
 					</view>
 				</view>
@@ -563,20 +570,71 @@
 		font-size: $list-title;
 		margin-top: 5upx;
 	}
-
-	.columnBox {
-		position: relative;
-		padding: $box-margin-top $box-margin-left;
-	}
 	
-	.columnImg{
+	.columnImgBox{
 		position: absolute;
-		width: 32vw;
-		height: 18vw;
+		top: 50%;
+		margin-top: -7vw;
 	}
-	
-	.upName{
+
+	.columnImg {
+		
+		width: 25vw;
+		height: 14vw;
+	}
+
+	.upName {
 		font-size: $list-info;
 		color: $list-info-color;
+		padding: 15upx 0;
+	}
+
+	.courseBox {
+		position: relative;
+		background-color: #fff;
+		padding: $box-margin-top $box-margin-left;
+	}
+
+	.courseRight {
+		margin-left: 30vw;
+	}
+
+	.payCourse {
+		position: relative;
+		font-size: $list-title;
+
+		button {
+			position: absolute;
+			font-size:$list-info;
+			right: 0;
+			bottom: -7.5upx;
+			display: inline-block;
+			line-height: $list-title-line;
+			padding: 8upx 15upx;
+			background-color: #ec706b;
+		}
+		.button-hover{
+			background-color:rgba(236,112,107,0.5);
+			color:rgba(255,255,255,0.5)
+		}
+	}
+
+	.courseMoney {
+		font-weight: bold;
+		color: #ec706b;
+	}
+
+	.courseInfo {
+		font-size: $list-info;
+		color: $list-info-color;
+		margin-left: 10upx;
+	}
+
+	.noPadding {
+		padding: 0;
+	}
+	
+	.blodFont{
+		font-weight: bold;
 	}
 </style>
