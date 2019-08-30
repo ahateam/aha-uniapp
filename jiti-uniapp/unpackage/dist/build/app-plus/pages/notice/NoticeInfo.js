@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"title{ width: 100%; height: ",[0,100],"; text-align: center; line-height: ",[0,100],"; border-bottom: #F1F1F1 ",[0,2]," solid; }\n.",[1],"content{ margin-top: ",[0,20],"; font-size: ",[0,32],"; }\nwx-button{ margin-top: ",[0,200],"; }\n",],undefined,{path:"./pages/notice/NoticeInfo.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/notice/NoticeInfo.wxml') } }));

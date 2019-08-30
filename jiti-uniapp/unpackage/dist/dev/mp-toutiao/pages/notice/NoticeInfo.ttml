@@ -1,0 +1,2 @@
+<import src="./NoticeInfo.vue.ttml" />
+    <template is="8f56f144" data="{{ ...$root['0'], $root }}"/>

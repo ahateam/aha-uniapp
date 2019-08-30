@@ -1,0 +1,21 @@
+
+page{
+}
+.up-box{
+	margin-bottom: 200rpx;
+}
+.title{
+	margin-bottom: 100rpx;
+}
+.up-item{
+	width: 100%;
+	margin: 40rpx auto 40rpx;
+	font-size: 36rpx;
+}
+.up-item input{
+	margin-top: 20rpx;
+	height: 74rpx;
+	border-bottom: #ced9ff solid 3rpx;
+}
+
+

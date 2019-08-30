@@ -1,0 +1,45 @@
+
+.box{
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+}
+.money-box{
+	width: 386rpx;
+}
+.money-img{
+	width: 100%;
+	height: 350rpx;
+}
+.money-img image{
+	width: 400rpx
+}
+.money-text{
+	width: 100%;
+	height: 40rpx;
+	color: #666666;
+	text-align: center;
+	margin-top: 40rpx;
+}
+.money-num{
+	width: 100%;
+	height: 100rpx;
+	color: #666666;
+	text-align: center;
+	margin-top: 40rpx;
+	font-size: 60rpx;
+}
+button{
+	width: 90%;
+	margin: 60rpx auto;
+}
+

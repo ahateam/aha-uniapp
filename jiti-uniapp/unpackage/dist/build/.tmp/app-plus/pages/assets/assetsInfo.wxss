@@ -1,0 +1,41 @@
+
+page{
+	background-color: #f2f2f2;
+}
+.con-box{
+	width: 100%;
+	margin-bottom: 10rpx;
+	background-color: #FFFFFF;
+	border-radius: 20rpx;
+}
+.con-box view{
+	margin-left: 20rpx;
+}
+.org-item{
+	width: 100%;
+	height: 88rpx;
+	border-bottom: 20rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: row;
+	    -ms-flex-direction: row;
+	        flex-direction: row;
+	border-bottom: 1rpx solid #DDDDDD;
+}
+.org-item view{
+	height: 88rpx;
+	line-height: 88rpx;
+	font-size: 28rpx;
+}
+.org-name{
+	width: 40%;
+}
+.org-res{
+	width: 60%;
+	color: #969799;
+}
+

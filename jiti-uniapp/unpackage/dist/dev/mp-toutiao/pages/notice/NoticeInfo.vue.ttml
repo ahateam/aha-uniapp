@@ -1,0 +1,1 @@
+<template name="8f56f144"><view class="_view {{ h[ 0 ].rcl }}"><view class="_view maincon noticeInfo-box"><view class="_view title">公告标题</view><view class="_view content">公告内容abcdefg</view><button class="_button" type="primary" data-cid="{{ _c || c }}" data-hid="{{ 6 }}" bindtap="_pe">我知道了</button></view></view></template>

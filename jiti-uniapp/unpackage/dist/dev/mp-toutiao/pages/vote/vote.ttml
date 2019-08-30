@@ -1,0 +1,2 @@
+<import src="./vote.vue.ttml" />
+    <template is="65f887f0" data="{{ ...$root['0'], $root }}"/>

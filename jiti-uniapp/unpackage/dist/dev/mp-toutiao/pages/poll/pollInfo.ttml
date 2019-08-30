@@ -1,0 +1,2 @@
+<import src="./pollInfo.vue.ttml" />
+    <template is="18f515de" data="{{ ...$root['0'], $root }}"/>

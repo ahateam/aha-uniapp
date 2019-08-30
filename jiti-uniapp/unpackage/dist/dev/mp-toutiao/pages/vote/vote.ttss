@@ -1,0 +1,8 @@
+
+.create-vote{
+	background-color: #40C9C6;
+	height: 100rpx;
+	color: #FFFFFF;
+	line-height: 100rpx;
+}
+

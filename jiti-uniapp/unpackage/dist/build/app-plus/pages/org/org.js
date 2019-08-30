@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"org-box{ width: 90%; margin: ",[0,50]," auto ",[0,100],"; }\n.",[1],"org-base{ width: 100%; height: ",[0,140],"; text-align: center; line-height: ",[0,140],"; color: #fff; font-size: ",[0,36],"; background-color: #FFB400; border-radius: ",[0,20],"; }\n.",[1],"org-assets{ background-color: #0A98D5; margin-top: ",[0,40],"; }\n",],undefined,{path:"./pages/org/org.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/org/org.wxml') } }));

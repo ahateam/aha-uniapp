@@ -1,2 +1,12 @@
-node_modules
-dist
+node_modules/
+dist/
+bin/
+build/
+log/
+logs/
+target/
+.gradle/
+.settings/
+.classpath
+.project
+.vertx/

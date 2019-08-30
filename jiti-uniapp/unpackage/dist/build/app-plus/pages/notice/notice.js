@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"notice-item{ width: 100%; height: ",[0,80],"; border-radius: ",[0,40],"; margin-bottom: ",[0,20],"; -webkit-box-shadow: 0px 4px 8px rgba(0,0,0,0.08); box-shadow: 0px 4px 8px rgba(0,0,0,0.08); font-size: ",[0,32],"; line-height: ",[0,80],"; }\n.",[1],"notice-text{ margin-left: ",[0,20],"; }\n",],undefined,{path:"./pages/notice/notice.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/notice/notice.wxml') } }));

@@ -1,0 +1,66 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/index/index",
+    "pages/task/task",
+    "pages/about/about",
+    "pages/about/updataPwd",
+    "pages/poll/poll",
+    "pages/poll/pollInfo",
+    "pages/assets/assets",
+    "pages/assets/assetsInfo",
+    "pages/org/org",
+    "pages/org/orgInfo",
+    "pages/org/orgMoney",
+    "pages/bonus/bonus",
+    "pages/notice/notice",
+    "pages/notice/NoticeInfo",
+    "pages/examine/examine",
+    "pages/examine/familyInfo",
+    "pages/examine/shareInfo",
+    "pages/chooseOrg/chooseOrg",
+    "pages/vote/vote",
+    "pages/vote/createVoteChoose"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#C0C4CC",
+    "selectedColor": "#fa436a",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tab-home.png",
+        "selectedIconPath": "static/tab-home-current.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/task/task",
+        "iconPath": "static/tab-home.png",
+        "selectedIconPath": "static/tab-home-current.png",
+        "text": "活动"
+      },
+      {
+        "pagePath": "pages/about/about",
+        "iconPath": "static/tab-home.png",
+        "selectedIconPath": "static/tab-home-current.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "nvueCompiler": "weex",
+  "renderer": "auto",
+  "splashscreen": {
+    "alwaysShowBeforeRender": true,
+    "autoclose": false
+  },
+  "appname": "demo",
+  "compilerVersion": "2.2.1",
+  "usingComponents": {}
+}
