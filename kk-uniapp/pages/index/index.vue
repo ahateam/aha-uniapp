@@ -104,7 +104,6 @@
 			//按钮点击跳转
 			 trigger(e) {
 				 console.log(e)
-			            this.content[e.index].active = !e.item.active;
 			            if(e.item.url == '/pages/index/addContent/addContent?type=1'){
 							uni.navigateTo({
 								url:'/pages/index/addArticle/addArticle'

@@ -3,7 +3,7 @@
 		<view class="titleBox">
 			<input type="text" v-model="title" placeholder="请输入标题" />
 			<view class="inputInfo">
-				点击内容文字可以进行进行添加或修改哦(内容需审核后才可展示)
+				点击下方内容文字可以进行进行添加或修改哦
 			</view>
 		</view>
 		<uni-richtext ref="richText"></uni-richtext>
@@ -165,7 +165,7 @@
 	}
 
 	.inputInfo {
-		margin-top: $box-margin-top;
+		margin-top: 30px;
 		font-size: $list-info;
 		color: $list-info-color;
 	}

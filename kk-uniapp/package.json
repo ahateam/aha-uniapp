@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ahaapi": "^3.0.1",
-    "wangeditor": "^3.1.1"
+    "ahaapi": "^3.0.1"
   }
 }
