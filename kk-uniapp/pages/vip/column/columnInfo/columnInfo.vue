@@ -35,7 +35,7 @@
 			</view>
 		</view>
 		<view class="bottomBtn">
-			<button type="primary" >立即支付</button>
+			<button type="primary" @click="navToPay">立即支付</button>
 		</view>
 	</view>
 </template>
@@ -286,7 +286,14 @@
 			width: 100%;
 			border-radius: 0;
 			font-size: $list-title;
+			background-color: #ec706b;
 			line-height: 100upx;
 		}
+		
+		.button-hover{
+			background-color:rgba(236,112,107,0.5);
+			color:rgba(255,255,255,0.5)
+		}
+		
 	}
 </style>
