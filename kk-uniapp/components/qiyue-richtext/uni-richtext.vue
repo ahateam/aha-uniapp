@@ -135,13 +135,13 @@
 									if (this.richListIndex == -1) {
 										this.richList.push({
 											"type": "img",
-											"value": 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/'+nameStr,
+											"value": 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr,
 											"style": ""
 										});
 									} else {
 										this.richList.splice(this.richListIndex + 1, 0, {
 											"type": "img",
-											"value": 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/'+nameStr,
+											"value": 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr,
 											"style": ""
 										});
 									}
@@ -382,6 +382,7 @@
 		padding: 8px 12px 8px 12px;
 		font-size: 14px;
 		min-height: 250px;
+		max-height: 50vh;
 		line-height: 1.5;
 	}
 

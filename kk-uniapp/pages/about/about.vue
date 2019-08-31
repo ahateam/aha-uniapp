@@ -1,97 +1,125 @@
-<template>
-	<view class="qrimg">
-		<tki-qrcode ref="qrcode" :cid="cid" :val="val" :size="size" :unit="unit" :background="background" :foreground="foreground"
-		 :pdground="pdground" :icon="icon" :iconSize="iconsize" :lv="lv" :onval="onval" :loadMake="loadMake" :usingComponents="usingComponents"
-		 :showLoading="showLoading" :loadingText="loadingText" @result="qrR" />
-		 
-		 <image :src="src" mode="widthFix"></image>
-		 <button type="primary" @tap="creatQrcode">生成！</button>
+<template xlang="wxml">
+	<view class="container">
+		<view class="qrimg">
+			<view class="qrimg-i">
+				<tki-qrcode v-if="ifShow" cid="qrcode1" ref="qrcode" :val="val" :size="size" :unit="unit" :background="background"
+				 :foreground="foreground" :pdground="pdground" :icon="icon" :iconSize="iconsize" :lv="lv" :onval="onval" :loadMake="loadMake"
+				 :usingComponents="true" @result="qrR" />
+			</view>
+			<!-- <view class="qrimg-i">
+				<tki-qrcode v-if="ifShow" cid="qrcode2" ref="qrcode2" val="第二个二维码" :size="size" :onval="onval" :loadMake="loadMake"
+				 :usingComponents="true" @result="qrR" />
+			</view> -->
+		</view>
+		<canvas style="width: 300px; height: 200px;" canvas-id="firstCanvas"></canvas>
+		<button type="primary" @tap="createHb">生成海报</button>
+		<!-- <image src="/static/logo.png" mode=""></image> -->
 	</view>
-	
 </template>
-
 <script>
-	import tkiQrcode from "@/components/tki-qrcode/tki-qrcode.vue"
+	import tkiQrcode from '@/components/tki-qrcode/tki-qrcode.vue'
+	let context = uni.createCanvasContext('firstCanvas')
 	export default {
-		components: {
-			tkiQrcode
-		},
 		data() {
 			return {
 				ifShow: true,
 				val: '二维码', // 要生成的二维码值
 				size: 200, // 二维码大小
 				unit: 'upx', // 单位
-				background: '#b4e9e2', // 背景色
-				foreground: '#309286', // 前景色
+				background: '#fff', // 背景色
+				foreground: '#000', // 前景色
 				pdground: '#32dbc6', // 角标色
-				icon: '', // 二维码图标
-				iconsize: 40, // 二维码图标大小
+				icon: '/static/logo.png', // 二维码图标
+				iconsize: 30, // 二维码图标大小
 				lv: 3, // 二维码容错级别 ， 一般不用设置，默认就行
 				onval: false, // val值变化时自动重新生成二维码
 				loadMake: true, // 组件加载完成后自动生成二维码
 				src: '' // 二维码生成后的图片地址或base64
 			}
 		},
-		onLoad() {
-			this.getPageUrl()
+		onLoad: function() {
+			
 		},
 		methods: {
-			//获取当前页链接
-			getPageUrl(){
-				var pages = getCurrentPages() //获取加载的页面
-				var currentPage = pages[pages.length - 1] //获取当前页面的对象
-				console.log(currentPage)
-				var url = currentPage.route //当前页面url
-				if(url == undefined){
-					url = currentPage.__route__
-				}
-				var options = currentPage.options //如果要获取url中所带的参数可以查看options 
-				var id = 1234567890
-				var id1 = '_id'
-				var src = `${url}?id=${id}&id1=${id1}`
-				console.log(src)
-				this.val = src
+			createHb(){
+				this.createCanvas()
 			},
-			sliderchange(e) {
-				this.size = e.detail.value
-			},
-			creatQrcode() {
-				console.log(this.val)
-				this.$refs.qrcode._makeCode()
-			},
-			saveQrcode() {
-				this.$refs.qrcode._saveCode()
+			createCanvas() {
+				context.setFillStyle('#fff')
+				context.fillRect(0,0,300,200);
+				context.drawImage(this.src, 75, 25, 150, 150)
+				let color = context.createLinearGradient(0,0,context.width,0)
+				color.addColorStop("0","magenta");
+				color.addColorStop("0.5","blue");
+				color.addColorStop("1.0","red");
+				// context.strokeStyle = color
+				context.font="30px Arial";
+				console.log(color)
+				context.setFillStyle('#fff')
+				context.fillText("小程序生成img测试",10,50);
+				context.draw()
+				let that = this
+				setTimeout(function() {
+					uni.canvasToTempFilePath({
+					  x: 0,
+					  y: 0,
+					  width: 300,
+					  height: 200,
+					  destWidth: 300,
+					  destHeight: 200,
+					  canvasId: 'firstCanvas',
+					  success: function(res) {
+					    // 在H5平台下，tempFilePath 为 base64
+					    console.log(res.tempFilePath)
+					  }
+					})
+				}, 300);
 			},
 			qrR(res) {
 				this.src = res
 			},
-			clearQrcode() {
-				this.$refs.qrcode._clearCode()
-				this.val = ''
-			},
-			ifQrcode() {
-				this.ifShow = !this.ifShow
-			},
-			selectIcon() {
-				let that = this
-				uni.chooseImage({
-					count: 1, //默认9
-					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-					sourceType: ['album'], //从相册选择
-					success: function(res) {
-						that.icon = res.tempFilePaths[0]
-						setTimeout(() => {
-							that.creatQrcode()
-						}, 100);
-						// console.log(res.tempFilePaths);
-					}
-				});
-			}
-		}
+		},
+		components: {
+			tkiQrcode
+		},
+		
 	}
 </script>
 
 <style>
+	/* @import "../../../common/icon.css"; */
+	.container {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
 
+	.qrimg {
+		display: flex;
+		justify-content: center;
+	}
+
+	.qrimg-i {
+		margin-right: 10px;
+	}
+
+	slider {
+		width: 100%;
+	}
+
+	input {
+		width: 100%;
+		margin-bottom: 20upx;
+	}
+
+	.btns {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+
+	button {
+		width: 100%;
+		margin-top: 10upx;
+	}
 </style>
