@@ -22,6 +22,7 @@
 						</view>
 					</view>
 
+					<!-- 点赞分享 -->
 					<view class="actions">
 						<view class="action-item">
 							<i class="yticon iconfont kk-dianzan"></i>
@@ -29,23 +30,28 @@
 							<text>75</text>
 						</view>
 						<view class="action-item">
-							<i class="yticon iconfont kk-zan"></i>
-							<text>6</text>
-						</view>
-						<view class="action-item">
 							<button type="primary" open-type="share">
 								<i class="yticon iconfont kk-share"></i>
 								<text>分享</text>
 							</button>
 						</view>
+
+						<view class="action-item">
+							<button type="primary" @click="createHb">
+								<i class="yticon iconfont kk-share centerBox"></i>
+								<text>朋友圈</text>
+							</button>
+						</view>
+
 						<view class="action-item">
 							<i class="yticon iconfont kk-shoucang1"></i>
 							<text>收藏</text>
 						</view>
 					</view>
 				</view>
+				<!-- 点赞分享end -->
 
-				<view class="container" v-show="loading === false">
+				<view class="container">
 					<!-- 评论 -->
 					<view class="s-header">
 						<text class="tit">网友评论</text>
@@ -68,10 +74,14 @@
 						</view>
 					</view>
 				</view>
-				<!-- 加载图标 -->
-				<!-- <mixLoading class="mix-loading" v-if="loading"></mixLoading> -->
 			</view>
 		</scroll-view>
+
+		<tki-qrcode class="hiddenBox" cid="qrcode1" ref="qrcode" :val="val" :size="size" :unit="unit" :background="background"
+		 :foreground="foreground" :pdground="pdground" :icon="icon" :iconSize="iconsize" :lv="lv" :onval="onval" :loadMake="loadMake"
+		 :usingComponents="true" @result="qrR" />
+		<canvas class="hiddenBox canvasBox" canvas-id="firstCanvas"></canvas>
+		<canvas class="hiddenBox upHeadBox" canvas-id="upHeadCanvas"></canvas>
 
 		<view class="bottom">
 			<view class="input-box">
@@ -84,33 +94,140 @@
 </template>
 
 <script>
+	import tkiQrcode from '@/components/tki-qrcode/tki-qrcode.vue'
+	let context = uni.createCanvasContext('firstCanvas')
+	let upHead = uni.createCanvasContext('upHeadCanvas')
+
 	export default {
 		components: {
-
+			tkiQrcode,
 		},
 		data() {
 			return {
-				detailData: {},
-				flow: {},
-				upInfo: {},
-				loading: false,
-				contentId: '',
-				id1: '',
-				newsList: [],
-				evaList: [],
+				detailData: {}, //内容所有相关数据
+				flow: {}, //文章数据
+				upInfo: {}, //上传者数据
+				contentId: '', //内容id
+				id1: '', //片区id
+				evaList: [], //评论列表
+				userHead:'',
+
+				/* 分享朋友圈 */
+				val: '', // 要生成的二维码值
+				size: 200, // 二维码大小
+				unit: 'px', // 单位
+				background: '#fff', // 背景色
+				foreground: '#000', // 前景色
+				pdground: '#32dbc6', // 角标色
+				icon: '/static/logo.png', // 二维码图标
+				iconsize: 30, // 二维码图标大小
+				lv: 3, // 二维码容错级别 ， 一般不用设置，默认就行
+				onval: true, // val值变化时自动重新生成二维码
+				loadMake: true, // 组件加载完成后自动生成二维码
+				src: '', // 二维码生成后的图片地址或base64
+				/* 分享朋友圈end */
 			}
 		},
 		onLoad(res) {
-			console.log(res)
-			this.contentId = res.id
-			this.id1 = res.id1
+			let src = ''
+
+			if(res.q){
+				let src = res.q
+				let params = this.$commen.getSplit(src)
+				this.contentId = params.id
+				this.id1 = params.id1
+			}else{
+				this.contentId = res.id
+				this.id1 = res.id1
+			}
+			this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}`
 			this.getContentById()
 		},
 		methods: {
-			//获取评论列表
-			// async loadEvaList(){
-			// 	this.evaList = await json.evaList;
-			// }
+			/* 分享朋友圈 */
+			createHb() {
+				this.createCanvas()
+			},
+
+			getUpHead() {
+				let img = JSON.parse(this.upInfo.ext).userHead
+				upHead.arc(50, 50, 50, 0, 2 * Math.PI)
+				upHead.clip()
+				upHead.drawImage(img, 0, 0, 100, 100)
+				upHead.draw()
+				let that = this
+				setTimeout(function() { //延时生成图片
+					uni.canvasToTempFilePath({
+						x: 0,
+						y: 0,
+						width: 100,
+						height: 100,
+						destWidth: 100,
+						destHeight: 100,
+						canvasId: 'upHeadCanvas',
+						success: function(res) {
+							// 在H5平台下，tempFilePath 为 base64
+							that.userHead = res.tempFilePath
+						},
+						fail: function(error) {
+							console.log(error)
+						}
+					})
+				}, 300)
+			},
+
+			qrR(res) { //生成二维码的图片地址
+				this.src = res
+			},
+
+			createCanvas() {
+				//生成背景
+				context.setFillStyle('#fff')
+				context.fillRect(0, 0, 450, 800)
+				let imgList = JSON.parse(this.detailData.data).imgList
+				console.log(imgList)
+				if (imgList.length > 0) {
+					context.drawImage(imgList[0].src, 0, 0, 450, 500)
+				}
+
+				// 二维码图片
+				context.drawImage(this.src, 280, 520, 150, 150)
+				
+				//用户头像 userHead
+				context.drawImage(this.userHead, 20, 520, 50, 50)
+
+				// 文字
+				context.setFillStyle('#000')
+				context.font = "18px Arial"
+				context.fillText(this.upInfo.name, 80, 550)
+				
+				context.font = "20px Arial"
+				context.fillText(this.detailData.title,20,590)
+
+				//生成画布
+				context.draw()
+
+				let that = this
+
+				setTimeout(function() { //延时生成图片
+					uni.canvasToTempFilePath({
+						x: 0,
+						y: 0,
+						width: 450,
+						height: 800,
+						destWidth: 450,
+						destHeight: 800,
+						canvasId: 'firstCanvas',
+						success: function(res) {
+							// 在H5平台下，tempFilePath 为 base64
+							console.log(res.tempFilePath)
+						}
+					})
+				}, 300)
+
+			},
+
+			/* 分享朋友圈end */
 
 			/* 获取id对应内容 */
 			getContentById() {
@@ -141,6 +258,7 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log(JSON.parse(res.data.c))
 						this.upInfo = JSON.parse(res.data.c)
+						this.getUpHead()
 					}
 				}))
 			}
@@ -150,7 +268,7 @@
 			var currentPage = pages[pages.length - 1] //获取当前页面的对象
 			console.log(currentPage)
 			var url = currentPage.route //当前页面url
-			if(url == undefined){
+			if (url == undefined) {
 				url = currentPage.__route__
 			}
 			var options = currentPage.options //如果要获取url中所带的参数可以查看options 
@@ -228,6 +346,7 @@
 
 		.action-item {
 			display: flex;
+			text-align: center;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
@@ -238,9 +357,10 @@
 				font-size: 24upx;
 				color: #999;
 				background-color: #fff;
+				padding: 0;
+
 				&:after {
 					border: none;
-					
 				}
 			}
 		}
@@ -399,5 +519,24 @@
 
 	.articleInfo {
 		margin-top: 20upx;
+	}
+
+	.centerBox {
+		margin: 0 auto;
+	}
+
+	.hiddenBox {
+		position: absolute;
+		top: -10000px;
+	}
+
+	.canvasBox {
+		width: 450px;
+		height: 800px;
+	}
+
+	.upHeadBox {
+		width: 100px;
+		height: 100px;
 	}
 </style>

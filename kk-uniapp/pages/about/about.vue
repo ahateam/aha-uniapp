@@ -1,13 +1,9 @@
 <template>
 	<view>
-		<view>
-			<view>
-				<tki-qrcode v-if="ifShow" cid="qrcode1" ref="qrcode" :val="val" :size="size" :unit="unit" :background="background"
-				 :foreground="foreground" :pdground="pdground" :icon="icon" :iconSize="iconsize" :lv="lv" :onval="onval" :loadMake="loadMake"
-				 :usingComponents="true" @result="qrR" />
-			</view>
-		</view>
-		<canvas style="width: 300px; height: 200px;" canvas-id="firstCanvas"></canvas>
+		<tki-qrcode class="hiddenBox" cid="qrcode1" ref="qrcode" :val="val" :size="size" :unit="unit" :background="background"
+		 :foreground="foreground" :pdground="pdground" :icon="icon" :iconSize="iconsize" :lv="lv" :onval="onval" :loadMake="loadMake"
+		 :usingComponents="true" @result="qrR" />
+		<canvas class="hiddenBox canvasBox" canvas-id="firstCanvas"></canvas>
 		<button type="primary" @tap="createHb">生成海报</button>
 	</view>
 </template>
@@ -17,7 +13,6 @@
 	export default {
 		data() {
 			return {
-				ifShow: true,
 				val: '二维码', // 要生成的二维码值
 				size: 200, // 二维码大小
 				unit: 'upx', // 单位
@@ -40,21 +35,24 @@
 				this.createCanvas()
 			},
 			createCanvas() {
+				//生成背景
 				context.setFillStyle('#fff')
 				context.fillRect(0, 0, 300, 200)
+
+				// 二维码
 				context.drawImage(this.src, 75, 25, 150, 150)
-				let color = context.createLinearGradient(0, 0, context.width, 0)
-				color.addColorStop("0", "magenta")
-				color.addColorStop("0.5", "blue")
-				color.addColorStop("1.0", "red")
-				// context.strokeStyle = color
+
+				// 文字
+				context.setFillStyle('#000')
 				context.font = "30px Arial"
-				console.log(color)
-				context.setFillStyle('#fff')
 				context.fillText("小程序生成img测试", 10, 50)
+
+				//生成画布
 				context.draw()
+
 				let that = this
-				setTimeout(function() {
+
+				setTimeout(function() { //延时生成图片
 					uni.canvasToTempFilePath({
 						x: 0,
 						y: 0,
@@ -68,8 +66,10 @@
 							console.log(res.tempFilePath)
 						}
 					})
-				}, 300);
+				}, 300)
+
 			},
+
 			qrR(res) {
 				this.src = res
 			},
@@ -81,6 +81,14 @@
 	}
 </script>
 
-<style>
+<style lang="scss" scoped>
+	.hiddenBox {
+		position: absolute;
+		top: -10000px;
+	}
 
+	.canvasBox {
+		width: 300px;
+		height: 200px;
+	}
 </style>

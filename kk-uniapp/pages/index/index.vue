@@ -240,7 +240,6 @@
 
 			/* 跳转至详情 */
 			navToInfo(info) {
-				console.log(info)
 				if (info.type == this.constData.contentType[2].key || info.type == this.constData.contentType[0].key) {
 					uni.navigateTo({
 						url: `/pages/index/articleView/articleView?id=${info.id}&id1=${info._id}`
