@@ -6,7 +6,9 @@
 		// },
 		{
 			"path": "pages/login/login",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "登录集体经济"
+			}
 		},
 		{
 			"path": "pages/index/index",
@@ -46,7 +48,9 @@
 			"style": {}
 		}, {
 			"path": "pages/org/org",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "选择机构"
+			}
 		}, {
 			"path": "pages/org/orgInfo",
 			"style": {}
@@ -79,7 +83,9 @@
 		
         ,{
             "path" : "pages/chooseOrg/chooseOrg",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText": "选择机构"
+			}
         }
         ,{
             "path" : "pages/vote/vote",
@@ -116,7 +122,7 @@
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "集体经济",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	}

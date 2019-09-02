@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import App from './App'
-
-import api from './commen/api.js'
+import './commen/icon/iconfont.css'
 import util from 'ahaapi'
+import api from './commen/api.js'
 import constData from './commen/constData.js'
 import commen from './commen/commen.js'
 

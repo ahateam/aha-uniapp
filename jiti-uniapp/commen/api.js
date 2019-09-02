@@ -7,17 +7,22 @@ import baseUrl from './url'
 let api = {};
 console.log('开始调用ctrl');
 
-
-// <创建内容，保存为正常（已发布）>
-api.getTags = function(cnt, callback) {
-	util.call(baseUrl + '/content/getTags', cnt, callback)
+//身份证登录
+api.loginByIdNumber = function (cnt,callback) {
+    util.call(baseUrl+'/org/loginByIdNumber', cnt, callback)
 }
 
-//根据标签id获取 内容列表
-api.getContents = function(cnt, callback) {
-	util.call(baseUrl + '/content/getContents', cnt, callback)
+//正常登录
+api.loginByMobileAndPwd = function (cnt,callback) {
+    util.call(baseUrl+'/org/loginByMobileAndPwd', cnt, callback)
 }
-	
+
+
+//根据用户请求机构列表
+api.getUserORGs = function (cnt,callback) {
+    util.call(baseUrl+'/org/getUserORGs', cnt, callback)
+}
+
 
 
 export default api

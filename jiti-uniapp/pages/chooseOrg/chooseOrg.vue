@@ -1,16 +1,13 @@
 <template>
 	<view>
 		<view class="maincon choose-box">
-			<view class="choose-item">
-				<view class="title">新一代经济合作社</view>
+			
+			<view class="choose-item" v-for="(item,index) in orgList" :key="index" >
+				<view class="title">{{item.name}}</view>
 				<view class="line"></view>
-				<view class="org-address">贵州省遵义市黄花冈区北京路514号</view>
+				<view class="org-address"> {{item.address}} </view>
 			</view>
-			<view class="choose-item">
-				<view class="title">新一代经济合作社</view>
-				<view class="line"></view>
-				<view class="org-address">贵州省遵义市黄花冈区北京路514号</view>
-			</view>
+			
 		</view>
 	</view>
 </template>
@@ -19,12 +16,50 @@
 	export default {
 		data() {
 			return {
-				
+				offset:0,
+				count:10,
+				page:1,
+				orgList:[],
+				pageOver:false,
 			}
 		},
 		methods: {
+			getUserORGs(cnt){
+				 this.$api.getUserORGs(cnt,(res)=>{
+                  let data = []
+                  if(res.data.rc == this.$util.RC.SUCCESS){
+                      data = this.$util.tryParseJson(res.data.c)
+                  }else{
+                      data = []
+                  }
+                  this.orgList = this.orgList.concat(data)
+                  if(data.length <this.count){
+                      this.pageOver = true
+                  }else{
+					  this.pageOver = false
+				  }
+				  console.log('---------------')
+				  console.log(this.orgList)
+              })
+			  
+			}
+		},
+		onLoad() {
+			console.log(uni.getStorageSync('userInfo'))
 			
-		}
+			let userInfo = JSON.parse(uni.getStorageSync('userInfo'))
+			let cnt = {
+				offset:this.offset,
+                count:this.count,
+                userId: userInfo.id,
+                level:4
+			}
+			  this.getUserORGs(cnt)
+			
+		},
+		// onReachBottom(){
+		// 	console.log(this.orgList)
+		// }
 	}
 </script>
 
