@@ -1,2 +1,0 @@
-setCssToHead(["body{ }\n.",[1],"up-box{ margin-bottom: ",[0,200],"; }\n.",[1],"title{ margin-bottom: ",[0,100],"; }\n.",[1],"up-item{ width: 100%; margin: ",[0,40]," auto ",[0,40],"; font-size: ",[0,36],"; }\n.",[1],"up-item wx-input{ margin-top: ",[0,20],"; height: ",[0,74],"; border-bottom: #ced9ff solid ",[0,3],"; }\n",],undefined,{path:"./pages/about/updataPwd.wxss"})();
-document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/about/updataPwd.wxml') } }));

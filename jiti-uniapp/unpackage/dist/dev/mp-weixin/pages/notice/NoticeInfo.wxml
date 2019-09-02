@@ -1,1 +1,0 @@
-<view><view class="maincon noticeInfo-box"><view class="title">公告标题</view><view class="content">公告内容abcdefg</view><button type="primary" data-event-opts="{{[['tap',[['back',['$event']]]]]}}" bindtap="__e">我知道了</button></view></view>

@@ -1,1 +1,0 @@
-<template name="65f887f0"><view class="_view {{ h[ 0 ].rcl }}"><view class="_view maincon"><button class="_button create-vote" data-cid="{{ _c || c }}" data-hid="{{ 2 }}" bindtap="_pe">我要发起投票</button></view></view></template>

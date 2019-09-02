@@ -1,1 +1,0 @@
-<view><view class="box"><view class="money-box"><view class="money-img"><image src="../../static/mon.png" mode="aspectFit"></image></view><view class="money-text">我的分红总额</view><view class="money-num">￥0.00</view></view></view><button type="default">返回首页</button></view>

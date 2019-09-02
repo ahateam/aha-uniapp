@@ -1,1 +1,0 @@
-<view><view class="maincon notice-box"><view data-event-opts="{{[['tap',[['toNoticeInfo',['$event']]]]]}}" class="notice-item" bindtap="__e"><view class="notice-text">公告1：这就是公告</view></view><view class="notice-item"><view class="notice-text">公告2：这就是公告</view></view><view class="notice-item"><view class="notice-text">公告3：这就是公告</view></view></view></view>

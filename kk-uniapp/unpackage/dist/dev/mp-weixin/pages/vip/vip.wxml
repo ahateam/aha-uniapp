@@ -1,1 +1,0 @@
-<view><block wx:for="{{columnList}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view><column vue-id="{{'1-'+index}}" obj="{{item}}" bind:__l="__l"></column></view></block></view>

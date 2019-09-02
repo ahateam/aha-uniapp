@@ -1,2 +1,0 @@
-<import src="./createVoteChoose.vue.ttml" />
-    <template is="3d21abc3" data="{{ ...$root['0'], $root }}"/>

@@ -1,1 +1,0 @@
-<template name="11f837cc"><view class="_view body {{ h[ 0 ].rcl }} data-v-07897102"><view class="_view title data-v-07897102">{{ h[ 2 ].t }}</view><view class="_view bottom data-v-07897102"><text class="_text upName data-v-07897102">{{ h[ 5 ].t }}</text><text class="_text time data-v-07897102">{{ h[ 7 ].t }}</text></view></view></template>

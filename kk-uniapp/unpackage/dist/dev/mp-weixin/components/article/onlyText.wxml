@@ -1,1 +1,0 @@
-<view class="body data-v-07897102"><view class="title data-v-07897102">{{title}}</view><view class="bottom data-v-07897102"><text class="upName data-v-07897102">{{upName}}</text><text class="time data-v-07897102">{{time}}</text></view></view>

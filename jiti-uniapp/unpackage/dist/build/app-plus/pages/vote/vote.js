@@ -1,2 +1,0 @@
-setCssToHead([".",[1],"create-vote{ background-color: #40C9C6; height: ",[0,100],"; color: #FFFFFF; line-height: ",[0,100],"; }\n",],undefined,{path:"./pages/vote/vote.wxss"})();
-document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/vote/vote.wxml') } }));

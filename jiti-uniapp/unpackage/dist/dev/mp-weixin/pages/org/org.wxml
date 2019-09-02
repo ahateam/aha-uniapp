@@ -1,1 +1,0 @@
-<view><view class="org-box"><view data-event-opts="{{[['tap',[['toOrgInfo',['$event']]]]]}}" class="org-base" bindtap="__e">组织基础信息</view><view data-event-opts="{{[['tap',[['toOrgMoney',['$event']]]]]}}" class="org-base org-assets" bindtap="__e">组织资产信息</view></view><view class="org-box"><button type="default">返回首页</button></view></view>

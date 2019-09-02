@@ -1,1 +1,0 @@
-<view><view class="maincon choose-box"><view class="choose-item"><view class="title">普通投票表决</view><view class="line"></view><view class="org-address">创建普通投票表决事件入口</view></view><view class="choose-item xuanju"><view class="title">选举表决事件</view><view class="line"></view><view class="org-address">创建选举表决事件的入口</view></view></view></view>

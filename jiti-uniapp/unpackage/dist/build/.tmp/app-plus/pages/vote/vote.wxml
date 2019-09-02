@@ -1,1 +1,0 @@
-<view><view class="maincon"><button data-event-opts="{{[['tap',[['toCreateChoose',['$event']]]]]}}" class="create-vote" bindtap="__e">我要发起投票</button></view></view>
