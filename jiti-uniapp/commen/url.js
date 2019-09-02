@@ -1,5 +1,7 @@
-const baseUrl = 'http://192.168.1.166:8053/content'
-// const baseUrl = 'https://topoints.cn/con/content'
+// const baseUrl = 'http://47.99.212.32/api/jiti';  //正式服请求地址前缀
+// const baseUrl = 'http://192.168.1.164:8086/jiti';  //本地请求地址前缀
+const baseUrl = 'http://47.99.209.235/api/jiti';  //测试服请求地址前缀
+
 
 
 export default baseUrl
