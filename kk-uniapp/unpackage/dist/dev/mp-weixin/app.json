@@ -9,7 +9,10 @@
     "pages/vip/column/column",
     "pages/vip/column/details/details",
     "pages/vip/column/detailsVideo/detailsVideo",
-    "pages/vip/column/columnInfo/columnInfo"
+    "pages/vip/column/columnInfo/columnInfo",
+    "pages/vip/column/payView/payView",
+    "pages/index/addArticle/addArticle",
+    "pages/index/addVideo/addVideo"
   ],
   "subPackages": [],
   "window": {
@@ -51,5 +54,5 @@
     ]
   },
   "usingComponents": {},
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap25.json"
 }

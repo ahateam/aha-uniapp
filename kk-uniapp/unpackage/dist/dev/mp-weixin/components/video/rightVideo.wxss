@@ -24,7 +24,7 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.body.data-v-0a2ebebe {
+.body.data-v-99b2ee40 {
   position: relative;
   padding: 24rpx 30rpx;
   width: 750rpx;
@@ -32,7 +32,7 @@
           box-sizing: border-box;
   min-height: calc(140rpx + 48rpx);
 }
-.title.data-v-0a2ebebe {
+.title.data-v-99b2ee40 {
   font-size: 32rpx;
   color: #303133;
   line-height: 46rpx;
@@ -44,25 +44,25 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
-.img.data-v-0a2ebebe {
+.img.data-v-99b2ee40 {
   position: absolute;
   top: 24rpx;
   right: 30rpx;
   width: 220rpx;
   height: 140rpx;
 }
-.img image.data-v-0a2ebebe {
+.img image.data-v-99b2ee40 {
     width: 100%;
     height: 100%;
 }
-.videoBtn.data-v-0a2ebebe {
+.videoBtn.data-v-99b2ee40 {
   position: absolute;
   background-color: rgba(0, 0, 0, 0.3);
   width: 100%;
   height: 100%;
   top: 0;
 }
-.videoBtn image.data-v-0a2ebebe {
+.videoBtn image.data-v-99b2ee40 {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -71,12 +71,12 @@
     width: 60rpx;
     height: 60rpx;
 }
-.bottom.data-v-0a2ebebe {
+.bottom.data-v-99b2ee40 {
   margin-top: 20rpx;
   font-size: 26rpx;
   color: #aaa;
 }
-.time.data-v-0a2ebebe {
+.time.data-v-99b2ee40 {
   margin-left: 20rpx;
 }
 

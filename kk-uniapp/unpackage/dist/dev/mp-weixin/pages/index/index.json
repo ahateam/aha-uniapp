@@ -7,6 +7,7 @@
     "only-text": "/components/article/onlyText",
     "right-video": "/components/video/rightVideo",
     "three-img": "/components/article/threeImg",
-    "uni-load-more": "/components/uni-load-more/uni-load-more"
+    "uni-load-more": "/components/uni-load-more/uni-load-more",
+    "uni-fab": "/components/uni-fab/uni-fab"
   }
 }

@@ -1,19 +1,14 @@
-<template xlang="wxml">
-	<view class="container">
-		<view class="qrimg">
-			<view class="qrimg-i">
+<template>
+	<view>
+		<view>
+			<view>
 				<tki-qrcode v-if="ifShow" cid="qrcode1" ref="qrcode" :val="val" :size="size" :unit="unit" :background="background"
 				 :foreground="foreground" :pdground="pdground" :icon="icon" :iconSize="iconsize" :lv="lv" :onval="onval" :loadMake="loadMake"
 				 :usingComponents="true" @result="qrR" />
 			</view>
-			<!-- <view class="qrimg-i">
-				<tki-qrcode v-if="ifShow" cid="qrcode2" ref="qrcode2" val="第二个二维码" :size="size" :onval="onval" :loadMake="loadMake"
-				 :usingComponents="true" @result="qrR" />
-			</view> -->
 		</view>
 		<canvas style="width: 300px; height: 200px;" canvas-id="firstCanvas"></canvas>
 		<button type="primary" @tap="createHb">生成海报</button>
-		<!-- <image src="/static/logo.png" mode=""></image> -->
 	</view>
 </template>
 <script>
@@ -38,40 +33,40 @@
 			}
 		},
 		onLoad: function() {
-			
+
 		},
 		methods: {
-			createHb(){
+			createHb() {
 				this.createCanvas()
 			},
 			createCanvas() {
 				context.setFillStyle('#fff')
-				context.fillRect(0,0,300,200);
+				context.fillRect(0, 0, 300, 200)
 				context.drawImage(this.src, 75, 25, 150, 150)
-				let color = context.createLinearGradient(0,0,context.width,0)
-				color.addColorStop("0","magenta");
-				color.addColorStop("0.5","blue");
-				color.addColorStop("1.0","red");
+				let color = context.createLinearGradient(0, 0, context.width, 0)
+				color.addColorStop("0", "magenta")
+				color.addColorStop("0.5", "blue")
+				color.addColorStop("1.0", "red")
 				// context.strokeStyle = color
-				context.font="30px Arial";
+				context.font = "30px Arial"
 				console.log(color)
 				context.setFillStyle('#fff')
-				context.fillText("小程序生成img测试",10,50);
+				context.fillText("小程序生成img测试", 10, 50)
 				context.draw()
 				let that = this
 				setTimeout(function() {
 					uni.canvasToTempFilePath({
-					  x: 0,
-					  y: 0,
-					  width: 300,
-					  height: 200,
-					  destWidth: 300,
-					  destHeight: 200,
-					  canvasId: 'firstCanvas',
-					  success: function(res) {
-					    // 在H5平台下，tempFilePath 为 base64
-					    console.log(res.tempFilePath)
-					  }
+						x: 0,
+						y: 0,
+						width: 300,
+						height: 200,
+						destWidth: 300,
+						destHeight: 200,
+						canvasId: 'firstCanvas',
+						success: function(res) {
+							// 在H5平台下，tempFilePath 为 base64
+							console.log(res.tempFilePath)
+						}
 					})
 				}, 300);
 			},
@@ -82,44 +77,10 @@
 		components: {
 			tkiQrcode
 		},
-		
+
 	}
 </script>
 
 <style>
-	/* @import "../../../common/icon.css"; */
-	.container {
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-	}
 
-	.qrimg {
-		display: flex;
-		justify-content: center;
-	}
-
-	.qrimg-i {
-		margin-right: 10px;
-	}
-
-	slider {
-		width: 100%;
-	}
-
-	input {
-		width: 100%;
-		margin-bottom: 20upx;
-	}
-
-	.btns {
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-	}
-
-	button {
-		width: 100%;
-		margin-top: 10upx;
-	}
 </style>

@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "关于我的",
-  "usingComponents": {}
+  "usingComponents": {
+    "tki-qrcode": "/components/tki-qrcode/tki-qrcode"
+  }
 }
