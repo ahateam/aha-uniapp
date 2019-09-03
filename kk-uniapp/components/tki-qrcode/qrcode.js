@@ -1086,8 +1086,7 @@ let QRCode = {};
         let createCanvas = function (options) {
             if(options.showLoading){
                 uni.showLoading({
-                    title: options.loadingText,
-                    mask: true
+                    title: options.loadingText
                 });
             }
             var ctx = uni.createCanvasContext(options.canvasId, options.context);

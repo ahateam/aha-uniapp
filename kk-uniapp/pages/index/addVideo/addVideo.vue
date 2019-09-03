@@ -43,7 +43,7 @@
 			};
 		},
 		onLoad() {
-			this.userId = uni.getStorageSync('userId')
+			this.userId = 0 + uni.getStorageSync('userId')
 		},
 		methods:{
 			// 本地视频添加至oss服务器

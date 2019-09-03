@@ -1,11 +1,11 @@
 <template>
 	<!-- :style="{backgroundImage: 'url(' + JSON.parse(obj.data).src + ')' }" -->
 	<view class="contentBox" :style="'background:'+randomColor">
-		<navigator :url="'/pages/vip/column/columnInfo/columnInfo?id='+obj.id+'&title='+obj.title+'&time='+obj.createTime+'&color='+randomColor">
+		<navigator :url="'/pages/vip/column/column?id='+obj.id+'&title='+obj.title+'&time='+obj.createTime+'&color='+randomColor">
 			<view class="columnTitle">{{ obj.title }}</view>
 			<view class="columnTime">{{ getTime(obj.createTime) }}</view>
 		</navigator>
-		<view class="contentList">
+		<!-- <view class="contentList">
 			<view v-for="(list,key) in obj.child" :key="key">
 				<view class="lists" @click="navigator(list)">
 					<view class="imgBox">
@@ -19,7 +19,7 @@
 					<view class="clearBoth"></view>
 				</view>
 			</view>
-		</view>
+		</view> -->
 	</view>
 </template>
 

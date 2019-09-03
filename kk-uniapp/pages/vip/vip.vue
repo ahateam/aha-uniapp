@@ -37,34 +37,34 @@
 				this.$api.getChannel(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let columnList = JSON.parse(res.data.c).list
-						for (let i = 0; i < columnList.length; i++) {
-							let cnt1 = {
-								module: 'kkqt', // String 隶属
-								channelId: columnList[i].id, // Long 专栏id
-								status: 4, // Byte 专栏状态
-								count: 3, // Integer 
-								offset: 0, // Integer 
-							}
-							this.$api.getContentByChannelId(cnt1, (res) => {
-								let arr = []
-								if (res.data.rc == this.$util.RC.SUCCESS) {
-									arr = JSON.parse(res.data.c).list
-									for(let n=0;n<arr.length;n++){
-										if(arr[n].type == this.$constData.contentType[2].key){
-											arr[n].imgList = JSON.parse(arr[n].data).imgList
-										}else if(arr[n].type == this.$constData.contentType[1].key){
-											arr[n].imgSrc = JSON.parse(arr[n].data).imgSrc
-										}
-									}
-								} else {
-									arr = []
-								}
-
-								let obj = JSON.parse(JSON.stringify(columnList[i]))
-								obj.child = arr
-								columnList.splice(i, 1, obj)
-							})
-						}
+// 						for (let i = 0; i < columnList.length; i++) {
+// 							let cnt1 = {
+// 								module: 'kkqt', // String 隶属
+// 								channelId: columnList[i].id, // Long 专栏id
+// 								status: 4, // Byte 专栏状态
+// 								count: 3, // Integer 
+// 								offset: 0, // Integer 
+// 							}
+// 							this.$api.getContentByChannelId(cnt1, (res) => {
+// 								let arr = []
+// 								if (res.data.rc == this.$util.RC.SUCCESS) {
+// 									arr = JSON.parse(res.data.c).list
+// 									for(let n=0;n<arr.length;n++){
+// 										if(arr[n].type == this.$constData.contentType[2].key){
+// 											arr[n].imgList = JSON.parse(arr[n].data).imgList
+// 										}else if(arr[n].type == this.$constData.contentType[1].key){
+// 											arr[n].imgSrc = JSON.parse(arr[n].data).imgSrc
+// 										}
+// 									}
+// 								} else {
+// 									arr = []
+// 								}
+// 
+// 								let obj = JSON.parse(JSON.stringify(columnList[i]))
+// 								obj.child = arr
+// 								columnList.splice(i, 1, obj)
+// 							})
+// 						}
 						this.$nextTick(function() {
 							this.columnList = columnList
 							console.log(this.columnList) // => '已更新'

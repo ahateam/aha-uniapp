@@ -49,4 +49,30 @@ api.getContentByChannelId = function(cnt, callback) {
 api.getUserById = function(cnt, callback) {
 	util.call(baseUrl + '/content/getUserById', cnt, callback)
 }
+
+//获取用户openid
+api.getAccessToken = function(cnt, callback) {
+	util.call(baseUrl + '/wxOa/getAccessToken', cnt, callback)
+}
+//登录 
+api.loginByWxOpenId = function(cnt, callback) {
+	util.call(baseUrl + '/content/loginByWxOpenId', cnt, callback)
+}
+
+/*************************************** 点赞评论接口 ********************************************/
+//点赞 
+api.createUpvote = function(cnt, callback) {
+	util.call(baseUrl + '/content/createUpvote', cnt, callback)
+}
+
+//获取评论列表 
+api.getCommentByContentId = function(cnt, callback) {
+	util.call(baseUrl + '/content/getCommentByContentId', cnt, callback)
+}
+
+//评论 
+api.createComment = function(cnt, callback) {
+	util.call(baseUrl + '/content/createComment', cnt, callback)
+}
+
 export default api

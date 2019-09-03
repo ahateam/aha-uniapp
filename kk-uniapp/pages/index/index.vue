@@ -3,8 +3,9 @@
 		<!-- 顶部选项卡 -->
 		<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
 			<view v-for="(item,index) in tagsList" :key="item.id" class="nav-item" :class="{current: index === tabCurrentIndex}"
-			 :id="item.id" @click="changeTag(index)">{{item.name}}</view>
+			 :id="'tab'+index" @click="changeTag(index)">{{item.name}}</view>
 		</scroll-view>
+		<view style="padding-top: 90upx;"></view>
 		<view v-for="(item,index) in contents" :key="index" @click="navToInfo(item)">
 			<view v-if="item.type == constData.contentType[1].key||item.type == constData.contentType[2].key">
 				<view v-if="item.show == constData.contentShow[0].key">
@@ -36,6 +37,8 @@
 	import threeImg from '@/components/article/threeImg.vue'
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
 	import uniFab from '@/components/uni-fab/uni-fab.vue'
+	
+	let windowWidth = 0
 
 	export default {
 		components: {
@@ -81,7 +84,7 @@
 			}
 		},
 		onLoad() { // created() mounted()
-
+			windowWidth = uni.getSystemInfoSync().windowWidth;
 			if (!uni.getStorageSync('userId')) {
 				uni.setStorageSync('userId', '1234567890')
 			}
@@ -101,27 +104,48 @@
 			this.returnTabBar()
 		},
 		methods: {
+			//获得元素的size
+			getElSize(id) {
+				return new Promise((res, rej) => {
+					let el = uni.createSelectorQuery().select('#' + id);
+					el.fields({
+						size: true,
+						scrollOffset: true,
+						rect: true
+					}, (data) => {
+						res(data);
+					}).exec();
+				});
+			},
 			//按钮点击跳转
-			 trigger(e) {
-				 console.log(e)
-			            if(e.item.url == '/pages/index/addContent/addContent?type=1'){
-							uni.navigateTo({
-								url:'/pages/index/addArticle/addArticle'
-							})
-						}else if(e.item.url == '/pages/index/addContent/addContent?type=0'){
-							uni.navigateTo({
-								url:'/pages/index/addVideo/addVideo'
-							})
-						}
-			        },
-			
+			trigger(e) {
+				if(this.userId == ''||this.userId == '1234567890'){
+					uni.showToast({
+						title:'请登录',
+						icon:'none',
+						duration:1000
+					})
+					return
+				}
+				console.log(e)
+				if (e.item.url == '/pages/index/addContent/addContent?type=1') {
+					uni.navigateTo({
+						url: '/pages/index/addArticle/addArticle'
+					})
+				} else if (e.item.url == '/pages/index/addContent/addContent?type=0') {
+					uni.navigateTo({
+						url: '/pages/index/addVideo/addVideo'
+					})
+				}
+			},
+
 			//获取按钮数据
 			returnTabBar() {
 				let cnt = {}
 				this.$api.returnTabBar(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.content = JSON.parse(res.data.c)
-					}else{
+					} else {
 						this.content = []
 					}
 				}))
@@ -212,11 +236,28 @@
 			},
 
 			/* 触发改变选中标签*/
-			changeTag(_index) {
+			async changeTag(_index) {
 				this.tabCurrentIndex = _index
 				this.tagName = this.tagsList[_index].name
 				this.page = this.tagsList[_index].page
-
+				
+				let width = 0;
+				let nowWidth = 0;
+				//获取可滑动总宽度
+				for (let i = 0; i <= _index; i++) {
+					let result = await this.getElSize('tab'+_index)
+					width += result.width
+					if (i === _index) {
+						nowWidth = result.width
+					}
+				}
+				if (width - nowWidth / 2 > windowWidth / 2) {
+					//如果当前项越过中心点，将其放在屏幕中心
+					this.scrollLeft = width - nowWidth / 2 - windowWidth / 2;
+				} else {
+					this.scrollLeft = 0;
+				}
+				
 				if (undefined != this.tagsList[_index].child) {
 					this.pageStatus = this.tagsList[_index].pageStatus
 					this.contents = this.tagsList[_index].child
@@ -303,7 +344,8 @@
 
 	/* 顶部tabbar */
 	.nav-bar {
-		position: relative;
+		position: fixed;
+		top: 0;
 		z-index: 10;
 		height: 90upx;
 		white-space: nowrap;

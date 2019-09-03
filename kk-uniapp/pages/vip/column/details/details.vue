@@ -1,6 +1,5 @@
 <template>
 	<view class="content">
-
 		<scroll-view class="scroll" scroll-y>
 			<view class="scroll-content">
 				<view class="introduce-section">
@@ -22,15 +21,13 @@
 						</view>
 					</view>
 
+					<!-- 点赞分享 -->
 					<view class="actions">
 						<view class="action-item">
-							<i class="yticon iconfont kk-dianzan"></i>
-							<!-- <text class="yticon icon-dianzan-ash"></text> -->
-							<text>75</text>
-						</view>
-						<view class="action-item">
-							<i class="yticon iconfont kk-zan"></i>
-							<text>6</text>
+							<button type="primary" @click="upvote(0,contentId,0)">
+								<i class="yticon iconfont kk-dianzan"></i>
+								<text>{{contentUpvote}}</text>
+							</button>
 						</view>
 						<view class="action-item">
 							<button type="primary" open-type="share">
@@ -38,12 +35,23 @@
 								<text>分享</text>
 							</button>
 						</view>
+
 						<view class="action-item">
-							<i class="yticon iconfont kk-shoucang1"></i>
-							<text>收藏</text>
+							<button type="primary" @click="createHb">
+								<i class="yticon iconfont kk-share centerBox"></i>
+								<text>朋友圈</text>
+							</button>
+						</view>
+
+						<view class="action-item">
+							<button type="primary">
+								<i class="yticon iconfont kk-shoucang1"></i>
+								<text>收藏</text>
+							</button>
 						</view>
 					</view>
 				</view>
+				<!-- 点赞分享end -->
 
 				<!-- 所属课程 -->
 				<view class="courseText">所属课程</view>
@@ -88,40 +96,38 @@
 					</view>
 				</view>
 
-				<view class="container" v-show="loading === false">
+				<view class="container">
 					<!-- 评论 -->
 					<view class="s-header">
-						<text>网友评论</text>
+						<text class="tit">网友评论</text>
 					</view>
 					<view class="evalution">
-						<view class="noEva" v-if="evaList.length == 0">
+						<view class="noEva" v-if="comment.length == 0">
 							还没有人评论哦,快来抢个首发吧~
 						</view>
-						<view v-for="(item, index) in evaList" :key="index" class="eva-item">
-							<image :src="item.src" mode="aspectFill"></image>
+						<view v-for="(item, index) in comment" :key="index" class="eva-item">
+							<image :src="item.userHead" mode="aspectFill"></image>
 							<view class="eva-right">
-								<text>{{item.nickname}}</text>
+								<text>{{item.user.name}}</text>
 								<text>{{item.time}}</text>
-								<view class="zan-box">
-									<text>{{item.zan}}</text>
+								<view class="zan-box" @click="upvote(0,item.id,1,index)">
+									<text>{{item.commentTotalCount}}</text>
 									<text class="yticon iconfont kk-shoucang1"></text>
 								</view>
-								<text class="content">{{item.content}}</text>
+								<text class="content">{{item.commentContent}}</text>
 							</view>
 						</view>
 					</view>
 				</view>
-				<!-- 加载图标 -->
-				<!-- <mixLoading class="mix-loading" v-if="loading"></mixLoading> -->
 			</view>
 		</scroll-view>
 
 		<view class="bottom">
 			<view class="input-box">
 				<text class="yticon icon-huifu"></text>
-				<input class="input" type="text" placeholder="点评一下把.." placeholder-style="color:#adb1b9;" />
+				<input class="input" type="text" placeholder="点评一下把.." v-model="commentContent" placeholder-style="color:#adb1b9;" />
 			</view>
-			<text class="confirm-btn">提交</text>
+			<text class="confirm-btn" @click="createComment">提交</text>
 		</view>
 	</view>
 </template>
@@ -145,6 +151,19 @@
 				channelId: '',
 				constData: this.$constData,
 				moreCourse: 2,
+
+
+				/* 点赞 */
+				type: 0, //分辨点赞对象是文章还是评论 0为文章 1为评论
+				commentId: Number, //点赞对象id
+				/* 点赞end */
+
+				/* 评论 */
+				comment: {}, //评论列表
+				totalCount: Number, //文章评论数
+				contentUpvote: Number, //文章点赞数
+				commentContent: '', //评论内容
+				/* 评论end */
 			}
 		},
 		onLoad(res) {
@@ -155,6 +174,132 @@
 
 		},
 		methods: {
+			/* 评论 */
+			createComment() {
+				let userId = uni.getStorageSync('userId')
+				if (userId == '' || userId == '1234567890') {
+					uni.showToast({
+						title: '登录后可评论',
+						icon: 'none'
+					})
+					return
+				}
+				let cnt = {
+					module: this.$constData.module, // String 隶属
+					contentId: this.contentId, // Long 内容编号
+					userId: userId, // Long 用户编号
+					commentContent: this.commentContent, // String 评论内容
+					data: [], // String 其他数据
+				};
+				this.$api.createComment(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							title: '评论成功',
+							duration: 1000
+						});
+						this.hidden = true
+						this.commentContent = ''
+						setTimeout(function() {
+							this.getCommentByContentId()
+						}, 4000);
+					} else {
+						uni.showToast({
+							title: "评论失败",
+							duration: 1000
+						});
+					}
+				})
+			},
+
+			//获取评论列表
+			getCommentByContentId() {
+				let cnt = {
+					module: this.$constData.module, // String 隶属
+					contentId: this.contentId, // Long 内容编号
+					count: 10, // Integer 
+					offset: 0, // Integer 
+				};
+				this.$api.getCommentByContentId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('评论接口返回数据')
+						console.log(JSON.parse(res.data.c))
+						console.log('~~~~~~~~~~~~~~~~~~~~~~~~')
+						this.totalCount = JSON.parse(res.data.c).totalCount
+						this.contentUpvote = JSON.parse(res.data.c).contentUpvote
+						let comment = JSON.parse(res.data.c).list
+						for (let i = 0; i < comment.length; i++) {
+							let time = new Date(comment[i].createTime)
+							let y = time.getFullYear()
+							let m = 1 + time.getMonth()
+							let d = time.getDate()
+							comment[i].time = `${y}-${m}-${d}`
+							if (comment[i].user != undefined) {
+								comment[i].userHead = JSON.parse(comment[i].user.ext).userHead
+							} else {
+								comment[i].userHead = ''
+							}
+						}
+						this.comment = comment
+					} else {
+						uni.showToast({
+							title: '评论获取失败',
+							icon: 'none',
+							duration: 1000
+						})
+					}
+				})
+			},
+			/* 评论end */
+
+			/* 点赞 */
+			upvote(vo, conid, e, index) {
+				if (vo == 0) {
+					this.type = 0;
+				} else if (vo == 1) {
+					this.type = 1;
+				}
+				this.commentId = conid
+				this.createUpvote(e, index)
+			},
+
+			createUpvote(e, index) {
+				let userId = uni.getStorageSync('userId')
+				if (userId == '' || userId == '1234567890') {
+					uni.showToast({
+						title: '请登录',
+						duration: 1000,
+						icon: 'none'
+					})
+					return
+				}
+				let cnt = {
+					contentId: this.commentId, // Long 内容编号/评论编号
+					userId: 0 + userId, // Long 用户编号
+					type: this.type, // Byte 评论类型
+				};
+				this.$api.createUpvote(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							title: '点赞成功',
+							duration: 1000
+						});
+						if (e == 0) {
+							this.contentUpvote = 1 + this.contentUpvote
+						} else if (e == 1) {
+							let a = this.comment[index].commentTotalCount
+							this.comment[index].commentTotalCount = 1 + a
+						}
+					} else {
+						uni.showToast({
+							title: res.data.c,
+							duration: 1000,
+							icon: 'none'
+						});
+					}
+				})
+			},
+			/* 点赞end */
+
 			moreCourseBtn() {
 				this.moreCourse = 5;
 			},
@@ -219,15 +364,18 @@
 				};
 				this.$api.getContentById(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.detailData = JSON.parse(res.data.c)
-						let time = new Date(this.detailData.createTime)
-						let newTime = time.toLocaleString()
-						this.detailData.time = newTime
-						this.flow = JSON.parse(this.detailData.data).editor
-						console.log(this.detailData)
-						this.getUserById(this.detailData.upUserId)
-						this.channelId = this.detailData.upChannelId
-						this.getContentByChannelId()
+						let detailData = JSON.parse(res.data.c)
+						let a = new Date(detailData.createTime)
+						let y = a.getFullYear()
+						let m = 1 + a.getMonth()
+						let d = a.getDate()
+						let time = y + '年' + m + '月' + d + '日'
+						detailData.time = time
+						this.detailData = detailData
+						this.channelId = detailData.upChannelId
+						this.flow = JSON.parse(detailData.data).editor
+						this.getUserById(detailData.upUserId)
+						this.getCommentByContentId()
 					}
 				}))
 			},
@@ -570,15 +718,15 @@
 		font-size: $list-title;
 		margin-top: 5upx;
 	}
-	
-	.columnImgBox{
+
+	.columnImgBox {
 		position: absolute;
 		top: 50%;
 		margin-top: -7vw;
 	}
 
 	.columnImg {
-		
+
 		width: 25vw;
 		height: 14vw;
 	}
@@ -605,7 +753,7 @@
 
 		button {
 			position: absolute;
-			font-size:$list-info;
+			font-size: $list-info;
 			right: 0;
 			bottom: -7.5upx;
 			display: inline-block;
@@ -613,9 +761,10 @@
 			padding: 8upx 15upx;
 			background-color: #ec706b;
 		}
-		.button-hover{
-			background-color:rgba(236,112,107,0.5);
-			color:rgba(255,255,255,0.5)
+
+		.button-hover {
+			background-color: rgba(236, 112, 107, 0.5);
+			color: rgba(255, 255, 255, 0.5)
 		}
 	}
 
@@ -633,8 +782,8 @@
 	.noPadding {
 		padding: 0;
 	}
-	
-	.blodFont{
+
+	.blodFont {
 		font-weight: bold;
 	}
 </style>

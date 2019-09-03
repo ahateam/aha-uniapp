@@ -25,9 +25,10 @@
 					<!-- 点赞分享 -->
 					<view class="actions">
 						<view class="action-item">
-							<i class="yticon iconfont kk-dianzan"></i>
-							<!-- <text class="yticon icon-dianzan-ash"></text> -->
-							<text>75</text>
+							<button type="primary" @click="upvote(0,contentId,0)">
+								<i class="yticon iconfont kk-dianzan"></i>
+								<text>{{contentUpvote}}</text>
+							</button>
 						</view>
 						<view class="action-item">
 							<button type="primary" open-type="share">
@@ -44,8 +45,10 @@
 						</view>
 
 						<view class="action-item">
-							<i class="yticon iconfont kk-shoucang1"></i>
-							<text>收藏</text>
+							<button type="primary">
+								<i class="yticon iconfont kk-shoucang1"></i>
+								<text>收藏</text>
+							</button>
 						</view>
 					</view>
 				</view>
@@ -57,19 +60,19 @@
 						<text class="tit">网友评论</text>
 					</view>
 					<view class="evalution">
-						<view class="noEva" v-if="evaList.length == 0">
+						<view class="noEva" v-if="comment.length == 0">
 							还没有人评论哦,快来抢个首发吧~
 						</view>
-						<view v-for="(item, index) in evaList" :key="index" class="eva-item">
-							<image :src="item.src" mode="aspectFill"></image>
+						<view v-for="(item, index) in comment" :key="index" class="eva-item">
+							<image :src="item.userHead" mode="aspectFill"></image>
 							<view class="eva-right">
-								<text>{{item.nickname}}</text>
+								<text>{{item.user.name}}</text>
 								<text>{{item.time}}</text>
-								<view class="zan-box">
-									<text>{{item.zan}}</text>
+								<view class="zan-box" @click="upvote(0,item.id,1,index)">
+									<text>{{item.commentTotalCount}}</text>
 									<text class="yticon iconfont kk-shoucang1"></text>
 								</view>
-								<text class="content">{{item.content}}</text>
+								<text class="content">{{item.commentContent}}</text>
 							</view>
 						</view>
 					</view>
@@ -86,9 +89,9 @@
 		<view class="bottom">
 			<view class="input-box">
 				<text class="yticon icon-huifu"></text>
-				<input class="input" type="text" placeholder="点评一下把.." placeholder-style="color:#adb1b9;" />
+				<input class="input" type="text" placeholder="点评一下把.." v-model="commentContent" placeholder-style="color:#adb1b9;" />
 			</view>
-			<text class="confirm-btn">提交</text>
+			<text class="confirm-btn" @click="createComment">提交</text>
 		</view>
 	</view>
 </template>
@@ -109,15 +112,14 @@
 				upInfo: {}, //上传者数据
 				contentId: '', //内容id
 				id1: '', //片区id
-				evaList: [], //评论列表
-				userHead:'',
+				userHead: '',
 
 				/* 分享朋友圈 */
 				val: '', // 要生成的二维码值
 				size: 200, // 二维码大小
 				unit: 'px', // 单位
-				background: '#fff', // 背景色
-				foreground: '#000', // 前景色
+				background: '#FFFFFF', // 背景色
+				foreground: '#000000', // 前景色
 				pdground: '#32dbc6', // 角标色
 				icon: '/static/logo.png', // 二维码图标
 				iconsize: 30, // 二维码图标大小
@@ -126,17 +128,30 @@
 				loadMake: true, // 组件加载完成后自动生成二维码
 				src: '', // 二维码生成后的图片地址或base64
 				/* 分享朋友圈end */
+
+				/* 点赞 */
+				type: 0, //分辨点赞对象是文章还是评论 0为文章 1为评论
+				commentId: Number, //点赞对象id
+				/* 点赞end */
+
+				/* 评论 */
+				comment: {}, //评论列表
+				totalCount: Number, //文章评论数
+				contentUpvote: Number, //文章点赞数
+				commentContent: '', //评论内容
+				/* 评论end */
+
 			}
 		},
 		onLoad(res) {
 			let src = ''
 
-			if(res.q){
+			if (res.q) {
 				let src = res.q
 				let params = this.$commen.getSplit(src)
 				this.contentId = params.id
 				this.id1 = params.id1
-			}else{
+			} else {
 				this.contentId = res.id
 				this.id1 = res.id1
 			}
@@ -144,6 +159,133 @@
 			this.getContentById()
 		},
 		methods: {
+			/* 评论 */
+			createComment() {
+				let userId = uni.getStorageSync('userId')
+				if (userId == '' || userId == '1234567890') {
+					uni.showToast({
+						title: '登录后可评论',
+						icon: 'none'
+					})
+					return
+				}
+				let cnt = {
+					module: this.$constData.module, // String 隶属
+					contentId: this.contentId, // Long 内容编号
+					userId: userId, // Long 用户编号
+					commentContent: this.commentContent, // String 评论内容
+					data: [], // String 其他数据
+				};
+				this.$api.createComment(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							title: '评论成功',
+							duration: 1000
+						});
+						this.hidden = true
+						this.commentContent = ''
+						setTimeout(function() {
+							this.getCommentByContentId()
+						}, 4000);
+					} else {
+						uni.showToast({
+							title: "评论失败",
+							duration: 1000
+						});
+					}
+				})
+			},
+
+			//获取评论列表
+			getCommentByContentId() {
+				let cnt = {
+					module: this.$constData.module, // String 隶属
+					contentId: this.contentId, // Long 内容编号
+					count: 10, // Integer 
+					offset: 0, // Integer 
+				};
+				this.$api.getCommentByContentId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('评论接口返回数据')
+						console.log(JSON.parse(res.data.c))
+						console.log('~~~~~~~~~~~~~~~~~~~~~~~~')
+						this.totalCount = JSON.parse(res.data.c).totalCount
+						this.contentUpvote = JSON.parse(res.data.c).contentUpvote
+						let comment = JSON.parse(res.data.c).list
+						for (let i = 0; i < comment.length; i++) {
+							let time = new Date(comment[i].createTime)
+							let y = time.getFullYear()
+							let m = 1 + time.getMonth()
+							let d = time.getDate()
+							comment[i].time = `${y}-${m}-${d}`
+							if (comment[i].user != undefined) {
+								comment[i].userHead = JSON.parse(comment[i].user.ext).userHead
+							} else {
+								comment[i].userHead = ''
+							}
+						}
+						this.comment = comment
+					} else {
+						uni.showToast({
+							title: '评论获取失败',
+							icon: 'none',
+							duration: 1000
+						})
+					}
+				})
+			},
+			/* 评论end */
+
+			/* 点赞 */
+			upvote(vo, conid, e, index) {
+				if (vo == 0) {
+					this.type = 0;
+				} else if (vo == 1) {
+					this.type = 1;
+				}
+				this.commentId = conid
+				this.createUpvote(e, index)
+			},
+
+			createUpvote(e, index) {
+				let userId = uni.getStorageSync('userId')
+				if (userId == '' || userId == '1234567890') {
+					uni.showToast({
+						title: '请登录',
+						duration: 1000,
+						icon: 'none'
+					})
+					return
+				}
+				let cnt = {
+					contentId: this.commentId, // Long 内容编号/评论编号
+					userId: 0 + userId, // Long 用户编号
+					type: this.type, // Byte 评论类型
+				};
+				this.$api.createUpvote(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							title: '点赞成功',
+							duration: 1000
+						});
+						if (e == 0) {
+							this.contentUpvote = 1 + this.contentUpvote
+						} else if (e == 1) {
+							let a = this.comment[index].commentTotalCount
+							this.comment[index].commentTotalCount = 1 + a
+						}
+					} else {
+						uni.showToast({
+							title: res.data.c,
+							duration: 1000,
+							icon: 'none'
+						});
+					}
+				})
+			},
+			/* 点赞end */
+
+
 			/* 分享朋友圈 */
 			createHb() {
 				this.createCanvas()
@@ -192,7 +334,7 @@
 
 				// 二维码图片
 				context.drawImage(this.src, 280, 520, 150, 150)
-				
+
 				//用户头像 userHead
 				context.drawImage(this.userHead, 20, 520, 50, 50)
 
@@ -200,14 +342,14 @@
 				context.setFillStyle('#000')
 				context.font = "18px Arial"
 				context.fillText(this.upInfo.name, 80, 550)
-				
+
 				context.font = "20px Arial"
-				context.fillText(this.detailData.title,20,590)
+				context.fillText(this.detailData.title, 20, 590)
 
 				//生成画布
 				context.draw()
 
-				let that = this
+				// let that = this
 
 				setTimeout(function() { //延时生成图片
 					uni.canvasToTempFilePath({
@@ -238,13 +380,17 @@
 				};
 				this.$api.getContentById(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.detailData = JSON.parse(res.data.c)
-						let time = new Date(this.detailData.createTime)
-						let newTime = time.toLocaleString()
-						this.detailData.time = newTime
-						this.flow = JSON.parse(this.detailData.data).editor
-						console.log(this.detailData)
-						this.getUserById(this.detailData.upUserId)
+						let detailData = JSON.parse(res.data.c)
+						let a = new Date(detailData.createTime)
+						let y = a.getFullYear()
+						let m = 1 + a.getMonth()
+						let d = a.getDate()
+						let time = y + '年' + m + '月' + d + '日'
+						detailData.time = time
+						this.detailData = detailData
+						this.flow = JSON.parse(detailData.data).editor
+						this.getUserById(detailData.upUserId)
+						this.getCommentByContentId()
 					}
 				}))
 			},
@@ -264,17 +410,17 @@
 			}
 		},
 		onShareAppMessage(res) {
-			var pages = getCurrentPages() //获取加载的页面
-			var currentPage = pages[pages.length - 1] //获取当前页面的对象
+			let pages = getCurrentPages() //获取加载的页面
+			let currentPage = pages[pages.length - 1] //获取当前页面的对象
 			console.log(currentPage)
-			var url = currentPage.route //当前页面url
+			let url = currentPage.route //当前页面url
 			if (url == undefined) {
 				url = currentPage.__route__
 			}
-			var options = currentPage.options //如果要获取url中所带的参数可以查看options 
-			var id = options.id
-			var id1 = options.id1
-			var src = `${url}?id=${id}&id1=${id1}`
+			let options = currentPage.options //如果要获取url中所带的参数可以查看options 
+			let id = options.id
+			let id1 = options.id1
+			let src = `${url}?id=${id}&id1=${id1}`
 			console.log(src)
 			if (res.from === 'button') { // 来自页面内分享按钮
 				console.log(res.target)
