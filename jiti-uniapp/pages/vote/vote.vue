@@ -23,7 +23,7 @@
 	}
 </script>
 
-<style>
+<style scoped lang="scss">
 	.create-vote{
 		background-color: #40C9C6;
 		height: 100rpx;

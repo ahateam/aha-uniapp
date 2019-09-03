@@ -1,14 +1,12 @@
 <template>
 	<view>
-		<view class="">
-			<uni-notice-bar 
-				show-icon="true" 
-				background-color="#cce0fe"
-				text="[多行] 这是 NoticeBar 通告栏，这是 NoticeBar 通告栏，">
+		<view>
+			<uni-notice-bar show-icon="true" background-color="#cce0fe" text="[多行] 这是 NoticeBar 通告栏，这是 NoticeBar 通告栏，">
 			</uni-notice-bar>
 		</view>
 		<view class="swiper_box">
-			<swiper class="swiper_style" indicator-dots="true" indicator-color="rgba(255, 255, 255, 0.3)" indicator-active-color="#d7cbd1" autoplay="true">
+			<swiper class="swiper_style" indicator-dots="true" indicator-color="rgba(255, 255, 255, 0.3)" indicator-active-color="#d7cbd1"
+			 autoplay="true">
 				<swiper-item>
 					<image src="../../static/a.jpg"></image>
 				</swiper-item>
@@ -21,127 +19,151 @@
 			</swiper>
 		</view>
 		<view class="content">
-			<view class="content_box" @click="toPoll">
-				<view class="content_box_text">我的投票</view>
-			</view>
-			<view class="content_box" @click="toAssets" style="background-color: #9788ff;">
-				<view class="content_box_text">集体资产</view>
-			</view>
-			<view class="content_box" @click="toMoney" style="background-color: #fb7eb8;">
-				<view class="content_box_text">我的分红</view>
-			</view>
-			<view class="content_box" @click="toOrg">
-				<view class="content_box_text">我的机构</view>
-			</view>
-			<view class="content_box" @click="toNotice" style="background-color: #9788ff;">
-				<view class="content_box_text">我的公告</view>
-			</view>
-			<view class="content_box" @click="toExamine" style="background-color: #fb7eb8;">
-				<view class="content_box_text">我的审批</view>
-			</view>
-			<view class="content_box" @click="toVote">
-				<view class="content_box_text">发起投票</view>
-			</view>
+
+			<navigator url="../poll/poll" class="content_box">
+				<view class="content_box_text">
+					<p class="text-box">我的</p>
+					<p class="text-box1">投票</p>
+				</view>
+			</navigator>
+
+
 			<view class="content_box" style="background-color: #9788ff;">
-				<view class="content_box_text">职务管理</view>
+				<view class="content_box_text">
+					<p class="text-box">
+						我的
+					</p>
+					<p class="text-box1">
+						审批
+					</p>
+
+				</view>
 			</view>
+
 			<view class="content_box" style="background-color: #fb7eb8;">
-				<view class="content_box_text">个人信息</view>
+				<view class="content_box_text">
+					<p class="text-box">我的</p>
+					<p class="text-box1">分红</p>
+				</view>
 			</view>
-			<view class="content_box" @click="toChooseOrg">
-				<view class="content_box_text">更换组织</view>
+
+
+			<view class="content_box">
+				<view class="content_box_text">
+					<p class="text-box">集体</p>
+					<p class="text-box1">资料</p>
+				</view>
+			</view>
+
+			<view class="content_box" style="background-color: #9788ff;">
+				<view class="content_box_text">
+					<p class="text-box">集体</p>
+					<p class="text-box1">资产</p>
+				</view>
+			</view>
+
+			<view class="content_box" style="background-color: #fb7eb8;">
+				<view class="content_box_text">
+					<p class="text-box">公告</p>
+					<p class="text-box1">信息</p>
+				</view>
 			</view>
 		</view>
+
+
+		<view class="content_box">
+			<view class="content_box_text">
+				<p class="text-box">发起</p>
+				<p class="text-box1">投票</p>
+			</view>
+		</view>
+		<view class="content_box" style="background-color: #9788ff;">
+			<view class="content_box_text">
+				<p class="text-box">职务</p>
+				<p class="text-box1">管理</p>
+			</view>
+		</view>
+		<view class="content_box" style="background-color: #fb7eb8;">
+			<view class="content_box_text">
+				<p class="text-box">个人</p>
+				<p class="text-box1">信息</p>
+			</view>
+		</view>
+
+		<view class="content_box">
+			<view class="content_box_text">
+				<p class="text-box">更换</p>
+				<p class="text-box1">组织</p>
+			</view>
+		</view>
+		<view class="content_box" style="background-color: #fb7eb8;">
+			<view class="content_box_text">
+				<p class="text-box">注销</p>
+				<p class="text-box1">登录</p>
+			</view>
+		</view>
+
+	</view>
+
 	</view>
 </template>
 
 <script>
 	import uniNoticeBar from "@/components/uni-notice-bar/uni-notice-bar.vue"
 	export default {
-		components: {uniNoticeBar},
+		components: {
+			uniNoticeBar
+		},
 		data() {
 			return {
-				
+
 			}
 		},
 		onLoad() {
-			
+			let userObj = JSON.parse(uni.getStorageSync('userInfo')) //只有用户信息
+			let orgObj = JSON.parse(uni.getStorageSync('orgInfo')) //只有用户的组织信息
+			let orgUserInfo = Object.assign(userObj, orgObj)
+
+			let info = uni.getStorageSync('orgUserInfo')
+			if (!info) { //user是否已经存在，若存在就不重新赋值
+				uni.setStorageSync('orgUserInfo', JSON.stringify(orgUserInfo))
+			}
+
 		},
 		methods: {
-			toPoll(){
-				uni.navigateTo({
-					url:"../poll/poll"
-				})
-			},
-			toAssets(){
-				uni.navigateTo({
-					url:"../assets/assets"
-				})
-			},
-			toOrg(){
-				uni.navigateTo({
-					url:"../org/org"
-				})
-			},
-			toMoney(){
-				uni.navigateTo({
-					url:"../bonus/bonus"
-				})
-			},
-			toNotice(){
-				uni.navigateTo({
-					url:"../notice/notice"
-				})
-			},
-			toExamine(){
-				uni.navigateTo({
-					url:"../examine/examine"
-				})
-			},
-			toChooseOrg(){
-				uni.navigateTo({
-					url:"../chooseOrg/chooseOrg"
-				})
-			},
-			toVote(){
-				uni.navigateTo({
-					url:"../vote/vote"
-				})
-			}
+
 		}
 	}
 </script>
 
-<style>
-	body{
+<style scoped lang="scss">
+	body {
 		background-color: #ecf2fe;
 	}
-	.swiper_style image{
+
+	.swiper_style image {
 		width: 100%;
 	}
-	.content{
-		width: 100%;
-		margin-bottom: 33rpx;
-		display: flex;
-		justify-content: space-between;
-		flex-wrap: wrap;
-	}
-	.content_box{
-		width: 162rpx;
-		height: 162rpx;
-		background-color: #6cbaf8;
-		border-radius: 10%;
-		margin: 66rpx auto auto 45rpx;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-	.content_box_text{
-		width: 81rpx;
-		height: 81rpx;
+
+	.content_box {
+		float: left;
+		width: 150rpx;
+		height: 150rpx;
+		text-align: center;
+		line-height: 75rpx;
+		border-radius: 20rpx;
+		margin: 20rpx 45rpx;
 		font-size: 32rpx;
 		color: #fff;
-		text-align: center;
-		line-height: 40.5rpx;
+		background: #6cbaf8;
+
+	}
+
+	.text-box {
+		line-height: 90rpx;
+	}
+
+	.text-box1 {
+		line-height: 20rpx;
 	}
 </style>

@@ -23,6 +23,22 @@ api.getUserORGs = function (cnt,callback) {
     util.call(baseUrl+'/org/getUserORGs', cnt, callback)
 }
 
+//根据用户选择机构
+api.loginInORG = function (cnt,callback) {
+    util.call(baseUrl+'/org/loginInORG', cnt, callback)
+}
 
-
+/** 投票模块*/
+//获取未投的投票列表
+api.getNotVoteByUserRoles = function (cnt,callback) {
+    util.call(baseUrl+'/vote/getNotVoteByUserRoles', cnt, callback)
+}
+//获取用户已投的投票列表
+api.getVoteByUserRoles = function (cnt,callback) {
+    util.call(baseUrl+'/vote/getVoteByUserRoles', cnt, callback)
+}
+//获取全部投票列表
+api.getVotes = function (cnt,callback) {
+    util.call(baseUrl+'/vote/getVotes', cnt, callback)
+}
 export default api

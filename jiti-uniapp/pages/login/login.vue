@@ -127,8 +127,8 @@
 			console.log(!userInfo)
 			
 			if (userInfo) {
-				uni.navigateTo({
-					url: '/pages/chooseOrg/chooseOrg'
+				uni.reLaunch({
+				url: '/pages/chooseOrg/chooseOrg'
 				});
 			} else {
 				uni.setStorageSync('userInfo', '');
