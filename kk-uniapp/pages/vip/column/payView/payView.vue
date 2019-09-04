@@ -1,7 +1,7 @@
 <template>
 	<view class="body">
 		<view class="titleBox">
-			<image class="img" src="/static/logo.png" mode="scaleToFill"></image>
+			<image class="img" :src="src" mode="scaleToFill"></image>
 			<view class="titleText">
 				<view>{{title}}</view>
 				<view class="money">￥{{money}}</view>
@@ -23,7 +23,7 @@
 		<view class="payMethod">
 			<radio-group @change="radioChange">
 				<label class="payList" v-for="(item, index) in items" :key="item.value">
-					<text :class="'iconfont payIcon '+item.iconName "></text>
+					<text :class="'iconfont payIcon '+item.iconName " :style="item.style"></text>
 					<text class="payName">{{item.name}}</text>
 					<radio class="rightBox" :value="item.value" :checked="index === current" />
 				</label>
@@ -45,24 +45,27 @@
 	export default {
 		data() {
 			return {
-				src: '',
+				src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1567139311188&di=b309ce828b72d42a2c9318f26f7115c7&imgtype=0&src=http%3A%2F%2Fwww.pclady.com.cn%2Fstyle%2Fmovie%2F0509%2Fpic%2Fbb20050920_shjz_06_thumb.jpg',
 				title: '这是一个标题',
 				money: '233.00',
 				offMoney: '5',
 				items: [{
 						value: '0',
 						name: '余额',
-						iconName:'kk-money'
+						iconName:'kk-money',
+						style:'color:#fb6c04'
 					},
 					{
 						value: '1',
 						name: '微信支付',
-						iconName:'kk-weixinzhifu'
+						iconName:'kk-weixinzhifu',
+						style:'color:#24af41'
 					},
 					{
 						value: '2',
 						name: '支付宝支付',
-						iconName:'kk-big-Pay'
+						iconName:'kk-big-Pay',
+						style:'color:#1296db'
 					},
 				],
 				current:1,
@@ -191,7 +194,12 @@
 			border-radius: 0;
 			font-size: $list-title;
 			line-height: 100upx;
-			background-color: #fb6c04;
+			background-color: #ec706b;
+		}
+		
+		.button-hover {
+			background-color: rgba(236, 112, 107, 0.5);
+			color: rgba(255, 255, 255, 0.5)
 		}
 	}
 </style>

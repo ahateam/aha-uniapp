@@ -8,7 +8,8 @@ let api = {};
 console.log('开始调用ctrl');
 
 /********************************** 内容接口 **********************************/
-// <创建内容，保存为正常（已发布）>
+// 获取标签<创建内容，保存为正常（已发布）>
+
 api.getTags = function(cnt, callback) {
 	util.call(baseUrl + '/content/getTags', cnt, callback)
 }

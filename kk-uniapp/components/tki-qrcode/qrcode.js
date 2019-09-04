@@ -1085,9 +1085,9 @@ let QRCode = {};
         // 创建canvas
         let createCanvas = function (options) {
             if(options.showLoading){
-                uni.showLoading({
-                    title: options.loadingText
-                });
+                // uni.showLoading({
+                //     title: options.loadingText
+                // });
             }
             var ctx = uni.createCanvasContext(options.canvasId, options.context);
             var count = qrCodeAlg.getModuleCount();
@@ -1165,7 +1165,7 @@ let QRCode = {};
                                 }
                             },
                             complete: function () {
-                                uni.hideLoading();
+                                // uni.hideLoading();
                             },
                         }, options.context);
                     }, options.text.length + 100);

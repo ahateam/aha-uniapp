@@ -11,7 +11,9 @@
 		{
 			"path": "pages/vip/vip",
 			"style": {
-				"navigationBarTitleText": "vip"
+				"navigationBarTitleText": "vip",
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 0
 			}
 		},
 		{
@@ -24,79 +26,68 @@
 			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "我的",
-				"navigationBarBackgroundColor":"#FFF",
+				"navigationBarBackgroundColor": "#FFF",
 				"navigationBarTextStyle": "black"
 			}
+		}, {
+			"path": "pages/index/articleView/articleView",
+			"style": {}
+		}, {
+			"path": "pages/index/videoView/videoView",
+			"style": {}
+		}, {
+			"path": "pages/vip/column/column",
+			"style": {}
+		}, {
+			"path": "pages/vip/column/details/details",
+			"style": {}
+		}, {
+			"path": "pages/vip/column/detailsVideo/detailsVideo",
+			"style": {}
+		}, {
+			"path": "pages/vip/column/columnInfo/columnInfo",
+			"style": {}
+		}, {
+			"path": "pages/vip/column/payView/payView",
+			"style": {}
+		}, {
+			"path": "pages/index/addArticle/addArticle",
+			"style": {}
+		}, {
+			"path": "pages/index/addVideo/addVideo",
+			"style": {}
 		}
-	    ,{
-            "path" : "pages/index/articleView/articleView",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/index/videoView/videoView",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/vip/column/column",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/vip/column/details/details",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/vip/column/detailsVideo/detailsVideo",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/vip/column/columnInfo/columnInfo",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/vip/column/payView/payView",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/index/addArticle/addArticle",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/index/addVideo/addVideo",
-            "style" : {}
-        }
-    ],
-		"tabBar" : {
-	    "color" : "#C0C4CC",
-	    "selectedColor" : "#fa436a",
-	    "borderStyle" : "black",
-	    "backgroundColor" : "#ffffff",
-	    "list" : [
-	        {
-	            "pagePath" : "pages/index/index",
-	            "iconPath" : "static/tab-home.png",
-	            "selectedIconPath" : "static/tab-home-current.png",
-	            "text" : "首页"
-	        },
-			{
-			    "pagePath" : "pages/vip/vip",
-			    "iconPath" : "static/tab-home.png",
-			    "selectedIconPath" : "static/tab-home-current.png",
-			    "text" : "vip"
+	],
+	"tabBar": {
+		"color": "#C0C4CC",
+		"selectedColor": "#fa436a",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tab-home.png",
+				"selectedIconPath": "static/tab-home-current.png",
+				"text": "首页"
 			},
-			
 			{
-			    "pagePath" : "pages/task/task",
-			    "iconPath" : "static/tab-home.png",
-			    "selectedIconPath" : "static/tab-home-current.png",
-			    "text" : "任务墙"
+				"pagePath": "pages/vip/vip",
+				"iconPath": "static/tab-Vip.png",
+				"selectedIconPath": "static/tab-Vip-current.png",
+				"text": "vip"
 			},
-			 {
-			    "pagePath" : "pages/user/user",
-			    "iconPath" : "static/tab-home.png",
-			    "selectedIconPath" : "static/tab-home-current.png",
-			    "text" : "我的"
+			{
+				"pagePath": "pages/task/task",
+				"iconPath": "static/tab-Task.png",
+				"selectedIconPath": "static/tab-Task-current.png",
+				"text": "任务墙"
+			},
+			{
+				"pagePath": "pages/user/user",
+				"iconPath": "static/tab-user.png",
+				"selectedIconPath": "static/tab-user-current.png",
+				"text": "我的"
 			}
-	    ]
+		]
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

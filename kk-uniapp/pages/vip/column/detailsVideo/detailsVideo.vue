@@ -28,8 +28,8 @@
 						</view>
 
 						<view class="action-item">
-							<button type="primary">
-								<i class="yticon iconfont kk-share centerBox"></i>
+							<button type="primary" @click="createHb">
+								<i class="yticon iconfont kk-friendzone centerBox"></i>
 								<text>朋友圈</text>
 							</button>
 						</view>
@@ -61,7 +61,7 @@
 						<view class="payCourse">
 							<text class="courseMoney">45元</text>
 							<text class="courseInfo">233人购买</text>
-							<button type="primary">购买课程</button>
+							<button type="primary" @click="navToPay">购买课程</button>
 						</view>
 					</view>
 				</view>
@@ -114,6 +114,23 @@
 			</view>
 		</scroll-view>
 
+		<view class="poster" v-if="posterShow" @click="hiddenPoster">
+			<view class="posterImg" @click.stop>
+				<image ref="posterImg" :src="posterImg " mode="widthFix" @click="showImg"></image>
+			</view>
+			<view class="posterBtn">
+				<view class="stopBtn" @click.stop>
+					<button type="primary" @click="saveImg">保存图片至本地</button>
+				</view>
+			</view>
+		</view>
+
+		<tki-qrcode class="hiddenBox" cid="qrcode1" ref="qrcode" :val="val" :size="size" :unit="unit" :background="background"
+		 :foreground="foreground" :pdground="pdground" :icon="icon" :iconSize="iconsize" :lv="lv" :onval="onval" :loadMake="loadMake"
+		 :usingComponents="true" @result="qrR" />
+		<canvas class="hiddenBox canvasBox" canvas-id="firstCanvas"></canvas>
+		<canvas class="hiddenBox upHeadBox" canvas-id="upHeadCanvas"></canvas>
+
 		<view class="bottom">
 			<view class="input-box">
 				<text class="yticon icon-huifu"></text>
@@ -125,9 +142,14 @@
 </template>
 
 <script>
+	import tkiQrcode from '@/components/tki-qrcode/tki-qrcode.vue'
+	let context = uni.createCanvasContext('firstCanvas')
+	let upHead = uni.createCanvasContext('upHeadCanvas')
+
 	export default {
 		components: {
-			// mixLoading
+			// mixLoading,
+			tkiQrcode,
 		},
 		data() {
 			return {
@@ -137,26 +159,187 @@
 				loading: false,
 				contentId: '',
 				id1: '',
-				
+
 				/* 点赞 */
 				type: 0, //分辨点赞对象是文章还是评论 0为文章 1为评论
 				commentId: Number, //点赞对象id
 				/* 点赞end */
-				
+
 				/* 评论 */
 				comment: [], //评论列表
 				totalCount: Number, //文章评论数
 				contentUpvote: Number, //文章点赞数
 				commentContent: '', //评论内容
 				/* 评论end */
+
+				/* 分享朋友圈 */
+				val: '', // 要生成的二维码值
+				size: 200, // 二维码大小
+				unit: 'px', // 单位
+				background: '#FFFFFF', // 背景色
+				foreground: '#000000', // 前景色
+				pdground: '#32dbc6', // 角标色
+				icon: '/static/logo.png', // 二维码图标
+				iconsize: 30, // 二维码图标大小
+				lv: 3, // 二维码容错级别 ， 一般不用设置，默认就行
+				onval: true, // val值变化时自动重新生成二维码
+				loadMake: true, // 组件加载完成后自动生成二维码
+				src: '', // 二维码生成后的图片地址或base64
+
+				posterImg: '',
+				posterShow: false, //控制分享页的显示
+				/* 分享朋友圈end */
 			}
 		},
 		onLoad(res) {
-			this.contentId = res.id
-			this.id1 = res.id1
+			if (res.q) {
+				let src = res.q
+				let params = this.$commen.getSplit(src)
+				this.contentId = params.id
+				this.id1 = params.id1
+			} else {
+				this.contentId = res.id
+				this.id1 = res.id1
+			}
 			this.getContentById()
 		},
 		methods: {
+			/* 朋友圈分享 */
+			//开始生成海报
+			createHb() {
+				uni.showLoading({
+					title: '生成中'
+				})
+				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}`//值改变后自动调取qrR()
+			},
+			
+			qrR(res) { //生成二维码的图片地址
+				this.src = res
+				this.createCanvas()
+			},
+			
+			// 生成背景
+			createCanvas() {
+				//生成背景
+				context.setFillStyle('#FFFFFF')
+				context.fillRect(0, 0, 450, 800)
+				uni.downloadFile({
+					url: this.contentObj.imgSrc,
+					success: (res) => {
+						context.drawImage(res.tempFilePath, 0, 0, 450, 500)
+						this.getUpHead()
+					}
+				})
+			},
+			
+			//生成up圆形头像
+			getUpHead() {
+				let img = this.$util.tryParseJson(this.upInfo.ext).userHead
+				console.log(img)
+				console.log('头像地址')
+				let imgSrc = ''
+				uni.downloadFile({
+					url: img,
+					success: (res) => {
+						imgSrc = res.tempFilePath
+						console.log(imgSrc)
+						upHead.arc(50, 50, 50, 0, 2 * Math.PI)
+						upHead.clip()
+						upHead.drawImage(imgSrc, 0, 0, 100, 100)
+						upHead.draw()
+						setTimeout(() => { //延时生成图片
+							uni.canvasToTempFilePath({
+								x: 0,
+								y: 0,
+								width: 100,
+								height: 100,
+								destWidth: 100,
+								destHeight: 100,
+								canvasId: 'upHeadCanvas',
+								success: (res) => {
+									// 在H5平台下，tempFilePath 为 base64
+									context.drawImage(res.tempFilePath, 20, 520, 50, 50)
+									this.createPoster()
+								},
+								fail: (error) => {
+									console.log(error)
+								}
+							})
+						}, 400)
+					}
+				})
+			},
+			
+			//最终生成海报
+			createPoster() {
+				// 二维码图片
+				context.drawImage(this.src, 280, 520, 150, 150)
+			
+				// 文字
+				context.setFillStyle('#000000')
+				context.font = '18px Arial'
+				context.fillText(this.upInfo.name, 80, 550)
+			
+				context.font = '20px Arial'
+				context.fillText(this.detailData.title, 20, 610)
+			
+				context.font = '16px Arial'
+				context.setFillStyle('#aaa')
+				context.fillText('长按扫码查看详情', 20, 650)
+			
+				//生成画布
+				context.draw()
+			
+				// let that = this
+			
+				setTimeout(() => { //延时生成图片
+					uni.canvasToTempFilePath({
+						x: 0,
+						y: 0,
+						width: 450,
+						height: 690,
+						destWidth: 450,
+						destHeight: 690,
+						canvasId: 'firstCanvas',
+						success: (res) => {
+							uni.hideLoading()
+							// 在H5平台下，tempFilePath 为 base64
+							this.posterImg = res.tempFilePath
+							console.log(this.posterImg)
+						}
+					})
+					this.showHb()
+				}, 300)
+			},
+			
+			// 展示海报
+			showHb() {
+				this.posterShow = true
+			},
+			
+			//保存图片至本地
+			saveImg() {
+				uni.saveImageToPhotosAlbum({
+					filePath: this.posterImg,
+					success: () => {
+						console.log('save success');
+					}
+				});
+			},
+			
+			hiddenPoster() {
+				this.posterShow = false
+			},
+			
+			showImg() {
+				uni.previewImage({
+					urls: [this.posterImg]
+				})
+			},
+			
+			/* 分享朋友圈end */
+			
+			
 			/* 评论 */
 			createComment() {
 				let userId = uni.getStorageSync('userId')
@@ -167,7 +350,7 @@
 					})
 					return
 				}
-			
+
 				let cnt = {
 					module: this.$constData.module, // String 隶属
 					contentId: this.contentId, // Long 内容编号
@@ -193,7 +376,7 @@
 					}
 				})
 			},
-			
+
 			//获取评论列表
 			getCommentByContentId() {
 				let cnt = {
@@ -233,7 +416,7 @@
 				})
 			},
 			/* 评论end */
-			
+
 			/* 点赞 */
 			upvote(vo, conid, e, index) {
 				if (vo == 0) {
@@ -244,7 +427,7 @@
 				this.commentId = conid
 				this.createUpvote(e, index)
 			},
-			
+
 			createUpvote(e, index) {
 				let userId = uni.getStorageSync('userId')
 				if (userId == '' || userId == '1234567890') {
@@ -281,7 +464,7 @@
 				})
 			},
 			/* 点赞end */
-			
+
 			/* 获取id对应内容 */
 			getContentById() {
 				let cnt = {
@@ -316,7 +499,13 @@
 			// 		}
 			// 	}))
 			// }
-
+			
+			navToPay(){
+				uni.navigateTo({
+					url: '/pages/vip/column/payView/payView'
+				});
+			},
+			
 			// 从专栏id获取课程列表
 			getContentByChannelId() {
 				let cnt = {
@@ -766,5 +955,54 @@
 
 	.blodFont {
 		font-weight: bold;
+	}
+	
+	.poster {
+		position: fixed;
+		z-index: 3;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+	
+	.posterImg {
+		position: absolute;
+		top: 20px;
+		width: 85vw;
+		left: 50%;
+		margin-left: -42.5vw;
+	
+		image {
+			width: 100%;
+		}
+	}
+	
+	.posterBtn {
+		position: absolute;
+		bottom: 20px;
+		font-size: $list-title;
+		width: 100vw;
+	
+		.stopBtn {
+			width: 50vw;
+			margin: 0 auto;
+		}
+	}
+	
+	.hiddenBox {
+		position: absolute;
+		top: -10000px;
+	}
+	
+	.canvasBox {
+		width: 450px;
+		height: 800px;
+	}
+	
+	.upHeadBox {
+		width: 100px;
+		height: 100px;
 	}
 </style>

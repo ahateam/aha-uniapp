@@ -2,7 +2,7 @@
 	<view class="body">
 		<!-- 顶部选项卡 -->
 		<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
-			<view v-for="(item,index) in tagsList" :key="item.id" class="nav-item" :class="{current: index === tabCurrentIndex}"
+			<view v-for="(item,index) in tagsList" :key="index" class="nav-item" :class="{current: index === tabCurrentIndex}"
 			 :id="'tab'+index" @click="changeTag(index)">{{item.name}}</view>
 		</scroll-view>
 		<view style="padding-top: 90upx;"></view>
@@ -37,7 +37,7 @@
 	import threeImg from '@/components/article/threeImg.vue'
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
 	import uniFab from '@/components/uni-fab/uni-fab.vue'
-	
+
 	let windowWidth = 0
 
 	export default {
@@ -119,11 +119,11 @@
 			},
 			//按钮点击跳转
 			trigger(e) {
-				if(this.userId == ''||this.userId == '1234567890'){
+				if (this.userId == '' || this.userId == '1234567890') {
 					uni.showToast({
-						title:'请登录',
-						icon:'none',
-						duration:1000
+						title: '请登录',
+						icon: 'none',
+						duration: 1000
 					})
 					return
 				}
@@ -144,7 +144,7 @@
 				let cnt = {}
 				this.$api.returnTabBar(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.content = JSON.parse(res.data.c)
+						this.content = this.$util.tryParseJson(res.data.c)
 					} else {
 						this.content = []
 					}
@@ -189,15 +189,15 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						list = this.$util.tryParseJson(res.data.c)
 						for (let i = 0; i < list.length; i++) {
-							let show = JSON.parse(list[i].data).show
+							let show = this.$util.tryParseJson(list[i].data).show
 							list[i].show = show
 							if (list[i].type == 5) {
-								let imgList = JSON.parse(list[i].data).imgList
+								let imgList = this.$util.tryParseJson(list[i].data).imgList
 								list[i].imgList = imgList
 							}
 							if (list[i].type == 3) {
 								let imgList = [{
-									src: JSON.parse(list[i].data).imgSrc
+									src: this.$util.tryParseJson(list[i].data).imgSrc
 								}]
 								list[i].imgList = imgList
 							}
@@ -228,7 +228,7 @@
 				let arr = this.contents.concat(list)
 				this.contents = arr
 				console.log(this.contents)
-				let obj = JSON.parse(JSON.stringify(this.tagsList[index]))
+				let obj = this.$util.tryParseJson(JSON.stringify(this.tagsList[index]))
 				obj.child = arr
 				this.$nextTick(function() {
 					this.tagsList.splice(index, 1, obj)
@@ -240,12 +240,12 @@
 				this.tabCurrentIndex = _index
 				this.tagName = this.tagsList[_index].name
 				this.page = this.tagsList[_index].page
-				
+
 				let width = 0;
 				let nowWidth = 0;
 				//获取可滑动总宽度
 				for (let i = 0; i <= _index; i++) {
-					let result = await this.getElSize('tab'+_index)
+					let result = await this.getElSize('tab' + _index)
 					width += result.width
 					if (i === _index) {
 						nowWidth = result.width
@@ -257,7 +257,7 @@
 				} else {
 					this.scrollLeft = 0;
 				}
-				
+
 				if (undefined != this.tagsList[_index].child) {
 					this.pageStatus = this.tagsList[_index].pageStatus
 					this.contents = this.tagsList[_index].child
@@ -282,13 +282,29 @@
 			/* 跳转至详情 */
 			navToInfo(info) {
 				if (info.type == this.constData.contentType[2].key || info.type == this.constData.contentType[0].key) {
-					uni.navigateTo({
-						url: `/pages/index/articleView/articleView?id=${info.id}&id1=${info._id}`
-					})
+					if (info.upChannelId == 0 || info.upChannelId < 100000000000) {
+						uni.navigateTo({ //
+							url: `/pages/index/articleView/articleView?id=${info.id}&id1=${info._id}`
+						})
+					} else {
+						uni.navigateTo({
+							url: `/pages/vip/column/details/details?id=${info.id}&id1=${info._id}`
+						})
+					}
+
 				} else if (info.type == this.constData.contentType[1].key) {
-					uni.navigateTo({
-						url: `/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
-					})
+					// uni.navigateTo({
+					// 	url: `/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
+					// })
+					if (info.upChannelId == 0 || info.upChannelId.length < 13) {
+						uni.navigateTo({ //
+							url: `/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
+						})
+					} else {
+						uni.navigateTo({
+							url: `/pages/vip/column/detailsVideo/detailsVideo?id==${info.id}&id1=${info._id}`
+						})
+					}
 				}
 			}
 		},

@@ -274,5 +274,14 @@
 		z-index: 2;
 		font-size: $list-title-l;
 		font-weight: bold;
+		
+		button{
+			background-color: #ec706b;
+		}
+		
+		.button-hover {
+			background-color: rgba(236, 112, 107, 0.5);
+			color: rgba(255, 255, 255, 0.5)
+		}
 	}
 </style>

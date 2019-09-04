@@ -29,7 +29,9 @@
 				</view>
 			</view>
 		</view>
-
+		<view class="bottomBtn">
+			<button type="primary" @click="navToPay">立即支付</button>
+		</view>
 	</view>
 </template>
 
@@ -41,13 +43,12 @@
 		},
 		data() {
 			return {
-				curry: 0,
-				constData: {},
+				curry: 0,//选中标签下标
+				constData: {},//引入全局变量
 
-				id: '',
-				titleText: 'Tony',
-				titleTime: '',
-				type: 3,
+				id: '',//专栏id
+				titleText: 'Tony',//标题
+				titleTime: '',//专栏创建时间
 				color: '',
 
 				fixedBox: '',
@@ -72,15 +73,27 @@
 			}
 		},
 		methods: {
+			//跳转支付页
+			navToPay() {
+				uni.navigateTo({
+					url: `/pages/vip/column/payView/payView?id=${this.id}`
+				})
+			},
 			//路由跳转
 			navigator(list) {
 				let url = ''
+				if (list.paid == this.$constData.contentPaid[1].key) {
+					uni.showToast({
+						title: '购买后可观看',
+						duration: 1500,
+						icon: 'none'
+					});
+				}
 				if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
 					url = 'details'
 				} else if (list.type == this.$constData.contentType[1].key) {
 					url = 'detailsVideo'
 				}
-				console.log(`/pages/vip/column/${url}/${url}?id=${list.id}&id1=${list._id}`)
 				uni.navigateTo({
 					url: `/pages/vip/column/${url}/${url}?id=${list.id}&id1=${list._id}`
 				})
@@ -146,9 +159,9 @@
 					})
 				}
 			},
-			
+
 			// 将时间格式化
-			changeTime(e){
+			changeTime(e) {
 				var t = parseInt(e)
 				var a = new Date(t)
 				var y = a.getFullYear()
@@ -187,7 +200,7 @@
 			this.titleText = options.title
 			this.color = options.color
 			this.changeTime(options.time)
-			
+
 		},
 
 		mounted() {
@@ -335,5 +348,25 @@
 		margin-right: 20upx;
 		top: 50%;
 		margin-top: -50upx;
+	}
+
+	.bottomBtn {
+		position: fixed;
+		width: 100vw;
+		bottom: 0;
+
+		button {
+			width: 100%;
+			border-radius: 0;
+			font-size: $list-title;
+			background-color: #ec706b;
+			line-height: 100upx;
+		}
+
+		.button-hover {
+			background-color: rgba(236, 112, 107, 0.5);
+			color: rgba(255, 255, 255, 0.5)
+		}
+
 	}
 </style>

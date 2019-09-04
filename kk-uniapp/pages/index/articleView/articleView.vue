@@ -39,7 +39,7 @@
 
 						<view class="action-item">
 							<button type="primary" @click="createHb">
-								<i class="yticon iconfont kk-share centerBox"></i>
+								<i class="yticon iconfont kk-friendzone centerBox"></i>
 								<text>朋友圈</text>
 							</button>
 						</view>
@@ -51,8 +51,9 @@
 							</button>
 						</view>
 					</view>
+					<!-- 点赞分享end -->
 				</view>
-				<!-- 点赞分享end -->
+				
 
 				<view class="container">
 					<!-- 评论 -->
@@ -79,6 +80,17 @@
 				</view>
 			</view>
 		</scroll-view>
+
+		<view class="poster" v-if="posterShow" @click="hiddenPoster">
+			<view class="posterImg" @click.stop>
+				<image ref="posterImg" :src="posterImg " mode="widthFix" @click="showImg"></image>
+			</view>
+			<view class="posterBtn">
+				<view class="stopBtn" @click.stop>
+					<button type="primary" @click="saveImg">保存图片至本地</button>
+				</view>
+			</view>
+		</view>
 
 		<tki-qrcode class="hiddenBox" cid="qrcode1" ref="qrcode" :val="val" :size="size" :unit="unit" :background="background"
 		 :foreground="foreground" :pdground="pdground" :icon="icon" :iconSize="iconsize" :lv="lv" :onval="onval" :loadMake="loadMake"
@@ -127,6 +139,9 @@
 				onval: true, // val值变化时自动重新生成二维码
 				loadMake: true, // 组件加载完成后自动生成二维码
 				src: '', // 二维码生成后的图片地址或base64
+
+				posterImg: '',
+				posterShow: false, //控制分享页的显示
 				/* 分享朋友圈end */
 
 				/* 点赞 */
@@ -145,9 +160,8 @@
 		},
 		onLoad(res) {
 			let src = ''
-
 			if (res.q) {
-				let src = res.q
+				src = res.q
 				let params = this.$commen.getSplit(src)
 				this.contentId = params.id
 				this.id1 = params.id1
@@ -155,7 +169,6 @@
 				this.contentId = res.id
 				this.id1 = res.id1
 			}
-			this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}`
 			this.getContentById()
 		},
 		methods: {
@@ -207,11 +220,11 @@
 				this.$api.getCommentByContentId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log('评论接口返回数据')
-						console.log(JSON.parse(res.data.c))
+						console.log(this.$util.tryParseJson(res.data.c))
 						console.log('~~~~~~~~~~~~~~~~~~~~~~~~')
-						this.totalCount = JSON.parse(res.data.c).totalCount
-						this.contentUpvote = JSON.parse(res.data.c).contentUpvote
-						let comment = JSON.parse(res.data.c).list
+						this.totalCount = this.$util.tryParseJson(res.data.c).totalCount
+						this.contentUpvote = this.$util.tryParseJson(res.data.c).contentUpvote
+						let comment = this.$util.tryParseJson(res.data.c).list
 						for (let i = 0; i < comment.length; i++) {
 							let time = new Date(comment[i].createTime)
 							let y = time.getFullYear()
@@ -219,7 +232,7 @@
 							let d = time.getDate()
 							comment[i].time = `${y}-${m}-${d}`
 							if (comment[i].user != undefined) {
-								comment[i].userHead = JSON.parse(comment[i].user.ext).userHead
+								comment[i].userHead = this.$util.tryParseJson(comment[i].user.ext).userHead
 							} else {
 								comment[i].userHead = ''
 							}
@@ -287,88 +300,141 @@
 
 
 			/* 分享朋友圈 */
+			//开始生成海报
 			createHb() {
+				uni.showLoading({
+					title: '生成中'
+				})
+				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}`//值改变后自动调取qrR()
+			},
+			
+			qrR(res) { //生成二维码的图片地址
+				this.src = res
 				this.createCanvas()
 			},
 
-			getUpHead() {
-				let img = JSON.parse(this.upInfo.ext).userHead
-				upHead.arc(50, 50, 50, 0, 2 * Math.PI)
-				upHead.clip()
-				upHead.drawImage(img, 0, 0, 100, 100)
-				upHead.draw()
-				let that = this
-				setTimeout(function() { //延时生成图片
-					uni.canvasToTempFilePath({
-						x: 0,
-						y: 0,
-						width: 100,
-						height: 100,
-						destWidth: 100,
-						destHeight: 100,
-						canvasId: 'upHeadCanvas',
-						success: function(res) {
-							// 在H5平台下，tempFilePath 为 base64
-							that.userHead = res.tempFilePath
-						},
-						fail: function(error) {
-							console.log(error)
-						}
-					})
-				}, 300)
-			},
-
-			qrR(res) { //生成二维码的图片地址
-				this.src = res
-			},
-
+			// 生成背景
 			createCanvas() {
 				//生成背景
-				context.setFillStyle('#fff')
+				context.setFillStyle('#FFFFFF')
 				context.fillRect(0, 0, 450, 800)
-				let imgList = JSON.parse(this.detailData.data).imgList
-				console.log(imgList)
+				let imgList = this.$util.tryParseJson(this.detailData.data).imgList
+				let bgImg = ''
 				if (imgList.length > 0) {
-					context.drawImage(imgList[0].src, 0, 0, 450, 500)
+					uni.downloadFile({
+						url: imgList[0].src,
+						success: (res) => {
+							context.drawImage(res.tempFilePath, 0, 0, 450, 500)
+							this.getUpHead()
+						}
+					})
 				}
+			},
 
+			//生成up圆形头像
+			getUpHead() {
+				let img = this.$util.tryParseJson(this.upInfo.ext).userHead
+				console.log(img)
+				console.log('头像地址')
+				let imgSrc = ''
+				uni.downloadFile({
+					url: img,
+					success: (res) => {
+						imgSrc = res.tempFilePath
+						console.log(imgSrc)
+						upHead.arc(50, 50, 50, 0, 2 * Math.PI)
+						upHead.clip()
+						upHead.drawImage(imgSrc, 0, 0, 100, 100)
+						upHead.draw()
+						setTimeout(() => { //延时生成图片
+							uni.canvasToTempFilePath({
+								x: 0,
+								y: 0,
+								width: 100,
+								height: 100,
+								destWidth: 100,
+								destHeight: 100,
+								canvasId: 'upHeadCanvas',
+								success: (res) => {
+									// 在H5平台下，tempFilePath 为 base64
+									context.drawImage(res.tempFilePath, 20, 520, 50, 50)
+									this.createPoster()
+								},
+								fail: (error) => {
+									console.log(error)
+								}
+							})
+						}, 400)
+					}
+				})
+			},
+
+			//最终生成海报
+			createPoster() {
 				// 二维码图片
 				context.drawImage(this.src, 280, 520, 150, 150)
 
-				//用户头像 userHead
-				context.drawImage(this.userHead, 20, 520, 50, 50)
-
 				// 文字
-				context.setFillStyle('#000')
-				context.font = "18px Arial"
+				context.setFillStyle('#000000')
+				context.font = '18px Arial'
 				context.fillText(this.upInfo.name, 80, 550)
 
-				context.font = "20px Arial"
-				context.fillText(this.detailData.title, 20, 590)
+				context.font = '20px Arial'
+				context.fillText(this.detailData.title, 20, 610)
+
+				context.font = '16px Arial'
+				context.setFillStyle('#aaa')
+				context.fillText('长按扫码查看详情', 20, 650)
 
 				//生成画布
 				context.draw()
 
 				// let that = this
 
-				setTimeout(function() { //延时生成图片
+				setTimeout(() => { //延时生成图片
 					uni.canvasToTempFilePath({
 						x: 0,
 						y: 0,
 						width: 450,
-						height: 800,
+						height: 690,
 						destWidth: 450,
-						destHeight: 800,
+						destHeight: 690,
 						canvasId: 'firstCanvas',
-						success: function(res) {
+						success: (res) => {
+							uni.hideLoading()
 							// 在H5平台下，tempFilePath 为 base64
-							console.log(res.tempFilePath)
+							this.posterImg = res.tempFilePath
+							console.log(this.posterImg)
 						}
 					})
+					this.showHb()
 				}, 300)
-
 			},
 
+			// 展示海报
+			showHb() {
+				this.posterShow = true
+			},
+
+			//保存图片至本地
+			saveImg() {
+				uni.saveImageToPhotosAlbum({
+					filePath: this.posterImg,
+					success: function() {
+						console.log('save success');
+					}
+				});
+			},
+
+			hiddenPoster() {
+				this.posterShow = false
+			},
+
+			showImg() {
+				uni.previewImage({
+					urls: [this.posterImg]
+				})
+			},
 			/* 分享朋友圈end */
 
 			/* 获取id对应内容 */
@@ -380,7 +446,7 @@
 				};
 				this.$api.getContentById(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let detailData = JSON.parse(res.data.c)
+						let detailData = this.$util.tryParseJson(res.data.c)
 						let a = new Date(detailData.createTime)
 						let y = a.getFullYear()
 						let m = 1 + a.getMonth()
@@ -388,7 +454,7 @@
 						let time = y + '年' + m + '月' + d + '日'
 						detailData.time = time
 						this.detailData = detailData
-						this.flow = JSON.parse(detailData.data).editor
+						this.flow = this.$util.tryParseJson(detailData.data).editor
 						this.getUserById(detailData.upUserId)
 						this.getCommentByContentId()
 					}
@@ -402,9 +468,8 @@
 				}
 				this.$api.getUserById(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						console.log(JSON.parse(res.data.c))
-						this.upInfo = JSON.parse(res.data.c)
-						this.getUpHead()
+						console.log(this.$util.tryParseJson(res.data.c))
+						this.upInfo = this.$util.tryParseJson(res.data.c)
 					}
 				}))
 			}
@@ -684,5 +749,39 @@
 	.upHeadBox {
 		width: 100px;
 		height: 100px;
+	}
+
+	.poster {
+		position: fixed;
+		z-index: 3;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+
+	.posterImg {
+		position: absolute;
+		top: 20px;
+		width: 85vw;
+		left: 50%;
+		margin-left: -42.5vw;
+
+		image {
+			width: 100%;
+		}
+	}
+
+	.posterBtn {
+		position: absolute;
+		bottom: 20px;
+		font-size: $list-title;
+		width: 100vw;
+
+		.stopBtn {
+			width: 50vw;
+			margin: 0 auto;
+		}
 	}
 </style>

@@ -60,7 +60,6 @@
 						console.log(this.userInfo)
 						this.userName = this.userInfo.name
 						this.userHead = JSON.parse(this.userInfo.ext).userHead
-						this.boxShow = true
 					} else {
 						console.log('获取失败')
 					}
@@ -156,6 +155,7 @@
 					this.userName = userName
 					this.userHead = userHead
 					this.getUserById()
+					this.boxShow = true
 				} else {
 					console.log('咩都牟')
 				}
