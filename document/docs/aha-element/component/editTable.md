@@ -3,7 +3,7 @@
 - 直接在表格中对表格的数据进行修改
 
 ```html
-    <template>
+<template>
   <div>
     <div class="box">
       <div class="content-box">
@@ -69,6 +69,11 @@
   </div>
 </template>
 
+
+
+```
+
+```javascript
 <script>
 export default {
   name: "editTable",
@@ -158,6 +163,11 @@ export default {
   mounted() {}
 };
 </script>
+```
+
+
+```css
+
 
 <style scoped lang="scss">
 .box {
@@ -177,5 +187,4 @@ export default {
   line-height: 50px;
 }
 </style>
-
 ```

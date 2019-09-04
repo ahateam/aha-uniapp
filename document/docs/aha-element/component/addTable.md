@@ -5,7 +5,7 @@
 - 动态编辑的综合性表格
 
 ```html
-    <template>
+<template>
   <div>
     <div class="box">
       <div class="btn-row">
@@ -88,6 +88,11 @@
   </div>
 </template>
 
+
+
+```
+
+```javascript
 <script>
 export default {
   name: "AddTable",
@@ -198,6 +203,10 @@ export default {
 };
 </script>
 
+```
+
+```css
+
 <style scoped lang="scss">
 .box {
   width: auto;
@@ -216,5 +225,4 @@ export default {
   line-height: 50px;
 }
 </style>
-
 ```

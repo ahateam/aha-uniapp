@@ -3,7 +3,7 @@
 - 常用简单表格使用均使用此默认表格即可
 
 ```html
-    <template>
+<template>
   <div>
     <div class="box">
       <el-row>
@@ -85,7 +85,10 @@
     </div>
   </div>
 </template>
+```
 
+
+```javascript 
 <script>
 export default {
   name: "home",
@@ -170,6 +173,9 @@ export default {
 };
 </script>
 
+```
+
+```css
 <style scoped lang="scss">
 .box {
   width: auto;
@@ -204,5 +210,4 @@ export default {
   padding: 0 20px;
 }
 </style>
-
 ```
