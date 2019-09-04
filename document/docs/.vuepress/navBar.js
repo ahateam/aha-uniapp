@@ -9,6 +9,10 @@ module.exports = [
 		link: '/aha/',
 	},
 	{
+		text: 'aha-element',
+		link: '/aha-element/'
+	},
+	{
 		text: '集体uniapp',
 		link: '/jiti-uniapp/'
 	},
