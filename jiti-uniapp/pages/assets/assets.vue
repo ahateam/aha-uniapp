@@ -92,7 +92,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 	page,
 	.content {
 		background-color: #f8f8f8;

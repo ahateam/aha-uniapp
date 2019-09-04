@@ -31,7 +31,7 @@
 	}
 </script>
 
-<style>
+<style scoped lang="scss">
 	.title{
 		width: 100%;
 		height: 100rpx;

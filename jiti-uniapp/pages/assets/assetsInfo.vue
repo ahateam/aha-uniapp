@@ -118,7 +118,7 @@
 <script>
 </script>
 
-<style>
+<style scoped lang="scss">
 	page{
 		background-color: #f2f2f2;
 	}

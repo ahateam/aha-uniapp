@@ -50,7 +50,7 @@
 <script>
 </script>
 
-<style>
+<style scoped lang="scss">
 	.org-item{
 		width: 100%;
 		height: 88rpx;

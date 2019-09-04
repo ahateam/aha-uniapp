@@ -25,8 +25,7 @@
 		}
 	}
 </script>
-
-<style>
+<style scoped lang="scss">
 	.box{
 		display: flex;
 		justify-content: center;

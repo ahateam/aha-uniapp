@@ -58,7 +58,7 @@
 	}
 </script>
 
-<style>
+<style scoped lang="scss">
 	.user-title{
 		width: 100%;
 		height: 350rpx;

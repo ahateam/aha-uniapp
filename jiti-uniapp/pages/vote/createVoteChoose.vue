@@ -28,7 +28,7 @@
 	}
 </script>
 
-<style>
+<style scoped lang="scss">
 	.choose-item{
 		width: 660rpx;
 		height: 200rpx;

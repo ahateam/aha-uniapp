@@ -33,7 +33,7 @@
 	}
 </script>
 
-<style>
+<style scoped lang="scss">
 	.org-box{
 		width: 90%;
 		margin: 50rpx auto 100rpx;

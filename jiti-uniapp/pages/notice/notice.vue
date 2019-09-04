@@ -31,7 +31,7 @@
 	}
 </script>
 
-<style>
+<style scoped lang="scss">
 	.notice-item{
 		width: 100%;
 		height: 80rpx;

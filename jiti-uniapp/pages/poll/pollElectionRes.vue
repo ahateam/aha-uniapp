@@ -14,8 +14,7 @@
 
 <script>
 </script>
-
-<style>
+<style scoped lang="scss">
 	.title{
 		width: 98%;
 		border-bottom: 2rpx solid #F5F5F5;
