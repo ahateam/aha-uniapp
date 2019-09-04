@@ -1,7 +1,8 @@
 ---
-   title:修改表格数据
-   author:cometang
-   date:2019-9-4
+title: 修改表格数据
+author: cometang
+date: 2019-9-4
+
 ---
 
 - 直接在表格中对表格的数据进行修改

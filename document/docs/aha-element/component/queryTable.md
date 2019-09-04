@@ -1,8 +1,10 @@
 ---
-   title:默认表格/条件查询表格
-   author:cometang
-   date:2019-9-4
+title: 默认表格/条件查询表格
+author: cometang
+date: 2019-9-4
+
 ---
+
 
 - 常用简单表格使用均使用此默认表格即可
 

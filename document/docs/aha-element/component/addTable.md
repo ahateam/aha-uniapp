@@ -1,7 +1,8 @@
 ---
-   title:新增数据综合表格
-   author:cometang
-   date:2019-9-4
+title: 新增数据综合表格
+author: cometang
+date: 2019-9-4
+
 ---
 
 
