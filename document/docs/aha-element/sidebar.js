@@ -3,14 +3,17 @@ module.exports = [
       title:'项目介绍',
       collapsable: true,
       children:[
-        '/jiti-uniapp/info/',
+        '/aha-element/info/',
       ]
     },
     {
       title:'项目组件',
       collapsable: true,
       children:[
-        '/jiti-uniapp/component/',
+        '/aha-element/component/queryTable',
+        '/aha-element/component/editTable',
+        '/aha-element/component/addTable',
       ]
+      
     },
 ]
