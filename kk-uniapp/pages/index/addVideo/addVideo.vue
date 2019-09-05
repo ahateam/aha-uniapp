@@ -195,14 +195,14 @@
 					show:0,
 				}
 				let cnt ={
-					userId:this.userId,
-					module:[this.$constData.module],
+					upUserId:this.userId,
+					module:this.$constData.module,
 					type:parseInt(this.$constData.contentType[1].key),
 					status:parseInt(this.$constData.contentStatus[1].key),
 					// upChannelId:2345678910,
 					title:this.title,
 					data:dataUrl,
-					paid:0,
+					power:this.$constData.contentPaid[0].key,// "1"  1
 				}
 				this.$api.addContent(cnt,(res)=>{
 					if (res.data.rc == this.$util.RC.SUCCESS){

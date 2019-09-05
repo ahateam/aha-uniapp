@@ -43,12 +43,12 @@
 		},
 		data() {
 			return {
-				curry: 0,//选中标签下标
-				constData: {},//引入全局变量
+				curry: 0, //选中标签下标
+				constData: {}, //引入全局变量
 
-				id: '',//专栏id
-				titleText: 'Tony',//标题
-				titleTime: '',//专栏创建时间
+				id: '', //专栏id
+				titleText: 'Tony', //标题
+				titleTime: '', //专栏创建时间
 				color: '',
 
 				fixedBox: '',
@@ -103,7 +103,7 @@
 			getContentByChannelId() {
 
 				let cnt = {
-					module: 'kkqt', // String 隶属
+					module: this.$constData.module, // String 隶属
 					channelId: this.id, // Long 专栏id
 					status: 4, // Byte 专栏状态
 					count: 10, // Integer 
@@ -112,7 +112,7 @@
 
 				this.$api.getContentByChannelId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.list = JSON.parse(res.data.c).list
+						this.list = JSON.parse(res.data.c)
 						console.log(this.list)
 					} else {
 						console.log('error')
@@ -124,7 +124,7 @@
 				this.curry = e
 				if (f == 2) {
 					let cnt = {
-						module: 'kkqt', // String 隶属
+						module: this.$constData.module, // String 隶属
 						channelId: this.id, // Long 专栏id
 						status: 4, // Byte 专栏状态
 						count: 10, // Integer 
@@ -141,7 +141,7 @@
 					})
 				} else {
 					let cnt = {
-						module: 'kkqt', // String 隶属
+						module: this.$constData.module, // String 隶属
 						channelId: this.id, // Long 专栏id
 						status: 4, // Byte 专栏状态
 						paid: f, // Byte 是否付费

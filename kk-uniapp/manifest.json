@@ -102,7 +102,12 @@
         "setting" : {
             "urlCheck" : false
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "获取地址以便上传或者获取本地任务"
+            }
+        }
     },
     "mp-alipay" : {
         "usingComponents" : true

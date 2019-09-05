@@ -33,14 +33,13 @@
 		onLoad() {
 			let cnt = {
 				module: this.$constData.module, // String 隶属
-				status: 0, // Byte <选填> 状态
+				status: 0, // Byte <选填> 状态 默认显示0
 				// tags: tags, // String <选填> 标签
 				count: this.count, // Integer 
 				offset: this.offset, // Integer 
 			}
 			this.getTags()
-			// this.getChannel(cnt)
-			this.getLocalData()
+			this.getChannel(cnt)
 		},
 		methods: {
 			//获取假数据
@@ -83,16 +82,17 @@
 			//获取专栏标签
 			getTags() {
 				let cnt = {
-					module: this.$constData.module, // String 隶属
+					moduleId: this.$constData.module, // String 隶属
 					status: this.$constData.tagStatus[1].key, // Byte 标签状态
-					keyword: 'VIP', // String 标签
+					group: 'VIP', // String 标签
 					count: 500, // Integer 
 					offset: 0, // Integer 
 				}
-				this.$api.getTags(cnt, (res) => {
+				this.$api.getContentTag(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.tagsList = this.$util.tryParseJson(res.data.c)
 						console.log(this.tagsList)
+						// this.getLocalData()
 					} else {
 						console.log('错误')
 					}
@@ -103,39 +103,8 @@
 			getChannel(cnt) {
 				this.$api.getChannel(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let columnList = this.$util.tryParseJson(res.data.c).list
-						// 						for (let i = 0; i < columnList.length; i++) {
-						// 							let cnt1 = {
-						// 								module: 'kkqt', // String 隶属
-						// 								channelId: columnList[i].id, // Long 专栏id
-						// 								status: 4, // Byte 专栏状态
-						// 								count: 3, // Integer 
-						// 								offset: 0, // Integer 
-						// 							}
-						// 							this.$api.getContentByChannelId(cnt1, (res) => {
-						// 								let arr = []
-						// 								if (res.data.rc == this.$util.RC.SUCCESS) {
-						// 									arr = JSON.parse(res.data.c).list
-						// 									for(let n=0;n<arr.length;n++){
-						// 										if(arr[n].type == this.$constData.contentType[2].key){
-						// 											arr[n].imgList = JSON.parse(arr[n].data).imgList
-						// 										}else if(arr[n].type == this.$constData.contentType[1].key){
-						// 											arr[n].imgSrc = JSON.parse(arr[n].data).imgSrc
-						// 										}
-						// 									}
-						// 								} else {
-						// 									arr = []
-						// 								}
-						// 
-						// 								let obj = JSON.parse(JSON.stringify(columnList[i]))
-						// 								obj.child = arr
-						// 								columnList.splice(i, 1, obj)
-						// 							})
-						// 						}
-						this.$nextTick(function() {
-							this.columnList = columnList
-							console.log(this.columnList) // => '已更新'
-						})
+						this.columnList = this.$util.tryParseJson(res.data.c)
+						console.log(this.columnList)
 					}else{
 						this.columnList = []
 					}

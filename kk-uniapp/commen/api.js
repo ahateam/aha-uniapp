@@ -10,8 +10,8 @@ console.log('开始调用ctrl');
 /********************************** 内容接口 **********************************/
 // 获取标签<创建内容，保存为正常（已发布）>
 
-api.getTags = function(cnt, callback) {
-	util.call(baseUrl + '/content/getTags', cnt, callback)
+api.getContentTag = function(cnt, callback) {
+	util.call(baseUrl + '/contentTag/getContentTag', cnt, callback)
 }
 
 //根据标签获取 内容列表
@@ -21,7 +21,7 @@ api.getContents = function(cnt, callback) {
 	
 //根据id获取内容
 api.getContentById = function(cnt, callback) {
-	util.call(baseUrl + '/content/getContentById', cnt, callback)
+	util.call(baseUrl + '/content/getConntent', cnt, callback)
 }
 
 // <获取发布类型> 
@@ -37,12 +37,28 @@ api.addContent = function(cnt, callback) {
 /********************* 专栏接口 ******************************/ 
 //获取专栏列表 
 api.getChannel = function(cnt, callback) {
-	util.call(baseUrl + '/content/getChannel', cnt, callback)
+	util.call(baseUrl + '/channel/getChannels', cnt, callback)
 }
 
 //获取专栏下内容 
 api.getContentByChannelId = function(cnt, callback) {
-	util.call(baseUrl + '/content/getContentByChannelId', cnt, callback)
+	util.call(baseUrl + '/channel/getContentByChannelId', cnt, callback)
+}
+
+/********************* 任务接口 ******************************/ 
+//获取任务分类导航列表 
+api.getContentTagGroupTypes = function(cnt, callback) {
+	util.call(baseUrl + '/content/getContentTagGroupTypes', cnt, callback)
+}
+
+//获取任务列表 
+api.getTask = function(cnt, callback) {
+	util.call(baseUrl + '/content/getTask', cnt, callback)
+}
+
+//获取本地任务
+api.getTaskByGeo = function(cnt, callback) {
+	util.call(baseUrl + '/content/getTaskByGeo', cnt, callback)
 }
 
 /************************ 用户相关接口 **************************/
@@ -75,5 +91,9 @@ api.getCommentByContentId = function(cnt, callback) {
 api.createComment = function(cnt, callback) {
 	util.call(baseUrl + '/content/createComment', cnt, callback)
 }
-
+/* ***********************************模板相关 */
+//获取模板列表 
+api.getTemplate = function(cnt, callback) {
+	util.call(baseUrl + '/content/getTemplate', cnt, callback)
+}
 export default api

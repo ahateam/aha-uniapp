@@ -90,18 +90,22 @@
 			}
 
 			this.userId = uni.getStorageSync('userId')
-
+			
 			// console.log(this.constData)
 			/* 获取标签列表*/
 			let cnt = {
-				module: this.constData.module, // String 隶属
+				moduleId: this.constData.module, // String 隶属
 				status: this.constData.tagStatus[1].key, // Byte 标签状态
-				keyword: '首页', // String 标签
+				group: '首页', // String 标签
 				count: 500, // Integer 
 				offset: 0, // Integer 
 			}
 			this.getTagsList(cnt)
 			this.returnTabBar()
+			
+			/* 根据默认标签获取内容列表*/
+			
+		
 		},
 		methods: {
 			//获得元素的size
@@ -117,6 +121,7 @@
 					}).exec();
 				});
 			},
+			
 			//按钮点击跳转
 			trigger(e) {
 				if (this.userId == '' || this.userId == '1234567890') {
@@ -139,7 +144,7 @@
 				}
 			},
 
-			//获取按钮数据
+			//获取发布按钮数据
 			returnTabBar() {
 				let cnt = {}
 				this.$api.returnTabBar(cnt, (res => {
@@ -153,7 +158,7 @@
 
 			/* 获取标签列表*/
 			getTagsList(cnt) {
-				this.$api.getTags(cnt, (res) => {
+				this.$api.getContentTag(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let tagsList = this.$util.tryParseJson(res.data.c)
 						for (let i = 0; i < tagsList.length; i++) {
@@ -161,14 +166,13 @@
 							tagsList[i].page = 1
 						}
 						this.tagsList = tagsList
-						/* 根据默认标签获取内容列表*/
 						let cnt1 = {
-							userId: this.userId, // Long 用户编号
 							module: this.constData.module, // String 所属模块
 							// tags: this.tagActiveId,
-							status: this.constData.contentStatus[4].key,
+							status: parseInt(this.constData.contentStatus[4].key),
 							count: this.count,
-							offset: this.offset
+							offset: this.offset,
+							power:this.$constData.contentPaid[0].key
 						}
 						this.getContentsByTag(cnt1)
 					} else {

@@ -49,9 +49,9 @@
 							duration: 1500,
 							icon: 'none'
 						});
-					}else{
+					} else {
 						uni.showLoading({
-						    title: '上传中~'
+							title: '上传中~'
 						});
 						this.addArticle()
 					}
@@ -83,7 +83,7 @@
 				}
 				this.pushImg(editor)
 			},
-			
+
 			pushImg(editor) {
 				console.log(editor)
 				for (let i = 0; i < editor.length; i++) { //找出编辑器中的图片添加至新数组便于显示
@@ -97,7 +97,7 @@
 				console.log(this.imgList)
 				this.upContent(editor)
 			},
-			
+
 			upContent(editor) {
 				let data = {
 					url: '{}',
@@ -107,13 +107,15 @@
 				}
 				data = JSON.stringify(data)
 				let cnt = {
-					userId: parseInt(this.userId), // Long 用户编号
-					module: [this.$constData.module], // String 用户编号
-					status: parseInt(this.$constData.contentStatus[1].key), // Byte 状态Content.STATUS
+					upUserId: parseInt(this.userId), // Long 用户编号
+					module: this.$constData.module, // String 用户编号
+					status: this.$constData.contentStatus[1].key, // Byte 状态Content.STATUS
 					// upChannelId: upChannelId, // Long <选填> 上传专栏编号
 					title: this.title, // String 标题
 					data: data, // String 数据（JSON）
-					paid: parseInt(this.$constData.contentPaid[0].key), // Byte 是否付费 0免费  1付费
+					power: this.$constData.contentPaid[0].key, // Byte 是否付费 0免费  1付费
+					// proviteData: proviteData, // String <选填> 私密信息
+					// ext: ext, // String <选填> 扩展信息
 				}
 				if (this.imgList.length > 0) {
 					cnt.type = this.$constData.contentType[2].key
@@ -126,7 +128,7 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.reLaunch({
 							url: '/pages/index/index'
-						});
+						})
 						uni.hideLoading()
 						uni.showToast({
 							title: '添加成功',
@@ -139,7 +141,7 @@
 			}
 		},
 		onLoad() {
-			this.userId =0 + uni.getStorageSync('userId')
+			this.userId = 0 + uni.getStorageSync('userId')
 		}
 	}
 </script>

@@ -548,10 +548,8 @@
 			/* 获取id对应内容 */
 			getContentById() {
 				let cnt = {
-					userId: uni.getStorageSync('userId'), // Long 用户编号
-					id: this.id1, // String 片区编号
-					contentId: this.contentId, // Long 内容编号
-				};
+					id: this.contentId, // Long 内容编号
+				}
 				this.$api.getContentById(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let detailData = JSON.parse(res.data.c)
