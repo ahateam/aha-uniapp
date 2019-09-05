@@ -41,4 +41,20 @@ api.getVoteByUserRoles = function (cnt,callback) {
 api.getVotes = function (cnt,callback) {
     util.call(baseUrl+'/vote/getVotes', cnt, callback)
 }
+//投票详情-计算票数
+api.getVoteDetail = function (cnt,callback) {
+    util.call(baseUrl+'/vote/getVoteDetail', cnt, callback)
+}
+//投票的选项列表
+api.getVoteOptions = function (cnt,callback) {
+    util.call(baseUrl+'/vote/getVoteOptions', cnt, callback)
+}
+//获取用户的选票
+api.getVoteTicket = function (cnt,callback) {
+    util.call(baseUrl+'/vote/getVoteTicket', cnt, callback)
+}
+
+
+
+
 export default api

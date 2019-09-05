@@ -1,98 +1,356 @@
 <template>
 	<view>
-		<view class="title">1.投票标题</view>
-		<view class="vote-item">
-			<view class="max_text">最多可以选投: 3个选项</view>
-			<view class="vote-item-status">
-				<text style="color:#40c9c6">表决未完成</text>
-				<!-- <span v-if=false style="color: #909399">表决失效</text>
-				<text v-if=false style="color: #67C23A">表决成功</text>
-				<text v-if=false style="color: #F56C6C">表决失败</text> -->
+		<view class="header-box">
+			<view class="title-box">
+				<span v-if="pollInfo.template == '1'" class="poll-icon-color1 iconfont icon-paimingbiaoqian"></span>
+				<span v-if="pollInfo.template == '0'" class="poll-icon-color iconfont icon-user-list"></span>
+				{{pollInfo.title}}
 			</view>
 		</view>
-		<view class="vote_text">应到总人数：82 人，已参投有效人数：0 人，已投票数：0票，其中弃权人数：0 人，未参投人数：82 人</view>
-		<view class="vote_content">
-			<text>投票内容。。。。。松林镇松林村股份经济合作社章程（草案） 第一章 总则 第一条 为规范本社股份经济合作社(以下简称合作社)的行为，保障合作社及其股东的合法权益，根据《农业农居部 中国人民银行国家 市场监督管理总局关于开展农居集体经济组织登记赋码工作的通知（农经发〔2018〕4号）》和有关法律法规</text>
-		</view>
-		<view class="vote_option">
-			<view class="vote_option_text">选项1</view>
-			<view class="vote_option_text">选项2</view>
-			<view class="vote_option_text">选项2</view>
-			<view class="vote_option_text">选项2</view>
-			<view class="vote_option_text">选项3</view>
-		</view>
-		<view class="vote_btn">
-			<view class="vote_btn_sub">
-				<button type="primary">提交投票</button>
+		<view class="poll-info">
+			<view class="info-status">
+				<view class="info-xuantou">
+				 <span style="color:#40c9c6" v-if="status == '-1'">投票未完成</span>
+                            <span v-if="status =='0'" style="color: #909399">投票失效</span>
+                            <span v-if="status =='1'" style="color: #67C23A">投票成功</span>
+                            <span v-if="status =='2'" style="color: #F56C6C">投票失败</span>
+
+				</view>
+				<view class="info-status-text">
+					最多选投:{{activeNums}} 项
+				</view>
 			</view>
-			<view class="vote_btn_res">
-				<button type="default">报告单</button>
+			<view class="info-text">
+				应到总人数：{{quorum}} 人，已参投有效人数：{{ticketCount}} 人，已投票数：{{opsNum}}票，其中弃权人数：{{waiver}} 人，未参投人数：{{quorum-ticketCount}} 人
 			</view>
+		</view>
+		<view class="poll-content">
+			<view class="poll-content-text">
+				{{pollInfo.remark}}
+			</view>
+		</view>
+		<view class="poll-item-box">
+			<view v-for="(item,index) in pollOptions" :key="index">
+				<view v-for="(item1,index1) in optionActive" :key="index1">
+					<!-- 未被选中的选项样式 -->
+					<view v-if="index ==index1 && item1==false" @click="voteBtn(item,item1,index1)">
+						<view class="poll-item poll-item-unActive">
+							{{item.title}}
+						</view>
+					</view>
+					<!-- 被选中的选项样式 -->
+					<view v-if="index ==index1 && item1==true" @click="voteBtn(item,item1,index1)">
+						<view class="poll-item poll-item-active">
+							{{item.title}}
+						</view>
+					</view>
+				</view>
+			</view>
+			<view style="clear: both;"></view>
+		</view>
+		<view class="poll-btn">
+			222
 		</view>
 	</view>
 </template>
 
 <script>
+	export default {
+		name: 'pollInfo',
+		data() {
+			return {
+				pollInfo: {},
+				pollDetail: {},
+				pollOptions: [],
+				optionActive: [],
+
+				/*初始化投票统计信息*/
+				quorum: 0, //应到人数
+				opsNum: 0, //已投票数
+				waiver: 0, //弃权人数
+				ticketCount: 0, //已投人数
+				activeNums: 0, //最大可选的选项数
+				/* 初始化选项状态相关*/
+				isPollShow: false, //是否已经投票
+				isBtnShow: false, //是否显示提交投票按钮
+				/*初始化投票状态相关*/
+				status:-1,
+				successData:[],
+
+			}
+		},
+		methods: {
+
+			/*获取投票详情*/
+			getVoteDetail(cnt) {
+				this.$api.getVoteDetail(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.pollDetail = this.$util.tryParseJson(res.data.c)
+						console.log('------------')
+						console.log(this.pollDetail)
+						this.ticketCount = this.pollDetail.ticketCount
+						this.quorum = this.pollDetail.vote.quorum
+						//计算弃权人数
+						for (let i = 0; i < this.pollDetail.ops.length; i++) {
+							if (this.pollDetail.ops[i].title == '弃权') {
+								this.waiver += this.pollDetail.ops[i].ballotCount
+							}
+							this.opsNum += this.pollDetail.ops[i].ballotCount
+						}
+					}
+				})
+			},
+			/*获取投票的选项列表*/
+			getVoteOptions(cnt) {
+				this.$api.getVoteOptions(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.pollOptions = this.$util.tryParseJson(res.data.c)
+						let cnt = {
+							voteId: this.pollInfo.id,
+							userId: JSON.parse(uni.getStorageSync('userInfo')).id,
+						}
+						console.log(cnt)
+						this.getVoteTicket(cnt)
+					}
+				})
+			},
+
+			/*获取用户的选票*/
+			getVoteTicket(cnt) {
+				this.$api.getVoteTicket(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let userTicket = this.$util.tryParseJson(res.data.c)
+						if (!userTicket) { //没有投票
+							this.voteShow = false //未投票
+							this.subBtnShow = true //显示投票按钮
+							//设置为所有的选项均为未投票
+							for (let i = 0; i < this.pollOptions.length + 1; i++) {
+								this.optionActive.push(false)
+							}
+						} else { //已经投票了的需要打标记
+							this.voteShow = true //已投票
+							this.subBtnShow = false //隐藏投票按钮
+							//设置为所有的选项均为未投票
+							for (let i = 0; i < this.pollOptions.length + 1; i++) {
+								this.optionActive.push(false)
+							}
+							//已投选项的id列表
+							let selection = JSON.parse(userTicket.selection)
+							if (selection.length == 0) {
+								console.log('弃权')
+							} else {
+								//已经投票的所有选项打上对应的标记
+								for (let i = 0; i < selection.length; i++) { //投有效票的展示
+									for (let j = 0; j < voteOptionArr.length; j++) {
+										if (selection[i] == voteOptionArr[j].id) {
+											this.optionActive[j] = true
+										}
+									}
+								}
+							}
+						}
+					}
+					this.getStatus()
+				})
+			},
+
+			/** 点击选项*/
+			voteBtn(item, item1, index1) {
+				if (item.title == '弃权') { //单击弃权按钮
+					for (let i = 0; i < this.optionActive.length; i++) {
+						this.$set(this.optionActive, i, false)
+					}
+					if (item1 == false) {
+						this.$set(this.optionActive, index1, true)
+						this.activeNums = 1
+					} else {
+						this.$set(this.optionActive, index1, false)
+						this.activeNums = this.pollInfo.choiceCount
+					}
+				} else { //非弃权按钮
+					let count = 0
+					for (let i = 0; i < this.optionActive.length; i++) {
+						if (this.optionActive[i] == true) {
+							count = count + 1
+						}
+					}
+					if (item1 == false) {
+						if (count == this.activeNums) {
+							uni.showToast({
+								icon:'none',
+								title: '选项数量不能超出限制',
+								duration: 500
+							});
+						} else {
+							this.$set(this.optionActive, index1, true)
+						}
+					} else {
+						this.$set(this.optionActive, index1, false)
+					}
+				}
+			},
+			
+			/** 计算投票状态*/
+			getStatus(){
+				  this.successData = []
+                let ops = this.pollDetail.ops
+			
+				let  passData = Math.ceil((this.quorum *(parseFloat(this.pollInfo.effectiveRatio)/100)))
+                let  failData =  Math.ceil(this.quorum *(parseFloat(this.pollInfo.failureRatio)/100))
+				
+				
+				
+                if(this.waiver >=failData){     //无效
+                    this.status = 0
+                }else{                          //有效
+                    let  successType = 0  //默认是不成功
+					
+                    for(let i=0;i<ops.length;i++){
+                        if(ops[i].ballotCount >= passData) {
+                            successType = 1         //成功的中间变量
+                        }
+                    }
+					
+                    if(successType == 1){
+						
+                        for(let i=0;i<ops.length;i++){
+                            if(ops[i].ballotCount >= passData && this.ticketCount >= failData  ){
+                                this.status = 1                 //通过
+                                this.successData.push(ops[i].title)
+                            }
+                        }
+                    }else{
+                        if(this.ticketCount ==this.quorum){     //人到齐了
+                            this.status = 2             //失败
+                        }else{
+                            this.status = -1             //等待投票
+                        }
+                    }
+                }
+				
+			}
+
+
+
+
+		},
+		onLoad() {
+			let poll = uni.getStorageSync('poll')
+			this.pollInfo = JSON.parse(poll)
+			this.activeNums = this.pollInfo.choiceCount
+			console.log(this.pollInfo)
+
+			let cnt = {
+				voteId: this.pollInfo.id
+			}
+			this.getVoteDetail(cnt)
+			this.getVoteOptions(cnt)
+			
+		}
+
+	}
 </script>
 
 <style scoped lang="scss">
-	.title{
-		width: 98%;
-		border-bottom: 2rpx solid #F5F5F5;
-		margin: 10rpx auto;
+	.poll-icon-color {
+		color: $jiti-color-purple;
 	}
-	.vote-item{
-		width: 98%;
-		height: 40rpx;
-		margin: 10rpx auto;
-		font-size: 24rpx;
+
+	.poll-icon-color1 {
+		color: $jiti-color-blue;
+	}
+
+	.header-box {
+		width: auto;
+		padding: 20rpx;
+		border-bottom: 2rpx solid #e8e8e8;
+	}
+
+	.title-box {
+		width: auto;
+		line-height: 50rpx;
 		color: #666;
-		display: flex;
-		justify-content: space-between;
+		font-size: 32rpx;
+
+		span {
+			margin-right: 15rpx;
+		}
 	}
-	.max_text{
-		width: 300rpx;
-		height: 40rpx;
+
+	/** poll 基础信息部分*/
+
+	.info-status {
+		padding: 20rpx;
+		width: auto;
+		height: 60rpx;
+
+		.info-xuantou {
+			float: left;
+			line-height: 60rpx;
+			font-size: 28rpx;
+			color: #666;
+		}
+
+		.info-status-text {
+			float: right;
+			line-height: 60rpx;
+			font-size: 28rpx;
+			color: #666;
+		}
 	}
-	.vote_text{
-		width: 98%;
-		margin: 40rpx auto;
-		background-color: #fff7cc;
-		border: 2rpx solid ##fceea0;
-		border-radius: 5%;
-		color: #f56723;
-		font-size: 28rpx;
-	}
-	.vote_content{
-		width: 98%;
+
+	.info-text {
 		margin: 0 auto;
-		font-size: 32rpx;
+		width: 90%;
+		background: #fff7cc;
+		padding: 20rpx;
+		border-radius: 15rpx;
+		font-size: 28rpx;
+		line-height: 40rpx;
+		color: #f56723;
 	}
-	.vote_option{
-		width: 80%;
-		margin: 40rpx auto;
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		align-items: center;
+
+	.poll-content {
+		width: auto;
+		padding: 40rpx;
+
+		.poll-content-text {
+			width: auto;
+			line-height: 40rpx;
+			color: #666;
+			font-size: 28rpx;
+		}
 	}
-	.vote_option view{
-		width: 140rpx;
-		height: 88rpx;
-		border: 2rpx solid #44bb00;
-		color: #44bb00;
-		font-size: 32rpx;
-		text-align: center;
-		line-height: 88rpx;
-		margin: 10rpx;
+
+	/** 投票列表项相关*/
+	.poll-item-box {
+		width: auto;
+		margin-top: 10rpx;
+
+		.poll-item {
+			float: left;
+			margin: 20rpx 0 0 40rpx;
+			padding: 20rpx 40rpx;
+			font-size: 28rpx;
+			border-radius: 15rpx;
+		}
 	}
-	.vote_btn{
-		width: 80%;
-		margin: 40rpx auto;
-		
+
+	.poll-item-unActive {
+		background: #fff;
+		color: $jiti-color-blue;
+		border: 2rpx solid $jiti-color-blue;
 	}
-	.vote_btn view{
-		margin-bottom: 40rpx;
+
+	.poll-item-active {
+		background: $jiti-color-blue;
+		color: #fff;
+		border: 2rpx solid $jiti-color-blue;
 	}
-	
+
+	/* 按钮相关*/
+	.poll-btn {
+		padding: 20rpx;
+		margin-top: 40rpx;
+	}
 </style>

@@ -11,14 +11,15 @@
 			<view class="loading-box" v-if="tabCurrentIndex ==0">
 				<view v-if="voteList.length>0">
 					<view v-for="(item,index) in voteList" :key="index">
-						<view class="vote-item-box">
+
+						<view class="vote-item-box" @click="checkItemBtn(item)">
 							<view class="vote-item-title">
 								<view class="vote-item-note">
 									<span v-if="item.template == '1'">
-										<i class="iconfont icon-paimingbiaoqian" style="color: #fb7eb8;"></i>
+										<i class="poll-icon-color1 iconfont icon-paimingbiaoqian"></i>
 									</span>
 									<span v-if="item.template == '0'">
-										<i class="iconfont icon-paimingbiaoqian" style="color: #40c9c6;"></i>
+										<i class="poll-icon-color iconfont icon-user-list"></i>
 									</span>
 								</view>
 								<view class="vote-item-text">
@@ -28,19 +29,20 @@
 							</view>
 
 							<view class="vote-item-content">
-								<view class="vote-item-btn" @click="voteBtn(item)" v-if="item.status == '0' ">
+								<view :class="item.template=='0'?'vote-item-btn poll-box-bg1':'vote-item-btn poll-box-bg'" v-if="item.status == '0' ">
 									<span>
-										立即投票
+										投票
 									</span>
 								</view>
-								<view class="vote-item-btn" @click="voteInfoBtn(item)" v-if="item.status == '1' ">
+
+								<view :class="item.template=='0'?'vote-item-btn poll-box-bg1':'vote-item-btn poll-box-bg'" v-if="item.status == '1' ">
 									<span>
-										查看详情
+										详情
 									</span>
 								</view>
-								<view class="vote-item-btn" @click="voteBtn(item)" v-if="item.status != '0'  && item.status != '1'">
+								<view :class="item.template=='0'?'vote-item-btn poll-box-bg1':'vote-item-btn poll-box-bg'" v-if="item.status != '0'  && item.status != '1'">
 									<span>
-										查看结果
+										结果
 									</span>
 								</view>
 								<view class="vote-item-info">{{item.remark}}</view>
@@ -53,14 +55,14 @@
 			<view class="load-box" v-if="tabCurrentIndex ==1">
 				<view v-if="voteList.length>0">
 					<view v-for="(item,index) in voteList" :key="index">
-						<view class="vote-item-box">
+						<view class="vote-item-box" @click="checkItemBtn(item)">
 							<view class="vote-item-title">
 								<view class="vote-item-note">
 									<span v-if="item.template == '1'">
-										<i class="iconfont icon-paimingbiaoqian" style="color: #fb7eb8;"></i>
+										<i class="poll-icon-color1 iconfont icon-paimingbiaoqian"></i>
 									</span>
 									<span v-if="item.template == '0'">
-										<i class="iconfont icon-paimingbiaoqian" style="color: #40c9c6;"></i>
+										<i class="poll-icon-color iconfont icon-user-list"></i>
 									</span>
 								</view>
 								<view class="vote-item-text">
@@ -70,21 +72,13 @@
 							</view>
 
 							<view class="vote-item-content">
-								<view class="vote-item-btn" @click="voteBtn(item)" v-if="item.status == '0' ">
+
+								<view :class="item.template=='0'?'vote-item-btn poll-box-bg1':'vote-item-btn poll-box-bg'">
 									<span>
-										立即投票
+										结果
 									</span>
 								</view>
-								<view class="vote-item-btn" @click="voteInfoBtn(item)" v-if="item.status == '1' ">
-									<span>
-										查看详情
-									</span>
-								</view>
-								<view class="vote-item-btn" @click="voteBtn(item)" v-if="item.status != '0'  && item.status != '1'">
-									<span>
-										查看结果
-									</span>
-								</view>
+
 								<view class="vote-item-info">{{item.remark}}</view>
 							</view>
 						</view>
@@ -95,14 +89,14 @@
 			<view class="load-box" v-if="tabCurrentIndex ==2">
 				<view v-if="voteList.length>0">
 					<view v-for="(item,index) in voteList" :key="index">
-						<view class="vote-item-box">
+						<view class="vote-item-box" @click="checkItemBtn(item)">
 							<view class="vote-item-title">
 								<view class="vote-item-note">
 									<span v-if="item.template == '1'">
-										<i class="iconfont icon-paimingbiaoqian" style="color: #fb7eb8;"></i>
+										<i class="poll-icon-color1 iconfont icon-paimingbiaoqian"></i>
 									</span>
 									<span v-if="item.template == '0'">
-										<i class="iconfont icon-paimingbiaoqian" style="color: #40c9c6;"></i>
+										<i class="poll-icon-color iconfont icon-user-list"></i>
 									</span>
 								</view>
 								<view class="vote-item-text">
@@ -112,21 +106,12 @@
 							</view>
 
 							<view class="vote-item-content">
-								<view class="vote-item-btn" @click="voteBtn(item)" v-if="item.status == '0' ">
+								<view :class="item.template=='0'?'vote-item-btn poll-box-bg1':'vote-item-btn poll-box-bg'">
 									<span>
-										立即投票
+										详情
 									</span>
 								</view>
-								<view class="vote-item-btn" @click="voteInfoBtn(item)" v-if="item.status == '1' ">
-									<span>
-										查看详情
-									</span>
-								</view>
-								<view class="vote-item-btn" @click="voteBtn(item)" v-if="item.status != '0'  && item.status != '1'">
-									<span>
-										查看结果
-									</span>
-								</view>
+
 								<view class="vote-item-info">{{item.remark}}</view>
 							</view>
 						</view>
@@ -157,15 +142,12 @@
 				}], //标签列表
 				tabCurrentIndex: 0, //当前选项卡索引
 				scrollLeft: 0, //顶部选项卡左滑距离,
-
-
 				orgUserInfo: '',
 				//上拉加载 ---分页
 				offset: 0,
-				count:10,
+				count: 10,
 				page: 1,
 				pageOver: false, //还能不能分页
-
 				voteList: [],
 
 			}
@@ -181,8 +163,6 @@
 						data = []
 					}
 					this.voteList = this.voteList.concat(data)
-					console.log('---------------------------')
-					console.log(this.voteList);
 					if (data.length < this.count) {
 						this.pageOver = true;
 					} else {
@@ -228,15 +208,11 @@
 
 			/* 触发改变选中标签*/
 			changeTag(_index) {
-
-
 				this.tabCurrentIndex = _index
-
 				this.page = 1;
 				this.voteList = [];
 				this.loading = false;
 				this.pageOver = false;
-
 				if (_index == 0) {
 					let cnt = {
 						orgId: this.orgUserInfo.orgId, // Long 组织编号
@@ -263,26 +239,21 @@
 					};
 					this.getVotes(cnt);
 				}
-
-
 			},
 
-
-
-			/** 立即投票+查看结果 */
-			voteBtn(item) {
-				console.log(item)
-			},
-			/** 查看详情*/
-			voteInfoBtn(item) {
-				console.log(item)
+			/** 选中投票*/
+			checkItemBtn(item) {
+				uni.setStorageSync('poll', JSON.stringify(item));
+				uni.navigateTo({
+					url: './pollInfo'
+				});
 			}
 
 		},
 		onLoad() {
 
 			this.orgUserInfo = JSON.parse(uni.getStorageSync('orgUserInfo'))
-			console.log(this.orgUserInfo)
+
 			let cnt = {
 				orgId: this.orgUserInfo.orgId, // Long 组织编号
 				userId: this.orgUserInfo.id, // Long 用户编号
@@ -296,56 +267,42 @@
 		onReachBottom() {
 			// 异步更新数据
 			if (this.tabCurrentIndex == 0) {
-			
-					if (this.pageOver == false) {
-						this.page = this.page + 1;
-						let cnt = {
-							orgId:  this.orgUserInfo.orgId, // Long 组织编号
-							userId:  this.orgUserInfo.id, // Long 用户编号
-							roles:  this.orgUserInfo.orgRoles, // String 角色
-							count: this.count,
-							offset: (this.page - 1) * this.count
-						};
-						this.getNotVoteByUserRoles(cnt);
-						
-					} else {
-						this.loading = false;
-					}
-		
+
+				this.page = this.page + 1;
+				let cnt = {
+					orgId: this.orgUserInfo.orgId, // Long 组织编号
+					userId: this.orgUserInfo.id, // Long 用户编号
+					roles: this.orgUserInfo.orgRoles, // String 角色
+					count: this.count,
+					offset: (this.page - 1) * this.count
+				};
+				this.getNotVoteByUserRoles(cnt);
+
+
 			} else if (this.tabCurrentIndex == 1) {
-				
-					if (this.finished == false) {
-						this.page = this.page + 1;
-						let cnt = {
-							orgId:  this.orgUserInfo.orgId, // Long 组织编号
-							userId:  this.orgUserInfo.id, // Long 用户编号
-							roles:  this.orgUserInfo.orgRoles, // String 角色
-							count: this.count,
-							offset: (this.page - 1) * this.count
-						};
-						this.getVoteByUserRoles(cnt);
-						// 加载状态结束
-						this.loading = false;
-					} else {
-						this.loading = false;
-					}
-		
+
+				this.page = this.page + 1;
+				let cnt = {
+					orgId: this.orgUserInfo.orgId, // Long 组织编号
+					userId: this.orgUserInfo.id, // Long 用户编号
+					roles: this.orgUserInfo.orgRoles, // String 角色
+					count: this.count,
+					offset: (this.page - 1) * this.count
+				};
+				this.getVoteByUserRoles(cnt);
+
+
+
 			} else if (this.tabCurrentIndex == 2) {
-				
-					if (this.pageOver == false) {
-						this.page = this.page + 1;
-						let cnt = {
-							orgId:  this.orgUserInfo.orgId, // Long 组织编号
-							count: this.count, // Integer
-							offset: (this.page - 1) * this.count
-						};
-						this.getVotes(cnt);
-						// 加载状态结束
-						this.loading = false;
-					} else {
-						this.loading = false;
-					}
-		
+				this.page = this.page + 1;
+				let cnt = {
+					orgId: this.orgUserInfo.orgId, // Long 组织编号
+					count: this.count, // Integer
+					offset: (this.page - 1) * this.count
+				};
+				this.getVotes(cnt);
+
+
 			}
 		}
 
@@ -405,13 +362,29 @@
 		padding: 90rpx 30rpx 30rpx 30rpx;
 	}
 
+	.poll-icon-color {
+		color: $jiti-color-purple;
+	}
+
+	.poll-icon-color1 {
+		color: $jiti-color-blue;
+	}
+
+	.poll-box-bg {
+		background: $jiti-color-blue;
+	}
+
+	.poll-box-bg1 {
+		background: $jiti-color-purple;
+	}
+
 	.vote-item-box {
-		width: 90%;
+		width: 96%;
 		margin: 0 auto;
 		height: 140rpx;
 		margin-top: 20rpx;
 		border-radius: 10rpx;
-		padding: 0 0 10rpx;
+		padding: 30rpx 0 20rpx 20rpx;
 		box-shadow: 0 0 40rpx #ccc;
 
 		.vote-item-title {
@@ -423,6 +396,10 @@
 				float: left;
 				width: 60rpx;
 				height: 60rpx;
+
+				i {
+					font-size: 40rpx;
+				}
 			}
 
 			.vote-item-text {
@@ -463,12 +440,15 @@
 
 			.vote-item-btn {
 				float: right;
-				width: 100rpx;
-				height: 80rpx;
-				font-size: 28rpx;
+				padding: 0 10rpx;
+				height: 50rpx;
+				font-size: 24rpx;
 				color: #666;
 				text-align: center;
-				line-height: 80rpx;
+				line-height: 50rpx;
+				border-radius: 25rpx 0 0 25rpx;
+				color: #fff;
+				margin-top: 30rpx;
 			}
 
 			.vote-item-info {
