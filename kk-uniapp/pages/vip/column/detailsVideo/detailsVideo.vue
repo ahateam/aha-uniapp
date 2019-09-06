@@ -15,9 +15,9 @@
 					<!-- 点赞评论等操作 -->
 					<view class="actions">
 						<view class="action-item">
-							<button type="primary" @click="upvote(0,contentId,0)">
+							<button type="primary" @click="upvote(contentId)">
 								<i class="yticon iconfont kk-dianzan"></i>
-								<text>{{contentUpvote}}</text>
+								<text>{{contentUpvote}}赞</text>
 							</button>
 						</view>
 						<view class="action-item">
@@ -26,14 +26,14 @@
 								<text>分享</text>
 							</button>
 						</view>
-
+					
 						<view class="action-item">
 							<button type="primary" @click="createHb">
 								<i class="yticon iconfont kk-friendzone centerBox"></i>
 								<text>朋友圈</text>
 							</button>
 						</view>
-
+					
 						<view class="action-item">
 							<button type="primary">
 								<i class="yticon iconfont kk-shoucang1"></i>
@@ -105,7 +105,7 @@
 									<text>{{item.commentTotalCount}}</text>
 									<text class="yticon iconfont kk-shoucang1"></text>
 								</view>
-								<text class="content">{{item.commentContent}}</text>
+								<text class="content">{{item.text}}</text>
 							</view>
 						</view>
 					</view>
@@ -202,6 +202,7 @@
 				this.id1 = res.id1
 			}
 			this.getContentById()
+			this.getAppraiseCount()
 		},
 		methods: {
 			/* 朋友圈分享 */
@@ -343,31 +344,35 @@
 			/* 评论 */
 			createComment() {
 				let userId = uni.getStorageSync('userId')
-				if (userId == '' || userId == '1234567890') {
-					uni.showToast({
-						title: '登录后可评论',
-						icon: 'none'
-					})
-					return
-				}
-
+				// if (userId == '' || userId == '1234567890') {
+				// 	uni.showToast({
+				// 		title: '登录后可评论',
+				// 		icon: 'none'
+				// 	})
+				// 	return
+				// }
 				let cnt = {
-					module: this.$constData.module, // String 隶属
-					contentId: this.contentId, // Long 内容编号
-					userId: userId, // Long 用户编号
-					commentContent: this.commentContent, // String 评论内容
-					data: [], // String 其他数据
-				};
+					// module: this.$constData.module, // String 隶属
+					ownerId: this.contentId, // Long 内容编号
+					upUserId: userId, // Long 用户编号
+					text: this.commentContent, // String 评论内容
+					// data: [], // String 其他数据
+					atUserId: 12321321321, // Long <选填> @对象编号
+					atUserName: '233', // String <选填> @对象名称
+					title: 'title', // String <选填> 标题
+					ext: '123', // String <选填> 扩展
+				}
 				this.$api.createComment(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '评论成功',
 							duration: 1000
 						});
+						this.hidden = true
 						this.commentContent = ''
-						setTimeout(function() {
+						setTimeout(() => {
 							this.getCommentByContentId()
-						}, 4000);
+						}, 4000)
 					} else {
 						uni.showToast({
 							title: "评论失败",
@@ -380,19 +385,21 @@
 			//获取评论列表
 			getCommentByContentId() {
 				let cnt = {
-					module: this.$constData.module, // String 隶属
-					contentId: this.contentId, // Long 内容编号
+					// module: this.$constData.module, // String 隶属
+					ownerId: this.contentId, // Long 内容编号
+					// status: status, // Byte <选填> 审核状态，不填表示全部，STATUS_UNEXAMINED = 0未审核，STATUS_ACCEPT = 1已通过，STATUS_REJECT = 2已回绝
+					orderDesc: true, // Boolean 是否降序（较新的排前面）
 					count: 10, // Integer 
 					offset: 0, // Integer 
 				};
 				this.$api.getCommentByContentId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log('评论接口返回数据')
-						console.log(JSON.parse(res.data.c))
+						console.log(this.$util.tryParseJson(res.data.c))
 						console.log('~~~~~~~~~~~~~~~~~~~~~~~~')
-						this.totalCount = JSON.parse(res.data.c).totalCount
-						this.contentUpvote = JSON.parse(res.data.c).contentUpvote
-						let comment = JSON.parse(res.data.c).list
+						this.totalCount = this.$util.tryParseJson(res.data.c).totalCount
+						this.contentUpvote = this.$util.tryParseJson(res.data.c).contentUpvote
+						let comment = this.$util.tryParseJson(res.data.c).list
 						for (let i = 0; i < comment.length; i++) {
 							let time = new Date(comment[i].createTime)
 							let y = time.getFullYear()
@@ -400,7 +407,7 @@
 							let d = time.getDate()
 							comment[i].time = `${y}-${m}-${d}`
 							if (comment[i].user != undefined) {
-								comment[i].userHead = JSON.parse(comment[i].user.ext).userHead
+								comment[i].userHead = this.$util.tryParseJson(comment[i].user.ext).userHead
 							} else {
 								comment[i].userHead = ''
 							}
@@ -416,50 +423,58 @@
 				})
 			},
 			/* 评论end */
-
-			/* 点赞 */
-			upvote(vo, conid, e, index) {
-				if (vo == 0) {
-					this.type = 0;
-				} else if (vo == 1) {
-					this.type = 1;
+			
+			//获取赞数
+			getAppraiseCount() {
+				let cnt = {
+					ownerId: this.contentId, // Long 内容编号
+					// userId: userId, // Long <选填> 用户编号
+					value: this.$constData.appraise[0].key, // String <选填> 状态
 				}
-				this.commentId = conid
-				this.createUpvote(e, index)
+				this.$api.getAppraiseCount(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+						console.log(this.$util.tryParseJson(res.data.c).totalCount)
+						this.contentUpvote = this.$util.tryParseJson(res.data.c).totalCount
+					} else {
+						console.log('erorr')
+					}
+				})
 			},
 
-			createUpvote(e, index) {
+			//点赞
+			upvote(conid, index) {
+				this.commentId = conid
+				this.createUpvote(index)
+			},
+			
+			createUpvote(index) {
 				let userId = uni.getStorageSync('userId')
-				if (userId == '' || userId == '1234567890') {
-					uni.showToast({
-						title: '请登录',
-						duration: 1000,
-						icon: 'none'
-					})
-					return
-				}
+				// if (userId == '' || userId == '1234567890') {
+				// 	uni.showToast({
+				// 		title: '请登录',
+				// 		duration: 1000,
+				// 		icon: 'none'
+				// 	})
+				// 	return
+				// }
 				let cnt = {
-					contentId: this.commentId, // Long 内容编号/评论编号
+					ownerId: this.commentId, // Long 内容编号/评论编号
 					userId: 0 + userId, // Long 用户编号
-					type: this.type, // Byte 评论类型
-				};
+					value: this.$constData.appraise[0].key //Byte 状态
+				}
 				this.$api.createUpvote(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '点赞成功',
 							duration: 1000
-						});
-						if (e == 0) {
-							this.contentUpvote = 1 + this.contentUpvote
-						} else if (e == 1) {
-							let a = this.comment[index].commentTotalCount
-							this.comment[index].commentTotalCount = 1 + a
-						}
+						})
 					} else {
 						uni.showToast({
 							title: res.data.c,
-							duration: 1000
-						});
+							duration: 1000,
+							icon: 'none'
+						})
 					}
 				})
 			},
@@ -468,21 +483,24 @@
 			/* 获取id对应内容 */
 			getContentById() {
 				let cnt = {
-					userId: uni.getStorageSync('userId'), // Long 用户编号
-					id: this.id1, // String 片区编号
-					contentId: this.contentId, // Long 内容编号
+					id: this.contentId, // Long 内容编号
 				};
 				this.$api.getContentById(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.detailData = JSON.parse(res.data.c)
-						let time = new Date(this.detailData.createTime)
-						let newTime = time.toLocaleString()
-						this.detailData.time = newTime
-						this.contentObj = JSON.parse(this.detailData.data)
+						let detailData = this.$util.tryParseJson(res.data.c)
+						let a = new Date(detailData.createTime)
+						let y = a.getFullYear()
+						let m = 1 + a.getMonth()
+						let d = a.getDate()
+						let time = y + '年' + m + '月' + d + '日'
+						detailData.time = time
+						this.detailData = detailData
+						this.contentObj = this.$util.tryParseJson(detailData.data)
 						console.log(this.contentObj)
+						console.log('---------------------------')
 						console.log(this.detailData)
-						// this.getUserById(this.detailData.upUserId)
-						this.getContentByChannelId()
+						this.getUserById(detailData.upUserId)
+						this.getCommentByContentId()
 					}
 				}))
 			},

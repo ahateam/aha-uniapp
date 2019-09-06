@@ -10,7 +10,7 @@
 
 		<view class="tagBox" :style="fixeTag">
 			<view v-for="(item,index) in tagList" class="tags" :key="index">
-				<UniTag :text="item.name" :type="index == curry?'primary':''" @click="changeContent(index,item.type)"></UniTag>
+				<UniTag :text="item.name" :type="index == curry?'primary':''" @click="changeContent(index,item.name)"></UniTag>
 			</view>
 		</view>
 		<view class="contentBox" id="salyt">
@@ -56,20 +56,9 @@
 				windowHeight: '',
 
 				list: [],
-				tagList: [{
-						name: '全部',
-						type: 2
-					},
-					{
-						name: '免费',
-						type: 0
-					},
-					{
-						name: '付费',
-						type: 1
-					}
-				],
+				tagList: [],
 
+				tagName: '',
 			}
 		},
 		methods: {
@@ -95,22 +84,40 @@
 					url = 'detailsVideo'
 				}
 				uni.navigateTo({
-					url: `/pages/vip/column/${url}/${url}?id=${list.id}&id1=${list._id}`
+					url: `/pages/vip/column/${url}/${url}?id=${list.id}`
+				})
+			},
+
+			//获取专栏下标签
+			getChannlContentTagByChannelId() {
+				let cnt = {
+					module: this.$constData.module, // String 模块编号
+					channelId: parseInt(this.id), // Long 专栏编号
+					status: this.$constData.contentStatus[4].key, // Byte <选填> 内容状态
+					count: 500, // Integer 
+					offset: 0, // Integer 
+				}
+				this.$api.getChannlContentTagByChannelId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.tagList = this.$util.tryParseJson(res.data.c)
+						this.tagName = this.tagList[0].name
+						let tagJson = `{"${this.titleText}":"${this.tagName}"}`
+						let cnt1 = {
+							module: this.$constData.module, // String 隶属
+							upChannelId: this.id, // Long 专栏id
+							status: this.$constData.contentStatus[4].key, // Byte 专栏状态
+							tags: this.$util.tryParseJson(tagJson),
+							count: 10, // Integer 
+							offset: 0, // Integer 
+						}
+						this.getContentByChannelId(cnt1)
+					}
 				})
 			},
 
 			// 从专栏id获取课程列表
-			getContentByChannelId() {
-
-				let cnt = {
-					module: this.$constData.module, // String 隶属
-					channelId: this.id, // Long 专栏id
-					status: 4, // Byte 专栏状态
-					count: 10, // Integer 
-					offset: 0, // Integer 
-				}
-
-				this.$api.getContentByChannelId(cnt, (res) => {
+			getContentByChannelId(cnt) {
+				this.$api.getContents(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.list = JSON.parse(res.data.c)
 						console.log(this.list)
@@ -122,42 +129,20 @@
 
 			changeContent(e, f) {
 				this.curry = e
-				if (f == 2) {
-					let cnt = {
-						module: this.$constData.module, // String 隶属
-						channelId: this.id, // Long 专栏id
-						status: 4, // Byte 专栏状态
-						count: 10, // Integer 
-						offset: 0, // Integer 
-					}
-
-					this.$api.getContentByChannelId(cnt, (res) => {
-						if (res.data.rc == this.$util.RC.SUCCESS) {
-							this.list = JSON.parse(res.data.c).list
-							console.log(this.list)
-						} else {
-							console.log('error')
-						}
-					})
-				} else {
-					let cnt = {
-						module: this.$constData.module, // String 隶属
-						channelId: this.id, // Long 专栏id
-						status: 4, // Byte 专栏状态
-						paid: f, // Byte 是否付费
-						count: 10, // Integer 
-						offset: 0, // Integer 
-					}
-
-					this.$api.getContentByChannelId(cnt, (res) => {
-						if (res.data.rc == this.$util.RC.SUCCESS) {
-							this.list = JSON.parse(res.data.c).list
-							console.log(this.list)
-						} else {
-							console.log('error')
-						}
-					})
+				this.tagName = f
+				let tagJson = `{${this.titleText}:"${this.tagName}"}`
+				let cnt = {
+					module: this.$constData.module, // String 模块
+					// type: type, // Byte <选填> 类型
+					status: this.$constData.contentStatus[4].key, // Byte <选填> 状态编号
+					// power: power, // Byte <选填> 权力
+					// upUserId: upUserId, // Long <选填> 上传用户编号
+					upChannelId: this.id, // Long <选填> 上传专栏编号
+					tags: tagJson, // JSONObject <选填> 标签
+					count: 10, // int 
+					offset: 0, // int
 				}
+				this.getContentByChannelId(cnt)
 			},
 
 			// 将时间格式化
@@ -194,6 +179,13 @@
 
 
 		onLoad(options) {
+			// 获取屏幕高度
+			uni.getSystemInfo({
+				success: (res) => {
+					console.log(res.windowHeight)
+					this.windowHeight = -0.15 * res.windowHeight + 10
+				}
+			})
 			this.constData = this.$constData
 			console.log(options)
 			this.id = options.id
@@ -201,23 +193,8 @@
 			this.color = options.color
 			this.changeTime(options.time)
 
+			this.getChannlContentTagByChannelId()
 		},
-
-		mounted() {
-
-			// 获取屏幕高度
-			let _this = this
-			uni.getSystemInfo({
-				success: function(res) {
-					console.log(res.windowHeight);
-					_this.windowHeight = -0.15 * res.windowHeight + 10
-				}
-			});
-
-			this.getContentByChannelId()
-		},
-
-
 	}
 </script>
 

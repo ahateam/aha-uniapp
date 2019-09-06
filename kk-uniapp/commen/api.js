@@ -40,11 +40,20 @@ api.getChannel = function(cnt, callback) {
 	util.call(baseUrl + '/channel/getChannels', cnt, callback)
 }
 
+//根据专栏id获取专栏 
+api.getChannlById = function(cnt, callback) {
+	util.call(baseUrl + '/channel/getChannlById', cnt, callback)
+}
+
 //获取专栏下内容 
 api.getContentByChannelId = function(cnt, callback) {
 	util.call(baseUrl + '/channel/getContentByChannelId', cnt, callback)
 }
 
+//根据专栏id获取专栏内容标签(channlContentTag)
+api.getChannlContentTagByChannelId = function(cnt, callback) {
+	util.call(baseUrl + '/channel/getChannlContentTagByChannelId', cnt, callback)
+}
 /********************* 任务接口 ******************************/ 
 //获取任务分类导航列表 
 api.getContentTagGroupTypes = function(cnt, callback) {
@@ -79,17 +88,22 @@ api.loginByWxOpenId = function(cnt, callback) {
 /*************************************** 点赞评论接口 ********************************************/
 //点赞 
 api.createUpvote = function(cnt, callback) {
-	util.call(baseUrl + '/content/createUpvote', cnt, callback)
+	util.call(baseUrl + '/appraise/createAppraise', cnt, callback)
+}
+
+//获取点赞数量 
+api.getAppraiseCount = function(cnt, callback) {
+	util.call(baseUrl + '/appraise/getAppraiseCount', cnt, callback)
 }
 
 //获取评论列表 
 api.getCommentByContentId = function(cnt, callback) {
-	util.call(baseUrl + '/content/getCommentByContentId', cnt, callback)
+	util.call(baseUrl + '/reply/getReplyList', cnt, callback)
 }
 
 //评论 
 api.createComment = function(cnt, callback) {
-	util.call(baseUrl + '/content/createComment', cnt, callback)
+	util.call(baseUrl + '/reply/createReply', cnt, callback)
 }
 /* ***********************************模板相关 */
 //获取模板列表 

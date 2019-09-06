@@ -24,9 +24,9 @@
 					<!-- 点赞分享 -->
 					<view class="actions">
 						<view class="action-item">
-							<button type="primary" @click="upvote(0,contentId,0)">
+							<button type="primary" @click="upvote(contentId)">
 								<i class="yticon iconfont kk-dianzan"></i>
-								<text>{{contentUpvote}}</text>
+								<text>{{contentUpvote}}赞</text>
 							</button>
 						</view>
 						<view class="action-item">
@@ -35,14 +35,14 @@
 								<text>分享</text>
 							</button>
 						</view>
-					
+
 						<view class="action-item">
 							<button type="primary" @click="createHb">
 								<i class="yticon iconfont kk-friendzone centerBox"></i>
 								<text>朋友圈</text>
 							</button>
 						</view>
-					
+
 						<view class="action-item">
 							<button type="primary">
 								<i class="yticon iconfont kk-shoucang1"></i>
@@ -62,7 +62,7 @@
 					</view>
 					<view class="courseRight">
 						<view class="courseText blodFont noPadding">
-							课程名
+							{{courseTitle}}
 						</view>
 						<view class="upName">
 							<text>作者:</text><text>作者名</text>
@@ -114,14 +114,14 @@
 									<text>{{item.commentTotalCount}}</text>
 									<text class="yticon iconfont kk-shoucang1"></text>
 								</view>
-								<text class="content">{{item.commentContent}}</text>
+								<text class="content">{{item.text}}</text>
 							</view>
 						</view>
 					</view>
 				</view>
 			</view>
 		</scroll-view>
-		
+
 		<view class="poster" v-if="posterShow" @click="hiddenPoster">
 			<view class="posterImg" @click.stop>
 				<image ref="posterImg" :src="posterImg " mode="widthFix" @click="showImg"></image>
@@ -132,7 +132,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<tki-qrcode class="hiddenBox" cid="qrcode1" ref="qrcode" :val="val" :size="size" :unit="unit" :background="background"
 		 :foreground="foreground" :pdground="pdground" :icon="icon" :iconSize="iconsize" :lv="lv" :onval="onval" :loadMake="loadMake"
 		 :usingComponents="true" @result="qrR" />
@@ -153,26 +153,24 @@
 	import tkiQrcode from '@/components/tki-qrcode/tki-qrcode.vue'
 	let context = uni.createCanvasContext('firstCanvas')
 	let upHead = uni.createCanvasContext('upHeadCanvas')
-	
+
 	export default {
 		components: {
 			tkiQrcode,
 		},
 		data() {
 			return {
-				detailData: {},
-				flow: {},
-				upInfo: {},
-				loading: false,
-				contentId: '',
-				id1: '',
-				newsList: [],
-				evaList: [],
-				courseList: [],
-				channelId: '',
-				constData: this.$constData,
-				moreCourse: 2,
-				
+				detailData: {}, //内容数据
+				flow: {}, //文章
+				upInfo: {}, //up信息
+				contentId: '', //内容id
+				courseList: [], //课程列表
+				channelId: '', //内容上专栏id
+				constData: this.$constData, //全局变量引入
+				moreCourse: 2, //课程列表展示数量
+				channelTitle: '', //专栏标题
+				courseTitle: '', //课程标题
+
 				/* 分享朋友圈 */
 				val: '', // 要生成的二维码值
 				size: 200, // 二维码大小
@@ -186,13 +184,12 @@
 				onval: true, // val值变化时自动重新生成二维码
 				loadMake: true, // 组件加载完成后自动生成二维码
 				src: '', // 二维码生成后的图片地址或base64
-				
+
 				posterImg: '',
 				posterShow: false, //控制分享页的显示
 				/* 分享朋友圈end */
 
 				/* 点赞 */
-				type: 0, //分辨点赞对象是文章还是评论 0为文章 1为评论
 				commentId: Number, //点赞对象id
 				/* 点赞end */
 
@@ -205,18 +202,18 @@
 			}
 		},
 		onLoad(res) {
+			console.log(res)
 			let src = ''
 			if (res.q) {
 				src = res.q
 				let params = this.$commen.getSplit(src)
 				this.contentId = params.id
-				this.id1 = params.id1
 			} else {
 				this.contentId = res.id
-				this.id1 = res.id1
 			}
 			this.getContentById()
-			
+			this.getAppraiseCount()
+
 		},
 		methods: {
 			/* 分享朋友圈 */
@@ -225,14 +222,14 @@
 				uni.showLoading({
 					title: '生成中'
 				})
-				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}`//值改变后自动调取qrR()
+				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}` //值改变后自动调取qrR()
 			},
-			
+
 			qrR(res) { //生成二维码的图片地址
 				this.src = res
 				this.createCanvas()
 			},
-			
+
 			// 生成背景
 			createCanvas() {
 				//生成背景
@@ -250,7 +247,7 @@
 					})
 				}
 			},
-			
+
 			//生成up圆形头像
 			getUpHead() {
 				let img = this.$util.tryParseJson(this.upInfo.ext).userHead
@@ -288,29 +285,29 @@
 					}
 				})
 			},
-			
+
 			//最终生成海报
 			createPoster() {
 				// 二维码图片
 				context.drawImage(this.src, 280, 520, 150, 150)
-			
+
 				// 文字
 				context.setFillStyle('#000000')
 				context.font = '18px Arial'
 				context.fillText(this.upInfo.name, 80, 550)
-			
+
 				context.font = '20px Arial'
 				context.fillText(this.detailData.title, 20, 610)
-			
+
 				context.font = '16px Arial'
 				context.setFillStyle('#aaa')
 				context.fillText('长按扫码查看详情', 20, 650)
-			
+
 				//生成画布
 				context.draw()
-			
+
 				// let that = this
-			
+
 				setTimeout(() => { //延时生成图片
 					uni.canvasToTempFilePath({
 						x: 0,
@@ -330,12 +327,12 @@
 					this.showHb()
 				}, 300)
 			},
-			
+
 			// 展示海报
 			showHb() {
 				this.posterShow = true
 			},
-			
+
 			//保存图片至本地
 			saveImg() {
 				uni.saveImageToPhotosAlbum({
@@ -345,34 +342,80 @@
 					}
 				});
 			},
-			
+
 			hiddenPoster() {
 				this.posterShow = false
 			},
-			
+
 			showImg() {
 				uni.previewImage({
 					urls: [this.posterImg]
 				})
 			},
 			/* 分享朋友圈end */
-			
+
 			/* 评论 */
+			//获取评论列表
+			getCommentByContentId() {
+				let cnt = {
+					// module: this.$constData.module, // String 隶属
+					ownerId: this.contentId, // Long 内容编号
+					// status: status, // Byte <选填> 审核状态，不填表示全部，STATUS_UNEXAMINED = 0未审核，STATUS_ACCEPT = 1已通过，STATUS_REJECT = 2已回绝
+					orderDesc: true, // Boolean 是否降序（较新的排前面）
+					count: 10, // Integer 
+					offset: 0, // Integer 
+				};
+				this.$api.getCommentByContentId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('评论接口返回数据')
+						console.log(this.$util.tryParseJson(res.data.c))
+						console.log('~~~~~~~~~~~~~~~~~~~~~~~~')
+						this.totalCount = this.$util.tryParseJson(res.data.c).totalCount
+						this.contentUpvote = this.$util.tryParseJson(res.data.c).contentUpvote
+						let comment = this.$util.tryParseJson(res.data.c).list
+						for (let i = 0; i < comment.length; i++) {
+							let time = new Date(comment[i].createTime)
+							let y = time.getFullYear()
+							let m = 1 + time.getMonth()
+							let d = time.getDate()
+							comment[i].time = `${y}-${m}-${d}`
+							if (comment[i].user != undefined) {
+								comment[i].userHead = this.$util.tryParseJson(comment[i].user.ext).userHead
+							} else {
+								comment[i].userHead = ''
+							}
+						}
+						this.comment = comment
+					} else {
+						uni.showToast({
+							title: '评论获取失败',
+							icon: 'none',
+							duration: 1000
+						})
+					}
+				})
+			},
+
+			//创建评论
 			createComment() {
 				let userId = uni.getStorageSync('userId')
-				if (userId == '' || userId == '1234567890') {
-					uni.showToast({
-						title: '登录后可评论',
-						icon: 'none'
-					})
-					return
-				}
+				// if (userId == '' || userId == '1234567890') {
+				// 	uni.showToast({
+				// 		title: '登录后可评论',
+				// 		icon: 'none'
+				// 	})
+				// 	return
+				// }
 				let cnt = {
-					module: this.$constData.module, // String 隶属
-					contentId: this.contentId, // Long 内容编号
-					userId: userId, // Long 用户编号
-					commentContent: this.commentContent, // String 评论内容
-					data: [], // String 其他数据
+					// module: this.$constData.module, // String 隶属
+					ownerId: this.contentId, // Long 内容编号
+					upUserId: userId, // Long 用户编号
+					text: this.commentContent, // String 评论内容
+					// data: [], // String 其他数据
+					atUserId: 12321321321, // Long <选填> @对象编号
+					atUserName: '233', // String <选填> @对象名称
+					title: 'title', // String <选填> 标题
+					ext: '123', // String <选填> 扩展
 				};
 				this.$api.createComment(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -393,98 +436,68 @@
 					}
 				})
 			},
-			
+
 			//跳转支付页面
-			navToPay(){
+			navToPay() {
 				uni.navigateTo({
 					url: '/pages/vip/column/payView/payView'
 				});
 			},
 
-			//获取评论列表
-			getCommentByContentId() {
+
+			/* 评论end */
+
+			/* 点赞相关 */
+			//获取赞数
+			getAppraiseCount() {
 				let cnt = {
-					module: this.$constData.module, // String 隶属
-					contentId: this.contentId, // Long 内容编号
-					count: 10, // Integer 
-					offset: 0, // Integer 
-				};
-				this.$api.getCommentByContentId(cnt, (res) => {
+					ownerId: this.contentId, // Long 内容编号
+					// userId: userId, // Long <选填> 用户编号
+					value: this.$constData.appraise[0].key, // String <选填> 状态
+				}
+				this.$api.getAppraiseCount(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						console.log('评论接口返回数据')
-						console.log(JSON.parse(res.data.c))
-						console.log('~~~~~~~~~~~~~~~~~~~~~~~~')
-						this.totalCount = JSON.parse(res.data.c).totalCount
-						this.contentUpvote = JSON.parse(res.data.c).contentUpvote
-						let comment = JSON.parse(res.data.c).list
-						for (let i = 0; i < comment.length; i++) {
-							let time = new Date(comment[i].createTime)
-							let y = time.getFullYear()
-							let m = 1 + time.getMonth()
-							let d = time.getDate()
-							comment[i].time = `${y}-${m}-${d}`
-							if (comment[i].user != undefined) {
-								comment[i].userHead = JSON.parse(comment[i].user.ext).userHead
-							} else {
-								comment[i].userHead = ''
-							}
-						}
-						this.comment = comment
+						console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+						console.log(this.$util.tryParseJson(res.data.c).totalCount)
+						this.contentUpvote = this.$util.tryParseJson(res.data.c).totalCount
 					} else {
-						uni.showToast({
-							title: '评论获取失败',
-							icon: 'none',
-							duration: 1000
-						})
+						console.log('erorr')
 					}
 				})
 			},
-			/* 评论end */
 
-			/* 点赞 */
-			upvote(vo, conid, e, index) {
-				if (vo == 0) {
-					this.type = 0;
-				} else if (vo == 1) {
-					this.type = 1;
-				}
+			//点赞
+			upvote(conid, index) {
 				this.commentId = conid
-				this.createUpvote(e, index)
+				this.createUpvote(index)
 			},
-
-			createUpvote(e, index) {
+			createUpvote(index) {
 				let userId = uni.getStorageSync('userId')
-				if (userId == '' || userId == '1234567890') {
-					uni.showToast({
-						title: '请登录',
-						duration: 1000,
-						icon: 'none'
-					})
-					return
-				}
+				// if (userId == '' || userId == '1234567890') {
+				// 	uni.showToast({
+				// 		title: '请登录',
+				// 		duration: 1000,
+				// 		icon: 'none'
+				// 	})
+				// 	return
+				// }
 				let cnt = {
-					contentId: this.commentId, // Long 内容编号/评论编号
+					ownerId: this.commentId, // Long 内容编号/评论编号
 					userId: 0 + userId, // Long 用户编号
-					type: this.type, // Byte 评论类型
-				};
+					value: this.$constData.appraise[0].key //Byte 状态
+				}
 				this.$api.createUpvote(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '点赞成功',
 							duration: 1000
-						});
-						if (e == 0) {
-							this.contentUpvote = 1 + this.contentUpvote
-						} else if (e == 1) {
-							let a = this.comment[index].commentTotalCount
-							this.comment[index].commentTotalCount = 1 + a
-						}
+						})
 					} else {
 						uni.showToast({
 							title: res.data.c,
 							duration: 1000,
 							icon: 'none'
-						});
+						})
 					}
 				})
 			},
@@ -515,21 +528,42 @@
 			},
 			/* 获取课程对应专栏 */
 			getChannel() {
+				let cnt = {
+					id: this.channelId, //专栏id
+				}
+				this.$api.getChannlById(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('专栏信息')
+						this.channelTitle = this.$util.tryParseJson(res.data.c).title
+						console.log(this.channelTitle)
+						this.getCouser()
+					} else {
+						console.log('专栏获取失败')
+					}
+				})
 
+			},
+			getCouser() {
+				let data = this.detailData.tags
+				let key = this.channelTitle
+				this.courseTitle = data[key][0]
+				this.getContentByChannelId()
 			},
 			// 从专栏id获取课程列表
 			getContentByChannelId() {
+				let tagJson = `{"${this.channelTitle}":"${this.courseTitle}"}`
 				let cnt = {
 					module: this.$constData.module, // String 隶属
-					channelId: this.channelId, // Long 专栏id
+					upChannelId: this.channelId, // Long 专栏id
+					tags: this.$util.tryParseJson(tagJson), // Long 专栏内容标签
 					status: 4, // Byte 专栏状态
 					count: 10, // Integer 
 					offset: 0, // Integer 
 				}
-				this.$api.getContentByChannelId(cnt, (res) => {
+				this.$api.getContents(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let arr = JSON.parse(res.data.c).list
-
+						let arr = JSON.parse(res.data.c)
+						
 						for (let i = 0; i < arr.length; i++) {
 							let date = new Date(arr[i].createTime)
 							let y = date.getFullYear()
@@ -539,6 +573,7 @@
 						}
 						this.courseList = arr
 						console.log(this.courseList)
+						console.log('课程列表')
 					} else {
 						this.courseList = []
 						console.log('error')
@@ -559,12 +594,14 @@
 						let d = a.getDate()
 						let time = y + '年' + m + '月' + d + '日'
 						detailData.time = time
+						console.log(detailData)
+						console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 						this.detailData = detailData
 						this.channelId = detailData.upChannelId
 						this.flow = JSON.parse(detailData.data).editor
 						this.getUserById(detailData.upUserId)
 						this.getCommentByContentId()
-						this.getContentByChannelId()
+						this.getChannel()
 					}
 				}))
 			},
@@ -593,8 +630,7 @@
 			}
 			var options = currentPage.options //如果要获取url中所带的参数可以查看options 
 			var id = options.id
-			var id1 = options.id1
-			var src = `${url}?id=${id}&id1=${id1}`
+			var src = `${url}?id=${id}`
 			console.log(src)
 			if (res.from === 'button') { // 来自页面内分享按钮
 				console.log(res.target)
@@ -975,23 +1011,23 @@
 	.blodFont {
 		font-weight: bold;
 	}
-	
-	
+
+
 	.hiddenBox {
 		position: absolute;
 		top: -10000px;
 	}
-	
+
 	.canvasBox {
 		width: 450px;
 		height: 800px;
 	}
-	
+
 	.upHeadBox {
 		width: 100px;
 		height: 100px;
 	}
-	
+
 	.poster {
 		position: fixed;
 		z-index: 3;
@@ -1001,25 +1037,25 @@
 		height: 100vh;
 		background-color: rgba(0, 0, 0, 0.4);
 	}
-	
+
 	.posterImg {
 		position: absolute;
 		top: 20px;
 		width: 85vw;
 		left: 50%;
 		margin-left: -42.5vw;
-	
+
 		image {
 			width: 100%;
 		}
 	}
-	
+
 	.posterBtn {
 		position: absolute;
 		bottom: 20px;
 		font-size: $list-title;
 		width: 100vw;
-	
+
 		.stopBtn {
 			width: 50vw;
 			margin: 0 auto;

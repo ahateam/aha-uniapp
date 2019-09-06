@@ -133,6 +133,18 @@ constData.taskWallStatus = [
 	}
 ]
 
+/* 点赞 */
+constData.appraise = [
+	{
+		key: '0',
+		val: '赞'
+	},
+	{
+		key:'1',
+		val:'踩'
+	}
+]
+
 /* 渐变色数组 */
 constData.colorData = [
 	'linear-gradient(120deg,#69b5e1,#bedbed)',

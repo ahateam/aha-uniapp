@@ -6,6 +6,10 @@
 				{{ item.name }}
 			</view>
 		</scroll-view>
+		
+		<view>
+			
+		</view>
 	</view>
 </template>
 

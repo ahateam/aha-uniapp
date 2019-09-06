@@ -207,13 +207,13 @@
 				this.$api.addContent(cnt,(res)=>{
 					if (res.data.rc == this.$util.RC.SUCCESS){
 						uni.hideLoading()
+						uni.reLaunch({
+						url: '/pages/index/index'
+						})
 						uni.showToast({
 						    title: '上传成功',
 						    duration: 1500
-						});
-						uni.reLaunch({
-						url: '/pages/index/index'
-						});
+						})
 					 }else{
 						console.log('失敗')
 					 }

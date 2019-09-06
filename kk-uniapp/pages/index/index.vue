@@ -124,14 +124,14 @@
 			
 			//按钮点击跳转
 			trigger(e) {
-				if (this.userId == '' || this.userId == '1234567890') {
-					uni.showToast({
-						title: '请登录',
-						icon: 'none',
-						duration: 1000
-					})
-					return
-				}
+				// if (this.userId == '' || this.userId == '1234567890') {
+				// 	uni.showToast({
+				// 		title: '请登录',
+				// 		icon: 'none',
+				// 		duration: 1000
+				// 	})
+				// 	return
+				// }
 				console.log(e)
 				if (e.item.url == '/pages/index/addContent/addContent?type=1') {
 					uni.navigateTo({
@@ -209,6 +209,11 @@
 						this.tryDataList(list)
 						uni.stopPullDownRefresh()
 					} else {
+						setTimeout(()=> {
+							this.tagsList[index].pageOver = true //结束拉取
+							this.tagsList[index].pageStatus = 'nomore'
+							this.pageStatus = this.tagsList[index].pageStatus
+						}, 3000)
 						list = []
 					}
 
@@ -270,10 +275,9 @@
 				}
 
 				let cnt = {
-					userId: this.userId, // Long 用户编号
 					module: this.constData.module, // String 所属模块
 					status: this.constData.contentStatus[4].key, // Byte <选填> 状态
-					// paid: this.constData.contentPaid[0].key, // Byte <选填> 是否付费
+					power: this.constData.contentPaid[0].key, // Byte <选填> 是否付费
 					// type: type, // Byte <选填> 类型
 					tags: this.tagName, // String <选填> 标签
 					count: this.count, // Integer
@@ -287,12 +291,12 @@
 			navToInfo(info) {
 				if (info.type == this.constData.contentType[2].key || info.type == this.constData.contentType[0].key) {
 					if (info.upChannelId == 0 || info.upChannelId < 100000000000) {
-						uni.navigateTo({ //
-							url: `/pages/index/articleView/articleView?id=${info.id}&id1=${info._id}`
+						uni.navigateTo({
+							url: `/pages/index/articleView/articleView?id=${info.id}`
 						})
 					} else {
 						uni.navigateTo({
-							url: `/pages/vip/column/details/details?id=${info.id}&id1=${info._id}`
+							url: `/pages/vip/column/details/details?id=${info.id}`
 						})
 					}
 
@@ -301,12 +305,12 @@
 					// 	url: `/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
 					// })
 					if (info.upChannelId == 0 || info.upChannelId.length < 13) {
-						uni.navigateTo({ //
-							url: `/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
+						uni.navigateTo({ 
+							url: `/pages/index/videoView/videoView?id=${info.id}`
 						})
 					} else {
 						uni.navigateTo({
-							url: `/pages/vip/column/detailsVideo/detailsVideo?id==${info.id}&id1=${info._id}`
+							url: `/pages/vip/column/detailsVideo/detailsVideo?id==${info.id}`
 						})
 					}
 				}
@@ -319,10 +323,9 @@
 			this.contents = []
 			this.tagsList[this.tabCurrentIndex].pageOver = false
 			let cnt = {
-				userId: this.userId, // Long 用户编号
 				module: this.constData.module, // String 所属模块
 				status: this.constData.contentStatus[4].key, // Byte <选填> 状态
-				// paid: this.constData.contentPaid[0].key, // Byte <选填> 是否付费
+				power: this.constData.contentPaid[0].key, // Byte <选填> 是否付费
 				// type: type, // Byte <选填> 类型
 				count: this.count, // Integer
 				offset: this.offset, // Integer
@@ -337,10 +340,9 @@
 			this.page += 1
 			this.tagsList[this.tabCurrentIndex].page = this.page
 			let cnt = {
-				userId: this.userId, // Long 用户编号
 				module: this.constData.module, // String 所属模块
 				status: this.constData.contentStatus[4].key, // Byte <选填> 状态
-				// paid: this.constData.contentPaid[0].key, // Byte <选填> 是否付费
+				power: this.constData.contentPaid[0].key, // Byte <选填> 是否付费
 				// type: type, // Byte <选填> 类型
 				count: this.count, // Integer
 				offset: (this.page - 1) * this.count, // Integer

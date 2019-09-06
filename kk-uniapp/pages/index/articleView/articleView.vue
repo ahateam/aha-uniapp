@@ -25,9 +25,9 @@
 					<!-- 点赞分享 -->
 					<view class="actions">
 						<view class="action-item">
-							<button type="primary" @click="upvote(0,contentId,0)">
+							<button type="primary" @click="upvote(contentId)">
 								<i class="yticon iconfont kk-dianzan"></i>
-								<text>{{contentUpvote}}</text>
+								<text>{{contentUpvote}}赞</text>
 							</button>
 						</view>
 						<view class="action-item">
@@ -53,7 +53,7 @@
 					</view>
 					<!-- 点赞分享end -->
 				</view>
-				
+
 
 				<view class="container">
 					<!-- 评论 -->
@@ -69,11 +69,11 @@
 							<view class="eva-right">
 								<text>{{item.user.name}}</text>
 								<text>{{item.time}}</text>
-								<view class="zan-box" @click="upvote(0,item.id,1,index)">
+								<view class="zan-box" @click="upvote(item.id,index)">
 									<text>{{item.commentTotalCount}}</text>
 									<text class="yticon iconfont kk-shoucang1"></text>
 								</view>
-								<text class="content">{{item.commentContent}}</text>
+								<text class="content">{{item.text}}</text>
 							</view>
 						</view>
 					</view>
@@ -123,7 +123,6 @@
 				flow: {}, //文章数据
 				upInfo: {}, //上传者数据
 				contentId: '', //内容id
-				id1: '', //片区id
 				userHead: '',
 
 				/* 分享朋友圈 */
@@ -145,7 +144,6 @@
 				/* 分享朋友圈end */
 
 				/* 点赞 */
-				type: 0, //分辨点赞对象是文章还是评论 0为文章 1为评论
 				commentId: Number, //点赞对象id
 				/* 点赞end */
 
@@ -164,30 +162,33 @@
 				src = res.q
 				let params = this.$commen.getSplit(src)
 				this.contentId = params.id
-				this.id1 = params.id1
 			} else {
 				this.contentId = res.id
-				this.id1 = res.id1
 			}
 			this.getContentById()
+			this.getAppraiseCount()
 		},
 		methods: {
 			/* 评论 */
 			createComment() {
 				let userId = uni.getStorageSync('userId')
-				if (userId == '' || userId == '1234567890') {
-					uni.showToast({
-						title: '登录后可评论',
-						icon: 'none'
-					})
-					return
-				}
+				// if (userId == '' || userId == '1234567890') {
+				// 	uni.showToast({
+				// 		title: '登录后可评论',
+				// 		icon: 'none'
+				// 	})
+				// 	return
+				// }
 				let cnt = {
-					module: this.$constData.module, // String 隶属
-					contentId: this.contentId, // Long 内容编号
-					userId: userId, // Long 用户编号
-					commentContent: this.commentContent, // String 评论内容
-					data: [], // String 其他数据
+					// module: this.$constData.module, // String 隶属
+					ownerId: this.contentId, // Long 内容编号
+					upUserId: userId, // Long 用户编号
+					text: this.commentContent, // String 评论内容
+					// data: [], // String 其他数据
+					atUserId: 12321321321, // Long <选填> @对象编号
+					atUserName: '233', // String <选填> @对象名称
+					title: 'title', // String <选填> 标题
+					ext: '123', // String <选填> 扩展
 				};
 				this.$api.createComment(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -212,11 +213,13 @@
 			//获取评论列表
 			getCommentByContentId() {
 				let cnt = {
-					module: this.$constData.module, // String 隶属
-					contentId: this.contentId, // Long 内容编号
+					// module: this.$constData.module, // String 隶属
+					ownerId: this.contentId, // Long 内容编号
+					// status: status, // Byte <选填> 审核状态，不填表示全部，STATUS_UNEXAMINED = 0未审核，STATUS_ACCEPT = 1已通过，STATUS_REJECT = 2已回绝
+					orderDesc: true, // Boolean 是否降序（较新的排前面）
 					count: 10, // Integer 
 					offset: 0, // Integer 
-				};
+				}
 				this.$api.getCommentByContentId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log('评论接口返回数据')
@@ -249,50 +252,57 @@
 			},
 			/* 评论end */
 
-			/* 点赞 */
-			upvote(vo, conid, e, index) {
-				if (vo == 0) {
-					this.type = 0;
-				} else if (vo == 1) {
-					this.type = 1;
+			/* 点赞相关 */
+			//获取赞数
+			getAppraiseCount() {
+				let cnt = {
+					ownerId: this.contentId, // Long 内容编号
+					// userId: userId, // Long <选填> 用户编号
+					value: this.$constData.appraise[0].key, // String <选填> 状态
 				}
-				this.commentId = conid
-				this.createUpvote(e, index)
+				this.$api.getAppraiseCount(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+						console.log(this.$util.tryParseJson(res.data.c).totalCount)
+						this.contentUpvote = this.$util.tryParseJson(res.data.c).totalCount
+					} else {
+						console.log('erorr')
+					}
+				})
 			},
 
-			createUpvote(e, index) {
+			//点赞
+			upvote(conid, index) {
+				this.commentId = conid
+				this.createUpvote(index)
+			},
+			createUpvote(index) {
 				let userId = uni.getStorageSync('userId')
-				if (userId == '' || userId == '1234567890') {
-					uni.showToast({
-						title: '请登录',
-						duration: 1000,
-						icon: 'none'
-					})
-					return
-				}
+				// if (userId == '' || userId == '1234567890') {
+				// 	uni.showToast({
+				// 		title: '请登录',
+				// 		duration: 1000,
+				// 		icon: 'none'
+				// 	})
+				// 	return
+				// }
 				let cnt = {
-					contentId: this.commentId, // Long 内容编号/评论编号
+					ownerId: this.commentId, // Long 内容编号/评论编号
 					userId: 0 + userId, // Long 用户编号
-					type: this.type, // Byte 评论类型
-				};
+					value: this.$constData.appraise[0].key //Byte 状态
+				}
 				this.$api.createUpvote(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '点赞成功',
 							duration: 1000
-						});
-						if (e == 0) {
-							this.contentUpvote = 1 + this.contentUpvote
-						} else if (e == 1) {
-							let a = this.comment[index].commentTotalCount
-							this.comment[index].commentTotalCount = 1 + a
-						}
+						})
 					} else {
 						uni.showToast({
 							title: res.data.c,
 							duration: 1000,
 							icon: 'none'
-						});
+						})
 					}
 				})
 			},
@@ -305,9 +315,9 @@
 				uni.showLoading({
 					title: '生成中'
 				})
-				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}`//值改变后自动调取qrR()
+				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}` //值改变后自动调取qrR()
 			},
-			
+
 			qrR(res) { //生成二维码的图片地址
 				this.src = res
 				this.createCanvas()
@@ -440,9 +450,7 @@
 			/* 获取id对应内容 */
 			getContentById() {
 				let cnt = {
-					userId: uni.getStorageSync('userId'), // Long 用户编号
-					id: this.id1, // String 片区编号
-					contentId: this.contentId, // Long 内容编号
+					id: this.contentId, // String 内容编号
 				};
 				this.$api.getContentById(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -484,8 +492,7 @@
 			}
 			let options = currentPage.options //如果要获取url中所带的参数可以查看options 
 			let id = options.id
-			let id1 = options.id1
-			let src = `${url}?id=${id}&id1=${id1}`
+			let src = `${url}?id=${id}`
 			console.log(src)
 			if (res.from === 'button') { // 来自页面内分享按钮
 				console.log(res.target)

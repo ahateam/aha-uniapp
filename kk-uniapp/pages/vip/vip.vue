@@ -61,22 +61,22 @@
 			//根据标签切换内容
 			changeTag(e){
 				this.tabCurrentIndex = e
-				// this.tagName = this.tagsList[e].name
-				// 
-				// let cnt = {
-				// 	module: this.$constData.module, // String 隶属
-				// 	status: 0, // Byte <选填> 状态
-				// 	// tags: tags, // String <选填> 标签
-				// 	count: this.count, // Integer 
-				// 	offset: this.offset, // Integer 
-				// }
-				// 
-				// if(e != 0){
-				// 	cnt.tags = this.tagName
-				// 	this.getChannel(cnt)
-				// }else{
-				// 	this.getChannel(cnt)
-				// }
+				this.tagName = this.tagsList[e].name
+				
+				let cnt = {
+					module: this.$constData.module, // String 隶属
+					status: 0, // Byte <选填> 状态
+					// tags: tags, // String <选填> 标签
+					count: this.count, // Integer 
+					offset: this.offset, // Integer 
+				}
+				
+				if(e != 0){
+					cnt.tags = this.tagName
+					this.getChannel(cnt)
+				}else{
+					this.getChannel(cnt)
+				}
 			},
 			
 			//获取专栏标签
