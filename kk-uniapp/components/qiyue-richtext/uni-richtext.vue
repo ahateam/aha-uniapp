@@ -18,7 +18,7 @@
 				<view class="iconfont icon-alignright" @click="toolBarClick('alignright')"></view>
 			</view>
 			<view class="input-content">
-				<view :style="textareaDataStyle">{{textareaData}}</view>
+				<view :style="textareaDataStyle">目前字符样式</view>
 				<textarea auto-height maxlength="-1" v-model="textareaData"></textarea>
 			</view>
 			<view style="position: fixed;bottom: 0;width: 100%;">

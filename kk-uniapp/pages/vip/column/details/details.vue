@@ -618,7 +618,6 @@
 					}
 				}))
 			},
-
 		},
 		onShareAppMessage(res) {
 			var pages = getCurrentPages() //获取加载的页面

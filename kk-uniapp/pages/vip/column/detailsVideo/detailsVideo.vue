@@ -69,7 +69,7 @@
 				<!-- 其他内容列表 -->
 				<view>
 					<view class="courseText">课程内容</view>
-					<view v-for="(item,index) in courseList" :key="index" v-if="index <moreCourse">
+					<view v-for="(item,index) in comment" :key="index" v-if="index <moreCourse">
 						<view class="lists" @click="navigator(item)">
 							<view class="imgBox">
 								<image v-if="item.type == constData.contentType[2].key" :src="JSON.parse(item.data).imgList[0].src" mode="aspectFill"></image>
@@ -192,14 +192,13 @@
 			}
 		},
 		onLoad(res) {
+			console.log(res)
 			if (res.q) {
 				let src = res.q
 				let params = this.$commen.getSplit(src)
 				this.contentId = params.id
-				this.id1 = params.id1
 			} else {
 				this.contentId = res.id
-				this.id1 = res.id1
 			}
 			this.getContentById()
 			this.getAppraiseCount()
@@ -450,14 +449,14 @@
 			
 			createUpvote(index) {
 				let userId = uni.getStorageSync('userId')
-				// if (userId == '' || userId == '1234567890') {
-				// 	uni.showToast({
-				// 		title: '请登录',
-				// 		duration: 1000,
-				// 		icon: 'none'
-				// 	})
-				// 	return
-				// }
+				if (userId == '' || userId == '1234567890') {
+					uni.showToast({
+						title: '请登录',
+						duration: 1000,
+						icon: 'none'
+					})
+					return
+				}
 				let cnt = {
 					ownerId: this.commentId, // Long 内容编号/评论编号
 					userId: 0 + userId, // Long 用户编号
@@ -506,17 +505,17 @@
 			},
 
 			/* 获取id对应用户 */
-			// getUserById(id){
-			// 	let cnt={
-			// 		userId:id,//long 用户编号
-			// 	}
-			// 	this.$api.getUserById(cnt,(res=>{
-			// 		if(res.data.rc == this.$util.RC.SUCCESS){
-			// 			console.log(JSON.parse(res.data.c))
-			// 			this.upInfo = JSON.parse(res.data.c)
-			// 		}
-			// 	}))
-			// }
+			getUserById(id){
+				let cnt={
+					userId:id,//long 用户编号
+				}
+				this.$api.getUserById(cnt,(res=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						console.log(this.$util.tryParseJson(res.data.c))
+						this.upInfo = this.$util.tryParseJson(res.data.c)
+					}
+				}))
+			},
 			
 			navToPay(){
 				uni.navigateTo({

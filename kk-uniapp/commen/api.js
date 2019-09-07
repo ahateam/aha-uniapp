@@ -73,16 +73,16 @@ api.getTaskByGeo = function(cnt, callback) {
 /************************ 用户相关接口 **************************/
 //根据id获取用户
 api.getUserById = function(cnt, callback) {
-	util.call(baseUrl + '/content/getUserById', cnt, callback)
+	util.call(baseUrl + '/weixin/getUserById', cnt, callback)
 }
 
 //获取用户openid
 api.getAccessToken = function(cnt, callback) {
-	util.call(baseUrl + '/wxOa/getAccessToken', cnt, callback)
+	util.call(baseUrl + '/weixin/getAccessToken', cnt, callback)
 }
 //登录 
 api.loginByWxOpenId = function(cnt, callback) {
-	util.call(baseUrl + '/content/loginByWxOpenId', cnt, callback)
+	util.call(baseUrl + '/weixin/loginByWxOpenId', cnt, callback)
 }
 
 /*************************************** 点赞评论接口 ********************************************/

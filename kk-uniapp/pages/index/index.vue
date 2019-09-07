@@ -90,7 +90,7 @@
 			}
 
 			this.userId = uni.getStorageSync('userId')
-			
+
 			// console.log(this.constData)
 			/* 获取标签列表*/
 			let cnt = {
@@ -102,10 +102,10 @@
 			}
 			this.getTagsList(cnt)
 			this.returnTabBar()
-			
+
 			/* 根据默认标签获取内容列表*/
-			
-		
+
+
 		},
 		methods: {
 			//获得元素的size
@@ -121,17 +121,17 @@
 					}).exec();
 				});
 			},
-			
+
 			//按钮点击跳转
 			trigger(e) {
-				// if (this.userId == '' || this.userId == '1234567890') {
-				// 	uni.showToast({
-				// 		title: '请登录',
-				// 		icon: 'none',
-				// 		duration: 1000
-				// 	})
-				// 	return
-				// }
+				if (this.userId == '' || this.userId == '1234567890') {
+					uni.showToast({
+						title: '请登录',
+						icon: 'none',
+						duration: 1000
+					})
+					return
+				}
 				console.log(e)
 				if (e.item.url == '/pages/index/addContent/addContent?type=1') {
 					uni.navigateTo({
@@ -172,7 +172,7 @@
 							status: parseInt(this.constData.contentStatus[4].key),
 							count: this.count,
 							offset: this.offset,
-							power:this.$constData.contentPaid[0].key
+							power: this.$constData.contentPaid[0].key
 						}
 						this.getContentsByTag(cnt1)
 					} else {
@@ -209,16 +209,16 @@
 						this.tryDataList(list)
 						uni.stopPullDownRefresh()
 					} else {
-						setTimeout(()=> {
-							this.tagsList[index].pageOver = true //结束拉取
-							this.tagsList[index].pageStatus = 'nomore'
-							this.pageStatus = this.tagsList[index].pageStatus
-						}, 3000)
-						list = []
+						this.tagsList[index].pageOver = true //结束拉取
+						this.tagsList[index].pageStatus = 'nomore'
+						this.pageStatus = this.tagsList[index].pageStatus
+						let obj = this.$util.tryParseJson(JSON.stringify(this.tagsList[index]))
+						obj.child = []
+						this.$nextTick(function() {
+							this.tagsList.splice(index, 1, obj)
+						})
 					}
-
 				})
-
 			},
 
 			/* 添加新数据进数组并显示 */
@@ -305,12 +305,12 @@
 					// 	url: `/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
 					// })
 					if (info.upChannelId == 0 || info.upChannelId.length < 13) {
-						uni.navigateTo({ 
+						uni.navigateTo({
 							url: `/pages/index/videoView/videoView?id=${info.id}`
 						})
 					} else {
 						uni.navigateTo({
-							url: `/pages/vip/column/detailsVideo/detailsVideo?id==${info.id}`
+							url: `/pages/vip/column/detailsVideo/detailsVideo?id=${info.id}`
 						})
 					}
 				}

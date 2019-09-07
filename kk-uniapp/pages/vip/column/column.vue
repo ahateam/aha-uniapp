@@ -271,7 +271,6 @@
 		position: absolute;
 		top: 20vh;
 		width: 100vw;
-		height: 100vh;
 		margin: 0 auto;
 		border-radius: 20px;
 		overflow: hidden;

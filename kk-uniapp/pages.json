@@ -31,39 +31,56 @@
 			}
 		}, {
 			"path": "pages/index/articleView/articleView",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "详细"
+			}
 		}, {
 			"path": "pages/index/videoView/videoView",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "详细"
+			}
 		}, {
 			"path": "pages/vip/column/column",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "专栏"
+			}
 		}, {
 			"path": "pages/vip/column/details/details",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "详细"
+			}
 		}, {
 			"path": "pages/vip/column/detailsVideo/detailsVideo",
-			"style": {}
-		}, {
-			"path": "pages/vip/column/columnInfo/columnInfo",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "详细"
+			}
 		}, {
 			"path": "pages/vip/column/payView/payView",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "支付"
+			}
 		}, {
 			"path": "pages/index/addArticle/addArticle",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "添加"
+			}
 		}, {
 			"path": "pages/index/addVideo/addVideo",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "添加"
+			}
 		}
 	    ,{
             "path" : "pages/task/createList/createList",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText": "添加任务"
+			}
         }
         ,{
             "path" : "pages/task/template/template",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText": "模板"
+			}
         }
     ],
 	"tabBar": {
