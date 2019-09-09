@@ -49,6 +49,94 @@
 			};
 		},
 		methods: {
+			// 微信登录
+			wx() {
+				uni.showLoading({
+					title: '登录中'
+				})
+				uni.clearStorageSync()
+				console.log('清理完成')
+				uni.login({//通过login获取临时登录凭证code
+					provider: 'weixin',
+					success: (res) => {
+						let code = res.code
+						let cnt = {
+							code: code, // String code
+						}
+						this.getUserInfo(cnt)
+					},
+					fail: function(error) {
+						uni.showToast({
+							title: error,
+							icon: 'none',
+							duration: 1000,
+						})
+					}
+				})
+			},
+			
+			//将code传给后端，获取openId以及用户头像等其他信息
+			getUserInfo(cnt){
+				this.$api.getAccessToken(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let userInfo = JSON.parse(res.data.c)
+						console.log(userInfo)
+						let openId = userInfo.openid
+						uni.setStorageSync('openId', openId)
+						uni.getUserInfo({
+							success: (res) => {
+								console.log(res)
+								console.log(openId)
+								let userHead = res.userInfo.avatarUrl
+								let userName = res.userInfo.nickName
+								let other = {
+									userHead: userHead
+								}
+								let cnt1 = {
+									wxOpenId: openId, // String 微信openId
+									name: userName, // string 用户名
+									ext: JSON.stringify(other), //其他信息
+								}
+								this.WxLogin(cnt1)
+							},
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rc,
+							icon: 'none',
+							duration: 1000,
+						})
+					}
+				})
+			},
+			
+			WxLogin(cnt){
+				/* 将用户信息上传至服务器获取登录id */
+				this.$api.loginByWxOpenId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let userData = this.$util.tryParseJson(res.data.c)
+						console.log(userData)
+						let userId = userData.id
+						let userName = userData.name
+						let userHead = this.$util.tryParseJson(userData.ext).userHead
+						/* 将用户信息存至本地 */
+						uni.setStorageSync('userId', userId)
+						uni.setStorageSync('userName', userName)
+						uni.setStorageSync('userHead', userHead)
+						this.userHead = userHead
+						this.userName = userName
+						this.boxShow = true
+						uni.hideLoading()
+						uni.showToast({
+							title: '已登录！',
+							duration: 1000
+						});
+					} else {
+						console.log('失敗')
+					}
+				})
+			},
+			
 			// 根据用户id获取信息
 			getUserById() {
 				let cnt = {
@@ -65,85 +153,7 @@
 					}
 				})
 			},
-
-			// 微信登录
-			wx() {
-				// let appid = 'wxbe41dad7130b6dcf';
-				// let secret = '0487f9aab9d0863ac001bd76a9030987';
-				uni.showLoading({
-					title: '登录中'
-				})
-				uni.clearStorageSync()
-				console.log('清理完成')
-				uni.login({
-					provider: 'weixin',
-					success: (res) => {
-						let code = res.code
-						let cnt = {
-							code: code, // String code
-						}
-						this.$api.getAccessToken(cnt, (res) => {
-							if (res.data.rc == this.$util.RC.SUCCESS) {
-								let userInfo = JSON.parse(res.data.c)
-								console.log(userInfo)
-								let openId = userInfo.openid
-								uni.setStorageSync('openId', openId)
-								uni.getUserInfo({
-									success: (res) => {
-										console.log(res)
-										console.log(openId)
-										let userHead = res.userInfo.avatarUrl
-										let userName = res.userInfo.nickName
-										let other = {
-											userHead: userHead
-										}
-										let cnt = {
-											wxOpenId: openId, // String 微信openId
-											name: userName, // string 用户名
-											ext: JSON.stringify(other), //其他信息
-										};
-										this.$api.loginByWxOpenId(cnt, (res) => {
-											if (res.data.rc == this.$util.RC.SUCCESS) {
-												console.log(JSON.parse(res.data.c))
-												let userId = JSON.parse(res.data.c).id
-												let userName = JSON.parse(res.data.c).name
-												let a = JSON.parse(res.data.c).ext
-												let userHead = JSON.parse(a).userHead
-												uni.setStorageSync('userId', userId)
-												uni.setStorageSync('userName', userName)
-												uni.setStorageSync('userHead', userHead)
-												this.userHead = userHead
-												this.userName = userName
-												this.boxShow = true
-												uni.hideLoading()
-												uni.showToast({
-													title: '已登录！',
-													duration: 1000
-												});
-											} else {
-												console.log('失敗')
-											}
-										})
-									},
-								})
-							} else {
-								uni.showToast({
-									title: res.data.rc,
-									icon: 'none',
-									duration: 1000,
-								})
-							}
-						})
-					},
-					fail: function(error) {
-						uni.showToast({
-							title: error,
-							icon: 'none',
-							duration: 1000,
-						})
-					}
-				})
-			}
+			
 		},
 		onShow() {
 			if (this.userId != '') {

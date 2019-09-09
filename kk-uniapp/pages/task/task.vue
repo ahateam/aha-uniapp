@@ -63,14 +63,14 @@
 
 			this.getContentTagGroupTypes()
 
-			let cnt = {
-				status: this.$constData.tagStatus[1].key,
-				module: this.$constData.module,
-				keyword: this.type,
-				count: 10,
-				offset: 0
-			}
-			this.getTags(cnt)
+			// let cnt = {
+			// 	status: this.$constData.tagStatus[1].key,
+			// 	module: this.$constData.module,
+			// 	keyword: this.type,
+			// 	count: 10,
+			// 	offset: 0
+			// }
+			// this.getTags(cnt)
 
 			let cnt1 = {
 				module: this.$constData.module,

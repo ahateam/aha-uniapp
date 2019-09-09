@@ -6,9 +6,16 @@
 				{{ item.name }}
 			</view>
 		</scroll-view>
-		
-		<view>
-			
+		<view style="padding-top: 90upx;"></view>
+		<view class="contentBox" v-for="(item,index) in templateList" :key="index" >
+			<image :src="item.src" mode="scaleToFill" class="imgs"></image>
+			<view class="contentTitle">
+				{{item.name}}
+			</view>
+			<view class="contentInfo">
+				{{item.text}}
+			</view>
+			<button type="primary" class="contentBtn" @click="navToCreate(item)">选择</button>
 		</view>
 	</view>
 </template>
@@ -26,26 +33,44 @@
 
 				contentTagGroupData: {}, //标签列表
 				currentSort: 0, //标签选中下标
-				tagName: '',
+				tagName: '',//选中标签
 
 				templateName: '',
+				templateList:[
+					{
+						name:'1',
+						text:'123123213',
+						src:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1568011516&di=c7cce7e0bdf1f6caad1532f39f7a9f9a&src=http://b-ssl.duitang.com/uploads/item/201305/26/20130526140022_5fMJe.jpeg',
+						type:0
+					},
+					{
+						name:'2',
+						text:'123123213',
+						src:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1568011516&di=c7cce7e0bdf1f6caad1532f39f7a9f9a&src=http://b-ssl.duitang.com/uploads/item/201305/26/20130526140022_5fMJe.jpeg',
+						type:1
+					}
+				],
 			};
 		},
 		onLoad(res) {
 			this.templateName = this.$constData.taskType[res.type].templateName
 			this.type = res.type
-			this.getTags()
-			let cnt = {
-				module: this.$constData.module, // String 隶属
-				type: res.type, // Byte <选填> 类型
-				status: this.$constData.tagStatus[1].key, // Byte <选填> 状态
-				// tags: tags, // String <选填> 标签
-				count: 10, // Integer 
-				offset: 0, // Integer 
-			}
-			this.getTemplate(cnt)
+			// this.getTags()
+			// let cnt = {
+			// 	module: this.$constData.module, // String 隶属
+			// 	type: res.type, // Byte <选填> 类型
+			// 	status: this.$constData.tagStatus[1].key, // Byte <选填> 状态
+			// 	// tags: tags, // String <选填> 标签
+			// 	count: 10, // Integer 
+			// 	offset: 0, // Integer 
+			// }
+			// this.getTemplate(cnt)
 		},
 		methods: {
+			navToCreate(item){
+				console.log(item)
+			},
+			
 			//根据标签改变内容
 			changeNav(e) {
 				this.currentSort = e
@@ -131,5 +156,41 @@
 				width: 30%;
 			}
 		}
+	}
+	
+	.contentBox{
+		position: relative;
+		padding: $box-margin-top $box-margin-left;
+		line-height: 0;
+	}
+	
+	.imgs{
+		width: 20vw;
+		height: 20vw;
+	}
+	
+	.contentTitle,.contentInfo{
+		position: absolute;
+		top: 50%;
+		margin-left: 21vw;
+		font-size: $list-title;
+		line-height: $list-title-line;
+	}
+	
+	.contentTitle{
+		font-weight: bold;
+		margin-top: -1.2em;
+	}
+	
+	.contentInfo{
+		margin-top: 0.2em;
+	}
+	
+	.contentBtn {
+		position: absolute;
+		right: $box-margin-left;
+		bottom: $box-margin-top;
+		font-size: $list-title;
+		line-height: $list-title-line;
 	}
 </style>

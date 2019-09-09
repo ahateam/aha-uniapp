@@ -158,6 +158,9 @@
 				upInfo: {},
 				loading: false,
 				contentId: '',
+				channelTitle:'',
+				channelId:'',
+				courseTitle:'',
 				id1: '',
 
 				/* 点赞 */
@@ -494,14 +497,40 @@
 						let time = y + '年' + m + '月' + d + '日'
 						detailData.time = time
 						this.detailData = detailData
+						this.channelId = detailData.upChannelId
 						this.contentObj = this.$util.tryParseJson(detailData.data)
 						console.log(this.contentObj)
 						console.log('---------------------------')
 						console.log(this.detailData)
 						this.getUserById(detailData.upUserId)
 						this.getCommentByContentId()
+						this.getChannel()
 					}
 				}))
+			},
+			
+			/* 获取专栏 */
+			getChannel(){
+				let cnt = {
+					id: this.channelId, //专栏id
+				}
+				this.$api.getChannlById(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('专栏信息')
+						this.channelTitle = this.$util.tryParseJson(res.data.c).title
+						console.log(this.channelTitle)
+						this.getCouser()
+					} else {
+						console.log('专栏获取失败')
+					}
+				})
+			},
+			
+			getCouser() {
+				let data = this.detailData.tags
+				let key = this.channelTitle
+				this.courseTitle = data[key][0]
+				this.getContentByChannelId()
 			},
 
 			/* 获取id对应用户 */
@@ -525,17 +554,19 @@
 			
 			// 从专栏id获取课程列表
 			getContentByChannelId() {
+				let tagJson = `{"${this.channelTitle}":"${this.courseTitle}"}`
 				let cnt = {
 					module: this.$constData.module, // String 隶属
-					channelId: this.channelId, // Long 专栏id
+					upChannelId: this.channelId, // Long 专栏id
+					tags: this.$util.tryParseJson(tagJson), // Long 专栏内容标签
 					status: 4, // Byte 专栏状态
 					count: 10, // Integer 
 					offset: 0, // Integer 
 				}
-				this.$api.getContentByChannelId(cnt, (res) => {
+				this.$api.getContents(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let arr = JSON.parse(res.data.c).list
-
+						let arr = JSON.parse(res.data.c)
+						
 						for (let i = 0; i < arr.length; i++) {
 							let date = new Date(arr[i].createTime)
 							let y = date.getFullYear()
@@ -545,6 +576,7 @@
 						}
 						this.courseList = arr
 						console.log(this.courseList)
+						console.log('课程列表')
 					} else {
 						this.courseList = []
 						console.log('error')

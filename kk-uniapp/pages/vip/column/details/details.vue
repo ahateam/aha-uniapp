@@ -541,7 +541,6 @@
 						console.log('专栏获取失败')
 					}
 				})
-
 			},
 			getCouser() {
 				let data = this.detailData.tags

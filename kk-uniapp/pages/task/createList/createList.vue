@@ -14,35 +14,26 @@
 	export default {
 		data() {
 			return {
-				list: [{
-						name: '视频',
+				list: [
+					{
+						name: '求表扬',
 						imgSrc: '/static/image/video.png',
 						type: this.$constData.taskType[0].key
 					},
 					{
-						name: '图文',
+						name: '求陪玩',
 						imgSrc: '/static/image/image.png',
 						type: this.$constData.taskType[1].key
 					},
 					{
-						name: '声音',
+						name: '制作',
 						imgSrc: '/static/image/voice.png',
 						type: this.$constData.taskType[2].key
 					},
 					{
-						name: '万众瞩目',
+						name: '分享',
 						imgSrc: '/static/image/comments.png',
 						type: this.$constData.taskType[3].key
-					},
-					{
-						name: '本地',
-						imgSrc: '/static/image/nearby.png',
-						type: this.$constData.taskType[4].key
-					},
-					{
-						name: '分享',
-						imgSrc: '/static/image/shre.png',
-						type: this.$constData.taskType[5].key
 					}
 				]
 			};
