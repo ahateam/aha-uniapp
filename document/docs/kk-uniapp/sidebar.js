@@ -7,10 +7,18 @@ module.exports = [
       ]
     },
     {
+      title:'业务功能组件',
+      collapsable: true,
+      children:[
+        '/kk-uniapp/service/wxLogin',
+        '/kk-uniapp/service/wxShare',
+      ]
+    },
+    {
       title:'项目组件',
       collapsable: true,
       children:[
-        '/kk-uniapp/component/',
+        '/kk-uniapp/component/ahaapi',
       ]
     },
 ]

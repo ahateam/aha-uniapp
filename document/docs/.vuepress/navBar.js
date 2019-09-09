@@ -6,7 +6,7 @@ module.exports = [
 	// 	},
 	{
 		text: 'aha-uniapp',
-		link: '/aha/',
+		link: '/aha/info/',
 	},
 	{
 		text: 'aha-element',
@@ -18,7 +18,7 @@ module.exports = [
 	},
 	{
 		text: '夸夸uniapp',
-		link: '/kk-uniapp/'
+		link: '/kk-uniapp/info/'
 	},
 	{
 		text: '关于项目',
