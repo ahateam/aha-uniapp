@@ -82,6 +82,18 @@
 				"navigationBarTitleText": "模板"
 			}
         }
+        ,{
+            "path" : "pages/task/createTask/createVideoTask",
+            "style" : {
+				"navigationBarTitleText": "任务模板"
+			}
+        },
+		{
+		    "path" : "pages/task/createTask/addVideoTask",
+		    "style" : {
+				"navigationBarTitleText": "创建任务"
+			}
+		}
     ],
 	"tabBar": {
 		"color": "#C0C4CC",

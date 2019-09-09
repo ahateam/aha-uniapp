@@ -6,9 +6,8 @@
 				{{ item.type }}
 			</view>
 		</scroll-view>
-
 		<view style="padding-top: 90upx;"></view>
-<!-- { primary: index == tagCurrent } -->
+		<!-- { primary: index == tagCurrent } -->
 		<view class="tagBox">
 			<uni-tag v-for="(item,index) in contentTagData" class="tags" :type="index == tagCurrent?'primary':''" :text="item.name"
 			 :key="index" @click="getTaskByTag(index)"></uni-tag>
@@ -19,8 +18,7 @@
 		</view>
 
 		<view v-for="(item,index) in contentData" :key="index">
-			<task-list-box :title="item.title" :text="JSON.parse(item.detail).text" :name="item.user.name" :money="item.money"
-			 :head="JSON.parse(item.user.ext).userHead"></task-list-box>
+			<task-list-box :title="item.title" :text="item.text" :name="item.user.name" :money="item.money" head="233"></task-list-box>
 		</view>
 	</view>
 </template>
@@ -44,7 +42,13 @@
 
 				// 导航栏数据
 				scrollLeft: 0,
-				contentTagGroupData: {},
+				contentTagGroupData: [{
+						type: '全部',
+					},
+					{
+						type: '测试'
+					}
+				], //导航栏列表
 				currentSort: 0, //导航栏选中下标
 				type: '全部', //当前选中类型
 
@@ -54,14 +58,22 @@
 				tagCurrent: -1, //当前选中标签下标
 
 				//内容
-				contentData: {}, //内容列表
+				contentData: [{
+						title: '任务标题1',
+						text: 'asdasd'
+					},
+					{
+						title: '任务标题2',
+						text: 'asdasd'
+					}
+				], //内容列表
 
 			}
 		},
 		onLoad() {
 			windowWidth = uni.getSystemInfoSync().windowWidth
 
-			this.getContentTagGroupTypes()
+			// this.getContentTagGroupTypes()
 
 			// let cnt = {
 			// 	status: this.$constData.tagStatus[1].key,
@@ -75,6 +87,7 @@
 			let cnt1 = {
 				module: this.$constData.module,
 				status: this.$constData.taskWallStatus[1].key,
+				// level: level, // Byte <选填> 任务等级
 				// type: '', // Byte 类型  如无此条件  为null
 				// tags: '', // String 标签  如无此条件  为null
 				count: 10,
@@ -84,12 +97,12 @@
 		},
 		methods: {
 			//跳转至创建任务界面
-			navToBtn(){
+			navToBtn() {
 				uni.navigateTo({
-					url:'/pages/task/createList/createList'
+					url: '/pages/task/createList/createList'
 				})
 			},
-			
+
 			//获得元素的size
 			getElSize(id) {
 				return new Promise((res, rej) => {
@@ -240,10 +253,13 @@
 			// 获取导航栏数据
 			getContentTagGroupTypes() {
 				let cnt = {
-					tagGroupType: this.$constData.tagGroupType[2].key, // Byte 标签分组类型
-					module: this.$constData.module, // String 隶属
+					module: this.$constData.module, // Long 模板编号
+					group: this.$constData.tagGroupType[2].val, // String 分组
+					status: this.constData.tagStatus[1].key, // Byte 状态
+					count: 50, // Integer 
+					offset: 0, // Integer 
 				}
-				this.$api.getContentTagGroupTypes(cnt, (res) => {
+				this.$api.getContentTag(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.contentTagGroupData = this.$util.tryParseJson(res.data.c)
 						console.log('导航栏数据↓↓')

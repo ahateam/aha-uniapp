@@ -116,19 +116,19 @@ constData.taskType = [{
 /* 任务墙任务状态 */
 constData.taskWallStatus = [
 	{
-		key:'0',
+		key:0,
 		val:'已创建'
 	},
 	{
-		key:'1',
+		key:1,
 		val:'已发布'
 	},
 	{
-		key:'2',
+		key:2,
 		val:'已领取'
 	},
 	{
-		key:'3',
+		key:3,
 		val:'已关闭'
 	}
 ]

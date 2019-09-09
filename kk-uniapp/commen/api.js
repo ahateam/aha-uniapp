@@ -62,7 +62,7 @@ api.getContentTagGroupTypes = function(cnt, callback) {
 
 //获取任务列表 
 api.getTask = function(cnt, callback) {
-	util.call(baseUrl + '/content/getTask', cnt, callback)
+	util.call(baseUrl + '/task/getTasks', cnt, callback)
 }
 
 //获取本地任务

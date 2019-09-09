@@ -69,6 +69,9 @@
 		methods: {
 			navToCreate(item){
 				console.log(item)
+				uni.navigateTo({
+					url:`/pages/task/createTask/createVideoTask`
+				})
 			},
 			
 			//根据标签改变内容

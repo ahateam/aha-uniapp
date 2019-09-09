@@ -144,10 +144,10 @@
 				}
 				this.$api.getUserById(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.userInfo = JSON.parse(res.data.c)
+						this.userInfo = this.$util.tryParseJson(res.data.c)
 						console.log(this.userInfo)
 						this.userName = this.userInfo.name
-						this.userHead = JSON.parse(this.userInfo.ext).userHead
+						this.userHead = this.$util.tryParseJson(this.userInfo.ext).userHead
 					} else {
 						console.log('获取失败')
 					}
