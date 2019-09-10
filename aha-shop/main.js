@@ -2,7 +2,11 @@ import Vue from 'vue'
 import App from './App'
 import Json from './Json' //测试用数据
 
+import util from 'ahaapi'
+import api from './commen/api.js'
+
 import store from './store'  
+import constData from './commen/constData.js'
 
 /**
  *  因工具函数属于公司资产, 所以直接在Vue实例挂载几个常用的函数
@@ -44,8 +48,11 @@ const prePage = ()=>{
 
 
 Vue.config.productionTip = false
-Vue.prototype.$api = {msg, json, prePage};
-Vue.prototype.$store = store  
+// Vue.prototype.$api = {msg, json, prePage}
+Vue.prototype.$api = api
+Vue.prototype.$store = store
+Vue.prototype.$constData = constData
+Vue.prototype.$util = util
 
 App.mpType = 'app'
 

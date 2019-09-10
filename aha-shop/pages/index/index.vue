@@ -4,23 +4,23 @@
 			<swiper indicator-dots circular=true duration="400">
 				<swiper-item class="swiper-item" v-for="(item,index) in imgList" :key="index">
 					<view class="image-wrapper">
-						<image :src="item.src" class="loaded" mode="aspectFill"></image>
+						<image :src="item.img" class="loaded" mode="aspectFill"></image>
 					</view>
 				</swiper-item>
 			</swiper>
 		</view>
 
 		<view class="introduce-section">
-			<text class="title">恒源祥2019春季长袖白色t恤 新款春装</text>
+			<text class="title">{{goodsInfo.title}}</text>
 			<view class="price-box">
 				<text class="price-tip">¥</text>
-				<text class="price">341.6</text>
-				<text class="m-price">¥488</text>
-				<text class="coupon-tip">7折</text>
+				<text class="price">{{goodsInfo.price}}</text>
+				<text class="m-price">¥{{goodsInfo.memberPrice}}</text>
+				<text class="coupon-tip">{{goodsInfo.costPrice}}折</text>
 			</view>
 			<view class="bot-row">
-				<text>销量: 108</text>
-				<text>库存: 4690</text>
+				<text>销量: {{count}}</text>
+				<text>库存: {{goodsInfo.stock}}</text>
 				<text>浏览量: 768</text>
 			</view>
 		</view>
@@ -137,7 +137,7 @@
 			<view class="mask"></view>
 			<view class="layer attr-content" @click.stop="stopPrevent">
 				<view class="a-t">
-					<image src="https://gd3.alicdn.com/imgextra/i3/0/O1CN01IiyFQI1UGShoFKt1O_!!0-item_pic.jpg_400x400.jpg"></image>
+					<image :src="imgList[0].img"></image>
 					<view class="right">
 						<text class="price">¥328.00</text>
 						<text class="stock">库存：188件</text>
@@ -176,22 +176,18 @@
 		},
 		data() {
 			return {
-				goodsList:[],
+				id:'',//当前商品id
+				goodsInfo:{},//当前商品信息
+				price:'',//价格
+				count:'',//销量
+				
+				goodsList: [],
 				specClass: 'none',
 				specSelected: [],
 
 				favorite: true,
 				shareList: [],
-				imgList: [{
-						src: 'https://gd3.alicdn.com/imgextra/i3/0/O1CN01IiyFQI1UGShoFKt1O_!!0-item_pic.jpg_400x400.jpg'
-					},
-					{
-						src: 'https://gd3.alicdn.com/imgextra/i3/TB1RPFPPFXXXXcNXpXXXXXXXXXX_!!0-item_pic.jpg_400x400.jpg'
-					},
-					{
-						src: 'https://gd2.alicdn.com/imgextra/i2/38832490/O1CN01IYq7gu1UGShvbEFnd_!!38832490.jpg_400x400.jpg'
-					}
-				],
+				imgList: [],
 				desc: `
 					<div style="width:100%">
 						<img style="width:100%;display:block;" src="https://gd3.alicdn.com/imgextra/i4/479184430/O1CN01nCpuLc1iaz4bcSN17_!!479184430.jpg_400x400.jpg" />
@@ -259,12 +255,19 @@
 			};
 		},
 		async onLoad(options) {
+			if(options.id){
+				this.id = options.id
+			}else{
+				this.id = 0
+			}
+			this.getProduct()//获取商品详情
+			this.getProducts()//获取商品列表
 
 			//接收传值,id里面放的是标题，因为测试数据并没写id 
-			let id = options.id;
-			if (id) {
-				this.$api.msg(`点击了${id}`);
-			}
+			// let id = options.id;
+			// if (id) {
+			// 	this.$api.msg(`点击了${id}`);
+			// }
 
 
 			//规格 默认选中第一条
@@ -277,13 +280,55 @@
 					}
 				}
 			})
-			this.shareList = await this.$api.json('shareList');
-			let goodsList = await this.$api.json('goodsList');
-			this.goodsList = goodsList || [];
+			// this.shareList = await this.$api.json('shareList');
+			// let goodsList = await this.$api.json('goodsList');
+			// this.goodsList = goodsList || [];
 
 		},
 		methods: {
-	
+			// 获得商品详细
+			getProduct() {
+				let cnt = {
+					moduleId: this.$constData.module, // Long 模块编号
+					id: this.id, // Long 商品id
+				}
+				this.$api.getProduct(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.count = this.$util.tryParseJson(res.data.c).count
+						this.goodsInfo = this.$util.tryParseJson(res.data.c).product
+						console.log(this.goodsInfo)
+						this.imgList = this.$util.tryParseJson(this.goodsInfo.data)
+						this.price = this.goodsInfo.price
+					}
+				})
+			},
+
+			//查询推荐商品列表
+			getProducts() {
+				let cnt = {
+					moduleId: this.$constData.module, // Long 所属模块编号
+					// storeId: storeId, // Long <选填> 所属商店编号
+					// status: status, // Byte <选填> 状态
+					// title: title, // String <选填> 标题
+					// tags: tags, // JSONObject <选填> 标签
+					count: 10, // int 
+					offset: 0, // int 
+				}
+				this.$api.getProducts(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						console.log('-----------------------------------------------')
+						let list = this.$util.tryParseJson(res.data.c)
+						//this.goodsList
+						for(let i =0;i<list.length;i++){
+							let imgList = this.$util.tryParseJson(list[i].data)
+							list[i].imgList = imgList
+						}
+						this.goodsList = list
+						console.log(this.goodsList)
+					}
+				})
+			},
+
 			//规格弹窗开关
 			toggleSpec() {
 				if (this.specClass === 'show') {
@@ -314,9 +359,12 @@
 				this.specSelected = [];
 				list.forEach(item => {
 					if (item.selected === true) {
-						this.specSelected.push(item);
+						this.specSelected.push(item)
+						console.log('-----------------------------')
+						console.log(this.specSelected)
 					}
 				})
+				
 
 			},
 			//分享
@@ -328,8 +376,15 @@
 				this.favorite = !this.favorite;
 			},
 			buy() {
+				let data = {
+					id:this.id,
+					size:this.specSelected[0].name,
+					color:this.specSelected[1].name,
+					price:this.price
+				}
+				let objString = JSON.stringify(data)
 				uni.navigateTo({
-					url: `/pages/order/createOrder`
+					url: `/pages/order/createOrder?data=${objString}`
 				})
 			},
 			stopPrevent() {}

@@ -17,7 +17,7 @@
 			<text class="iconfont kk-jia"></text>
 		</view>
 
-		<view v-for="(item,index) in contentData" :key="index">
+		<view v-for="(item,index) in contentData" :key="index" @click="navToTask">
 			<task-list-box :title="item.title" :text="item.text" :name="item.user.name" :money="item.money" head="233"></task-list-box>
 		</view>
 	</view>
@@ -102,7 +102,15 @@
 					url: '/pages/task/createList/createList'
 				})
 			},
-
+			
+			//跳转至任务详情
+				
+			navToTask(){
+				uni.navigateTo({
+					url: '/pages/task/taskView/VideoTask'
+				})
+			},
+			
 			//获得元素的size
 			getElSize(id) {
 				return new Promise((res, rej) => {

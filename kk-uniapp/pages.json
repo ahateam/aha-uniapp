@@ -69,31 +69,43 @@
 			"style": {
 				"navigationBarTitleText": "添加"
 			}
-		}
-	    ,{
-            "path" : "pages/task/createList/createList",
-            "style" : {
+		}, {
+			"path": "pages/task/createList/createList",
+			"style": {
 				"navigationBarTitleText": "添加任务"
 			}
-        }
-        ,{
-            "path" : "pages/task/template/template",
-            "style" : {
+		}, {
+			"path": "pages/task/template/template",
+			"style": {
 				"navigationBarTitleText": "模板"
 			}
-        }
-        ,{
-            "path" : "pages/task/createTask/createVideoTask",
-            "style" : {
+		}, {
+			"path": "pages/task/template/textTemplate",
+			"style": {
+				"navigationBarTitleText": "模板"
+			}
+		}, {
+			"path": "pages/task/createTask/createVideoTask",
+			"style": {
 				"navigationBarTitleText": "任务模板"
 			}
-        },
+		},
 		{
-		    "path" : "pages/task/createTask/addVideoTask",
-		    "style" : {
+			"path": "pages/task/createTask/addVideoTask",
+			"style": {
 				"navigationBarTitleText": "创建任务"
 			}
 		}
+	    ,{
+            "path" : "pages/task/taskView/VideoTask",
+            "style" : {
+				"navigationBarTitleText": "视频任务"
+			}
+        }
+        ,{
+            "path" : "pages/task/payView/payView",
+            "style" : {}
+        }
     ],
 	"tabBar": {
 		"color": "#C0C4CC",

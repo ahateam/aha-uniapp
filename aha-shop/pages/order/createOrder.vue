@@ -24,17 +24,17 @@
 			</view>
 			<!-- 商品列表 -->
 			<view class="g-item">
-				<image src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=756705744,3505936868&fm=11&gp=0.jpg"></image>
+				<image :src="imgList[0].img"></image>
 				<view class="right">
-					<text class="title clamp">古黛妃 短袖t恤女夏装2019新款</text>
-					<text class="spec">春装款 L</text>
+					<text class="title clamp">{{goodsInfo.title}}</text>
+					<text class="spec">{{data.color}} {{data.size}}</text>
 					<view class="price-box">
-						<text class="price">￥17.8</text>
+						<text class="price">￥{{data.price}}</text>
 						<text class="number">x 1</text>
 					</view>
 				</view>
 			</view>
-			<view class="g-item">
+			<!-- <view class="g-item">
 				<image src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1620020012,789258862&fm=26&gp=0.jpg"></image>
 				<view class="right">
 					<text class="title clamp">韩版于是洞洞拖鞋 夏季浴室防滑简约居家【新人专享，限选意见】</text>
@@ -44,7 +44,7 @@
 						<text class="number">x 1</text>
 					</view>
 				</view>
-			</view>
+			</view> -->
 		</view>
 
 		<!-- 优惠明细 -->
@@ -71,11 +71,11 @@
 		<view class="yt-list">
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">商品金额</text>
-				<text class="cell-tip">￥179.88</text>
+				<text class="cell-tip">￥{{data.price}}</text>
 			</view>
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">优惠金额</text>
-				<text class="cell-tip red">-￥35</text>
+				<text class="cell-tip red">-￥0</text>
 			</view>
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">运费</text>
@@ -92,7 +92,7 @@
 			<view class="price-content">
 				<text>实付款</text>
 				<text class="price-tip">￥</text>
-				<text class="price">475</text>
+				<text class="price">{{data.price}}</text>
 			</view>
 			<text class="submit" @click="submit">提交订单</text>
 		</view>
@@ -127,6 +127,10 @@
 	export default {
 		data() {
 			return {
+				data: {}, //上个页面的参数
+				goodsInfo: {}, //商品数据
+				imgList: [], //图片列表
+
 				maskState: 0, //优惠券面板显示状态
 				desc: '', //备注
 				payType: 1, //1微信 2支付宝
@@ -143,25 +147,26 @@
 						price: 15,
 					}
 				],
-				addressData:this.$store.state.addressData
+				addressData: this.$store.state.addressData
 			}
 		},
 		onLoad(option) {
 			//商品数据
-		
-			
+			this.data = this.$util.tryParseJson(option.data)
+			console.log(this.data)
+			this.getProduct() //获取商品详情
 		},
-		onShow(){
-				//let data = JSON.parse(option.data);
+		onShow() {
+			//let data = JSON.parse(option.data);
 			//console.log(data);
 			// this.addressData = option.addressData
-			let addressStr =  JSON.stringify( this.$store.state.addressData)
-				console.log(addressStr == '{}')
-			if(addressStr != '{}'){
+			let addressStr = JSON.stringify(this.$store.state.addressData)
+			console.log(addressStr == '{}')
+			if (addressStr != '{}') {
 				console.log('1111');
 				this.addressData = this.$store.state.addressData
-			}else{
-				let addressData= {
+			} else {
+				let addressData = {
 					name: '未知',
 					mobile: '暂无',
 					addressName: '暂无',
@@ -169,10 +174,28 @@
 					area: '暂无',
 					default: false,
 				}
-				this.addressData =  addressData
+				this.addressData = addressData
 			}
 		},
 		methods: {
+			// 获得商品详细
+			getProduct() {
+				let cnt = {
+					moduleId: this.$constData.module, // Long 模块编号
+					id: this.data.id, // Long 商品id
+				}
+				this.$api.getProduct(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.goodsInfo = this.$util.tryParseJson(res.data.c).product
+						console.log(this.goodsInfo)
+						this.imgList = this.$util.tryParseJson(this.goodsInfo.data)
+						console.log('----------------------')
+						console.log(this.imgList)
+						this.price == this.goodsInfo.price
+					}
+				})
+			},
+
 			//显示优惠券面板
 			toggleMask(type) {
 				let timer = type === 'show' ? 10 : 300;
@@ -189,9 +212,38 @@
 				this.payType = type;
 			},
 			submit() {
-				uni.redirectTo({
-					url: '/pages/money/pay'
+				if (this.addressData.address == '暂无') {
+					uni.showToast({
+						title: '请填写收货信息',
+						duration: 1000,
+						icon: 'none'
+					})
+					return
+				}
+				let cnt = {
+					moduleId: this.$constData.module, // Long 模块编号
+					storeId: 0, // Long 商店编号
+					productId: 0, // Long 商品编号
+					buyerId: 1234567890, // Long 买家用户编号
+					addressId: 123456788, // Long 地址编号
+					pramoterId: 1233123, // Long 卖家推广员用户编号
+					resellerId: 123312321, // Long 分销用户编号（只记录直接上级
+					productPrice: this.data.price, // Double 商品售价
+					donePrice: this.data.price, // Double 最终成交价
+					// productPrice: 20.1, // Double 商品售价
+					// donePrice: 20.1, // Double 最终成交价
+					title: '奥斯丁', // String 标题
+					channelId: '12312312', // String 渠道编号
+					channelType: '1231312312', // String <选填> 渠道类型编号
+				}
+				this.$api.createOrder(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						console.log(res.data.c)
+					}
 				})
+				// uni.redirectTo({
+				// 	url: '/pages/money/pay'
+				// })
 			},
 			stopPrevent() {},
 
