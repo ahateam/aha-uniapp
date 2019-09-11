@@ -151,9 +151,22 @@
 			}
 		},
 		onLoad(option) {
-			//商品数据
-			this.data = this.$util.tryParseJson(option.data)
+			let id = uni.getStorageSync('userId')//获取用户id
+			
+			let cnt = {
+				moduleId: this.$constData.module, // Long 模块编号
+				userId: id, // Long 用户id
+				// id: id, // Long <选填> 地址id
+				isDefault: this.$constData.addressStatus[0].key, // Byte <选填> 默认状态0默认1非默认
+				count: 1, // int 
+				offset: 0, // int 
+			}
+			this.getAddress(cnt)//获得地址
+			
+			
+			this.data = this.$util.tryParseJson(option.data)//商品数据
 			console.log(this.data)
+			
 			this.getProduct() //获取商品详情
 		},
 		onShow() {
@@ -178,6 +191,29 @@
 			}
 		},
 		methods: {
+			//获取地址
+			getAddress(cnt) {
+				this.$api.getAddress(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log(this.$util.tryParseJson(res.data.c))
+						let address = this.$util.tryParseJson(res.data.c)[0]
+						
+						let addressData = {
+							name: address.userName,
+							mobile: address.userPhone,
+							// addressName: '暂无',
+							address: address.province,
+							area: address.detailed,
+							default: false,
+						}
+						
+						this.$store.state.addressId = address.id
+						this.$store.state.addressData = addressData
+						this.addressData = addressData
+					}
+				})
+			},
+
 			// 获得商品详细
 			getProduct() {
 				let cnt = {
@@ -220,25 +256,39 @@
 					})
 					return
 				}
+				
+				let sku = {
+					color:this.data.color,
+					size:this.data.size,
+					price:this.data.price
+				}
+				
 				let cnt = {
 					moduleId: this.$constData.module, // Long 模块编号
-					storeId: 0, // Long 商店编号
-					productId: 0, // Long 商品编号
-					buyerId: 1234567890, // Long 买家用户编号
-					addressId: 123456788, // Long 地址编号
-					pramoterId: 1233123, // Long 卖家推广员用户编号
-					resellerId: 123312321, // Long 分销用户编号（只记录直接上级
+					storeId: this.goodsInfo.storeId, // Long 商店编号
+					productId: this.goodsInfo.id, // Long 商品编号
+					buyerId: uni.getStorageSync('userId'), // Long 买家用户编号
+					addressId: this.$store.state.addressId, // Long 地址编号
+					pramoterId: 0, // Long 卖家推广员用户编号
+					resellerId: 0, // Long 分销用户编号（只记录直接上级
 					productPrice: this.data.price, // Double 商品售价
 					donePrice: this.data.price, // Double 最终成交价
-					// productPrice: 20.1, // Double 商品售价
-					// donePrice: 20.1, // Double 最终成交价
-					title: '奥斯丁', // String 标题
-					channelId: '12312312', // String 渠道编号
-					channelType: '1231312312', // String <选填> 渠道类型编号
+					productPrice: 20.1, // Double 商品售价
+					donePrice: 20.1, // Double 最终成交价
+					title: this.goodsInfo.title, // String 标题
+					channelId: '0', // String 渠道编号
+					// channelType: '1231312312', // String <选填> 渠道类型编号
+					sku: JSON.stringify(sku), // String 商品sku信息
 				}
-				this.$api.createOrder(cnt,(res)=>{
-					if(res.data.rc == this.$util.RC.SUCCESS){
-						console.log(res.data.c)
+				this.$api.createOrder(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.reLaunch({
+						    url: '/pages/index/index'
+						})
+						uni.showToast({
+							title:'订单创建成功',
+							duration:1000
+						})
 					}
 				})
 				// uni.redirectTo({

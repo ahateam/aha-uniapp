@@ -13,7 +13,7 @@
 			<!-- 	<text @click="chooseLocation" class="input">
 				{{addressData.addressName}}
 			</text> -->
-			<input class="input" type="text" v-model="addressData.addressName" placeholder="收货人地址:省、市、区" placeholder-class="placeholder" />
+			<input class="input" type="text" v-model="addressData.address" placeholder="收货人地址:省、市、区" placeholder-class="placeholder" />
 
 			<text class="yticon icon-shouhuodizhi"></text>
 		</view>
@@ -45,7 +45,6 @@
 			}
 		},
 		onLoad() {
-
 			let addressStr = JSON.stringify(this.$store.state.addressData)
 			console.log(addressStr == '{}')
 			if (addressStr != '{}') {
@@ -99,7 +98,7 @@
 					this.$api.msg('请输入正确的手机号码');
 					return;
 				}
-				if (!data.addressName) {
+				if (!data.address) {
 					this.$api.msg('请填写省市区地址信息');
 					return;
 				}
@@ -111,18 +110,18 @@
 				this.$store.state.addressData = data
 				let cnt = {
 					moduleId: this.$constData.module, // Long 模块编号
-					userId: 1234567890, // Long 用户id
+					userId: uni.getStorageSync('userId'), // Long 用户id
 					userName: this.addressData.name, // String 收货人姓名
 					userPhone: this.addressData.mobile, // String 收货人手机号码
-					province: '贵州省', // String 省
-					city: '遵义', // String 市
-					detailed: '上海路500号', // String 详细地址
-					isDefault: +this.addressData.default, // Byte <选填> 是否默认
+					province: this.addressData.address, // String 省
+					city: '', // String 市
+					detailed: this.addressData.area, // String 详细地址
+					isDefault: +!this.addressData.default, // Byte <选填> 是否默认
 					// status: status, // Byte <选填> 状态
 				}
 				this.$api.createAddress(cnt,(res)=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
-						this.$store.state.addressId = res.data.c
+						this.$store.state.addressId = this.$util.tryParseJson(res.data.c).id
 						console.log(this.$store.state.addressId)
 						uni.navigateBack()
 					}

@@ -1,7 +1,8 @@
 <template>
 	<view class="container">
+
 		<view class="carousel">
-			<swiper indicator-dots circular=true duration="400">
+			<swiper indicator-dots circular=true duration="400" v-if="imgList != []">
 				<swiper-item class="swiper-item" v-for="(item,index) in imgList" :key="index">
 					<view class="image-wrapper">
 						<image :src="item.img" class="loaded" mode="aspectFill"></image>
@@ -44,8 +45,11 @@
 			<view class="c-row b-b" @click="toggleSpec">
 				<text class="tit">购买类型</text>
 				<view class="con">
-					<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
-						{{sItem.name}}
+					<text class="selected-text">
+						{{color}}
+					</text>
+					<text class="selected-text">
+						{{size}}
 					</text>
 				</view>
 				<text class="yticon icon-you"></text>
@@ -124,9 +128,19 @@
 				<text>收藏</text>
 			</view> -->
 
-			<view class="action-btn-group">
+			<!-- <view class="action-btn-group">
 				<button type="primary" class=" action-btn no-border buy-now-btn" @click="buy">立即购买</button>
 				<button type="primary" class=" action-btn no-border add-cart-btn" @click="share">立即分享</button>
+			</view> -->
+			<view class="page-bottom">
+				<view class="p-b-btn" :class="{active: favorite}" @click="share">
+					<text class="yticon icon-shoucang"></text>
+					<text>分享</text>
+				</view>
+				<view class="action-btn-group">
+					<button type="primary" class=" action-btn no-border buy-now-btn" @click="buy">立即购买</button>
+					<button type="primary" class=" action-btn no-border add-cart-btn" @click="navToList">我的订单</button>
+				</view>
 			</view>
 		</view>
 
@@ -139,7 +153,7 @@
 				<view class="a-t">
 					<image :src="imgList[0].img"></image>
 					<view class="right">
-						<text class="price">¥328.00</text>
+						<text class="price">¥{{price}}</text>
 						<text class="stock">库存：188件</text>
 						<view class="selected">
 							已选：
@@ -149,15 +163,26 @@
 						</view>
 					</view>
 				</view>
-				<view v-for="(item,index) in specList" :key="index" class="attr-list">
-					<text>{{item.name}}</text>
+
+				<view class="attr-list">
+					<text>颜色</text>
 					<view class="item-list">
-						<text v-for="(childItem, childIndex) in specChildList" v-if="childItem.pid === item.id" :key="childIndex" class="tit"
-						 :class="{selected: childItem.selected}" @click="selectSpec(childIndex, childItem.pid)">
-							{{childItem.name}}
+						<text v-for="(item, index) in colorList" :key="index" class="tit" :class="{selected: colorCurrt == index}" @click="currtColor(item.color, index)">
+							{{item.color}}
 						</text>
 					</view>
 				</view>
+
+				<view class="attr-list">
+					<text>尺寸</text>
+					<view class="item-list">
+						<text v-for="(childItem, childIndex) in sizeList" :key="childIndex" class="tit"
+						 :class="{selected: sizeCurrt == childIndex}" @click="currtSize(childItem.size,childIndex)">
+							{{childItem.size}}
+						</text>
+					</view>
+				</view>
+
 				<button class="btn" @click="toggleSpec">完成</button>
 			</view>
 		</view>
@@ -176,18 +201,30 @@
 		},
 		data() {
 			return {
-				id:'',//当前商品id
-				goodsInfo:{},//当前商品信息
-				price:'',//价格
-				count:'',//销量
-				
+				id: '', //当前商品id
+				goodsInfo: {}, //当前商品信息
+				price: '', //价格
+				count: '', //销量
+
 				goodsList: [],
 				specClass: 'none',
-				specSelected: [],
+				specSelected: [
+					{
+						name:''
+					}
+				],
 
 				favorite: true,
-				shareList: [],
-				imgList: [],
+				shareList: [{
+					type: 1,
+					icon: '/static/temp/share_wechat.png',
+					text: '微信好友'
+				}, ],
+				imgList: [
+					{
+						img:''
+					}
+				],
 				desc: `
 					<div style="width:100%">
 						<img style="width:100%;display:block;" src="https://gd3.alicdn.com/imgextra/i4/479184430/O1CN01nCpuLc1iaz4bcSN17_!!479184430.jpg_400x400.jpg" />
@@ -197,71 +234,87 @@
 						<img style="width:100%;display:block;" src="https://gd1.alicdn.com/imgextra/i1/479184430/O1CN01Tnm1rU1iaz4aVKcwP_!!479184430.jpg_400x400.jpg" />
 					</div>
 				`,
-				specList: [{
-						id: 1,
-						name: '尺寸',
-					},
+				// specList: [
+				// 	{
+				// 		id: 2,
+				// 		name: '颜色',
+				// 	},{
+				// 		id: 1,
+				// 		name: '尺寸',
+				// 	},
+				// ],
+				// specChildList: [{
+				// 		id: 1,
+				// 		pid: 1,
+				// 		name: 'XS',
+				// 	},
+				// 	{
+				// 		id: 2,
+				// 		pid: 1,
+				// 		name: 'S',
+				// 	},
+				// 	{
+				// 		id: 3,
+				// 		pid: 1,
+				// 		name: 'M',
+				// 	},
+				// 	{
+				// 		id: 4,
+				// 		pid: 1,
+				// 		name: 'L',
+				// 	},
+				// 	{
+				// 		id: 5,
+				// 		pid: 1,
+				// 		name: 'XL',
+				// 	},
+				// 	{
+				// 		id: 6,
+				// 		pid: 1,
+				// 		name: 'XXL',
+				// 	},
+				// 	{
+				// 		id: 7,
+				// 		pid: 2,
+				// 		name: '白色',
+				// 	},
+				// 	{
+				// 		id: 8,
+				// 		pid: 2,
+				// 		name: '珊瑚粉',
+				// 	},
+				// 	{
+				// 		id: 9,
+				// 		pid: 2,
+				// 		name: '草木绿',
+				// 	},
+				// ],
+
+				colorList: [
 					{
-						id: 2,
-						name: '颜色',
-					},
+						color:''
+					}
 				],
-				specChildList: [{
-						id: 1,
-						pid: 1,
-						name: 'XS',
-					},
+				colorCurrt: 0,
+				color: '',
+				sizeList: [
 					{
-						id: 2,
-						pid: 1,
-						name: 'S',
-					},
-					{
-						id: 3,
-						pid: 1,
-						name: 'M',
-					},
-					{
-						id: 4,
-						pid: 1,
-						name: 'L',
-					},
-					{
-						id: 5,
-						pid: 1,
-						name: 'XL',
-					},
-					{
-						id: 6,
-						pid: 1,
-						name: 'XXL',
-					},
-					{
-						id: 7,
-						pid: 2,
-						name: '白色',
-					},
-					{
-						id: 8,
-						pid: 2,
-						name: '珊瑚粉',
-					},
-					{
-						id: 9,
-						pid: 2,
-						name: '草木绿',
-					},
-				]
+						size:''
+					}
+				],
+				sizeCurrt: 0,
+				size: '',
+
 			};
 		},
-		async onLoad(options) {
-			if(options.id){
+		onLoad(options) {
+			if (options.id) {
 				this.id = options.id
-			}else{
+			} else {
 				this.id = 0
 			}
-			this.getProduct()//获取商品详情
-			this.getProducts()//获取商品列表
+			this.getProduct() //获取商品详情
+			this.getProducts() //获取商品列表
 
 			//接收传值,id里面放的是标题，因为测试数据并没写id 
 			// let id = options.id;
@@ -271,21 +324,40 @@
 
 
 			//规格 默认选中第一条
-			this.specList.forEach(item => {
-				for (let cItem of this.specChildList) {
-					if (cItem.pid === item.id) {
-						this.$set(cItem, 'selected', true);
-						this.specSelected.push(cItem);
-						break; //forEach不能使用break
-					}
-				}
-			})
+			// this.specList.forEach(item => {
+			// 	for (let cItem of this.specChildList) {
+			// 		if (cItem.pid === item.id) {
+			// 			this.$set(cItem, 'selected', true);
+			// 			this.specSelected.push(cItem);
+			// 			break; //forEach不能使用break
+			// 		}
+			// 	}
+			// })
 			// this.shareList = await this.$api.json('shareList');
 			// let goodsList = await this.$api.json('goodsList');
 			// this.goodsList = goodsList || [];
 
 		},
 		methods: {
+			// 跳转至订单列表
+			navToList() {
+				if (uni.getStorageSync('userId') == '') {
+					uni.navigateTo({
+						url: `/pages/login/login`
+					})
+					uni.showToast({
+						title: '登录后方可查看',
+						duration: 1000,
+						icon: 'none'
+					})
+					return
+				}
+
+				uni.navigateTo({
+					url: '/pages/order/order'
+				})
+			},
+
 			// 获得商品详细
 			getProduct() {
 				let cnt = {
@@ -294,11 +366,24 @@
 				}
 				this.$api.getProduct(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.count = this.$util.tryParseJson(res.data.c).count
+						if (this.$util.tryParseJson(res.data.c).count != undefined) {
+							let count = this.$util.tryParseJson(res.data.c).count
+							this.count = count + ''
+						} else {
+							this.count = 0
+						}
 						this.goodsInfo = this.$util.tryParseJson(res.data.c).product
-						console.log(this.goodsInfo)
+						console.log(this.$util.tryParseJson(res.data.c))
+						console.log('商品信息↑↑↑↑↑↑↑↑↑↑↑↑')
 						this.imgList = this.$util.tryParseJson(this.goodsInfo.data)
-						this.price = this.goodsInfo.price
+						console.log(this.imgList)
+						console.log('图片↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑')
+						console.log(this.$util.tryParseJson(this.goodsInfo.sku))
+						this.colorList = this.$util.tryParseJson(this.goodsInfo.sku)
+						this.sizeList = this.colorList[0].chid
+						this.color = this.colorList[0].color
+						this.size = this.sizeList[0].size
+						this.price = this.sizeList[0].price
 					}
 				})
 			},
@@ -314,12 +399,12 @@
 					count: 10, // int 
 					offset: 0, // int 
 				}
-				this.$api.getProducts(cnt,(res)=>{
-					if(res.data.rc == this.$util.RC.SUCCESS){
+				this.$api.getProducts(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log('-----------------------------------------------')
 						let list = this.$util.tryParseJson(res.data.c)
 						//this.goodsList
-						for(let i =0;i<list.length;i++){
+						for (let i = 0; i < list.length; i++) {
 							let imgList = this.$util.tryParseJson(list[i].data)
 							list[i].imgList = imgList
 						}
@@ -364,9 +449,23 @@
 						console.log(this.specSelected)
 					}
 				})
-				
-
 			},
+
+			//选择颜色
+			currtColor(color, e) {
+				this.colorCurrt = e
+				this.sizeList = this.colorList[e].chid
+				this.color = color
+				this.price = this.sizeList[this.sizeCurrt].price
+			},
+
+			//选择size
+			currtSize(size, e) {
+				this.size = size
+				this.sizeCurrt = e
+				this.price = this.sizeList[e].price
+			},
+
 			//分享
 			share() {
 				this.$refs.share.toggleMask();
@@ -376,11 +475,23 @@
 				this.favorite = !this.favorite;
 			},
 			buy() {
+				if (uni.getStorageSync('userId') == '') {
+					uni.navigateTo({
+						url: `/pages/login/login`
+					})
+					uni.showToast({
+						title: '请登录后购买',
+						duration: 1000,
+						icon: 'none'
+					})
+					return
+				}
+
 				let data = {
-					id:this.id,
-					size:this.specSelected[0].name,
-					color:this.specSelected[1].name,
-					price:this.price
+					id: this.id,
+					size: this.size,
+					color: this.color,
+					price: this.price
 				}
 				let objString = JSON.stringify(data)
 				uni.navigateTo({
@@ -397,6 +508,15 @@
 	page {
 		background: $page-color-base;
 		padding-bottom: 160upx;
+	}
+
+	.fixBox {
+		position: fixed;
+		top: 20upx;
+		left: 20upx;
+		width: 15vw;
+		z-index: 5;
+		background: #F8F6FC;
 	}
 
 	.icon-you {

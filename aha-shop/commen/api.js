@@ -46,5 +46,19 @@ api.createOrder = function(cnt, callback) {
 	util.call(baseUrl + '/shop/createOrder', cnt, callback)
 }
 
+//查询订单列表
+api.getOrders = function(cnt, callback) {
+	util.call(baseUrl + '/shop/getOrders', cnt, callback)
+}
+
+/* 用户 */
+//获取用户openid
+api.getAccessToken = function(cnt, callback) {
+	util.call(baseUrl + '/weixin/getAccessToken', cnt, callback)
+}
+//登录 
+api.loginByWxOpenId = function(cnt, callback) {
+	util.call(baseUrl + '/weixin/loginByWxOpenId', cnt, callback)
+}
 
 export default api

@@ -14,7 +14,7 @@
 			<view 
 				v-for="(item, index) in goodsList" :key="index"
 				class="guess-item"
-				@click="navToDetailPage(item)"
+				@click="navToDetailPage(item.id)"
 			>
 				<view class="image-wrapper">
 					<image :src="item.imgList[0].img" mode="aspectFill"></image>
@@ -39,8 +39,10 @@
 			goodsList:Array
 		},
 		methods: {
-			navToDetailPage(){
-				console.log('1111')
+			navToDetailPage(id){
+				uni.reLaunch({
+				    url: `/pages/index/index?id=${id}`
+				})
 			}
 		}
 	}
