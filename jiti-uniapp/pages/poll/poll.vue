@@ -50,7 +50,9 @@
 						</view>
 					</view>
 				</view>
-
+				<view v-else class="vote-totle">
+					暂无投票列表信息
+				</view>
 			</view>
 			<view class="load-box" v-if="tabCurrentIndex ==1">
 				<view v-if="voteList.length>0">
@@ -84,7 +86,9 @@
 						</view>
 					</view>
 				</view>
-
+				<view v-else class="vote-totle">
+					暂无投票列表信息
+				</view>
 			</view>
 			<view class="load-box" v-if="tabCurrentIndex ==2">
 				<view v-if="voteList.length>0">
@@ -117,12 +121,19 @@
 						</view>
 					</view>
 				</view>
+				<view v-else class="vote-totle">
+					暂无投票列表信息
+				</view>
 			</view>
 
 
 		</view>
 
-
+		<view class="footer-box">
+			<button type="default" @click="toHomePage()">
+				返回首页
+			</button>
+		</view>
 	</view>
 </template>
 
@@ -247,6 +258,12 @@
 				uni.navigateTo({
 					url: './pollInfo'
 				});
+			},
+			
+			toHomePage() {
+				uni.switchTab({
+					url: '/pages/index/index'
+				});
 			}
 
 		},
@@ -261,8 +278,10 @@
 				count: this.count,
 				offset: this.offset
 			}
+
 			this.getNotVoteByUserRoles(cnt)
 		},
+
 		/**分页*/
 		onReachBottom() {
 			// 异步更新数据
@@ -305,6 +324,8 @@
 
 			}
 		}
+		
+		
 
 	}
 </script>
@@ -466,6 +487,19 @@
 				white-space: nowrap;
 			}
 		}
+	}
+
+	.vote-totle {
+		width: auto;
+		padding: 40rpx;
+		font-size: 32rpx;
+		color: #f66;
+		text-align: center;
+	}
+
+	.footer-box {
+		width: auto;
+		padding: 40rpx;
 
 	}
 </style>

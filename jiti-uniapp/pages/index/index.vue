@@ -96,7 +96,7 @@
 				<p class="text-box1">组织</p>
 			</view>
 		</view>
-		<view class="content_box" style="background-color: #fb7eb8;">
+		<view class="content_box" @click="outLogin()" style="background-color: #fb7eb8;">
 			<view class="content_box_text">
 				<p class="text-box">注销</p>
 				<p class="text-box1">登录</p>
@@ -131,7 +131,12 @@
 
 		},
 		methods: {
-
+			outLogin(){
+				uni.clearStorageSync();
+				uni.reLaunch({
+					url:'../login/login'
+				})
+			}
 		}
 	}
 </script>
