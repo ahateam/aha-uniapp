@@ -53,6 +53,11 @@ api.getVoteOptions = function (cnt,callback) {
 api.getVoteTicket = function (cnt,callback) {
     util.call(baseUrl+'/vote/getVoteTicket', cnt, callback)
 }
+//投票接口
+api.vote = function (cnt,callback) {
+    util.call(baseUrl+'/vote/vote', cnt, callback)
+}
+
 
 
 

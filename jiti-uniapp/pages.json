@@ -44,7 +44,14 @@
 			"style": {
 				"navigationBarTitleText": "投票详情"
 			}
-		}, {
+		},
+			{
+			"path": "pages/poll/pollRes",
+			"style": {
+				"navigationBarTitleText": "投票结果"
+			}
+		},
+		{
 			"path": "pages/assets/assets",
 			"style": {}
 		}, {
