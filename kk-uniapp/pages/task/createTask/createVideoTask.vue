@@ -9,6 +9,7 @@
 </template>
 
 <script>
+	
 	export default {
 		data() {
 			return {
@@ -19,6 +20,7 @@
 		},
 		methods:{
 			navToNext(){
+				this.$store.state.taskInfo.text = this.text
 				uni.redirectTo({
 				    url: `/pages/task/createTask/addVideoTask?id=${this.id}`
 				})

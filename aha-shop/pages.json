@@ -18,6 +18,19 @@
 				"navigationBarTitleText": "编辑收货地址"
 			}
 		}
+        ,{
+            "path" : "pages/login/login",
+            "style" : {
+				"style": {
+					"navigationBarTitleText": "登录"
+				}
+			}
+        },{
+            "path" : "pages/order/order",
+            "style" : {
+					"navigationBarTitleText": "订单列表"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

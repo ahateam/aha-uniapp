@@ -96,7 +96,7 @@
 			let cnt = {
 				moduleId: this.constData.module, // String 隶属
 				status: this.constData.tagStatus[1].key, // Byte 标签状态
-				group: this.$constData.tagGroupType[0].val, // String 标签
+				group: this.constData.tagGroupType[0].val, // String 标签
 				count: 500, // Integer 
 				offset: 0, // Integer 
 			}
