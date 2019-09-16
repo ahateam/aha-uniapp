@@ -16,8 +16,8 @@
 			<view class="price-box">
 				<text class="price-tip">¥</text>
 				<text class="price">{{goodsInfo.price}}</text>
-				<text class="m-price">¥{{goodsInfo.memberPrice}}</text>
-				<text class="coupon-tip">{{goodsInfo.costPrice}}折</text>
+				<text class="m-price">¥{{goodsInfo.marketPrice}}</text>
+				<text class="coupon-tip">{{offNumber}}折</text>
 			</view>
 			<view class="bot-row">
 				<text>销量: {{count}}</text>
@@ -110,7 +110,7 @@
 				<text>推荐商品</text>
 			</view>
 
-			<recommend :goodsList="goodsList"></recommend>
+			<recommend :goodsList="goodsList" @changeData="changList"></recommend>
 			<!-- <rich-text :nodes="desc"></rich-text> -->
 		</view>
 		<!-- 底部操作菜单 -->
@@ -205,6 +205,7 @@
 				goodsInfo: {}, //当前商品信息
 				price: '', //价格
 				count: '', //销量
+				offNumber:'',//折扣
 
 				goodsList: [],
 				specClass: 'none',
@@ -311,34 +312,21 @@
 			if (options.id) {
 				this.id = options.id
 			} else {
-				this.id = 0
+				this.id = 1
 			}
-			this.getProduct() //获取商品详情
+			this.getProduct(this.id) //获取商品详情
 			this.getProducts() //获取商品列表
-
-			//接收传值,id里面放的是标题，因为测试数据并没写id 
-			// let id = options.id;
-			// if (id) {
-			// 	this.$api.msg(`点击了${id}`);
-			// }
-
-
-			//规格 默认选中第一条
-			// this.specList.forEach(item => {
-			// 	for (let cItem of this.specChildList) {
-			// 		if (cItem.pid === item.id) {
-			// 			this.$set(cItem, 'selected', true);
-			// 			this.specSelected.push(cItem);
-			// 			break; //forEach不能使用break
-			// 		}
-			// 	}
-			// })
-			// this.shareList = await this.$api.json('shareList');
-			// let goodsList = await this.$api.json('goodsList');
-			// this.goodsList = goodsList || [];
-
 		},
 		methods: {
+			changList(id){
+				console.log(id)
+				this.id = id
+				this.getProduct(id)
+				uni.pageScrollTo({
+				    scrollTop: 0,
+				    duration: 50
+				})
+			},
 			// 跳转至订单列表
 			navToList() {
 				if (uni.getStorageSync('userId') == '') {
@@ -359,10 +347,10 @@
 			},
 
 			// 获得商品详细
-			getProduct() {
+			getProduct(id) {
 				let cnt = {
 					moduleId: this.$constData.module, // Long 模块编号
-					id: this.id, // Long 商品id
+					id: id, // Long 商品id
 				}
 				this.$api.getProduct(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -373,6 +361,9 @@
 							this.count = 0
 						}
 						this.goodsInfo = this.$util.tryParseJson(res.data.c).product
+						let offNumber = String(this.goodsInfo.price/this.goodsInfo.marketPrice)
+						let s = offNumber.indexOf(".")
+						this.offNumber = offNumber.substring(0,s+3)
 						console.log(this.$util.tryParseJson(res.data.c))
 						console.log('商品信息↑↑↑↑↑↑↑↑↑↑↑↑')
 						this.imgList = this.$util.tryParseJson(this.goodsInfo.data)

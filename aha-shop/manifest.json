@@ -74,5 +74,15 @@
     },
     "mp-toutiao" : {
         "usingComponents" : true
+    },
+    "h5" : {
+        "title" : "小红椒二类商城",
+        "router" : {
+            "mode" : "history",
+            "base" : ""
+        },
+        "devServer" : {
+            "https" : false
+        }
     }
 }

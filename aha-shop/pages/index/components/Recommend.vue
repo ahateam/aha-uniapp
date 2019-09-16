@@ -40,9 +40,10 @@
 		},
 		methods: {
 			navToDetailPage(id){
-				uni.reLaunch({
-				    url: `/pages/index/index?id=${id}`
-				})
+				this.$emit('changeData',id)
+				// uni.reLaunch({
+				//     url: `/pages/index/index?id=${id}`
+				// })
 			}
 		}
 	}

@@ -10,7 +10,12 @@
 				欢迎回来！
 			</view>
 		</view>
+		<!-- #ifdef H5 -->
+		<button class="confirm-btn" open-type="getUserInfo" @click="h5Login">登录</button>
+		<!-- #endif -->
+		<!-- #ifdef MP -->
 		<button class="confirm-btn" open-type="getUserInfo" @getuserinfo="wx()">登录</button>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -25,6 +30,16 @@
 			}
 		},
 		methods: {
+			//h5登录
+			h5Login(){
+				uni.setStorageSync('userId', 1234567890)
+				uni.navigateBack()
+				uni.showToast({
+					title: '已登录！',
+					duration: 1000
+				})
+			},
+			
 			// 微信登录
 			wx() {
 				uni.showLoading({
