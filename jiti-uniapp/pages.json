@@ -22,6 +22,7 @@
 				"navigationBarTitleText": "关于活动"
 			}
 		},
+		
 		{
 			"path": "pages/about/about",
 			"style": {
@@ -29,8 +30,8 @@
 			}
 		},
 		{
-		    "path" : "pages/about/updataPwd",
-		    "style" : {}
+			"path": "pages/about/updataPwd",
+			"style": {}
 		},
 
 		{
@@ -45,67 +46,80 @@
 				"navigationBarTitleText": "投票详情"
 			}
 		},
-			{
+		{
 			"path": "pages/poll/pollRes",
 			"style": {
 				"navigationBarTitleText": "投票结果"
 			}
+		}, {
+			"path": "pages/examine/examine",
+			"style": {
+				"navigationBarTitleText": "我的审批"
+			}
+		},
+		{
+			"path": "pages/bonus/bonus",
+			"style": {
+				"navigationBarTitleText": "我的分红"
+			}
+		},
+
+		{
+			"path": "pages/examine/familyInfo",
+			"style": {}
+		}, {
+			"path": "pages/examine/shareInfo",
+			"style": {}
 		},
 		{
 			"path": "pages/assets/assets",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "集体机构资产"
+			}
 		}, {
 			"path": "pages/assets/assetsInfo",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "资产详情"
+			}
 		}, {
 			"path": "pages/org/org",
 			"style": {
 				"navigationBarTitleText": "选择机构"
 			}
-		}, {
+		},
+
+		{
 			"path": "pages/org/orgInfo",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "基础资料"
+			}
 		}, {
 			"path": "pages/org/orgMoney",
+			"style": {
+				"navigationBarTitleText": "集体资金"
+			}
+		}, {
+			"path": "pages/notice/notice",
+			"style": {}
+		}, {
+			"path": "pages/notice/NoticeInfo",
 			"style": {}
 		}
-	    ,{
-            "path" : "pages/bonus/bonus",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/notice/notice",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/notice/NoticeInfo",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/examine/examine",
-            "style" : {}
-        },{
-            "path" : "pages/examine/familyInfo",
-            "style" : {}
-        },{
-            "path" : "pages/examine/shareInfo",
-            "style" : {}
-        }
-		
-        ,{
-            "path" : "pages/chooseOrg/chooseOrg",
-            "style" : {
+
+
+		, {
+			"path": "pages/chooseOrg/chooseOrg",
+			"style": {
 				"navigationBarTitleText": "选择机构"
 			}
-        }
-        ,{
-            "path" : "pages/vote/vote",
-            "style" : {}
-        },{
-            "path" : "pages/vote/createVoteChoose",
-            "style" : {}
-        }
-    ],
+		}, {
+			"path": "pages/vote/vote",
+			"style": {}
+		}, {
+			"path": "pages/vote/createVoteChoose",
+			"style": {}
+		}
+	],
 	"tabBar": {
 		"color": "#C0C4CC",
 		"selectedColor": "#fa436a",
