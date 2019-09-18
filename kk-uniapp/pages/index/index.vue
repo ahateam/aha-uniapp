@@ -51,6 +51,8 @@
 		},
 		data() {
 			return {
+				versionStatus: 0, //版本状态
+
 				constData: this.$constData, //全局变量引入，防止头条html中报错
 
 				tagsList: [], //标签列表
@@ -84,6 +86,9 @@
 			}
 		},
 		onLoad() { // created() mounted()
+
+			this.getVersionStatus()
+
 			windowWidth = uni.getSystemInfoSync().windowWidth;
 			if (!uni.getStorageSync('userId')) {
 				uni.setStorageSync('userId', '1234567890')
@@ -92,22 +97,31 @@
 			this.userId = uni.getStorageSync('userId')
 
 			// console.log(this.constData)
-			/* 获取标签列表*/
-			let cnt = {
-				moduleId: this.constData.module, // String 隶属
-				status: this.constData.tagStatus[1].key, // Byte 标签状态
-				group: this.constData.tagGroupType[0].val, // String 标签
-				count: 500, // Integer 
-				offset: 0, // Integer 
-			}
-			this.getTagsList(cnt)
-			this.returnTabBar()
-
-			/* 根据默认标签获取内容列表*/
-
-
+			
 		},
 		methods: {
+			//获取版本
+			getVersionStatus() {
+				let cnt = {}
+				this.$api.getVersionStatus(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.versionStatus = res.data.c
+						uni.setStorageSync('versionStatus', res.data.c)
+						/* 获取标签列表*/
+						let cnt = {
+							moduleId: this.constData.module, // String 隶属
+							status: this.constData.tagStatus[1].key, // Byte 标签状态
+							group: this.constData.tagGroupType[0].val, // String 标签
+							count: 500, // Integer 
+							offset: 0, // Integer 
+						}
+						this.getTagsList(cnt)
+						this.returnTabBar()
+						/* 根据默认标签获取内容列表*/
+					}
+				})
+			},
+
 			//获得元素的size
 			getElSize(id) {
 				return new Promise((res, rej) => {
@@ -125,6 +139,9 @@
 			//按钮点击跳转
 			trigger(e) {
 				if (this.userId == '' || this.userId == '1234567890') {
+					uni.switchTab({
+					    url: '/pages/user/user'
+					})
 					uni.showToast({
 						title: '请登录',
 						icon: 'none',
@@ -195,15 +212,18 @@
 						for (let i = 0; i < list.length; i++) {
 							let show = this.$util.tryParseJson(list[i].data).show
 							list[i].show = show
-							if (list[i].type == 5) {
+							if (list[i].type == this.$constData.contentType[2].key) {
 								let imgList = this.$util.tryParseJson(list[i].data).imgList
 								list[i].imgList = imgList
 							}
-							if (list[i].type == 3) {
+							if (list[i].type == this.$constData.contentType[1].key) {
 								let imgList = [{
 									src: this.$util.tryParseJson(list[i].data).imgSrc
 								}]
 								list[i].imgList = imgList
+								if(this.versionStatus == this.$constData.showStatus[0].key){
+									list[i].type = 999
+								}
 							}
 						}
 						this.tryDataList(list)

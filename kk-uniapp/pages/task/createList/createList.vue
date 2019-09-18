@@ -26,12 +26,12 @@
 						type: this.$constData.taskType[1].key
 					},
 					{
-						name: '制作',
+						name: '分享',
 						imgSrc: '/static/image/voice.png',
 						type: this.$constData.taskType[2].key
 					},
 					{
-						name: '分享',
+						name: '制作',
 						imgSrc: '/static/image/comments.png',
 						type: this.$constData.taskType[3].key
 					}

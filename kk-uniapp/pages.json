@@ -95,16 +95,47 @@
 			"style": {
 				"navigationBarTitleText": "创建任务"
 			}
+		},
+		{
+			"path":"pages/task/createTask/addFoodTask",
+			"style": {
+				"navigationBarTitleText": "创建任务"
+			}
 		}
 	    ,{
             "path" : "pages/task/taskView/VideoTask",
             "style" : {
 				"navigationBarTitleText": "视频任务"
 			}
+        },{
+            "path" : "pages/task/taskView/foodTask",
+            "style" : {
+				"navigationBarTitleText": "陪吃任务"
+			}
         }
+		,{
+			"path" : "pages/task/createTask/createFoodTask",
+			"style" : {
+				"navigationBarTitleText": "任务模板"
+			}
+		}
         ,{
             "path" : "pages/task/payView/payView",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText": "支付页"
+			}
+        }
+        ,{
+            "path" : "pages/task/choiceUser/choiceUser",
+            "style" : {
+				"navigationBarTitleText": "选择作者"
+			}
+        }
+        ,{
+            "path" : "pages/task/taskView/userWorks/userWorks",
+            "style" : {
+				"navigationBarTitleText": "查看作品"
+			}
         }
     ],
 	"tabBar": {

@@ -7,8 +7,12 @@
 			</view>
 		</scroll-view>
 		<view style="padding-top: 90upx;"></view>
-		<view class="contentBox" v-for="(item,index) in templateList" :key="index" >
-			<image :src="item.src" mode="scaleToFill" class="imgs"></image>
+		<view class="contentBox" v-for="(item,index) in templateList" :key="index">
+
+			<image :src="item.data.src" mode="scaleToFill" class="imgs" v-if="item.type == 1"></image>
+
+			<video class="imgs" :src="item.data.src" controls v-if="item.type == 0"></video>
+
 			<view class="contentTitle">
 				{{item.name}}
 			</view>
@@ -27,62 +31,66 @@
 				page: 1,
 				count: 10,
 				offset: 0,
-				type:'',
+				type: '',
 
-				contentData: {}, //模板列表
-
-				contentTagGroupData: {}, //标签列表
-				currentSort: 0, //标签选中下标
-				tagName: '',//选中标签
+				contentTagGroupData: [], //标签列表
+				currentSort: -1, //标签选中下标
+				tagName: '', //选中标签
 
 				templateName: '',
-				templateList:[
-					{
-						name:'1',
-						text:'123123213',
-						src:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1568011516&di=c7cce7e0bdf1f6caad1532f39f7a9f9a&src=http://b-ssl.duitang.com/uploads/item/201305/26/20130526140022_5fMJe.jpeg',
-						type:0
+				templateList: [{
+						name: '1',
+						text: '123123213',
+						src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1568011516&di=c7cce7e0bdf1f6caad1532f39f7a9f9a&src=http://b-ssl.duitang.com/uploads/item/201305/26/20130526140022_5fMJe.jpeg',
+						type: 0
 					},
 					{
-						name:'2',
-						text:'123123213',
-						src:'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1568011516&di=c7cce7e0bdf1f6caad1532f39f7a9f9a&src=http://b-ssl.duitang.com/uploads/item/201305/26/20130526140022_5fMJe.jpeg',
-						type:1
+						name: '2',
+						text: '123123213',
+						src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1568011516&di=c7cce7e0bdf1f6caad1532f39f7a9f9a&src=http://b-ssl.duitang.com/uploads/item/201305/26/20130526140022_5fMJe.jpeg',
+						type: 1
 					}
-				],
+				], //模板列表
+
 			};
 		},
 		onLoad(res) {
 			this.templateName = this.$constData.taskType[res.type].templateName
 			this.type = res.type
-			// this.getTags()
-			// let cnt = {
-			// 	module: this.$constData.module, // String 隶属
-			// 	type: res.type, // Byte <选填> 类型
-			// 	status: this.$constData.tagStatus[1].key, // Byte <选填> 状态
-			// 	// tags: tags, // String <选填> 标签
-			// 	count: 10, // Integer 
-			// 	offset: 0, // Integer 
-			// }
-			// this.getTemplate(cnt)
+			let cnt = {
+				module: this.$constData.module, // String 隶属
+				type: res.type, // Byte <选填> 类型
+				status: this.$constData.tagStatus[0].key, // Byte <选填> 状态
+				// tags: tags, // String <选填> 标签
+				count: 10, // Integer
+				offset: 0, // Integer
+			}
+			this.getTemplate(cnt)
+			this.getTags()
 		},
 		methods: {
-			navToCreate(item){
+			navToCreate(item) {
 				console.log(item)
-				uni.navigateTo({
-					url:`/pages/task/createTask/createVideoTask`
-				})
+				if (item.type == 0) {
+					uni.navigateTo({
+						url: `/pages/task/createTask/createVideoTask?id=${item.id}`
+					})
+				} else if (item.type == 1) {
+					uni.navigateTo({
+						url: `/pages/task/createTask/createFoodTask?id=${item.id}`
+					})
+				}
 			},
-			
+
 			//根据标签改变内容
 			changeNav(e) {
 				this.currentSort = e
 				this.tagName = this.contentTagGroupData[e].name
-				
+
 				let cnt = {
 					module: this.$constData.module, // String 隶属
 					type: this.type, // Byte <选填> 类型
-					status: this.$constData.tagStatus[1].key, // Byte <选填> 状态
+					status: this.$constData.tagStatus[0].key, // Byte <选填> 状态
 					tags: this.tagName, // String <选填> 标签
 					count: 10, // Integer 
 					offset: 0, // Integer 
@@ -93,13 +101,13 @@
 			//获取标签
 			getTags() {
 				let cnt = {
-					module: this.$constData.module, // String 隶属
+					moduleId: this.$constData.templateModule, // String 隶属
+					group: this.type, // String 分组
 					status: this.$constData.tagStatus[1].key, // Byte 标签状态
-					keyword: this.templateName, // String 标签分组
 					count: 50, // Integer 
 					offset: 0, // Integer 
 				}
-				this.$api.getTags(cnt, (res) => {
+				this.$api.getContentTag(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.contentTagGroupData = this.$util.tryParseJson(res.data.c)
 						console.log(this.contentTagGroupData)
@@ -109,10 +117,14 @@
 
 			//获取模板
 			getTemplate(cnt) {
-				this.$api.getTemplate(cnt, (res) => {
+				this.$api.getTemplates(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.contentData = this.$util.tryParseJson(res.data.c)
-						console.log(this.contentData)
+						let list = this.$util.tryParseJson(res.data.c)
+						for (let i = 0; i < list.length; i++) {
+							list[i].data = this.$util.tryParseJson(list[i].data)
+						}
+						this.templateList = list
+						console.log(this.templateList)
 					}
 				})
 			}
@@ -160,35 +172,36 @@
 			}
 		}
 	}
-	
-	.contentBox{
+
+	.contentBox {
 		position: relative;
 		padding: $box-margin-top $box-margin-left;
 		line-height: 0;
 	}
-	
-	.imgs{
+
+	.imgs {
 		width: 20vw;
 		height: 20vw;
 	}
-	
-	.contentTitle,.contentInfo{
+
+	.contentTitle,
+	.contentInfo {
 		position: absolute;
 		top: 50%;
 		margin-left: 21vw;
 		font-size: $list-title;
 		line-height: $list-title-line;
 	}
-	
-	.contentTitle{
+
+	.contentTitle {
 		font-weight: bold;
 		margin-top: -1.2em;
 	}
-	
-	.contentInfo{
+
+	.contentInfo {
 		margin-top: 0.2em;
 	}
-	
+
 	.contentBtn {
 		position: absolute;
 		right: $box-margin-left;

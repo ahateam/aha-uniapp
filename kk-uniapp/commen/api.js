@@ -7,6 +7,11 @@ import baseUrl from './url'
 let api = {};
 console.log('开始调用ctrl');
 
+//获取版本 
+api.getVersionStatus = function(cnt, callback) {
+	util.call(baseUrl + '/task/getVersionStatus', cnt, callback)
+}
+
 /********************************** 内容接口 **********************************/
 // 获取标签<创建内容，保存为正常（已发布）>
 
@@ -55,21 +60,20 @@ api.getChannlContentTagByChannelId = function(cnt, callback) {
 	util.call(baseUrl + '/channel/getChannlContentTagByChannelId', cnt, callback)
 }
 /********************* 任务接口 ******************************/ 
-//获取任务分类导航列表 
-api.getContentTagGroupTypes = function(cnt, callback) {
-	util.call(baseUrl + '/content/getContentTagGroupTypes', cnt, callback)
-}
-
 //获取任务列表 
-api.getTask = function(cnt, callback) {
+api.getTasks = function(cnt, callback) {
 	util.call(baseUrl + '/task/getTasks', cnt, callback)
 }
 
-//获取本地任务
-api.getTaskByGeo = function(cnt, callback) {
-	util.call(baseUrl + '/content/getTaskByGeo', cnt, callback)
+//获取任务 
+api.getTask = function(cnt, callback) {
+	util.call(baseUrl + '/task/getTask', cnt, callback)
 }
 
+//创建任务 
+api.createTask = function(cnt, callback) {
+	util.call(baseUrl + '/task/createTask', cnt, callback)
+}
 /************************ 用户相关接口 **************************/
 //根据id获取用户
 api.getUserById = function(cnt, callback) {
@@ -105,9 +109,14 @@ api.getCommentByContentId = function(cnt, callback) {
 api.createComment = function(cnt, callback) {
 	util.call(baseUrl + '/reply/createReply', cnt, callback)
 }
-/* ***********************************模板相关 */
+/************************************模板相关 */
 //获取模板列表 
+api.getTemplates = function(cnt, callback) {
+	util.call(baseUrl + '/task/getTemplates', cnt, callback)
+}
+
+//获取模板
 api.getTemplate = function(cnt, callback) {
-	util.call(baseUrl + '/content/getTemplate', cnt, callback)
+	util.call(baseUrl + '/task/getTemplate', cnt, callback)
 }
 export default api

@@ -1,7 +1,23 @@
 const constData = {}
 
+/* 首页显示变量 */
+constData.showStatus = [
+	{
+		key:0,
+		val:'测试版'
+	},
+	{
+		key:1,
+		val:'正式版'
+	}
+]
+
 /** 首页常量*/
 constData.module = 1170
+
+/* 模板隶属id */
+constData.templateModule = 11705
+
 
 /** 资讯内容状态*/
 constData.contentStatus = [{
@@ -88,29 +104,17 @@ constData.contentPaid = [{
 
 /* 任务类型 */
 constData.taskType = [{
-	key: '0',
-	val: '视频',
-	templateName: '模板视频'
+	key: 0,
+	val: '求表扬'
 }, {
-	key: '1',
-	val: '图文',
-	templateName: '模板图文'
+	key: 1,
+	val: '求陪玩'
 }, {
-	key: '2',
-	val: '声音',
-	templateName: '模板声音'
+	key: 2,
+	val: '求分享'
 }, {
-	key: '3',
-	val: '万众瞩目',
-	templateName: '模板信息'
-}, {
-	key: '4',
-	val: '本地',
-	templateName: '本地模板信息'
-}, {
-	key: '5',
-	val: '分享',
-	templateName: '分享模板信息'
+	key: 3,
+	val: '求制作'
 }]
 
 /* 任务墙任务状态 */
@@ -130,6 +134,62 @@ constData.taskWallStatus = [
 	{
 		key:3,
 		val:'已关闭'
+	}
+]
+
+/* 任务订单状态 */
+constData.taskStatus = [
+	{
+		key:0,
+		val:'已领取 待审核'
+	},
+	{
+		key:1,
+		val:'已通过审核 待完成'
+	},
+	{
+		key:2,
+		val:'已完成 待审核'
+	},
+	{
+		key:3,
+		val:'已完成'
+	},
+	{
+		key:4,
+		val:'未通过，待重新提交'
+	},
+	{
+		key:5,
+		val:'未通过'
+	}
+]
+
+/* 任务等级 */
+constData.taskLevel = [
+	{
+		key:0,
+		val:'平台置顶'
+	},
+	{
+		key:1,
+		val:'高级优先'
+	},
+	{
+		key:2,
+		val:'普通'
+	}
+]
+
+/* 任务接取人数 */
+constData.taskAccess = [
+	{
+		key:0,
+		val:'单人任务'
+	},
+	{
+		key:1,
+		val:'多人任务'
 	}
 ]
 

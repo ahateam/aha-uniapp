@@ -139,6 +139,9 @@
 			
 			// 根据用户id获取信息
 			getUserById() {
+				if(this.userId !=''&&this.userId !='1234567890'){
+					return
+				}
 				let cnt = {
 					userId: this.userId,
 				}

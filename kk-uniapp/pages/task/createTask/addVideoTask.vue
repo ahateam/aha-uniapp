@@ -1,11 +1,12 @@
 <template>
 	<view>
 		<video class="video" :src="video" controls></video>
-		
+
 		<view class="teplateInfo">
-			<input class="changeBtn nameBox" type="text" v-model="userName" placeholder="请输入你想夸的人的名字" /><button class="changeBtn" type="primary" @click="changeName">确定</button>
+			<input class="changeBtn nameBox" type="text" v-model="userName" placeholder="请输入你想夸的人的名字" /><button class="changeBtn"
+			 type="primary" @click="changeName">确定</button>
 		</view>
-		
+
 		<view class="teplateInfo">
 			<!-- <textarea type="text" v-model="text" placeholder="请输入台词" /> -->
 			<textarea v-model="text" placeholder="请输入台词" />
@@ -34,17 +35,19 @@
 	export default {
 		data() {
 			return {
+				title:'',//标题
 				video:'',//视频地址
 				userName:'',//用户想夸的对象名字
 				text:'',//
 				id:'',//模板id
+				type:'',
 				moneyList:[
 					{
-						val:'50',
+						val:50,
 						key:1
 					},
 					{
-						val:'100',
+						val:100,
 						key:1
 					},
 					{
@@ -52,12 +55,16 @@
 						key:2
 					}
 				],//价格列表
-				money:'',
+				money:50,
 				foucs:0,//选中价格下标
 			}
 		},
-		onLoad() {
-			
+		onLoad(res) {
+			this.id = res.id
+			this.video = res.src
+			this.type = res.type
+			this.title = res.title
+			this.text = res.text
 		},
 		onShow(){
 			if(this.$store.state.taskInfo.text){
@@ -73,9 +80,44 @@
 			},
 			
 			navToNext(){
-				uni.redirectTo({
-				    url: `/pages/task/payView/payView`
+				let data = {
+					text:this.text,
+					templateId:this.id
+				}
+				// data = JSON.stringify()
+				let cnt = {
+					module: this.$constData.module, // Long 模块编号
+					ask: this.type, // Byte 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
+					type: 1, // Byte 类型（0图文,1视频,2gif表情,3音频,4描述）
+					upUserId: uni.getStorageSync('userId'), // Long 创建者
+					// tags: tags, // String 标签
+					title: this.title, // String 标题
+					detail: JSON.stringify(data), // String 需求详细
+					deposit: 5, // Double 保证金
+					advanceAmount: this.money, // Double 预付款
+					// pos: pos, // String <选填> 位置
+				}
+				
+				this.$api.createTask(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						uni.redirectTo({
+						    // url: `/pages/task/payView/payView?type=0`
+							url:'/pages/task/task'
+						})
+						uni.showToast({
+							title:'成功',
+							duration:1000
+						})
+					}else{
+						uni.showToast({
+							title:'我觉得不行',
+							duration:1000,
+							icon:'none'
+						})
+					}
 				})
+				
+				
 			},
 			moreText(){
 				uni.navigateTo({
@@ -87,7 +129,7 @@
 				if(item.key !=2){
 					this.money = item.val
 				}else{
-					this.money = 0
+					this.money = -1
 				}
 			},
 		}

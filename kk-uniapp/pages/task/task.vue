@@ -1,24 +1,37 @@
 <template>
 	<view>
-		<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
-			<view v-for="(item, index) in contentTagGroupData" :key="index" class="nav-item" :class="{ current: index === currentSort }"
-			 @click="changeNav(index)" :id="'tab'+index">
-				{{ item.type }}
+		<view v-if="versionStatus == constData.showStatus[0].key">
+			<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
+				<view v-for="(item, index) in contentTagGroupData" :key="index" class="nav-item" :class="{ current: index === currentSort }"
+				 @click="changeNav(item.type,index)" :id="'tab'+index">
+					{{ item.name }}
+				</view>
+			</scroll-view>
+			<view style="padding-top: 90upx;"></view>
+			<!-- { primary: index == tagCurrent } -->
+			<view class="tagBox">
+				<uni-tag v-for="(item,index) in contentTagData" class="tags" :type="index == tagCurrent?'primary':''" :text="item.name"
+				 :key="index" @click="getTaskByTag(index)"></uni-tag>
 			</view>
-		</scroll-view>
-		<view style="padding-top: 90upx;"></view>
-		<!-- { primary: index == tagCurrent } -->
-		<view class="tagBox">
-			<uni-tag v-for="(item,index) in contentTagData" class="tags" :type="index == tagCurrent?'primary':''" :text="item.name"
-			 :key="index" @click="getTaskByTag(index)"></uni-tag>
+
+			<view class="fab-box" @click="navToBtn">
+				<text class="iconfont kk-jia"></text>
+			</view>
+
+			<view v-for="(item,index) in contentData" :key="index" @click="navToTask(item)">
+				<task-list-box :title="item.title" :text="item.detail" :name="item.user.name" :head="item.user.head"></task-list-box>
+			</view>
 		</view>
 
-		<view class="fab-box" @click="navToBtn">
-			<text class="iconfont kk-jia"></text>
-		</view>
-
-		<view v-for="(item,index) in contentData" :key="index" @click="navToTask">
-			<task-list-box :title="item.title" :text="item.text" :name="item.user.name" :money="item.money" head="233"></task-list-box>
+		<view v-if="versionStatus == constData.showStatus[1].key">
+			<view class="imgBox">
+				<image src="/static/image/fa7458191873625b892e7956c1efa7b.jpg" mode="widthFix"></image>
+			</view>
+			<view class="testText">
+				员工对任务重要性（Task Significance）的认知是员工就其工作对他人产生正面影响的一种判断，它影响员工的行为、态度和绩效（Grant,
+				2008;Organ,2006）。任务重要性体现的是一种角色内的贡献。具体地，任务重要性通过工作经历的意义（Meaningfulness）和责任感（Sense
+				ofresponsibility）等关键心理状态（Criticalpsychologicalstates）影响工作绩效。当员工感觉到自己的工作任务是重要的，会表现出一种积极的团队精神以提高组织效率。而随着效率的提高，对企业的贡献越大，员工在雇佣关系上的谈判会变得强势，因此可能会提出一些要求（例如改善工作环境、更多自主决策权等），而只要这些要求不超过离职所带来的损失，雇主最好的决策是尽量满足该员工的要求。
+			</view>
 		</view>
 	</view>
 </template>
@@ -36,19 +49,14 @@
 
 		data() {
 			return {
+				constData: this.$constData, //全局变量
 				page: 1,
 				count: 10,
 				offset: 0,
 
 				// 导航栏数据
 				scrollLeft: 0,
-				contentTagGroupData: [{
-						type: '全部',
-					},
-					{
-						type: '测试'
-					}
-				], //导航栏列表
+				contentTagGroupData: [], //导航栏列表
 				currentSort: 0, //导航栏选中下标
 				type: '全部', //当前选中类型
 
@@ -58,42 +66,32 @@
 				tagCurrent: -1, //当前选中标签下标
 
 				//内容
-				contentData: [{
-						title: '任务标题1',
-						text: 'asdasd'
-					},
-					{
-						title: '任务标题2',
-						text: 'asdasd'
-					}
-				], //内容列表
+				contentData: [], //内容列表
 
+
+				versionStatus: uni.getStorageSync('versionStatus'), //版本号
 			}
 		},
+
 		onLoad() {
-			windowWidth = uni.getSystemInfoSync().windowWidth
 
-			// this.getContentTagGroupTypes()
-
-			// let cnt = {
-			// 	status: this.$constData.tagStatus[1].key,
-			// 	module: this.$constData.module,
-			// 	keyword: this.type,
-			// 	count: 10,
-			// 	offset: 0
+			// if (this.versionStatus == this.$constData.showStatus[0].key) {
+			// 	return
 			// }
-			// this.getTags(cnt)
-
+			windowWidth = uni.getSystemInfoSync().windowWidth
 			let cnt1 = {
-				module: this.$constData.module,
-				status: this.$constData.taskWallStatus[1].key,
-				// level: level, // Byte <选填> 任务等级
-				// type: '', // Byte 类型  如无此条件  为null
-				// tags: '', // String 标签  如无此条件  为null
-				count: 10,
-				offset: 0
+				module: this.$constData.module, // Long 模块编号
+				// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
+				// type: type, // Byte <选填> 类型
+				status: this.$constData.taskWallStatus[0].key, // Byte <选填> 状态
+				// upUserId: upUserId, // Long <选填> 创建者编号
+				// tags: tags, // String <选填> 标签
+				// title: title, // String <选填> 标题
+				count: this.count, // int 
+				offset: this.offset, // int 
 			}
 			this.getTask(cnt1)
+			this.getContentTagGroupTypes()
 		},
 		methods: {
 			//跳转至创建任务界面
@@ -102,15 +100,22 @@
 					url: '/pages/task/createList/createList'
 				})
 			},
-			
+
 			//跳转至任务详情
-				
-			navToTask(){
-				uni.navigateTo({
-					url: '/pages/task/taskView/VideoTask'
-				})
+
+			navToTask(item) {
+				if (item.type == 1) {
+					uni.navigateTo({
+						url: `/pages/task/taskView/VideoTask?id=${item.id}`
+					})
+				}
+				if (item.type == 0) {
+					uni.navigateTo({
+						url: `/pages/task/taskView/foodTask?id=${item.id}`
+					})
+				}
 			},
-			
+
 			//获得元素的size
 			getElSize(id) {
 				return new Promise((res, rej) => {
@@ -126,24 +131,24 @@
 			},
 
 			//导航栏改变内容
-			async changeNav(e) {
-				this.currentSort = e
+			async changeNav(e,index) {
+				this.currentSort = index
 				this.page = 1
-				this.type = this.contentTagGroupData[e].type
+				this.type = this.contentTagGroupData[index].type
 				this.tagName = ''
 				this.tagCurrent = -1
-				let cnt = {
-					status: this.$constData.tagStatus[1].key,
-					module: this.$constData.module,
-					keyword: this.type,
-					count: 10,
-					offset: 0
-				}
-				this.getTags(cnt)
+				// let cnt = {
+				// 	status: this.$constData.tagStatus[1].key,
+				// 	module: this.$constData.module,
+				// 	keyword: this.type,
+				// 	count: 10,
+				// 	offset: 0
+				// }
+				// this.getTags(cnt)
+
+				//获取可滑动总宽度
 				let width = 0
 				let nowWidth = 0
-				//获取可滑动总宽度
-
 				for (let i = 0; i <= e; i++) {
 					let result = await this.getElSize('tab' + e)
 					width += result.width
@@ -157,61 +162,53 @@
 				} else {
 					this.scrollLeft = 0
 				}
+				//计算移动宽度结束
 
 				let cnt1 = {
 					module: this.$constData.module,
-					status: this.$constData.taskWallStatus[1].key,
+					status: this.$constData.taskWallStatus[0].key,
 					// tags: '', // String 标签  如无此条件  为null
 					count: 10,
 					offset: 0
 				}
-				let typeData = this.$constData.taskType
-				for (let i = 0; i < typeData.length; i++) {
-					if (this.type == '本地') {
-						this.getAddress()
-						return
-					} else if (this.type == '全部') {
-						this.getTask(cnt1)
-						return
-					} else if (this.type == typeData[i].val) {
-						cnt1.type = typeData[i].key
-						this.getTask(cnt1)
-					}
+				if (e != 'a') {
+					cnt1.type = e
 				}
+				this.getTask(cnt1)
+
 			},
 
 			//定位
-			getAddress() {
-				uni.getLocation({
-					type: 'wgs84',
-					success: (res) => {
-						console.log('当前位置的经度：' + res.longitude);
-						console.log('当前位置的纬度：' + res.latitude);
-						this.position = res.latitude + ',' + res.longitude
-						console.log(this.position)
-						this.getNearTask()
-					}
-				});
-			},
+			// getAddress() {
+			// 	uni.getLocation({
+			// 		type: 'wgs84',
+			// 		success: (res) => {
+			// 			console.log('当前位置的经度：' + res.longitude);
+			// 			console.log('当前位置的纬度：' + res.latitude);
+			// 			this.position = res.latitude + ',' + res.longitude
+			// 			console.log(this.position)
+			// 			this.getNearTask()
+			// 		}
+			// 	});
+			// },
 
 			//获取附近任务
-			getNearTask() {
-				this.more = 0
-				let cnt = {
-					module: this.$constData.module, // String 隶属
-					point: this.position, // String 用户坐标
-					meter: 1000, // int 距离用户距离
-					count: 10, // Integer 
-					offset: 0, // Integer 
-					status: this.$constData.taskWallStatus[1].key, // Byte <选填> 状态  如无此条件  为null
-				}
-				this.$api.getTaskByGeo(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.contentData = this.$util.tryParseJson(res.data.c)
-						console.log(this.contentData)
-					}
-				})
-			},
+			// getNearTask() {
+			// 	let cnt = {
+			// 		module: this.$constData.module, // String 隶属
+			// 		point: this.position, // String 用户坐标
+			// 		meter: 1000, // int 距离用户距离
+			// 		count: 10, // Integer 
+			// 		offset: 0, // Integer 
+			// 		status: this.$constData.taskWallStatus[1].key, // Byte <选填> 状态  如无此条件  为null
+			// 	}
+			// 	this.$api.getTaskByGeo(cnt, (res) => {
+			// 		if (res.data.rc == this.$util.RC.SUCCESS) {
+			// 			this.contentData = this.$util.tryParseJson(res.data.c)
+			// 			console.log(this.contentData)
+			// 		}
+			// 	})
+			// },
 
 			//标签改变内容
 			getTaskByTag(e) {
@@ -232,14 +229,8 @@
 						cnt.type = typeData[i].key
 					}
 				}
-				this.$api.getTask(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.contentData = this.$util.tryParseJson(res.data.c)
-					}
-				})
+				this.getTask(cnt)
 			},
-
-
 
 			// 获取标签
 			getTags(cnt) {
@@ -254,39 +245,47 @@
 							duration: 1000
 						})
 					}
-
 				})
 			},
 
 			// 获取导航栏数据
 			getContentTagGroupTypes() {
-				let cnt = {
-					module: this.$constData.module, // Long 模板编号
-					group: this.$constData.tagGroupType[2].val, // String 分组
-					status: this.constData.tagStatus[1].key, // Byte 状态
-					count: 50, // Integer 
-					offset: 0, // Integer 
-				}
-				this.$api.getContentTag(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.contentTagGroupData = this.$util.tryParseJson(res.data.c)
-						console.log('导航栏数据↓↓')
-						console.log(this.contentTagGroupData)
-					} else {
-						uni.showToast({
-							title: '服务器好像在睡觉哦',
-							icon: 'none',
-							duration: 1000
-						})
+				let list = [{
+						type: 'a',
+						name: '全部'
+					},
+					{
+						type: this.$constData.taskType[0].key,
+						name: this.$constData.taskType[0].val
+					},
+					{
+						type: this.$constData.taskType[1].key,
+						name: this.$constData.taskType[1].val
+					},
+					{
+						type: this.$constData.taskType[2].key,
+						name: this.$constData.taskType[2].val
+					},
+					{
+						type: this.$constData.taskType[3].key,
+						name: this.$constData.taskType[3].val
 					}
-				})
+				]
+
+				this.contentTagGroupData = list
 			},
 
 			getTask(cnt) {
-				this.$api.getTask(cnt, (res) => {
+				this.$api.getTasks(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						console.log(this.$util.tryParseJson(res.data.c))
-						this.contentData = this.$util.tryParseJson(res.data.c)
+						console.log(this.$util.tryParseJson(res.data.c).list)
+						let arr = this.$util.tryParseJson(res.data.c).list
+						for (let i = 0; i < arr.length; i++) {
+							if (arr[i].user) {
+								arr[i].user.head = this.$util.tryParseJson(arr[i].user.ext).userHead
+							}
+						}
+						this.contentData = arr
 					} else {
 						uni.showToast({
 							title: '错误！',
@@ -296,8 +295,7 @@
 					}
 				})
 			},
-
-		}
+		},
 	}
 </script>
 
@@ -377,6 +375,22 @@
 
 		text {
 			font-size: 40rpx;
+		}
+	}
+
+	.testText {
+		padding: $box-margin-top $box-margin-left;
+		font-size: $list-title;
+	}
+
+	.imgBox {
+		width: 100vw;
+
+		image {
+			display: block;
+			width: 80vw;
+			padding: $box-margin-top;
+			margin: 0 auto;
 		}
 	}
 </style>

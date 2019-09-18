@@ -1,14 +1,26 @@
 <template>
 	<view>
-		<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
-			<view v-for="(item,index) in tagsList" :key="index" class="nav-item" :class="{current: index === tabCurrentIndex}"
-			 :id="'tab'+index" @click="changeTag(index)">{{item.name}}</view>
-		</scroll-view>
-		<view style="padding-top: 90upx;"></view>
-		<view v-for="(item,index) in columnList" :key="index">
-			<column :obj="item"></column>
+		<view v-if="versionStatus == constData.showStatus[1].key">
+			<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
+				<view v-for="(item,index) in tagsList" :key="index" class="nav-item" :class="{current: index === tabCurrentIndex}"
+				 :id="'tab'+index" @click="changeTag(index)">{{item.name}}</view>
+			</scroll-view>
+			<view style="padding-top: 90upx;"></view>
+			<view v-for="(item,index) in columnList" :key="index">
+				<column :obj="item"></column>
+			</view>
+			<uni-load-more :status="pageStatus"></uni-load-more>
 		</view>
-		<uni-load-more :status="pageStatus"></uni-load-more>
+		<view v-if="versionStatus == constData.showStatus[0].key">
+			<view class="image">
+				<image  src="/static/image/90a3aed0e1254bd6c4062cb438d6873.png" mode="widthFix"></image>
+			</view>
+			
+			<view class="testText">
+				本站是为作者提供分享素材的站点，为此我们付诸众多心血和精力。为了保证未来本站能够持续更新资源和保证共享资源的高质量，才启用VIP会员机制。
+			</view>
+			
+		</view>
 	</view>
 </template>
 
@@ -23,6 +35,9 @@
 		},
 		data() {
 			return {
+				constData: this.$constData, //全局变量
+				versionStatus: uni.getStorageSync('versionStatus'), //版本号
+
 				count: 10,
 				offset: 0,
 				page: 1,
@@ -37,6 +52,9 @@
 			}
 		},
 		onLoad() {
+			if(this.versionStatus == this.$constData.showStatus[0].key){
+				return
+			}
 			this.getTags()
 		},
 		methods: {
@@ -112,7 +130,7 @@
 						if (arr.length < this.count) {
 							obj.pageOver = true
 							obj.pageStatus = 'nomore'
-						}else{
+						} else {
 							obj.pageOver = false
 							obj.pageStatus = 'more'
 						}
@@ -164,7 +182,7 @@
 			this.pageStatus = 'loading'
 			this.page += 1
 			this.tagsList[index].page += 1
-			let offset = (this.page-1)*this.count
+			let offset = (this.page - 1) * this.count
 			let cnt = {
 				module: this.$constData.module, // Long 模块编号
 				status: 0, // Byte <选填> 状态
@@ -172,7 +190,7 @@
 				count: this.count, // int 
 				offset: offset, // int 
 			}
-			if(index != 0){
+			if (index != 0) {
 				cnt.tags = this.tagName
 			}
 			this.getChannel(cnt)
@@ -220,6 +238,21 @@
 			&:after {
 				width: 50%;
 			}
+		}
+	}
+	
+	.testText {
+		padding: $box-margin-top $box-margin-left;
+		font-size: $list-title;
+	}
+	
+	.image{
+		width: 100vw;
+		image{
+			display: block;
+			padding: $box-margin-top;
+			margin: 0 auto;
+			width: 80vw;
 		}
 	}
 </style>
