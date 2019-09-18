@@ -1,15 +1,21 @@
 <template>
 	<view>
-		<view class="box">
-			<view class="money-box">
-				<view class="money-img">
-					<image src="../../static/mon.png" mode="aspectFit"></image>
-				</view>
-				<view class="money-text">我的分红总额</view>
-				<view class="money-num">￥0.00</view>
+		<view class="image-box">
+			<image src="../../static/image/1.png"></image>
+		</view>
+		<view class="money-box">
+			<view class="money-title">
+				{{userName}} 分红金额
+			</view>
+			<view class="money-number">
+				￥ {{money}}
 			</view>
 		</view>
-		<button type="default">返回首页</button>
+		<view class="footer-box">
+			<button type="default" @click="toHomePage()">
+				返回首页
+			</button>
+		</view>
 	</view>
 </template>
 
@@ -17,47 +23,82 @@
 	export default {
 		data() {
 			return {
-				
+				userName: '',
+				money: 0
 			}
 		},
 		methods: {
-			
+			getUserMoney(cnt, shareAmount) {
+				this.$api.getORGById(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let info = JSON.parse(res.data.c)
+						this.money = parseFloat(info.bonus) * parseFloat(shareAmount)
+					}
+				})
+			},
+
+
+			toHomePage() {
+				uni.switchTab({
+					url: '/pages/index/index'
+				});
+			}
+
+		},
+		onLoad() {
+			let orgUserInfo = JSON.parse(uni.getStorageSync('orgUserInfo'))
+
+			this.userName = orgUserInfo.realName
+
+			let shareAmount = orgUserInfo.shareAmount
+
+			console.log(orgUserInfo)
+			console.log('----------------')
+			console.log(JSON.parse(uni.getStorageSync('orgInfo')))
+			let cnt = {
+				orgId: orgUserInfo.orgId
+			}
+			this.getUserMoney(cnt, shareAmount)
+
 		}
 	}
 </script>
 <style scoped lang="scss">
-	.box{
-		display: flex;
-		justify-content: center;
-		align-items: center;	
-	}
-	.money-box{
-		width: 386rpx;
-	}
-	.money-img{
-		width: 100%;
-		height: 350rpx;
-	}
-	.money-img image{
-		width: 400rpx
-	}
-	.money-text{
-		width: 100%;
-		height: 40rpx;
-		color: #666666;
+	.image-box {
+		width: auto;
+		height: 400rpx;
 		text-align: center;
-		margin-top: 40rpx;
+
+		image {
+			width: 250rpx;
+			height: 250rpx;
+			margin-top: 75rpx;
+		}
 	}
-	.money-num{
-		width: 100%;
-		height: 100rpx;
-		color: #666666;
+
+	.money-box {
+		width: auto;
+
+
 		text-align: center;
-		margin-top: 40rpx;
-		font-size: 60rpx;
+
+		.money-title {
+			font-size: 30rpx;
+			line-height: 60rpx;
+			color: #666;
+		}
+
+		.money-number {
+			margin-top: 40rpx;
+			font-size: 60rpx;
+			line-height: 60rpx;
+			color: #333;
+		}
 	}
-	button{
-		width: 90%;
-		margin: 60rpx auto;
+
+	.footer-box {
+		width: auto;
+		padding: 40rpx;
+
 	}
 </style>

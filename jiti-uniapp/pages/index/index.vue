@@ -27,40 +27,45 @@
 				</view>
 			</navigator>
 
+			<navigator url="../examine/examine">
+				<view class="content_box" style="background-color: #9788ff;">
+					<view class="content_box_text">
+						<p class="text-box">
+							我的
+						</p>
+						<p class="text-box1">
+							审批
+						</p>
 
-			<view class="content_box" style="background-color: #9788ff;">
-				<view class="content_box_text">
-					<p class="text-box">
-						我的
-					</p>
-					<p class="text-box1">
-						审批
-					</p>
-
+					</view>
 				</view>
-			</view>
+			</navigator>
 
-			<view class="content_box" style="background-color: #fb7eb8;">
-				<view class="content_box_text">
-					<p class="text-box">我的</p>
-					<p class="text-box1">分红</p>
+			<navigator url="../bonus/bonus">
+				<view class="content_box" style="background-color: #fb7eb8;">
+					<view class="content_box_text">
+						<p class="text-box">我的</p>
+						<p class="text-box1">分红</p>
+					</view>
 				</view>
-			</view>
-
-
-			<view class="content_box">
-				<view class="content_box_text">
-					<p class="text-box">集体</p>
-					<p class="text-box1">资料</p>
+			</navigator>
+			<navigator url="../org/org">
+				<view class="content_box">
+					<view class="content_box_text">
+						<p class="text-box">集体</p>
+						<p class="text-box1">资料</p>
+					</view>
 				</view>
-			</view>
+			</navigator>
 
-			<view class="content_box" style="background-color: #9788ff;">
-				<view class="content_box_text">
-					<p class="text-box">集体</p>
-					<p class="text-box1">资产</p>
+			<navigator url="../assets/assets">
+				<view class="content_box" style="background-color: #9788ff;">
+					<view class="content_box_text">
+						<p class="text-box">集体</p>
+						<p class="text-box1">资产</p>
+					</view>
 				</view>
-			</view>
+			</navigator>
 
 			<view class="content_box" style="background-color: #fb7eb8;">
 				<view class="content_box_text">
@@ -83,19 +88,25 @@
 				<p class="text-box1">管理</p>
 			</view>
 		</view>
-		<view class="content_box" style="background-color: #fb7eb8;">
-			<view class="content_box_text">
-				<p class="text-box">个人</p>
-				<p class="text-box1">信息</p>
-			</view>
-		</view>
 
-		<view class="content_box">
+		
+			<view class="content_box" style="background-color: #fb7eb8;" @click="toAbout()">
+				<view class="content_box_text">
+					<p class="text-box">个人</p>
+					<p class="text-box1">信息</p>
+				</view>
+			</view>
+	
+
+
+
+		<view class="content_box" @click="toChooseOrg">
 			<view class="content_box_text">
 				<p class="text-box">更换</p>
 				<p class="text-box1">组织</p>
 			</view>
 		</view>
+
 		<view class="content_box" @click="outLogin()" style="background-color: #fb7eb8;">
 			<view class="content_box_text">
 				<p class="text-box">注销</p>
@@ -122,8 +133,18 @@
 		onLoad() {
 			let userObj = JSON.parse(uni.getStorageSync('userInfo')) //只有用户信息
 			let orgObj = JSON.parse(uni.getStorageSync('orgInfo')) //只有用户的组织信息
-			let orgUserInfo = Object.assign(userObj, orgObj)
 
+			if (!userObj) {
+				uni.reLaunch({
+					url: '../login/login'
+				})
+			}
+			if (!orgObj) {
+				uni.reLaunch({
+					url: '../chooseOrg/chooseOrg'
+				})
+			}
+			let orgUserInfo = Object.assign(userObj, orgObj)
 			let info = uni.getStorageSync('orgUserInfo')
 			if (!info) { //user是否已经存在，若存在就不重新赋值
 				uni.setStorageSync('orgUserInfo', JSON.stringify(orgUserInfo))
@@ -131,10 +152,24 @@
 
 		},
 		methods: {
-			outLogin(){
+			outLogin() {
 				uni.clearStorageSync();
 				uni.reLaunch({
-					url:'../login/login'
+					url: '../login/login'
+				})
+			},
+			toChooseOrg() {
+				uni.removeStorageSync('orgInfo');
+				uni.removeStorageSync('orgUserInfo');
+				uni.reLaunch({
+					url: '../chooseOrg/chooseOrg'
+				})
+			},
+			
+			toAbout(){
+				console.log('----------click about------')
+				uni.switchTab({
+					url:'../about/about'
 				})
 			}
 		}

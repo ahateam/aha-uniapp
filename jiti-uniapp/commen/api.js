@@ -59,7 +59,44 @@ api.vote = function (cnt,callback) {
 }
 
 
+/** 我的审批*/
+api.getExamineByPer = function (cnt,callback) {
+    util.call(baseUrl+'/org/getExamineByPer', cnt, callback)
+}
+//有审批权限的用户进行--分户审批
+api.editExamine = function (cnt,callback) {
+    util.call(baseUrl+'/org/editExamine', cnt, callback)
+}
+//有审批权限的用户进行--股权变更审批
+api.examineShareCerNo = function (cnt,callback) {
+    util.call(baseUrl+'/org/examineShareCerNo', cnt, callback)
+}
 
+/*我的分红*/
+//获取机构的详细信息--获取每股分红金额
+api.getORGById = function (cnt,callback) {
+    util.call(baseUrl+'/org/getORGById', cnt, callback)
+}
+
+/* 集体资产*/
+//资产列表
+api.queryAssets = function (cnt,callback) {
+    util.call(baseUrl+'/asset/queryAssets', cnt, callback)
+}
+//获取机构下的所有的分组tree
+api.getTagGroupTree = function (cnt,callback) {
+    util.call(baseUrl+'/org/getTagGroupTree', cnt, callback)
+}
+//根据分组获取资产列表
+api.getAssetsByGroups = function (cnt,callback) {
+    util.call(baseUrl+'/asset/getAssetsByGroups', cnt, callback)
+}
+	
+/*个人信息*/
+//获取用户角色信息
+api.getSysORGUserRoles = function (cnt,callback) {
+    util.call(baseUrl+'/org/getSysORGUserRoles', cnt, callback)
+}
 
 
 export default api
