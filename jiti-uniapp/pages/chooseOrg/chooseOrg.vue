@@ -67,8 +67,6 @@
 						uni.switchTab({
 							url: '/pages/index/index'
 						});
-						console.log('111')
-
 					} else {
 						console.log('11111')
 					}

@@ -22,7 +22,7 @@
 				"navigationBarTitleText": "关于活动"
 			}
 		},
-		
+
 		{
 			"path": "pages/about/about",
 			"style": {
@@ -31,7 +31,9 @@
 		},
 		{
 			"path": "pages/about/updataPwd",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
 		},
 
 		{
@@ -118,7 +120,14 @@
 		}, {
 			"path": "pages/vote/createVoteChoose",
 			"style": {}
+		},
+		{
+			"path": "pages/about/setMobile",
+			"style": {
+				"navigationBarTitleText": "变更手机"
+			}
 		}
+
 	],
 	"tabBar": {
 		"color": "#C0C4CC",

@@ -97,6 +97,14 @@ api.getAssetsByGroups = function (cnt,callback) {
 api.getSysORGUserRoles = function (cnt,callback) {
     util.call(baseUrl+'/org/getSysORGUserRoles', cnt, callback)
 }
-
-
+//修改用户密码
+api.editUserPassword = function (cnt,callback) {
+    util.call(baseUrl+'/org/editUserPassword', cnt, callback)
+}
+//修改用户的（解绑/绑定）手机号
+ api.editUserMobile = function (cnt,callback) {
+     util.call(baseUrl+'/org/editUserMobile', cnt, callback)
+ }
+ 
+ 
 export default api

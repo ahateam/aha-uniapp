@@ -2,7 +2,7 @@ const constData = {}
 
 /** 全局的localStorage说明*/
 // userInfo   	用户信息
-//orgsInfo    	用户选择的登录组织的组织信息
+//orgInfo    	用户选择的登录组织的组织信息
 //orgUserInfo   用户信息与组织信息都有的对象
 //permission  	用户的权限列表['104','112']
 //poll			我的投票-选中的单个投票信息

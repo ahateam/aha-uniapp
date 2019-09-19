@@ -167,7 +167,7 @@
 			},
 			
 			toAbout(){
-				console.log('----------click about------')
+			
 				uni.switchTab({
 					url:'../about/about'
 				})

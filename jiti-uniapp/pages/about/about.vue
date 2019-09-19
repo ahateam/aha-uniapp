@@ -22,17 +22,21 @@
 			</view>
 			<view class="org-item">
 				<view class="org-name">表决票数：</view>
-				<view class="org-res">	{{userInfo.weight}}</view>
+				<view class="org-res"> {{userInfo.weight}}</view>
 			</view>
-			<view class="org-item">
-				<view class="org-name">手机解绑：</view>
-				<view class="org-res">18312351235</view>
+			<view class="org-item" v-if="userInfo.mobile" @click="setDelMobile()">
+				<view class="org-name">手机绑定：</view>
+				<view class="org-res">{{userInfo.mobile}}（点击解绑）</view>
+			</view>
+			<view class="org-item" v-else @click="setAddMobile()">
+				<view class="org-name">手机绑定：</view>
+				<view class="org-res">点击绑定手机</view>
 			</view>
 			<view class="org-item">
 				<view class="org-name">微信绑定：</view>
 				<view class="org-res">未绑定(点击绑定)</view>
 			</view>
-			<button type="warn">注销登录</button>
+			<button type="warn" @click="outLogin">注销登录</button>
 		</view>
 	</view>
 </template>
@@ -55,9 +59,26 @@
 			}
 		},
 		methods: {
+			resetData(){
+				this.userInfo = ''
+				this.userPost = ''
+				this.name = ''
+				this.mobile = ''
+				this.weight = ''
+				this.shareAmount = ''
+				this.isOpenId = false
+				this.showMobile = false
+				this.isBinding = false
+			},
+		outLogin() {
+				uni.clearStorageSync();
+				uni.reLaunch({
+					url: '../login/login'
+				})
+			},
 			updataPwd() {
 				uni.navigateTo({
-					url: "updataPwd"
+					url: "./updataPwd"
 				})
 			},
 			getSysORGUserRoles(orgRoles) {
@@ -75,9 +96,25 @@
 						}
 					}
 				})
+			},
+
+
+			/* 解绑手机号*/
+			setDelMobile() {
+				uni.navigateTo({
+					url: './setMobile?userId=' + this.userInfo.id + '&key=0'
+				})
+			},
+
+			/*绑定手机号*/
+			setAddMobile() {
+				uni.navigateTo({
+					url: './setMobile?userId=' + this.userInfo.id + '&key=1'
+				})
 			}
 		},
-		onLoad() {
+		onShow() {
+			this.resetData()
 			this.userInfo = JSON.parse(uni.getStorageSync('orgUserInfo'))
 			this.name = this.userInfo.realName
 			this.mobile = this.userInfo.mobile
@@ -85,8 +122,6 @@
 			this.weight = this.userInfo.weight
 			this.shareAmount = this.userInfo.shareAmount
 			let orgRoles = this.userInfo.orgRoles
-			console.log(this.userInfo)
-
 			if (!this.userInfo.openId) {
 				this.isOpenId = false
 			} else {
