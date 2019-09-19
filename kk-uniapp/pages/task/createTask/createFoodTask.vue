@@ -4,7 +4,7 @@
 		<view class="titleBox">
 			陪吃任务
 			<view class="infoBox">
-				当你寂寞、孤独、心情郁闷、想找人倾诉、想结交朋友，不妨发布陪吃任务。
+				{{text}}
 			</view>
 		</view>
 		<view class="bottomBtn">
@@ -17,16 +17,37 @@
 	export default {
 		data() {
 			return {
-				imgSrc: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1568717788335&di=2649d679b221acb39ee89d069efddd8d&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20190820%2Fab9c89c17d4748be9eb53073b6c32e0c.jpeg'
+				imgSrc: '',
+				id:'',
+				type:'',
+				text:'',
 			}
 		},
-		onLoad() {
-
+		onLoad(res) {
+			this.id = res.id
+			this.getTemplate()
 		},
 		methods: {
+			//获取模板
+			getTemplate(){
+				let cnt = {
+					id:this.id
+				}
+				this.$api.getTemplate(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						let arr = this.$util.tryParseJson(res.data.c)
+						this.title = arr.name
+						this.imgSrc = this.$util.tryParseJson(arr.data).src
+						this.type = arr.type
+						this.text = arr.text
+					}
+				})
+			},
+			
+			//下一步
 			navToNext(){
 				uni.redirectTo({
-					url: '/pages/task/createTask/addFoodTask'
+					url: `/pages/task/createTask/addFoodTask?type=${this.type}`
 				})
 			},
 		}

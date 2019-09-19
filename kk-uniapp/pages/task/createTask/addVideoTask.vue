@@ -3,8 +3,7 @@
 		<video class="video" :src="video" controls></video>
 
 		<view class="teplateInfo">
-			<input class="changeBtn nameBox" type="text" v-model="userName" placeholder="请输入你想夸的人的名字" /><button class="changeBtn"
-			 type="primary" @click="changeName">确定</button>
+			<input class="changeBtn nameBox" type="text" v-model="userName" placeholder="请输入你想夸的人的名字" @change="changeName"/>
 		</view>
 
 		<view class="teplateInfo">
@@ -100,7 +99,7 @@
 				
 				this.$api.createTask(cnt,(res)=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
-						uni.redirectTo({
+						uni.switchTab({
 						    // url: `/pages/task/payView/payView?type=0`
 							url:'/pages/task/task'
 						})

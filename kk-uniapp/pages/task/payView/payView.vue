@@ -3,7 +3,7 @@
 		<view class="showMoney">
 			<view v-if="type == 0">￥{{money}}元</view>
 			<view v-else-if="type == 1">
-				<input type="text" v-model="money" placeholder="请输入支付金额" />
+				<input type="number" v-model="money" placeholder="请输入支付金额" />
 			</view>
 		</view>
 		<view class="bottonBox">
@@ -17,21 +17,44 @@
 		data() {
 			return {
 				money: '5',
-				type: '',
+				id: '',
+				taskId: '',
+				type: 0
 			}
 		},
 		onLoad(options) {
+			this.id = options.id
+			this.taskId = options.taskId
 			this.type = options.type
+			if (this.type == 1) {
+				this.money = ''
+			}
 		},
 		methods: {
 			payMoney() {
-				uni.switchTab({
-					url: '/pages/task/task'
-				});
-				uni.showToast({
-					title: '支付成功',
-					duration: 1000
+				let cnt = {
+					id: this.id, // Long 订单id
+					taskId: this.taskId, // Long 任务id
+				}
+				this.$api.TaskApplyConfirm(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						uni.switchTab({
+							url: '/pages/task/task'
+						});
+						uni.showToast({
+							title: '支付成功',
+							duration: 1000
+						})
+					}else{
+						uni.showToast({
+							title: '不太行',
+							duration: 1000,
+							icon:'none'
+						})
+					}
 				})
+
+				
 			}
 		}
 	}
@@ -45,6 +68,11 @@
 		font-size: $list-title-l;
 		line-height: 56.25vw;
 		background-color: #f0f0f0;
+
+		input {
+			font-size: $list-title-l;
+			height: 56.25vw;
+		}
 	}
 
 	.bottonBox {

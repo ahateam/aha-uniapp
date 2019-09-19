@@ -205,6 +205,30 @@ constData.appraise = [
 	}
 ]
 
+/* 模板类型 */
+constData.templateType = [
+	{
+		key:0,
+		val:'图文'
+	},
+	{
+		key:1,
+		val:'视频',
+	},
+	{
+		key:2,
+		val:'GIF表情',
+	},
+	{
+		key:3,
+		val:'音频',
+	},
+	{
+		key:4,
+		val:'描述',
+	}
+]
+
 /* 渐变色数组 */
 constData.colorData = [
 	'linear-gradient(120deg,#69b5e1,#bedbed)',

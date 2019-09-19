@@ -1,15 +1,15 @@
 <template>
 	<view>
 		<view class="userImg">
-			<image :src="imgSRC" mode="scaleToFill"></image>
+			<image :src="data.data.imgSrc" mode="scaleToFill"></image>
 		</view>
-		
+
 		<view class="infoNav">
 			个人简介：
 		</view>
-		
+
 		<view class="userInfo">
-			{{text}}
+			{{data.data.text}}
 		</view>
 		<view class="btnBox">
 			<button class="leftBtn" type="primary" @click="navBack">返回</button>
@@ -22,24 +22,37 @@
 	export default {
 		data() {
 			return {
-				imgSRC: '/static/image/release.png',
-				text: '简介简介简介',
 				id: '',
-				userId: '',
+				data:{}
 			}
 		},
 		onLoad(options) {
-			this.id = options.taskId
-			this.userId = options.id
+			this.id = options.id
+			this.getTaskApply()
 		},
 		methods: {
+			//获取页面信息
+			getTaskApply() {
+				let cnt = {
+					id: this.id
+				}
+				this.$api.getTaskApply(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c)
+						arr.data = this.$util.tryParseJson(arr.data)
+						console.log(arr)
+						this.data = arr
+					}
+				})
+			},
+
 			navBack() {
 				uni.navigateBack()
 			},
 
 			navToPay() {
 				uni.navigateTo({
-					url: `/pages/task/payView/payView?id=${this.userId}&taskId=${this.id}&type=1`
+					url: `/pages/task/payView/payView?id=${this.id}&taskId=${this.data.taskId}&type=1`
 				})
 			}
 		}
@@ -56,8 +69,8 @@
 			height: 100%;
 		}
 	}
-	
-	.infoNav{
+
+	.infoNav {
 		padding: $box-margin-top $box-margin-left;
 		font-size: $list-title;
 	}

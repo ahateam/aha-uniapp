@@ -83,7 +83,7 @@
 				module: this.$constData.module, // Long 模块编号
 				// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
 				// type: type, // Byte <选填> 类型
-				status: this.$constData.taskWallStatus[0].key, // Byte <选填> 状态
+				// status: this.$constData.taskWallStatus[0].key, // Byte <选填> 状态
 				// upUserId: upUserId, // Long <选填> 创建者编号
 				// tags: tags, // String <选填> 标签
 				// title: title, // String <选填> 标题
@@ -284,6 +284,7 @@
 							if (arr[i].user) {
 								arr[i].user.head = this.$util.tryParseJson(arr[i].user.ext).userHead
 							}
+								arr[i].detail = this.$util.tryParseJson(arr[i].detail).text
 						}
 						this.contentData = arr
 					} else {

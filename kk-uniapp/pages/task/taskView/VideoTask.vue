@@ -15,13 +15,15 @@
 					还没有人领任务哦~
 				</view>
 				<view v-for="(item, index) in comment" :key="index" class="eva-item" @click="navToUserInfo(item)">
-					<image :src="item.userHead" mode="aspectFill"></image>
+					<image :src="item.user.ext.userHead" mode="aspectFill"></image>
 					<view class="eva-right">
 						<text>{{item.user.name}}</text>
 						<text>{{item.time}}</text>
 						<view class="zan-box">
-							<text v-if="taskStatus == 2&&item.id == accepterId">进行中</text>
-							<text v-if="taskStatus == 3&&item.id == accepterId">待审核</text>
+							<text v-if="item.status == constData.taskStatus[1].key">进行中</text>
+							<text v-if="item.status == constData.taskStatus[2].key">已上传，待审核</text>
+							<text v-if="item.status == constData.taskStatus[3].key">已完成</text>
+							<text v-if="item.status == constData.taskStatus[4].key">未通过，重新提交</text>
 						</view>
 						<text class="content">电话: {{item.tel}}</text>
 					</view>
@@ -29,7 +31,7 @@
 			</view>
 		</view>
 
-		<view class="bottomBtn" v-if="taskStatus == 1&&userId!=upUserId">
+		<view class="bottomBtn" v-if="taskStatus < 3&&userId!=upUserId">
 			<button type="primary" class="receiveBtn" @click="receiveBtn" v-if="userId != upUserId">领取</button>
 		</view>
 
@@ -42,11 +44,12 @@
 				<text class="infoText">上传您的照片</text>
 				<image :src="imgSrc" mode="aspectFill" v-if="imgSrc != ''"></image>
 			</view>
+			<input type="text" v-model="telPhone" placeholder="请输入你的联系方式"/>
 			<textarea v-model="userText" placeholder="描述下你的特长" />
 			<button type="primary" @click="submission">提交</button>
 		</view>
 		
-		<view class="upLoadBox" v-if="taskStatus == 2&&userId == accepterId">
+		<view class="upLoadBox" v-if="taskStatus == 4 && userId != upUserId ||taskStatus == 5 && userId != upUserId">
 			<view style="margin-bottom: 15upx;">
 				上传作品：
 			</view>
@@ -63,7 +66,7 @@
 			</view>
 		</view>
 		
-		<view class="bottomBtnBox" v-if="taskStatus == 3&&userId == upUserId">
+		<view class="bottomBtnBox" v-if="taskStatus == 5&&userId == upUserId || taskStatus == 6&&userId == upUserId">
 			<button class="leftBtn" type="primary" @click="navToVideo">查看作品</button>
 			<button class="rightBtn" type="primary">评价</button>
 		</view>
@@ -74,43 +77,61 @@
 	export default {
 		data() {
 			return {
+				constData:this.$constData,
+				
 				userId: uni.getStorageSync('userId'), //登录用户id
 				video: '', //视频地址
-				text: '简介简介简介简介简介简介简介简介简介简介简介简介',
+				text: '',
 				id: '', //模板id
-				upUserId: 1234567890, //上传者ID
+				upUserId: '', //上传者ID
 				
 				hidden:false,//隐藏box
 
-				taskStatus: 3,//任务状态
+				taskStatus: '999',//任务状态
 
-				comment: [{
-					userHead: '/static/logo.png',
-					user: {
-						name: '233',
-					},
-					tel: '1111',
-					id: '1234567890',
-				}],//接单列表
+				comment: [],//接单列表
 				
 				userText:'',//接单描述
 				
 				imgSrc:'',//上传照片地址
 				
-				accepterId:'1234567890',//接取者id
+				accepterId:'',//接取者id
 				videoSrc:'',//上传作品地址
 				
+				telPhone:'',//电话
 			}
 		},
 		onLoad(res) {
 			this.id = res.id
 			this.getTask()
+			this.getTaskApplys()
 		},
 		methods: {
 			//查看作品
 			navToVideo(){
-				uni.navigateTo({
-				    url: `/pages/task/taskView/userWorks/userWorks`
+				let cnt = {
+					taskId: this.id, // Long <选填> 任务编号
+					// status: this.$constData.taskStatus[1].key, // Byte <选填> 状态
+					works: true, // Boolean <选填> 是否查询作品
+					// userId: this.userId, // Long <选填> 接单者编号
+					count: 1, // int 
+					offset: 0, // int 
+				}
+				this.$api.getTaskApplys(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						let arr = this.$util.tryParseJson(res.data.c)
+						console.log(arr)
+						if(arr.length>0){
+							let id = arr[0].id
+							uni.navigateTo({
+								url:`/pages/task/taskView/userWorks/userWorks?id=${id}`
+							})
+						}else{
+							
+						}
+					}else{
+						console.log('失败')
+					}
 				})
 			},
 			
@@ -124,7 +145,39 @@
 					})
 					return
 				}
-				console.log('提交')
+				let cnt = {
+					taskId: this.id, // Long <选填> 任务编号
+					// status: status, // Byte <选填> 状态
+					userId: this.userId, // Long <选填> 接单者编号
+					count: 10, // int 
+					offset: 0, // int 
+				}
+				this.$api.getTaskApplys(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						let arr = this.$util.tryParseJson(res.data.c)
+						let cnt1 = {
+							id: arr[0].id, // Long 任务订单id
+							taskDate: this.videoSrc, // String 上传作品数据
+						}
+						this.$api.editApplyTaskData(cnt1,(res)=>{
+							if(res.data.rc == this.$util.RC.SUCCESS){
+								uni.switchTab({
+									url:'/pages/task/task'
+								})
+								uni.showToast({
+									title:'提交成功',
+									duration:1500
+								})
+							}else{
+								uni.showToast({
+									title:'提交失败',
+									duration:1500,
+									icon:'none'
+								})
+							}
+						})
+					}
+				})
 			},
 			
 			//上传作品
@@ -192,7 +245,7 @@
 					return
 				}
 				uni.navigateTo({
-				    url: `/pages/task/choiceUser/choiceUser?id=${item.id}&taskId=${this.id}`
+				    url: `/pages/task/choiceUser/choiceUser?id=${item.id}`
 				})
 			},
 			
@@ -259,7 +312,7 @@
 			
 			//提交信息
 			submission(){
-				if(this.userText == ''||this.imgSrc == ''){
+				if(this.userText == ''||this.imgSrc == ''||this.telPhone == ''){
 					uni.showToast({
 						title:'请填写信息',
 						duration:1000,
@@ -268,7 +321,73 @@
 					return
 				}
 				
+				let data = {
+					imgSrc:this.imgSrc,
+					text:this.userText,
+					tel:this.telPhone
+				}
+				
+				data = JSON.stringify(data)
+				
+				let cnt = {
+					taskId: this.id, // Long 任务id
+					userId: this.userId, // Long 接单用户编号
+					taskTitle: this.text, // String 任务标题
+					data: data, // String <选填> 推荐信息
+				}
+				this.$api.createTaskApply(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						console.log(this.$util.tryParseJson(res.data.c))
+						uni.switchTab({
+							url:'/pages/task/task'
+						})
+						uni.showToast({
+							title:'OK！',
+							duration:1000
+						})
+					}else{
+						uni.showToast({
+							title:'我觉得不行',
+							duration:1000,
+							icon:'none'
+						})
+					}
+				})
+				
 				this.hidden = false
+			},
+			
+			//获取任务下接单列表
+			getTaskApplys(){
+				let cnt = {
+					taskId: this.id, // Long <选填> 任务编号
+					// status: status, // Byte <选填> 状态
+					// userId: userId, // Long <选填> 接单者编号
+					count: 10, // int 
+					offset: 0, // int
+				}
+				this.$api.getTaskApplys(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						let arr = this.$util.tryParseJson(res.data.c)
+						for(let i = 0;i<arr.length;i++){
+							let time = new Date(arr[i].createTime)
+							let y = time.getFullYear(time)
+							let m = time.getMonth(time) + 1
+							let d = time.getDate(time)
+							arr[i].time = `${y}-${m}-${d}`
+							
+							arr[i].data = this.$util.tryParseJson(arr[i].data)
+							
+							if(arr[i].user){
+								arr[i].user.ext = this.$util.tryParseJson(arr[i].user.ext)
+							} 
+						}
+						this.comment = arr
+						console.log(this.comment)
+					}else{
+						console.log('获取接单列表失败')
+					}
+				})
 			},
 			
 			//获取任务信息
@@ -281,10 +400,11 @@
 						let arr = this.$util.tryParseJson(res.data.c)
 						console.log(arr)
 						this.taskStatus = arr.status
+						this.upUserId = arr.upUserId
 						let data = this.$util.tryParseJson(arr.detail)
 						this.text = data.text
-						let temPlateId = data.templateId
-						this.getTemplate(temPlateId)
+						
+						this.getTemplate(data.templateId)
 					}
 				})
 			},
@@ -401,7 +521,11 @@
 			padding-top: 20upx;
 		}
 	}
-
+	
+	.noEva{
+		padding: 0 $box-margin-left;
+		font-size: $list-title;
+	}
 	/* end */
 	
 	.bottomBtn{

@@ -136,7 +136,19 @@
             "style" : {
 				"navigationBarTitleText": "查看作品"
 			}
-        }
+        },
+		{
+			"path": "pages/user/userTask/userAddsTask",
+			"style" : {
+				"navigationBarTitleText": "已发任务"
+			}
+		},
+		{
+			"path": "pages/user/userTask/userTask",
+			"style" : {
+				"navigationBarTitleText": "已领任务"
+			}
+		}
     ],
 	"tabBar": {
 		"color": "#C0C4CC",

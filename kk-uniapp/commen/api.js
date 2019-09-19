@@ -74,6 +74,36 @@ api.getTask = function(cnt, callback) {
 api.createTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/createTask', cnt, callback)
 }
+
+//接取任务（创建接单  
+api.createTaskApply = function(cnt, callback) {
+	util.call(baseUrl + '/task/createTaskApply', cnt, callback)
+}
+
+//接任务过审 
+api.TaskApplyConfirm = function(cnt, callback) {
+	util.call(baseUrl + '/task/TaskApplyConfirm', cnt, callback)
+}
+
+//获取任务下接单列表 
+api.getTaskApplys = function(cnt, callback) {
+	util.call(baseUrl + '/task/getTaskApplys', cnt, callback)
+}
+
+//获取接单者详情
+api.getTaskApply = function(cnt, callback) {
+	util.call(baseUrl + '/task/getTaskApply', cnt, callback)
+}
+
+//上传任务作品 
+api.editApplyTaskData = function(cnt, callback) {
+	util.call(baseUrl + '/task/editApplyTaskData', cnt, callback)
+}
+
+//<选择作品是否满意（true：满意，false：不满意）>
+api.editApplyWorks = function(cnt, callback) {
+	util.call(baseUrl + '/task/editApplyWorks', cnt, callback)
+}
 /************************ 用户相关接口 **************************/
 //根据id获取用户
 api.getUserById = function(cnt, callback) {
