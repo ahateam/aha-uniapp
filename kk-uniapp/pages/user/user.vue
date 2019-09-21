@@ -8,7 +8,7 @@
 					<view class="userName">{{userName}}</view>
 					<view class="userView" v-if="boxShow">个人主页
 						></view>
-					<button open-type="getUserInfo" type="primary" class="loginBtn" @getuserinfo="wx()" v-else>登录</button>
+					<button open-type="getUserInfo" type="primary" class="loginBtn" @getuserinfo="wx()" @click="loginBtn" v-else>登录</button>
 				</view>
 				<view class="rightBox" v-if="boxShow">
 					<view class="userMoney">余额 0.00</view>
@@ -16,12 +16,13 @@
 				</view>
 			</view>
 		</view>
+
 		<!-- 任务 -->
 		<view class="taskBox" v-if="boxShow">
-			<navigator url="/pages/index/user/Published/Published" class="leftTask">
+			<navigator url="/pages/user/userTask/userAddsTask" class="leftTask">
 				已发任务
 			</navigator>
-			<navigator url="/pages/index/user/receivedTask/receivedTask" class="rightTask">
+			<navigator url="/pages/user/userTask/userTask" class="rightTask">
 				已领任务
 			</navigator>
 		</view>
@@ -46,17 +47,180 @@
 				userInfo: Object,
 				boxShow: false,
 
+				providerList: [],
 			};
 		},
+		onLoad() {
+			this.getProvider()
+		},
 		methods: {
-			// 微信登录
+			/* 非微信登录 */
+			loginBtn() { //获取code
+				let provider = this.providerList[0]
+				if (provider.id == 'weixin') {
+					return
+				}
+				console.log('非微信登录')
+				uni.showLoading({
+					title: '登录中'
+				})
+				uni.login({
+					provider: provider.id,
+					// #ifdef MP-ALIPAY
+					scopes: 'auth_user', //支付宝小程序需设置授权类型 其他默认即可
+					// #endif
+					success: (res) => {
+						console.log('login success:', res)
+						// 更新保存在 store 中的登录状态
+
+						// res.code
+						if (provider.id == 'toutiao') {
+							this.ttGetSessionkey(res.code)
+						} else if (provider.id == 'alipay') {
+							this.alipayGetSessionkey(res.code)
+						}
+					},
+					fail: (err) => {
+						console.log('login fail:', err);
+					}
+				})
+			},
+
+			//头条获取openId
+			ttGetSessionkey(code) {
+				let cnt = {
+					code: code
+				}
+				this.$api.ttGetSessionkey(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log(this.$util.tryParseJson(res.data.c))
+						let openId = this.$util.tryParseJson(res.data.c).openid
+						this.loginByTtOpenId(openId)
+					}
+				})
+			},
+			//头条登录
+			loginByTtOpenId(openId) {
+				uni.getUserInfo({
+					provider: 'weixin',
+					success: (infoRes) => {
+						let data = {
+							userHead: infoRes.userInfo.avatarUrl
+						}
+						let cnt = {
+							ttOpenId: openId,
+							name: infoRes.userInfo.nickName,
+							ext: data
+						}
+						this.ttLoginApi(cnt)
+					}
+				})
+			},
+			ttLoginApi(cnt) {
+				this.$api.loginByTtOpenId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let userData = this.$util.tryParseJson(res.data.c)
+						console.log(userData)
+						let userId = userData.id
+						let userName = userData.name
+						let userHead = this.$util.tryParseJson(userData.ext).userHead
+
+						/* 将用户信息存至本地 */
+						uni.setStorageSync('userId', userId)
+						uni.setStorageSync('userName', userName)
+						uni.setStorageSync('userHead', userHead)
+						/* end */
+
+						this.userHead = userHead
+						this.userName = userName
+						this.boxShow = true
+						uni.hideLoading()
+						uni.showToast({
+							title: '已登录！',
+							duration: 1000
+						})
+					} else {
+						uni.showToast({
+							title: '服务器错误！',
+							duration: 1000,
+							icon: 'none'
+						})
+					}
+				})
+			},
+			//支付宝获取openid
+			alipayGetSessionkey(code) {
+				let cnt = {
+					code: code
+				}
+				this.$api.alipayGetSessionkey(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log(this.$util.tryParseJson(res.data.c))
+						let userId = this.$util.tryParseJson(res.data.c).userId
+						this.loginAlipay(userId)
+					}
+				})
+			},
+			loginAlipay(userId){
+				uni.getUserInfo({
+					provider: 'weixin',
+					success: (infoRes) => {
+						let data = {
+							userHead: infoRes.userInfo.avatarUrl
+						}
+						data = JSON.stringify(data)
+						let cnt = {
+							user_id: userId,
+							name: infoRes.userInfo.nickName,
+							ext: data
+						}
+						this.loginByAlipayOpenId(cnt)
+					}
+				})
+			},
+			//支付宝登录
+			loginByAlipayOpenId(cnt) {
+				this.$api.loginByAlipayOpenId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let userData = this.$util.tryParseJson(res.data.c)
+						console.log(userData)
+						let userId = userData.id
+						let userName = userData.name
+						let userHead = this.$util.tryParseJson(userData.ext).userHead
+
+						/* 将用户信息存至本地 */
+						uni.setStorageSync('userId', userId)
+						uni.setStorageSync('userName', userName)
+						uni.setStorageSync('userHead', userHead)
+						/* end */
+
+						this.userHead = userHead
+						this.userName = userName
+						this.boxShow = true
+						uni.hideLoading()
+						uni.showToast({
+							title: '已登录！',
+							duration: 1000
+						})
+					} else {
+						uni.showToast({
+							title: '服务器错误！',
+							duration: 1000,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			/* 非微信登录end****************************/
+
+
+			// 微信登录star!************************************
 			wx() {
 				uni.showLoading({
 					title: '登录中'
 				})
-				uni.clearStorageSync()
-				console.log('清理完成')
-				uni.login({//通过login获取临时登录凭证code
+				uni.login({ //通过login获取临时登录凭证code
 					provider: 'weixin',
 					success: (res) => {
 						let code = res.code
@@ -74,9 +238,9 @@
 					}
 				})
 			},
-			
+
 			//将code传给后端，获取openId以及用户头像等其他信息
-			getUserInfo(cnt){
+			getUserInfo(cnt) {
 				this.$api.getAccessToken(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let userInfo = JSON.parse(res.data.c)
@@ -109,8 +273,8 @@
 					}
 				})
 			},
-			
-			WxLogin(cnt){
+
+			WxLogin(cnt) {
 				/* 将用户信息上传至服务器获取登录id */
 				this.$api.loginByWxOpenId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -136,10 +300,11 @@
 					}
 				})
 			},
-			
+			//微信登录end!********************************************
+
 			// 根据用户id获取信息
 			getUserById() {
-				if(this.userId !=''&&this.userId !='1234567890'){
+				if (this.userId != '' && this.userId != '1234567890') {
 					return
 				}
 				let cnt = {
@@ -156,7 +321,48 @@
 					}
 				})
 			},
-			
+
+			getProvider() {
+				uni.getProvider({
+					service: 'oauth',
+					success: (result) => {
+						this.providerList = result.provider.map((value) => {
+							let providerName = '';
+							switch (value) {
+								case 'weixin':
+									providerName = '微信登录'
+									break;
+								case 'qq':
+									providerName = 'QQ登录'
+									break;
+								case 'sinaweibo':
+									providerName = '新浪微博登录'
+									break;
+								case 'xiaomi':
+									providerName = '小米登录'
+									break;
+								case 'alipay':
+									providerName = '支付宝登录'
+									break;
+								case 'baidu':
+									providerName = '百度登录'
+									break;
+								case 'toutiao':
+									providerName = '头条登录'
+									break;
+							}
+							return {
+								name: providerName,
+								id: value
+							}
+						});
+						console.log(this.providerList)
+					},
+					fail: (error) => {
+						console.log('获取登录通道失败', error);
+					}
+				})
+			}
 		},
 		onShow() {
 			if (this.userId != '') {
@@ -195,7 +401,7 @@
 
 	.userBox {
 		background: linear-gradient(left, #5ee7df, #b490ca);
-		font-size: 28upx;
+		font-size: $list-title;
 	}
 
 	.userhead {
@@ -230,6 +436,7 @@
 		font-size: 28upx;
 		line-height: 32upx;
 		margin-top: -49upx;
+		text-align: center;
 	}
 
 	.rightBox {
@@ -269,11 +476,13 @@
 	}
 
 	.userView {
+		margin: 0 auto;
 		color: #5ee7df;
 		background-color: #fff;
 		border-radius: 20px;
 		text-align: center;
 		padding: 10upx 20upx;
+		width: 7em;
 	}
 
 	.userMoney {
@@ -299,19 +508,19 @@
 		display: inline-block;
 		width: 49%;
 	}
-	
-	.leftIcon{
+
+	.leftIcon {
 		margin-right: 20upx;
 		font-size: $list-title-l;
 		vertical-align: middle;
 	}
-	
-	.rightIcon{
+
+	.rightIcon {
 		float: right;
 		font-size: $list-title-l;
 	}
-	
-	.bottomTitle{
+
+	.bottomTitle {
 		line-height: 70upx;
 		vertical-align: middle;
 	}

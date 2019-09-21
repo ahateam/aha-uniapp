@@ -19,7 +19,8 @@
 			</view>
 
 			<view v-for="(item,index) in contentData" :key="index" @click="navToTask(item)">
-				<task-list-box :title="item.title" :text="item.detail" :name="item.user.name" :head="item.user.head"></task-list-box>
+				<task-list-box v-if="item.type == 0" :title="item.title" text="陪吃任务" :name="item.user.name" :head="item.user.head"></task-list-box>
+				<task-list-box v-if="item.type == 1" :title="item.title" :text="item.detail" :name="item.user.name" :head="item.user.head"></task-list-box>
 			</view>
 		</view>
 
@@ -83,10 +84,6 @@
 				module: this.$constData.module, // Long 模块编号
 				// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
 				// type: type, // Byte <选填> 类型
-				// status: this.$constData.taskWallStatus[0].key, // Byte <选填> 状态
-				// upUserId: upUserId, // Long <选填> 创建者编号
-				// tags: tags, // String <选填> 标签
-				// title: title, // String <选填> 标题
 				count: this.count, // int 
 				offset: this.offset, // int 
 			}
@@ -131,7 +128,7 @@
 			},
 
 			//导航栏改变内容
-			async changeNav(e,index) {
+			async changeNav(e, index) {
 				this.currentSort = index
 				this.page = 1
 				this.type = this.contentTagGroupData[index].type
@@ -166,7 +163,7 @@
 
 				let cnt1 = {
 					module: this.$constData.module,
-					status: this.$constData.taskWallStatus[0].key,
+					// status: this.$constData.taskWallStatus[0].key,
 					// tags: '', // String 标签  如无此条件  为null
 					count: 10,
 					offset: 0
@@ -276,7 +273,7 @@
 			},
 
 			getTask(cnt) {
-				this.$api.getTasks(cnt, (res) => {
+				this.$api.getHomeTasks(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log(this.$util.tryParseJson(res.data.c).list)
 						let arr = this.$util.tryParseJson(res.data.c).list
@@ -284,7 +281,7 @@
 							if (arr[i].user) {
 								arr[i].user.head = this.$util.tryParseJson(arr[i].user.ext).userHead
 							}
-								arr[i].detail = this.$util.tryParseJson(arr[i].detail).text
+							arr[i].detail = this.$util.tryParseJson(arr[i].detail).text
 						}
 						this.contentData = arr
 					} else {

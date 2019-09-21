@@ -7,19 +7,19 @@
 			</view>
 		</scroll-view>
 		<view style="padding-top: 90upx;"></view>
-		<view class="contentBox" v-for="(item,index) in templateList" :key="index">
-
+		<view class="contentBox" v-for="(item,index) in templateList" :key="index" @click="navToCreate(item)">
+			
 			<image :src="item.data.src" mode="scaleToFill" class="imgs" v-if="item.type == 1"></image>
-
+			
 			<video class="imgs" :src="item.data.src" controls v-if="item.type == 0"></video>
-
+			
 			<view class="contentTitle">
 				{{item.name}}
 			</view>
 			<view class="contentInfo">
 				{{item.text}}
 			</view>
-			<button type="primary" class="contentBtn" @click="navToCreate(item)">选择</button>
+			<button type="primary" class="contentBtn" @click="navToAdd(item)" @click.stop>选择</button>
 		</view>
 	</view>
 </template>
@@ -69,6 +69,21 @@
 			this.getTags()
 		},
 		methods: {
+			//创建任务
+			navToAdd(item){
+				if (item.type == 0) {
+					this.$store.state.taskInfo.text = item.text
+					uni.navigateTo({
+					    url: `/pages/task/createTask/addVideoTask?id=${item.id}&src=${item.data.src}&type=${this.type}&title=${item.name}&text=${item.text}`
+					})
+				} else if (item.type == 1) {
+					uni.navigateTo({
+						url: `/pages/task/createTask/addFoodTask?type=${this.type}`
+					})
+				}
+			},
+			
+			//模板详细
 			navToCreate(item) {
 				console.log(item)
 				if (item.type == 0) {
@@ -200,6 +215,8 @@
 
 	.contentInfo {
 		margin-top: 0.2em;
+		font-size: $list-info;
+		color: $list-info-color;
 	}
 
 	.contentBtn {
@@ -208,5 +225,15 @@
 		bottom: $box-margin-top;
 		font-size: $list-title;
 		line-height: $list-title-line;
+		color: #409eff;
+		background-color: #FFFFFF;
+		&:after{
+			border: none;
+		}
+	}
+	
+	.button-hover{
+		color: #66b1ff;
+		
 	}
 </style>

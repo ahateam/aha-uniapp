@@ -3,23 +3,11 @@
 		<view class="titleBox">{{title}}</view>
 		<!-- <view class="rightBox">{{money}}元</view> -->
 		<view class="contentBox">{{text}}</view>
-		<view class="bottomBox">
+		<view class="bottomBox" v-if="head">
 			<view class="headImg">
 				<image :src="head" mode="widthFix"></image>
 			</view>
 			<text class="nameBox">{{name}}</text>
-			<text class="rightBox" v-if="state == 0">
-				已领取,待审核
-			</text>
-			<text class="rightBox" style="color: #F0AD4E;" v-else-if="state == 1">
-				已确认,待作品提交
-			</text>
-			<text class="rightBox" style="color: #4CD964;" v-else-if="state == 2">
-				作品已提交,待审核
-			</text>
-			<text class="rightBox" style="color: #4CD964;" v-else-if="state == 3">
-				任务完成
-			</text>
 		</view>
 	</view>
 </template>
@@ -41,7 +29,7 @@
 
 	.titleBox {
 		font-size: $list-title;
-		font-weight: bold;
+		// font-weight: bold;
 	}
 
 	.rightBox {

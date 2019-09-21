@@ -31,8 +31,8 @@
 			</view>
 		</view>
 
-		<view class="bottomBtn" v-if="taskStatus < 3&&userId!=upUserId">
-			<button type="primary" class="receiveBtn" @click="receiveBtn" v-if="userId != upUserId">领取</button>
+		<view class="bottomBtn" v-if="taskStatus < constData.taskWallStatus[4].key && userId!=upUserId">
+			<button type="primary" class="receiveBtn" @click="receiveBtn">领取</button>
 		</view>
 
 		<view class="hiddenBox" v-if="hidden">
@@ -44,7 +44,7 @@
 				<text class="infoText">上传您的照片</text>
 				<image :src="imgSrc" mode="aspectFill" v-if="imgSrc != ''"></image>
 			</view>
-			<input type="text" v-model="telPhone" placeholder="请输入你的联系方式"/>
+			<input type="text" v-model="telPhone" placeholder="请输入你的联系方式" />
 			<textarea v-model="userText" placeholder="描述下你的特长" />
 			<button type="primary" @click="submission">提交</button>
 		</view>
@@ -65,8 +65,7 @@
 				<button type="primary" @click="commitVideo">提交</button>
 			</view>
 		</view>
-		
-		<view class="bottomBtnBox" v-if="taskStatus == 5&&userId == upUserId || taskStatus == 6&&userId == upUserId">
+		<view class="bottomBtnBox" v-if="taskStatus == 5&&userId == upUserId || taskStatus == 6 &&userId == upUserId">
 			<button class="leftBtn" type="primary" @click="navToVideo">查看作品</button>
 			<button class="rightBtn" type="primary">评价</button>
 		</view>
@@ -87,7 +86,7 @@
 				
 				hidden:false,//隐藏box
 
-				taskStatus: '999',//任务状态
+				taskStatus: 999,//任务状态
 
 				comment: [],//接单列表
 				

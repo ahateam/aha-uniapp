@@ -19,7 +19,7 @@
 				money: '5',
 				id: '',
 				taskId: '',
-				type: 0
+				type: 0,//0为平台预付款 1为任务全款预付款
 			}
 		},
 		onLoad(options) {
@@ -31,12 +31,39 @@
 			}
 		},
 		methods: {
+			//支付平台信誉定金
+			payEarnestMoney(){
+				let cnt = this.$store.state.createFoodTask.data
+				this.$api.createTask(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						this.$store.state.createFoodTask.data = ''
+						uni.switchTab({
+							url: '/pages/task/task'
+						})
+						uni.showToast({
+							title: '支付成功',
+							duration: 1000
+						})
+					}else{
+						uni.showToast({
+							title: '不太行',
+							duration: 1000,
+							icon:'none'
+						})
+					}
+				})
+			},
+			
 			payMoney() {
+				if(this.type == 0){
+					this.payEarnestMoney()
+					return
+				}
 				let cnt = {
 					id: this.id, // Long 订单id
 					taskId: this.taskId, // Long 任务id
 				}
-				this.$api.TaskApplyConfirm(cnt,(res)=>{
+				this.$api.TaskApplyConfirm(cnt,(res)=>{//全额定金支付,双方第一次握手
 					if(res.data.rc == this.$util.RC.SUCCESS){
 						uni.switchTab({
 							url: '/pages/task/task'

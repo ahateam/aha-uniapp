@@ -96,25 +96,28 @@
 					advanceAmount: this.money, // Double 预付款
 					// pos: pos, // String <选填> 位置
 				}
-				
-				this.$api.createTask(cnt,(res)=>{
-					if(res.data.rc == this.$util.RC.SUCCESS){
-						uni.switchTab({
-						    // url: `/pages/task/payView/payView?type=0`
-							url:'/pages/task/task'
-						})
-						uni.showToast({
-							title:'成功',
-							duration:1000
-						})
-					}else{
-						uni.showToast({
-							title:'我觉得不行',
-							duration:1000,
-							icon:'none'
-						})
-					}
+				this.$store.state.createFoodTask.data = cnt 
+				uni.navigateTo({
+					url:`/pages/task/payView/payView?type=0`
 				})
+				// this.$api.createTask(cnt,(res)=>{
+				// 	if(res.data.rc == this.$util.RC.SUCCESS){
+				// 		uni.switchTab({
+				// 		    // url: `/pages/task/payView/payView?type=0`
+				// 			url:'/pages/task/task'
+				// 		})
+				// 		uni.showToast({
+				// 			title:'成功',
+				// 			duration:1000
+				// 		})
+				// 	}else{
+				// 		uni.showToast({
+				// 			title:'我觉得不行',
+				// 			duration:1000,
+				// 			icon:'none'
+				// 		})
+				// 	}
+				// })
 				
 				
 			},

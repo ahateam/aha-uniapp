@@ -60,6 +60,11 @@ api.getChannlContentTagByChannelId = function(cnt, callback) {
 	util.call(baseUrl + '/channel/getChannlContentTagByChannelId', cnt, callback)
 }
 /********************* 任务接口 ******************************/ 
+//获取任务墙任务列表 
+api.getHomeTasks = function(cnt, callback) {
+	util.call(baseUrl + '/task/getHomeTasks', cnt, callback)
+}
+
 //获取任务列表 
 api.getTasks = function(cnt, callback) {
 	util.call(baseUrl + '/task/getTasks', cnt, callback)
@@ -68,6 +73,11 @@ api.getTasks = function(cnt, callback) {
 //获取任务 
 api.getTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/getTask', cnt, callback)
+}
+
+//获取接取的任务 
+api.getUserTask = function(cnt, callback) {
+	util.call(baseUrl + '/task/getUserTask', cnt, callback)
 }
 
 //创建任务 
@@ -110,15 +120,34 @@ api.getUserById = function(cnt, callback) {
 	util.call(baseUrl + '/weixin/getUserById', cnt, callback)
 }
 
-//获取用户openid
+//微信获取用户openid
 api.getAccessToken = function(cnt, callback) {
 	util.call(baseUrl + '/weixin/getAccessToken', cnt, callback)
 }
-//登录 
+//微信登录 
 api.loginByWxOpenId = function(cnt, callback) {
 	util.call(baseUrl + '/weixin/loginByWxOpenId', cnt, callback)
 }
 
+//头条获取openid  
+api.ttGetSessionkey = function(cnt, callback) {
+	util.call(baseUrl + '/otherLogin/ttGetSessionkey', cnt, callback)
+}
+
+//头条登录
+api.loginByTtOpenId = function(cnt, callback) {
+	util.call(baseUrl + '/otherLogin/loginByTtOpenId', cnt, callback)
+}
+
+//支付宝获取openid 
+api.alipayGetSessionkey = function(cnt, callback) {
+	util.call(baseUrl + '/otherLogin/alipayGetSessionkey', cnt, callback)
+}
+
+//支付宝登录
+api.loginByAlipayOpenId = function(cnt, callback) {
+	util.call(baseUrl + '/otherLogin/loginByAlipayOpenId', cnt, callback)
+}
 /*************************************** 点赞评论接口 ********************************************/
 //点赞 
 api.createUpvote = function(cnt, callback) {

@@ -1,14 +1,13 @@
 const constData = {}
 
 /* 首页显示变量 */
-constData.showStatus = [
-	{
-		key:0,
-		val:'测试版'
+constData.showStatus = [{
+		key: 0,
+		val: '测试版'
 	},
 	{
-		key:1,
-		val:'正式版'
+		key: 1,
+		val: '正式版'
 	}
 ]
 
@@ -18,6 +17,36 @@ constData.module = 1170
 /* 模板隶属id */
 constData.templateModule = 11705
 
+/* 登录平台常量 */
+constData.providerList = [{
+		id: 'weixin',
+		name: '微信'
+	},
+	{
+		id: 'toutiao',
+		name: '头条'
+	},
+	{
+		id: 'qq',
+		name: 'qq'
+	},
+	{
+		id: 'sinaweibo',
+		name: '新浪微博'
+	},
+	{
+		id: 'xiaomi',
+		name: '小米'
+	},
+	{
+		id: 'alipay',
+		name: '支付宝'
+	},
+	{
+		id: 'baidu',
+		name: '百度'
+	}
+]
 
 /** 资讯内容状态*/
 constData.contentStatus = [{
@@ -42,32 +71,31 @@ constData.contentStatus = [{
 
 /* 资讯标签以及专栏状态*/
 constData.tagStatus = [{
-	key: '0',
-	val: '禁用'
-}, {
-	key: '1',
-	val: '启用'
-}],
+		key: '0',
+		val: '禁用'
+	}, {
+		key: '1',
+		val: '启用'
+	}],
 
-/* 标签分组 */
-constData.tagGroupType  = [
-	{
-		key:'0',
-		val:'首页'
-	},
-	{
-		key:'1',
-		val:'VIP'
-	},
-	{
-		key:'2',
-		val:'任务墙'
-	},
-	{
-		key:'3',
-		val:'模板'
-	}
-]
+	/* 标签分组 */
+	constData.tagGroupType = [{
+			key: '0',
+			val: '首页'
+		},
+		{
+			key: '1',
+			val: 'VIP'
+		},
+		{
+			key: '2',
+			val: '任务墙'
+		},
+		{
+			key: '3',
+			val: '模板'
+		}
+	]
 
 /* 首页文章展示样式 */
 constData.contentShow = [{
@@ -118,114 +146,129 @@ constData.taskType = [{
 }]
 
 /* 任务墙任务状态 */
-constData.taskWallStatus = [
-	{
-		key:0,
-		val:'已创建'
+constData.taskWallStatus = [{
+		key: 0,
+		val: '已创建'
 	},
 	{
-		key:1,
-		val:'已发布'
+		key: 1,
+		val: '已发布'
 	},
 	{
-		key:2,
-		val:'已领取'
+		key: 2,
+		val: '有用户接单'
 	},
 	{
-		key:3,
-		val:'已关闭'
+		key: 3,
+		val: '已关闭'
+	},
+	{
+		key: 4,
+		val: '已确定'
+	},
+	{
+		key: 5,
+		val: '作品已提交'
+	},
+	{
+		key: 6,
+		val: '已完成'
+	},
+	{
+		key: 7,
+		val: '重新上传作品'
+	},
+	{
+		key: 8,
+		val: '裁决中'
 	}
+
 ]
 
 /* 任务订单状态 */
-constData.taskStatus = [
-	{
-		key:0,
-		val:'已领取 待审核'
+constData.taskStatus = [{
+		key: 0,
+		val: '已领取 待审核'
 	},
 	{
-		key:1,
-		val:'已通过审核 待完成'
+		key: 1,
+		val: '已通过审核 待完成'
 	},
 	{
-		key:2,
-		val:'已完成 待审核'
+		key: 2,
+		val: '已完成 待审核'
 	},
 	{
-		key:3,
-		val:'已完成'
+		key: 3,
+		val: '已完成'
 	},
 	{
-		key:4,
-		val:'未通过，待重新提交'
+		key: 4,
+		val: '未通过，待重新提交'
 	},
 	{
-		key:5,
-		val:'未通过'
+		key: 5,
+		val: '未通过'
 	}
 ]
 
 /* 任务等级 */
-constData.taskLevel = [
-	{
-		key:0,
-		val:'平台置顶'
+constData.taskLevel = [{
+		key: 0,
+		val: '平台置顶'
 	},
 	{
-		key:1,
-		val:'高级优先'
+		key: 1,
+		val: '高级优先'
 	},
 	{
-		key:2,
-		val:'普通'
+		key: 2,
+		val: '普通'
 	}
 ]
 
 /* 任务接取人数 */
-constData.taskAccess = [
-	{
-		key:0,
-		val:'单人任务'
+constData.taskAccess = [{
+		key: 0,
+		val: '单人任务'
 	},
 	{
-		key:1,
-		val:'多人任务'
+		key: 1,
+		val: '多人任务'
 	}
 ]
 
 /* 点赞 */
-constData.appraise = [
-	{
+constData.appraise = [{
 		key: '0',
 		val: '赞'
 	},
 	{
-		key:'1',
-		val:'踩'
+		key: '1',
+		val: '踩'
 	}
 ]
 
 /* 模板类型 */
-constData.templateType = [
-	{
-		key:0,
-		val:'图文'
+constData.templateType = [{
+		key: 0,
+		val: '图文'
 	},
 	{
-		key:1,
-		val:'视频',
+		key: 1,
+		val: '视频',
 	},
 	{
-		key:2,
-		val:'GIF表情',
+		key: 2,
+		val: 'GIF表情',
 	},
 	{
-		key:3,
-		val:'音频',
+		key: 3,
+		val: '音频',
 	},
 	{
-		key:4,
-		val:'描述',
+		key: 4,
+		val: '描述',
 	}
 ]
 

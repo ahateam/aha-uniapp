@@ -8,8 +8,8 @@
 				陪吃对象
 			</view>
 			<view class="contentBox">
-				<text class="contents" v-for="(item,index) in objList" :style="index == objListIndex?'color:#ec706b;font-weight:bold':''"
-				 :key="index" v-if="index<objMore" @click="changeObj(index)">
+				<text class="contents" v-for="(item,index) in objList" :style="item.status == true?'color:#ec706b;font-weight:bold':''"
+				 :key="index" v-if="index<objMore" @click="changeObj(item)">
 					{{item.name}}
 				</text>
 				<text class="contents moreBtn">更多+</text>
@@ -21,8 +21,8 @@
 				陪吃目的
 			</view>
 			<view class="contentBox">
-				<text class="contents" v-for="(item,index) in purposeList" :style="index == purposeIndex?'color:#ec706b;font-weight:bold':''"
-				 :key="index" v-if="index<purposeMore" @click="changePurpose(index)">
+				<text class="contents" v-for="(item,index) in purposeList" :style="item.status == true?'color:#ec706b;font-weight:bold':''"
+				 :key="index" v-if="index<purposeMore" @click="changePurpose(item)">
 					{{item.name}}
 				</text>
 				<text class="contents moreBtn">更多+</text>
@@ -63,50 +63,63 @@
 				title:'',
 				
 				objList: [{
-						name: '油腻大叔'
+						name: '油腻大叔',
+						status:false
 					},
 					{
-						name: '体贴暖男'
+						name: '体贴暖男',
+						status:false
 					},
 					{
-						name: '风趣帅哥'
+						name: '风趣帅哥',
+						status:false
 					},
 					{
-						name: '豪爽爷们'
+						name: '豪爽爷们',
+						status:false
 					},
 					{
-						name: '性感女神'
+						name: '性感女神',
+						status:false
 					},
 					{
-						name: '知性美女'
+						name: '知性美女',
+						status:false
 					},
 					{
-						name: '清纯佳人'
+						name: '清纯佳人',
+						status:false
 					}
 				], //陪吃列表
-				objListIndex: 0, //陪吃对象的index值
+				choiceObj:[],
 				objMore: 7, //显示多少个对象选项
 
 				purposeList: [{
-						name: '吃饭聊天'
+						name: '吃饭聊天',
+						status:false
 					},
 					{
-						name: '交友'
+						name: '交友',
+						status:false
 					},
 					{
-						name: '发泄郁闷'
+						name: '发泄郁闷',
+						status:false
 					},
 					{
-						name: '放松心情'
+						name: '放松心情',
+						status:false
 					},
 					{
-						name: '假扮男友'
+						name: '假扮男友',
+						status:false
 					},
 					{
-						name: '假扮女友'
+						name: '假扮女友',
+						status:false
 					}
 				], //目的列表
-				purposeIndex: 0, //下标
+				choicePurpose:[],
 				purposeMore: 7, //控制显示个数
 
 				taskObj: '', //任务对象值 默认列表第一个
@@ -140,16 +153,8 @@
 				}
 				
 				let data = {
-					purpose:[
-						{
-							name:this.purposeList[this.purposeIndex].name
-						}
-					],
-					obj:[
-						{
-							name:this.objList[this.objListIndex].name
-						}
-					],
+					purpose:this.choicePurpose,
+					obj:this.choiceObj,
 					age:`${this.minOld}-${this.maxOld}`,
 					addrss:this.taskAddrss,
 					tel:this.telPhone
@@ -169,30 +174,55 @@
 					advanceAmount: this.money, // Double 预付款
 					// pos: pos, // String <选填> 位置
 				}
-				
-				this.$api.createTask(cnt,(res)=>{
-					uni.switchTab({
-					    // url: `/pages/task/payView/payView?type=0`
-						url:'/pages/task/task'
-					})
-					uni.showToast({
-						title:'成功',
-						duration:1000
-					})
+				// console.log(JSON.stringify(cnt))
+				this.$store.state.createFoodTask.data = cnt
+				console.log(this.$store.state.createFoodTask.data)
+				uni.navigateTo({
+					url:`/pages/task/payView/payView?type=0`
 				})
 				
 			},
 
 			//改变对象
-			changeObj(e) {
-				this.objListIndex = e
-				this.taskObj = this.objList[e].name
+			changeObj(item) {
+				if(item.status == false){
+					item.status = true
+					let data = {
+						name:item.name
+					}
+					this.choiceObj.push(data)
+				}else{
+					item.status = false
+					let arr = this.choiceObj
+					for(let i= 0;i<arr.length;i++){
+						if(arr[i].name==item.name){
+							arr.splice(i,1)
+						}
+					}
+					this.choiceObj = arr
+				}
+				console.log(this.choiceObj)
 			},
 
 			//改变目的
-			changePurpose(e) {
-				this.purposeIndex = e
-				this.taskpurpose = this.purposeList[e].name
+			changePurpose(item) {
+				if(item.status == false){
+					item.status = true
+					let data = {
+						name:item.name
+					}
+					this.choicePurpose.push(data)
+				}else{
+					item.status = false
+					let arr = this.choicePurpose
+					for(let i= 0;i<arr.length;i++){
+						if(arr[i].name==item.name){
+							arr.splice(i,1)
+						}
+					}
+					this.choicePurpose = arr
+				}
+				console.log(this.choicePurpose)
 			}
 		}
 	}

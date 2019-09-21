@@ -9,6 +9,9 @@ export default new Vuex.Store({
 			name:'',
 			text:'',
 		},
+		createFoodTask:{
+			data:''
+		}
 	},
 	// mutations:{
 	// 	setName:function(state,newName){
