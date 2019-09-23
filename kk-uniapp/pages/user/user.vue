@@ -54,21 +54,90 @@
 			this.getProvider()
 		},
 		methods: {
+			loginTest() {
+				uni.showLoading({
+					title: '登录中'
+				})
+				let data = {
+					userHead: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJ3uSWzCySviaU2qfqVAjXouyE9xWK9Bzk0wZt3wkBZ5jJCoibFpbzUWTalBYGKulJJrjVCy1Hb8NfA/132',
+				}
+
+				data = JSON.stringify(data)
+				let cnt = {
+					wxOpenId: 'oRrdQt1vYpuvIl-MXq22fNBnW-cg',
+					name: '時が止まる',
+					ext: data
+				}
+				console.log(cnt)
+				this.WxLogin(cnt)
+			},
+
+			/* app登录 */
+			appLogin() {
+				uni.showLoading({
+					title: '登录中'
+				})
+				uni.login({
+					success: (res) => {
+						console.log('login success:', res)
+						let openId = res.authResult.openid
+						uni.setStorageSync('openId', openId)
+						this.appGetUserInfo(openId)
+					},
+					fail: (err) => {
+						console.log('login fail:', err);
+					}
+				})
+			},
+
+			appGetUserInfo(openId) {
+				uni.getUserInfo({
+					provider: 'weixin',
+					success: (infoRes) => {
+						let data = {
+							userHead: infoRes.userInfo.avatarUrl
+						}
+						data = JSON.stringify(data)
+						let cnt = {
+							wxOpenId: openId,
+							name: infoRes.userInfo.nickName,
+							ext: data
+						}
+						console.log(cnt)
+						this.WxLogin(cnt)
+					}
+				})
+			},
+			/* APP登录end */
 			/* 非微信登录 */
 			loginBtn() { //获取code
-				let provider = this.providerList[0]
+				let provider = ''
+				// #ifdef MP
+				provider = this.providerList[0]
 				if (provider.id == 'weixin') {
 					return
 				}
+				// #endif
+
+				// #ifdef APP-PLUS
+				this.loginTest()
+				// this.appLogin()
+				return
+				// #endif
+
 				console.log('非微信登录')
 				uni.showLoading({
 					title: '登录中'
 				})
 				uni.login({
+					// #ifdef MP
 					provider: provider.id,
+					// #endif
+
 					// #ifdef MP-ALIPAY
 					scopes: 'auth_user', //支付宝小程序需设置授权类型 其他默认即可
 					// #endif
+
 					success: (res) => {
 						console.log('login success:', res)
 						// 更新保存在 store 中的登录状态
@@ -95,6 +164,7 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log(this.$util.tryParseJson(res.data.c))
 						let openId = this.$util.tryParseJson(res.data.c).openid
+						uni.setStorageSync('openId', openId)
 						this.loginByTtOpenId(openId)
 					}
 				})
@@ -157,11 +227,12 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log(this.$util.tryParseJson(res.data.c))
 						let userId = this.$util.tryParseJson(res.data.c).userId
+						uni.setStorageSync('openId', userId)
 						this.loginAlipay(userId)
 					}
 				})
 			},
-			loginAlipay(userId){
+			loginAlipay(userId) {
 				uni.getUserInfo({
 					provider: 'weixin',
 					success: (infoRes) => {
@@ -223,6 +294,7 @@
 				uni.login({ //通过login获取临时登录凭证code
 					provider: 'weixin',
 					success: (res) => {
+						console.log(res)
 						let code = res.code
 						let cnt = {
 							code: code, // String code
@@ -296,7 +368,7 @@
 							duration: 1000
 						});
 					} else {
-						console.log('失敗')
+						console.log(res.data.c)
 					}
 				})
 			},

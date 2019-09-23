@@ -17,34 +17,80 @@ constData.module = 1170
 /* 模板隶属id */
 constData.templateModule = 11705
 
+/* 支付平台常量 */
+constData.payInfoList = [
+	{
+		key:0,
+		id:'wxpay',
+		name:'微信支付'
+	},
+	{
+		key:1,
+		id:'toutiao',
+		name:'头条支付'
+	},
+	{
+		key:2,
+		id:'qq',
+		name:'qq支付'
+	},
+	{
+		key: 3,
+		id: 'sinaweibo',
+		name: '新浪微博登录'
+	},
+	{
+		key: 4,
+		id: 'xiaomi',
+		name: '小米登录'
+	},
+	{
+		key: 5,
+		id: 'alipay',
+		name: '支付宝登录'
+	},
+	{
+		key: 6,
+		id: 'baidu',
+		name: '百度登录'
+	}
+]
+
 /* 登录平台常量 */
 constData.providerList = [{
+		key: 0,
 		id: 'weixin',
-		name: '微信'
+		name: '微信登录'
 	},
 	{
+		key: 1,
 		id: 'toutiao',
-		name: '头条'
+		name: '头条登录'
 	},
 	{
+		key: 2,
 		id: 'qq',
-		name: 'qq'
+		name: 'qq登录'
 	},
 	{
+		key: 3,
 		id: 'sinaweibo',
-		name: '新浪微博'
+		name: '新浪微博登录'
 	},
 	{
+		key: 4,
 		id: 'xiaomi',
-		name: '小米'
+		name: '小米登录'
 	},
 	{
+		key: 5,
 		id: 'alipay',
-		name: '支付宝'
+		name: '支付宝登录'
 	},
 	{
+		key: 6,
 		id: 'baidu',
-		name: '百度'
+		name: '百度登录'
 	}
 ]
 

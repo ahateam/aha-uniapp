@@ -93,6 +93,17 @@
 		methods: {
 			//跳转至创建任务界面
 			navToBtn() {
+				
+				if(uni.getStorageSync('userId') == '1234567890'){
+					uni.switchTab({
+						url:'/pages/user/user'
+					})
+					uni.showToast({
+						title:'请登录',
+						icon:'none'
+					})
+					return
+				}
 				uni.navigateTo({
 					url: '/pages/task/createList/createList'
 				})

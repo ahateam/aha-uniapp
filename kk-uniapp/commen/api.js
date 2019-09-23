@@ -178,4 +178,20 @@ api.getTemplates = function(cnt, callback) {
 api.getTemplate = function(cnt, callback) {
 	util.call(baseUrl + '/task/getTemplate', cnt, callback)
 }
+
+/* 支付相关 ****************************************/
+//支付宝小程序支付 
+api.creatAlipayAppletOrder = function(cnt, callback) {
+	util.call(baseUrl + '/alipay/creatAlipayAppletOrder', cnt, callback)
+}
+
+//支付宝app支付
+api.creatAlipayOrder = function(cnt, callback) {
+	util.call(baseUrl + '/alipay/creatAlipayOrder', cnt, callback)
+}
+
+//微信小程序支付 
+api.doUnifiedOrder = function(cnt, callback) {
+	util.call(baseUrl + '/wxpay/doUnifiedOrder', cnt, callback)
+}
 export default api
