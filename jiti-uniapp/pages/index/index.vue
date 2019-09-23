@@ -67,36 +67,42 @@
 				</view>
 			</navigator>
 
-			<view class="content_box" style="background-color: #fb7eb8;">
+			<navigator url="../notice/notice">
+				<view class="content_box" style="background-color: #fb7eb8;">
+					<view class="content_box_text">
+						<p class="text-box">公告</p>
+						<p class="text-box1">信息</p>
+					</view>
+				</view>
+			</navigator>
+		</view>
+
+
+		<navigator url="../vote/vote">
+				<view class="content_box">
 				<view class="content_box_text">
-					<p class="text-box">公告</p>
-					<p class="text-box1">信息</p>
+					<p class="text-box">发起</p>
+					<p class="text-box1">投票</p>
 				</view>
 			</view>
-		</view>
-
-
-		<view class="content_box">
-			<view class="content_box_text">
-				<p class="text-box">发起</p>
-				<p class="text-box1">投票</p>
-			</view>
-		</view>
-		<view class="content_box" style="background-color: #9788ff;">
-			<view class="content_box_text">
-				<p class="text-box">职务</p>
-				<p class="text-box1">管理</p>
-			</view>
-		</view>
-
-		
-			<view class="content_box" style="background-color: #fb7eb8;" @click="toAbout()">
+		</navigator>
+		<navigator url="../position/position">
+			<view class="content_box" style="background-color: #9788ff;">
 				<view class="content_box_text">
-					<p class="text-box">个人</p>
-					<p class="text-box1">信息</p>
+					<p class="text-box">职务</p>
+					<p class="text-box1">管理</p>
 				</view>
 			</view>
-	
+		</navigator>
+
+
+		<view class="content_box" style="background-color: #fb7eb8;" @click="toAbout()">
+			<view class="content_box_text">
+				<p class="text-box">个人</p>
+				<p class="text-box1">信息</p>
+			</view>
+		</view>
+
 
 
 
@@ -149,6 +155,14 @@
 			if (!info) { //user是否已经存在，若存在就不重新赋值
 				uni.setStorageSync('orgUserInfo', JSON.stringify(orgUserInfo))
 			}
+			
+			
+			if(uni.getStorageSync('vote')){
+				uni.navigateTo({
+					url:'../vote/createVoteOptionPeople'
+				})
+			}
+			
 
 		},
 		methods: {
@@ -165,11 +179,11 @@
 					url: '../chooseOrg/chooseOrg'
 				})
 			},
-			
-			toAbout(){
-			
+
+			toAbout() {
+
 				uni.switchTab({
-					url:'../about/about'
+					url: '../about/about'
 				})
 			}
 		}

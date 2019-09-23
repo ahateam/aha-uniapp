@@ -6,6 +6,8 @@ const constData = {}
 //orgUserInfo   用户信息与组织信息都有的对象
 //permission  	用户的权限列表['104','112']
 //poll			我的投票-选中的单个投票信息
+//vote			创建投票模块--单个投票的所有信息
+//userPosition  修改成员职务的时候的 被选中用户信息存储
 
 /* 投票状态*/
 constData.pollStatus = [{

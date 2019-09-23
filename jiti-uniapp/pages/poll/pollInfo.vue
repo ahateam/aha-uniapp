@@ -50,12 +50,11 @@
 		</view>
 		<view class="poll-btn">
 
-
 			<button type="primary" v-if="pollInfo.status == '0' &&  isBtnShow" @click="submitVoteBtn()">提交投票</button>
 
-			<button type="primary" v-if="!isBtnShow || status != '-1'" @click="toPollRes">
+			<button type="primary" v-else @click="toPollRes">
 				结果详情</button>
-	<button type="default" @click="toBack">
+			<button type="default" @click="toBack">
 				返回上一页</button>
 		</view>
 	</view>
@@ -331,6 +330,7 @@
 			let poll = uni.getStorageSync('poll')
 			this.pollInfo = JSON.parse(poll)
 			this.activeNums = this.pollInfo.choiceCount
+			console.log('------------------------------')
 			console.log(this.pollInfo)
 
 			let cnt = {
@@ -338,6 +338,8 @@
 			}
 			this.getVoteDetail(cnt)
 			this.getVoteOptions(cnt)
+			
+			
 
 		}
 

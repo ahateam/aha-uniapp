@@ -1,49 +1,88 @@
 <template>
 	<view>
-		<view class="maincon noticeInfo-box">
-			<view class="title">
-				公告标题
-			</view>
-			<view class="content">
-				公告内容abcdefg
-			</view>
+		<view class="header-box">
+			<view class="title-box">
+				<span  class="poll-icon-color1 iconfont icon-gonggao1"></span>
 			
-				<button type="primary" @click="back">我知道了</button>
-			
+				{{info.title}}
+			</view>
+		</view>
+		<view class="content-timer">
+				{{timer}}
+		</view>
+		<view class="content-box">
+			{{info.content}}
+		</view>
+		<view class="footer-box">
+			<button type="default" @click="toBack()">返回上一页</button>
 		</view>
 	</view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				
+	export default{
+		name:'noticeInfo',
+		data(){
+			return{
+				info:'',
+				timer:'',
 			}
 		},
-		methods: {
-			back(){
-				uni.navigateBack({
-					delta:1
-				})
-			}
+		methods:{
+			toBack(){
+				uni.navigateBack()
+			},
+			
+		},
+		onLoad(option){
+			let info = JSON.parse(decodeURIComponent(option.info))
+			this.info = info
+			let date = new Date(info.createTime)
+			this.timer = date.toLocaleDateString()
+			console.log(info)
 		}
 	}
 </script>
 
 <style scoped lang="scss">
-	.title{
-		width: 100%;
-		height: 100rpx;
-		text-align: center;
-		line-height: 100rpx;
-		border-bottom: #F1F1F1 2rpx solid;
+	.header-box {
+		width: auto;
+		padding: 20rpx;
+
 	}
-	.content{
-		margin-top: 20rpx;
+	
+	.title-box {
+		width: auto;
+		line-height: 50rpx;
+		color: #666;
 		font-size: 32rpx;
+	
+		span {
+			margin-right: 15rpx;
+		}
 	}
-	button{
-		margin-top: 200rpx;
+	.content-timer{
+		width: auto;
+		padding: 10rpx;
+		margin-top: 10rpx;
+		padding-right:60rpx; 
+		line-height: 40rpx;
+		font-size: 24rpx;
+		color: $jiti-color-blue;
+		text-align: right;
+		border-bottom: 1px solid #eee;
+		
+	}
+	.content-box{
+		padding: 40rpx;
+		color: #666;
+		line-height: 20rpx;
+		font-size: 28rpx;
+	}
+	.footer-box {
+		margin-top: 30rpx;
+		width: auto;
+		padding: 40rpx;
+	
 	}
 </style>

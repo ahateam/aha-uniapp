@@ -107,4 +107,45 @@ api.editUserPassword = function (cnt,callback) {
  }
  
  
+ /**公告信息*/
+ //获取公告列表
+api.getNoticeByRoleGroup = function (cnt,callback) {
+     util.call(baseUrl+'/org/getNoticeByRoleGroup', cnt, callback)
+ }
+ 
+ 
+ /*创建投票*/
+ //获取系统默认的职务 列表
+ api.getSysORGUserRoles = function (cnt,callback) {
+      util.call(baseUrl+'/org/getSysORGUserRoles', cnt, callback)
+}
+//创建投票
+ api.createVote = function (cnt,callback) {
+      util.call(baseUrl+'/vote/createVote', cnt, callback)
+}
+//修改投票
+ api.editVote = function (cnt,callback) {
+      util.call(baseUrl+'/vote/editVote', cnt, callback)
+}
+//获取选项列表
+ api.getVoteOptions = function (cnt,callback) {
+      util.call(baseUrl+'/vote/getVoteOptions', cnt, callback)
+}
+//新增选项列表
+ api.addVoteOption = function (cnt,callback) {
+      util.call(baseUrl+'/vote/addVoteOption', cnt, callback)
+}
+//删除投票选项
+api.delVoteOption = function (cnt,callback) {
+       util.call(baseUrl+'/vote/delVoteOption', cnt, callback)
+ }
+ 
+ //搜索成员-根据身份证号
+api.getORGUsersLikeIDNumber = function (cnt,callback) {
+       util.call(baseUrl+'/org/getORGUsersLikeIDNumber', cnt, callback)
+ }
+ //搜索成员-根据成员姓名
+ api.getORGUsersLikeRealName = function (cnt,callback) {
+        util.call(baseUrl+'/org/getORGUsersLikeRealName', cnt, callback)
+  }
 export default api

@@ -1,0 +1,276 @@
+<template>
+	<view>
+
+		<view class="list-box">
+			<view class="list-title">
+				投票标题
+			</view>
+			<view class="list-val">
+				{{vote.title}}
+			</view>
+			<view class="clear-both"></view>
+		</view>
+
+		<view class="add-box">
+			<input type="text" v-model="addInput" focus  class="input-title" placeholder="输入选项名称" />
+
+			<view class="add-btn" @click="createBtn">新增选项</view>
+
+		</view>
+		<view class="title-box">
+			已有选项列表
+		</view>
+		<view class="item-box">
+			<view class="item" v-for="(item,index) in optionList" :key="index">
+				<view class="item-title">
+					{{item.title}}
+				</view>
+				<view class="item-icon" @click="delVoteOption(item.id)">
+					<i class="iconfont icon-quxiao"></i>
+				</view>
+			</view>
+		</view>
+
+		<view class="footer-box">
+			<button type="primary" @click="toHomePage()">创建完成</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		name: 'createVoteOptionWork',
+		data() {
+			return {
+				vote: '',
+				addInput: '',
+				optionList: [],
+
+			}
+		},
+		methods: {
+			getVoteOptions() {
+				let cnt = {
+					voteId: this.vote.id
+				}
+				this.$api.getVoteOptions(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.optionList = this.$util.tryParseJson(res.data.c)
+					} else {
+						this.optionList = []
+					}
+					console.log(this.optionList)
+				})
+			},
+			/*新增选项*/
+			createBtn() {
+				let cnt = {
+					voteId: this.vote.id,
+					title: this.addInput,
+					remark: '无',
+					ext: '无'
+				}
+				this.$api.addVoteOption(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							icon: 'success',
+							title: '新增成功'
+						})
+					} else {
+						uni.showToast({
+							icon: 'none',
+							title: '新增失败'
+						})
+					}
+					this.addInput = ''
+					this.getVoteOptions()
+				})
+			},
+
+			//删除选项
+			delVoteOption(id) {
+				let cnt = {
+					voteId: this.vote.id,
+					optionId: id
+				}
+
+				this.$api.delVoteOption(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							icon: 'success',
+							title: '删除成功'
+						})
+					} else {
+						uni.showToast({
+							icon: 'none',
+							title: '删除失败'
+						})
+					}
+				})
+				this.getVoteOptions()
+			},
+			toHomePage() {
+				uni.setStorageSync('vote','')
+				uni.switchTab({
+					url: '/pages/index/index'
+				});
+			}
+		},
+		onShow() {
+
+			this.vote = JSON.parse(uni.getStorageSync('vote'))
+			this.getVoteOptions()
+		
+		}
+	}
+</script>
+
+<style scoped lang="scss">
+	.clear-both {
+		clear: both
+	}
+
+	.list-box {
+		width: auto;
+		padding: 30rpx;
+		border-bottom: 1px solid #eee;
+	}
+
+	.list-title {
+		float: left;
+		width: 25%;
+		line-height: 50rpx;
+		font-size: 28rpx;
+		color: #333;
+	}
+
+	.list-val {
+		float: left;
+		width: 75%;
+		line-height: 50rpx;
+		font-size: 28rpx;
+		color: #666;
+	}
+
+	.text-box {
+		margin-top: 20rpx;
+		font-size: 28rpx;
+		color: #333;
+		line-height: 25rpx;
+	}
+
+	.item-check-box {
+		float: left;
+		font-size: 28rpx;
+		line-height: 50rpx;
+		margin: 20rpx;
+		width: 200rpx;
+		color: #666;
+	}
+
+	.item-check-box1 {
+		float: left;
+		font-size: 28rpx;
+		line-height: 50rpx;
+		width: 150rpx;
+		margin: 0 20rpx;
+		color: #666;
+
+	}
+
+	.footer-box {
+		width: auto;
+		padding: 20rpx;
+	}
+
+
+	.add-box {
+		width: auto;
+		overflow: hidden;
+		padding: 40rpx;
+		border: 1px solid #eee;
+	}
+
+	.add-btn {
+		line-height: 80rpx;
+		width: 30%;
+		float: left;
+		color: #fff;
+		font-size: 32rpx;
+		text-align: center;
+		background: $jiti-color-blue;
+		border-radius: 10rpx;
+		
+	}
+	.add-btn:active{
+		background: #409EFF;
+	}
+	.input-title {
+		width: 70%;
+		line-height: 80rpx;
+		height: 80rpx;
+		float: left;
+		font-size: 32rpx;
+		color: #333;
+	}
+
+	.item-box {
+		width: auto;
+	}
+
+	.item {
+		margin-top: 20rpx;
+		padding: 0 40rpx;
+		width: auto;
+		height: 60rpx;
+		line-height: 60rpx;
+		border-bottom: 1px solid #eee;
+
+	}
+
+	.title-box {
+		width: auto;
+		padding: 30rpx;
+		line-height: 50rpx;
+		text-align: center;
+		font-size: 32rpx;
+		color: #fff;
+		background: $jiti-color-blue;
+		margin-top: 20rpx;
+	}
+
+	.item-title {
+		float: left;
+		width: 70%;
+		line-height: 50rpx;
+		color: #666;
+		font-size: 28rpx;
+		overflow: hidden;
+text-overflow:ellipsis;
+white-space: nowrap;
+
+	}
+
+	.item-icon {
+		float: left;
+		width: 20%;
+		line-height: 50rpx;
+		color: #f44;
+		font-size: 28rpx;
+		padding-left: 40rpx;
+		text-align: center;
+
+		i {
+			display: block;
+			width: auto;
+			height: 50rpx;
+			line-height: 50rpx;
+		}
+
+		.footer-box {
+			width: auto;
+			padding: 40rpx;
+
+		}
+	}
+</style>
