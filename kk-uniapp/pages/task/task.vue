@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view v-if="versionStatus == constData.showStatus[0].key">
+		<view v-if="versionStatus == constData.showStatus[1].key">
 			<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
 				<view v-for="(item, index) in contentTagGroupData" :key="index" class="nav-item" :class="{ current: index === currentSort }"
 				 @click="changeNav(item.type,index)" :id="'tab'+index">
@@ -22,9 +22,10 @@
 				<task-list-box v-if="item.type == 0" :title="item.title" text="陪吃任务" :name="item.user.name" :head="item.user.head"></task-list-box>
 				<task-list-box v-if="item.type == 1" :title="item.title" :text="item.detail" :name="item.user.name" :head="item.user.head"></task-list-box>
 			</view>
+			<uni-load-more :status="pageStatus"></uni-load-more>
 		</view>
 
-		<view v-if="versionStatus == constData.showStatus[1].key">
+		<view v-if="versionStatus == constData.showStatus[0].key">
 			<view class="imgBox">
 				<image src="/static/image/fa7458191873625b892e7956c1efa7b.jpg" mode="widthFix"></image>
 			</view>
@@ -40,12 +41,14 @@
 <script>
 	import uniTag from "@/components/uni-tag/uni-tag.vue"
 	import taskListBox from '@/components/task/taskListBox.vue'
+	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
 
 	let windowWidth = 0
 	export default {
 		components: {
 			uniTag,
-			taskListBox
+			taskListBox,
+			uniLoadMore
 		},
 
 		data() {
@@ -54,6 +57,8 @@
 				page: 1,
 				count: 10,
 				offset: 0,
+				pageStatus:'loading',
+				pageOver:false,
 
 				// 导航栏数据
 				scrollLeft: 0,
@@ -70,37 +75,36 @@
 				contentData: [], //内容列表
 
 
-				versionStatus: uni.getStorageSync('versionStatus'), //版本号
+				versionStatus: '', //版本号
 			}
 		},
 
 		onLoad() {
-
-			// if (this.versionStatus == this.$constData.showStatus[0].key) {
-			// 	return
-			// }
-			windowWidth = uni.getSystemInfoSync().windowWidth
-			let cnt1 = {
-				module: this.$constData.module, // Long 模块编号
-				// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
-				// type: type, // Byte <选填> 类型
-				count: this.count, // int 
-				offset: this.offset, // int 
+			// #ifdef MP
+			// this.versionStatus = uni.getStorageSync('versionStatus')
+			this.versionStatus = this.$constData.showStatus[1].key
+			if (this.versionStatus == this.$constData.showStatus[0].key) {
+				return
 			}
-			this.getTask(cnt1)
+			// #endif
+
+			// #ifdef APP-PLUS
+			this.versionStatus = this.$constData.showStatus[1].key
+			// #endif
+
+			windowWidth = uni.getSystemInfoSync().windowWidth
 			this.getContentTagGroupTypes()
 		},
 		methods: {
 			//跳转至创建任务界面
 			navToBtn() {
-				
-				if(uni.getStorageSync('userId') == '1234567890'){
+				if (uni.getStorageSync('userId') == '1234567890') {
 					uni.switchTab({
-						url:'/pages/user/user'
+						url: '/pages/user/user'
 					})
 					uni.showToast({
-						title:'请登录',
-						icon:'none'
+						title: '请登录',
+						icon: 'none'
 					})
 					return
 				}
@@ -140,11 +144,22 @@
 
 			//导航栏改变内容
 			async changeNav(e, index) {
+				this.contentData = []
 				this.currentSort = index
-				this.page = 1
-				this.type = this.contentTagGroupData[index].type
+				
+				this.type = e
 				this.tagName = ''
 				this.tagCurrent = -1
+				
+				if(this.contentTagGroupData[index].child){
+					this.contentData = this.contentTagGroupData[index].child
+					this.pageStatus = this.contentTagGroupData[index].pageStatus
+					this.page = this.contentTagGroupData[index].page
+					return
+				}else{
+					this.page = 1
+					this.contentTagGroupData[index].page = 1
+				}
 				// let cnt = {
 				// 	status: this.$constData.tagStatus[1].key,
 				// 	module: this.$constData.module,
@@ -228,8 +243,8 @@
 					status: this.$constData.taskWallStatus[1].key,
 					// type: this.type, // Byte 类型  如无此条件  为null
 					tags: this.tagName, // String 标签  如无此条件  为null
-					count: 10,
-					offset: 0
+					count: this.count,
+					offset: this.offset
 				}
 				let typeData = this.$constData.taskType
 				for (let i = 0; i < typeData.length; i++) {
@@ -281,20 +296,30 @@
 				]
 
 				this.contentTagGroupData = list
+				
+				let cnt1 = {
+					module: this.$constData.module, // Long 模块编号
+					// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
+					// type: type, // Byte <选填> 类型
+					count: this.count, // int 
+					offset: this.offset, // int 
+				}
+				this.getTask(cnt1)
 			},
 
 			getTask(cnt) {
+				this.pageStatus = 'loading'
 				this.$api.getHomeTasks(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log(this.$util.tryParseJson(res.data.c).list)
-						let arr = this.$util.tryParseJson(res.data.c).list
-						for (let i = 0; i < arr.length; i++) {
-							if (arr[i].user) {
-								arr[i].user.head = this.$util.tryParseJson(arr[i].user.ext).userHead
+						let list = this.$util.tryParseJson(res.data.c).list
+						for (let i = 0; i < list.length; i++) {
+							if (list[i].user) {
+								list[i].user.head = this.$util.tryParseJson(list[i].user.ext).userHead
 							}
-							arr[i].detail = this.$util.tryParseJson(arr[i].detail).text
+							list[i].detail = this.$util.tryParseJson(list[i].detail).text
 						}
-						this.contentData = arr
+						this.tryDataList(list)
 					} else {
 						uni.showToast({
 							title: '错误！',
@@ -304,6 +329,63 @@
 					}
 				})
 			},
+			tryDataList(list){
+				let index = this.currentSort
+				if(list.length <this.count){ //判断长度是否为等于设定this.count，是则可能还有剩余数据，否则无
+					this.contentTagGroupData[index].pageOver = true //结束拉取
+					this.contentTagGroupData[index].pageStatus = 'nomore'
+				}else{
+					this.contentTagGroupData[index].pageOver = false
+					this.contentTagGroupData[index].pageStatus = 'more'
+				}
+				this.pageStatus = this.contentTagGroupData[index].pageStatus //改变'uni-load-more'组件的状态
+				
+				let arr = this.contentData.concat(list)
+				this.contentData = arr
+				
+				let obj = this.$util.tryParseJson(JSON.stringify(this.contentTagGroupData[index]))
+				obj.child = arr
+				this.$nextTick(function() {
+					this.contentTagGroupData.splice(index, 1, obj)
+				})
+			}
+		},
+		//下拉刷新
+		onPullDownRefresh() {
+			this.contentData = []
+			this.page = 1
+			this.contentTagGroupData[this.currentSort].page = 1
+			let cnt = {
+				module: this.$constData.module, // Long 模块编号
+				// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
+				// type: type, // Byte <选填> 类型
+				count: this.count, // int 
+				offset: this.offset, // int 
+			}
+			if(this.currentSort > 0){
+				cnt.type = this.type
+			}
+			this.getTask(cnt)
+		},
+		//上滑加载
+		onReachBottom: function() {
+			if(this.pageOver == false){
+				return
+			}
+			this.pageStatus = 'loading'
+			this.page += 1
+			this.tagsList[this.currentSort].page += 1
+			let cnt = {
+				module: this.$constData.module, // Long 模块编号
+				// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
+				// type: type, // Byte <选填> 类型
+				count: this.count, // int 
+				offset: (this.page-1)*this.count, // int 
+			}
+			if(this.currentSort > 0){
+				cnt.type = this.type
+			}
+			this.getTask(cnt)
 		},
 	}
 </script>

@@ -127,14 +127,17 @@
 			},
 			
 			navToTask(item) {
-				if (item.type == 1) {
+				console.log('已经领取跳转')
+				if (item.task.type == 1) {
+					console.log('11111')
 					uni.navigateTo({
-						url: `/pages/task/taskView/VideoTask?id=${item.id}`
+						url: `/pages/task/taskView/VideoTask?id=${item.task.id}`
 					})
 				}
-				if (item.type == 0) {
+				if (item.task.type == 0) {
+					console.log('-000000')
 					uni.navigateTo({
-						url: `/pages/task/taskView/foodTask?id=${item.id}`
+						url: `/pages/task/taskView/foodTask?id=${item.task.id}`
 					})
 				}
 			},

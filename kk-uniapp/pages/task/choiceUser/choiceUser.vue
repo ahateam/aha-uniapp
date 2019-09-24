@@ -28,6 +28,7 @@
 		},
 		onLoad(options) {
 			this.id = options.id
+			this.title = options.title
 			this.getTaskApply()
 		},
 		methods: {
@@ -52,7 +53,7 @@
 
 			navToPay() {
 				uni.navigateTo({
-					url: `/pages/task/payView/payView?id=${this.id}&taskId=${this.data.taskId}&type=1`
+					url: `/pages/task/payView/payView?id=${this.id}&taskId=${this.data.taskId}&type=1&title=${this.title}`
 				})
 			}
 		}

@@ -18,21 +18,20 @@ constData.module = 1170
 constData.templateModule = 11705
 
 /* 支付平台常量 */
-constData.payInfoList = [
-	{
-		key:0,
-		id:'wxpay',
-		name:'微信支付'
+constData.payInfoList = [{
+		key: 0,
+		id: 'wxpay',
+		name: '微信支付'
 	},
 	{
-		key:1,
-		id:'toutiao',
-		name:'头条支付'
+		key: 1,
+		id: 'toutiao',
+		name: '头条支付'
 	},
 	{
-		key:2,
-		id:'qq',
-		name:'qq支付'
+		key: 2,
+		id: 'qq',
+		name: 'qq支付'
 	},
 	{
 		key: 3,
@@ -113,7 +112,7 @@ constData.contentStatus = [{
 }, {
 	key: '5',
 	val: '发布失败'
-}, ]
+}]
 
 /* 资讯标签以及专栏状态*/
 constData.tagStatus = [{

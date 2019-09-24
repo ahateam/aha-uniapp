@@ -19,7 +19,9 @@
 		{
 			"path": "pages/task/task",
 			"style": {
-				"navigationBarTitleText": "任务墙"
+				"navigationBarTitleText": "任务墙",
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 0
 			}
 		},
 		{

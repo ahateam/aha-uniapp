@@ -11,17 +11,17 @@
 		<view class="offBox">
 			<view>优惠券</view>
 			<view class="rightBox">
-				<text class="offMoney">-￥{{offMoney}}</text>
+				<!-- <text class="offMoney">-￥{{offMoney}}</text> -->
 				<text class="iconfont kk-xiayibu"></text>
 			</view>
 		</view>
 
+		<!-- #ifdef MP -->
 		<view class="payTitle">
 			支付方式<text class="textInfo">(可以任选支付方式)</text>
 		</view>
-
 		<view class="payMethod">
-			<radio-group @change="radioChange">
+			<radio-group @change="radioChange(index)">
 				<label class="payList" v-for="(item, index) in items" :key="item.value">
 					<text :class="'iconfont payIcon '+item.iconName " :style="item.style"></text>
 					<text class="payName">{{item.name}}</text>
@@ -29,14 +29,15 @@
 				</label>
 			</radio-group>
 		</view>
-		
+		<!-- #endif -->
+
 		<view class="errInfo">
 			<view>·您将购买的商品为虚拟内容服务，购买后不支持退订、转让、退换，请斟酌确认。</view>
 			<view>·购买后可在“已购”区查看和使用。</view>
 		</view>
-		
+
 		<view class="bottomBtn">
-			<button type="primary" @click="navToPay">￥{{money-offMoney}}/立即支付</button>
+			<button type="primary" @click="navToPay">￥{{money}}/立即支付</button>
 		</view>
 	</view>
 </template>
@@ -45,42 +46,179 @@
 	export default {
 		data() {
 			return {
+				id: '',
+				columnId: '',
+
 				src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1567139311188&di=b309ce828b72d42a2c9318f26f7115c7&imgtype=0&src=http%3A%2F%2Fwww.pclady.com.cn%2Fstyle%2Fmovie%2F0509%2Fpic%2Fbb20050920_shjz_06_thumb.jpg',
-				title: '这是一个标题',
-				money: '233.00',
+				title: '',
+				money: 0.01,
 				offMoney: '5',
-				items: [{
-						value: '0',
-						name: '余额',
-						iconName:'kk-money',
-						style:'color:#fb6c04'
-					},
+				items: [
+					// {
+					// 	value: '0',
+					// 	name: '余额',
+					// 	iconName:'kk-money',
+					// 	style:'color:#fb6c04'
+					// },
+					// #ifdef MP-WEIXIN
 					{
 						value: '1',
 						name: '微信支付',
-						iconName:'kk-weixinzhifu',
-						style:'color:#24af41'
+						id: this.$constData.payInfoList[0].id,
+						iconName: 'kk-weixinzhifu',
+						style: 'color:#24af41'
 					},
+					// #endif
+					// #ifdef MP-ALIPAY
 					{
 						value: '2',
 						name: '支付宝支付',
-						iconName:'kk-big-Pay',
-						style:'color:#1296db'
+						id: this.$constData.payInfoList[5].id,
+						iconName: 'kk-big-Pay',
+						style: 'color:#1296db'
 					},
+					// #endif
 				],
-				current:1,
-				payMethod:1,
-				
+				current: 0,
+				payMethod: 0,
+
 			};
 		},
 		onLoad(res) {
-			console.log(res)
+			this.id = res.id
+			this.columnId = res.columnId
+			this.title = res.title
 		},
-		methods:{
-			radioChange(res){
-				this.payMethod = res.detail.value
+		methods: {
+			radioChange(index) {
+				this.payMethod = index
 				console.log(this.payMethod)
-			}
+			},
+
+			//购买课程star
+			navToPay() {
+				// #ifdef APP-PLUS
+				this.appPayColumn()
+				// #endif
+				// #ifdef MP
+				this.mpPayColumn()
+				// #endif
+			},
+
+			//小程序购买课程
+			mpPayColumn() {
+				if (this.items[this.payMethod].id == this.$constData.payInfoList[0].id) {
+					this.wxPay()
+				}
+			},
+
+			//app购买课程
+			appPayColumn() {
+				let cnt = {
+					body: '购买课程', // String 对一笔交易的具体描述信息
+					subject: this.title, // String 商品的标题/交易标题/订单标题/订单关键字等
+					totalAmount: this.money, // String 订单总金额，单位为元，精确到小数点后两位
+				}
+				this.$api.creatAlipayOrder(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.requestPayment({
+							provider: this.$constData.providerList[5].id,
+							orderInfo: this.$util.tryParseJson(res.data.c),
+							success: (res) => {
+								let cnt1 = {
+									modeuleId: this.$constData.module, // Long 模块编号
+									channelId: this.id, // Long 专栏id
+									ChannelContentTagId: this.columnId, // Long 课程名id
+									userId: uni.getStorageSync('userId'), // Long 用户id
+								}
+								this.PayChannelContentTag(cnt1)
+							},
+							fail: (error) => {
+								uni.showToast({
+									title: res.data.c,
+									icon: 'none'
+								})
+							}
+						})
+					} else {
+						uni.showToast({
+							title: '创建订单失败',
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			//微信小程序
+			wxPay() {
+				let taskData = {
+					goodsId: this.columnId, //商品id
+					goodsName: this.title, //商品名字
+					userName: uni.getStorageSync('userName') //用户名字
+				}
+				let cnt = {
+					openId: uni.getStorageSync('openId'),
+					totalFee: this.money * 100, //int 支付金额，单位为分，单位为分
+					body: this.title, // String 商品描述
+					attach: JSON.stringify(taskData)
+				}
+				this.doUnifiedOrder(cnt)
+			},
+			// 微信支付接口
+			doUnifiedOrder(cnt) {
+				this.$api.doUnifiedOrder(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let wx = this.$util.tryParseJson(res.data.c)
+						uni.requestPayment({
+							provider: this.items[this.payMethod].id,
+							timeStamp: wx.timeStamp + '',
+							nonceStr: wx.nonceStr,
+							package: wx.package,
+							signType: 'MD5',
+							paySign: wx.paySign,
+							success: (res) => {
+								console.log(res)
+								let cnt1 = {
+									modeuleId: this.$constData.module, // Long 模块编号
+									channelId: this.id, // Long 专栏id
+									ChannelContentTagId: this.columnId, // Long 课程名id
+									userId: uni.getStorageSync('userId'), // Long 用户id
+								}
+								this.PayChannelContentTag(cnt1)
+							},
+							fail: (error) => {
+								uni.showToast({
+									title: '支付失败',
+									icon: 'none'
+								})
+							}
+						})
+					} else {
+						uni.showToast({
+							title: '服务器错误',
+							icon: 'none'
+						})
+					}
+				})
+			},
+			
+			// 支付成功 添加用户可查看状态
+			PayChannelContentTag(cnt){
+				this.$api.PayChannelContentTag(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						uni.navigateBack()
+						uni.showToast({
+							title:'购买成功'
+						})
+					}else{
+						uni.showToast({
+							title:'错误！请联系管理员',
+							icon:'none'
+						})
+					}
+				})
+			},
+			
 		}
 	}
 </script>
@@ -131,7 +269,8 @@
 
 		.rightBox {
 			color: $list-info-color;
-			.offMoney{
+
+			.offMoney {
 				color: #fb6c04;
 			}
 		}
@@ -155,40 +294,41 @@
 			color: $list-info-color;
 		}
 	}
-	
-	.payList{
+
+	.payList {
 		position: relative;
 		padding: $box-margin-top $box-margin-left;
 		background-color: #fff;
 		display: block;
 		margin-bottom: 1px;
 	}
-	
-	.payName{
+
+	.payName {
 		margin-left: 10upx;
 		font-size: $list-info;
 		vertical-align: middle;
 	}
-	
-	.payIcon{
+
+	.payIcon {
 		font-size: $list-title-l;
 		vertical-align: middle;
 	}
-	
-	.errInfo{
+
+	.errInfo {
 		padding: $box-margin-top $box-margin-left;
 		font-size: $uni-font-size-sm;
 		color: #aaa;
-		view{
+
+		view {
 			margin-bottom: 10upx;
 		}
 	}
-	
+
 	.bottomBtn {
 		position: fixed;
 		width: 100vw;
 		bottom: 0;
-	
+
 		button {
 			width: 100%;
 			border-radius: 0;
@@ -196,7 +336,7 @@
 			line-height: 100upx;
 			background-color: #ec706b;
 		}
-		
+
 		.button-hover {
 			background-color: rgba(236, 112, 107, 0.5);
 			color: rgba(255, 255, 255, 0.5)

@@ -39,15 +39,15 @@
 					},
 					{
 						name:'待审核',
-						status:this.$constData.taskWallStatus[0].key
+						status:this.$constData.taskWallStatus[5].key
 					},
 					{
 						name:'已完成',
 						status:this.$constData.taskWallStatus[6].key
 					},
 					{
-						name:'已关闭',
-						status:this.$constData.taskWallStatus[3].key
+						name:'有人领取',
+						status:this.$constData.taskWallStatus[2].key
 					}
 				],//标签列表
 				tabCurrentIndex:0,

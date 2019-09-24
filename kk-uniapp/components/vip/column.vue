@@ -5,21 +5,6 @@
 			<view class="columnTitle">{{ obj.title }}</view>
 			<view class="columnTime">{{ getTime(obj.createTime) }}</view>
 		</navigator>
-		<!-- <view class="contentList">
-			<view v-for="(list,key) in obj.child" :key="key">
-				<view class="lists" @click="navigator(list)">
-					<view class="imgBox">
-						<image v-if="list.type == contentType[2].key" :src="list.imgList[0].src" mode="aspectFill"></image>
-						<image v-else-if="list.type == contentType[1].key" :src="list.imgSrc" mode="aspectFill"></image>
-					</view>
-					<view class="rightBox">
-						<view class="title">{{ list.title }}</view>
-						<text class="msg">{{ list.time }}</text>
-					</view>
-					<view class="clearBoth"></view>
-				</view>
-			</view>
-		</view> -->
 	</view>
 </template>
 
@@ -33,17 +18,6 @@
 			}
 		},
 		methods: {
-			// navigator(list) {
-			// 	let url = ''
-			// 	if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
-			// 		url = 'details'
-			// 	} else if (list.type == this.$constData.contentType[1].key) {
-			// 		url = 'detailsVideo'
-			// 	}
-			// 	uni.navigateTo({
-			// 		url: `/pages/vip/column/${url}/${url}?id=${list.id}&id1=${list._id}`
-			// 	})
-			// },
 			getTime(date) {
 				this.getrandomColor()
 				var t = parseInt(date)

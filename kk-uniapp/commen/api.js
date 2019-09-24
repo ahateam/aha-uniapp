@@ -59,6 +59,11 @@ api.getContentByChannelId = function(cnt, callback) {
 api.getChannlContentTagByChannelId = function(cnt, callback) {
 	util.call(baseUrl + '/channel/getChannlContentTagByChannelId', cnt, callback)
 }
+
+//查询用户是否购买课程 
+api.getChannelContentTagPower = function(cnt, callback) {
+	util.call(baseUrl + '/channel/getChannelContentTagPower', cnt, callback)
+}
 /********************* 任务接口 ******************************/ 
 //获取任务墙任务列表 
 api.getHomeTasks = function(cnt, callback) {
@@ -194,4 +199,10 @@ api.creatAlipayOrder = function(cnt, callback) {
 api.doUnifiedOrder = function(cnt, callback) {
 	util.call(baseUrl + '/wxpay/doUnifiedOrder', cnt, callback)
 }
+
+//购买课程 
+api.PayChannelContentTag = function(cnt, callback) {
+	util.call(baseUrl + '/channel/PayChannelContentTag', cnt, callback)
+}
+
 export default api

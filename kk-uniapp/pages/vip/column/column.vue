@@ -47,6 +47,7 @@
 				constData: {}, //引入全局变量
 
 				id: '', //专栏id
+				ChannelContentTagId: '', //课程id
 				titleText: 'Tony', //标题
 				titleTime: '', //专栏创建时间
 				color: '',
@@ -65,26 +66,51 @@
 			//跳转支付页
 			navToPay() {
 				uni.navigateTo({
-					url: `/pages/vip/column/payView/payView?id=${this.id}`
+					url: `/pages/vip/column/payView/payView?id=${this.id}&columnId=${this.ChannelContentTagId}&title=${this.tagName}`
 				})
 			},
 			//路由跳转
 			navigator(list) {
 				let url = ''
-				if (list.paid == this.$constData.contentPaid[1].key) {
-					uni.showToast({
-						title: '购买后可观看',
-						duration: 1500,
-						icon: 'none'
-					});
+				console.log(list)
+				if (list.power == this.$constData.contentPaid[1].key) {
+					this.getChannelContentTagPower(list)
+				} else if (list.power == this.$constData.contentPaid[0].key) {
+					if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
+						url = 'details'
+					} else if (list.type == this.$constData.contentType[1].key) {
+						url = 'detailsVideo'
+					}
+					uni.navigateTo({
+						url: `/pages/vip/column/${url}/${url}?id=${list.id}`
+					})
 				}
-				if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
-					url = 'details'
-				} else if (list.type == this.$constData.contentType[1].key) {
-					url = 'detailsVideo'
+			},
+
+			getChannelContentTagPower(list) {
+				let cnt = {
+					modeuleId: this.$constData.module, // Long 模块编号
+					channelId: this.id, // Long 专栏id
+					channelContentTagId: this.ChannelContentTagId, // Long 课程名id
+					userId: uni.getStorageSync('userId'), // Long 用户id
 				}
-				uni.navigateTo({
-					url: `/pages/vip/column/${url}/${url}?id=${list.id}`
+				this.$api.getChannelContentTagPower(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let paidStatus = this.$util.tryParseJson(res.data.c)
+						if(paidStatus){
+							let url = ''
+							if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
+								url = 'details'
+							} else if (list.type == this.$constData.contentType[1].key) {
+								url = 'detailsVideo'
+							}
+							uni.navigateTo({
+								url: `/pages/vip/column/${url}/${url}?id=${list.id}`
+							})
+						}
+					} else {
+						console.log(res.data.c)
+					}
 				})
 			},
 
@@ -101,6 +127,7 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.tagList = this.$util.tryParseJson(res.data.c)
 						this.tagName = this.tagList[0].name
+						this.ChannelContentTagId = this.tagList[0].id
 						let tagJson = `{"${this.titleText}":"${this.tagName}"}`
 						let cnt1 = {
 							module: this.$constData.module, // String 隶属
@@ -130,6 +157,7 @@
 			changeContent(e, f) {
 				this.curry = e
 				this.tagName = f
+				this.ChannelContentTagId = this.tagList[e].id
 				let tagJson = `{${this.titleText}:"${this.tagName}"}`
 				let cnt = {
 					module: this.$constData.module, // String 模块
@@ -336,7 +364,6 @@
 			border-radius: 0;
 			font-size: $list-title;
 			background-color: #ec706b;
-			line-height: 100upx;
 		}
 
 		.button-hover {

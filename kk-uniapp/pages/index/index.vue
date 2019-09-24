@@ -105,8 +105,9 @@
 				let cnt = {}
 				this.$api.getVersionStatus(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.versionStatus = res.data.c
-						uni.setStorageSync('versionStatus', res.data.c)
+						let status = this.$util.tryParseJson(res.data.c)
+						this.versionStatus = status
+						uni.setStorageSync('versionStatus', status)
 						/* 获取标签列表*/
 						let cnt = {
 							moduleId: this.constData.module, // String 隶属
@@ -339,7 +340,7 @@
 		// 下拉刷新
 		onPullDownRefresh() {
 			this.page = 1
-			this.tagsList.page = 1
+			this.tagsList[this.tabCurrentIndex].page = 1
 			this.contents = []
 			this.tagsList[this.tabCurrentIndex].pageOver = false
 			let cnt = {

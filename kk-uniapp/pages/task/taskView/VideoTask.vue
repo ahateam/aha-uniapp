@@ -2,6 +2,9 @@
 	<view>
 		<video class="video" :src="video" controls></video>
 		<view class="teplateInfo">
+			<view class="adminInfo">
+				上传者要求:
+			</view>
 			{{text}}
 		</view>
 
@@ -25,13 +28,14 @@
 							<text v-if="item.status == constData.taskStatus[3].key">已完成</text>
 							<text v-if="item.status == constData.taskStatus[4].key">未通过，重新提交</text>
 						</view>
-						<text class="content">电话: {{item.tel}}</text>
+						<text class="content">电话: {{item.data.tel}}</text>
 					</view>
 				</view>
 			</view>
 		</view>
 
-		<view class="bottomBtn" v-if="taskStatus < constData.taskWallStatus[4].key && userId!=upUserId">
+
+		<view class="bottomBtn" v-if="taskStatus < constData.taskWallStatus[3].key && userId!=upUserId">
 			<button type="primary" class="receiveBtn" @click="receiveBtn">领取</button>
 		</view>
 
@@ -44,8 +48,8 @@
 				<text class="infoText">上传您的照片</text>
 				<image :src="imgSrc" mode="aspectFill" v-if="imgSrc != ''"></image>
 			</view>
-			<input type="text" v-model="telPhone" placeholder="请输入你的联系方式" />
-			<textarea v-model="userText" placeholder="描述下你的特长" />
+			<input type="text" v-model="telPhone" placeholder="请输入您的联系方式" />
+			<textarea v-model="userText" placeholder="描述下您的特长" />
 			<button type="primary" @click="submission">提交</button>
 		</view>
 		
@@ -119,14 +123,13 @@
 				this.$api.getTaskApplys(cnt,(res)=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
 						let arr = this.$util.tryParseJson(res.data.c)
+						console.log('11111')
 						console.log(arr)
 						if(arr.length>0){
 							let id = arr[0].id
 							uni.navigateTo({
 								url:`/pages/task/taskView/userWorks/userWorks?id=${id}`
 							})
-						}else{
-							
 						}
 					}else{
 						console.log('失败')
@@ -244,7 +247,7 @@
 					return
 				}
 				uni.navigateTo({
-				    url: `/pages/task/choiceUser/choiceUser?id=${item.id}`
+				    url: `/pages/task/choiceUser/choiceUser?id=${item.id}&title=${item.title}`
 				})
 			},
 			
@@ -306,6 +309,15 @@
 			
 			//领取任务
 			receiveBtn(){
+				if(this.userId == '1234567890' || this.userId == ''){
+					uni.switchTab({
+						url:'/pages/user/user'
+					})
+					uni.showToast({
+						title:'请登录',
+						icon:'none'
+					})
+				}
 				this.hidden = true
 			},
 			
@@ -368,6 +380,8 @@
 				this.$api.getTaskApplys(cnt,(res)=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
 						let arr = this.$util.tryParseJson(res.data.c)
+						console.log(arr)
+						console.log('----------------')
 						for(let i = 0;i<arr.length;i++){
 							let time = new Date(arr[i].createTime)
 							let y = time.getFullYear(time)
@@ -434,6 +448,12 @@
 	.teplateInfo {
 		padding: $box-margin-top $box-margin-left;
 		font-size: $list-title;
+	}
+	
+	.adminInfo{
+		font-size: $list-title;
+		color: $list-info-color;
+		margin-bottom: $box-margin-top;
 	}
 
 	.bottomBox {
@@ -531,6 +551,14 @@
 		position: fixed;
 		bottom: 10upx;
 		width: 100vw;
+		button{
+			background: #ec706b;
+			color: #fff;
+		}
+		.button-hover{
+			background: #ec706b;
+			color: #fff;
+		}
 	}
 	
 	.receiveBtn {
@@ -563,7 +591,10 @@
 			height: 200upx;
 			font-size: $list-title;
 		}
-		// z-index: 3;
+		
+		input{
+			font-size: $list-title;
+		}
 	}
 	
 	.colseBox{

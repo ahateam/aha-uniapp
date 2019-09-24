@@ -1,5 +1,6 @@
 <template>
 	<view>
+
 		<view v-if="versionStatus == constData.showStatus[1].key">
 			<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
 				<view v-for="(item,index) in tagsList" :key="index" class="nav-item" :class="{current: index === tabCurrentIndex}"
@@ -11,16 +12,16 @@
 			</view>
 			<uni-load-more :status="pageStatus"></uni-load-more>
 		</view>
+
 		<view v-if="versionStatus == constData.showStatus[0].key">
 			<view class="image">
-				<image  src="/static/image/90a3aed0e1254bd6c4062cb438d6873.png" mode="widthFix"></image>
+				<image src="/static/image/90a3aed0e1254bd6c4062cb438d6873.png" mode="widthFix"></image>
 			</view>
-			
 			<view class="testText">
 				本站是为作者提供分享素材的站点，为此我们付诸众多心血和精力。为了保证未来本站能够持续更新资源和保证共享资源的高质量，才启用VIP会员机制。
 			</view>
-			
 		</view>
+
 	</view>
 </template>
 
@@ -36,7 +37,7 @@
 		data() {
 			return {
 				constData: this.$constData, //全局变量
-				versionStatus: uni.getStorageSync('versionStatus'), //版本号
+				versionStatus: '', //版本号
 
 				count: 10,
 				offset: 0,
@@ -52,9 +53,18 @@
 			}
 		},
 		onLoad() {
-			if(this.versionStatus == this.$constData.showStatus[0].key){
-				return
+
+			// #ifdef MP
+			this.versionStatus = uni.getStorageSync('versionStatus')
+			if (this.versionStatus == this.$constData.showStatus[0].key) {
+				// return
 			}
+			// #endif
+
+			// #ifdef APP-PLUS
+			this.versionStatus = this.$constData.showStatus[1].key
+			// #endif
+
 			this.getTags()
 		},
 		methods: {
@@ -240,15 +250,16 @@
 			}
 		}
 	}
-	
+
 	.testText {
 		padding: $box-margin-top $box-margin-left;
 		font-size: $list-title;
 	}
-	
-	.image{
+
+	.image {
 		width: 100vw;
-		image{
+
+		image {
 			display: block;
 			padding: $box-margin-top;
 			margin: 0 auto;

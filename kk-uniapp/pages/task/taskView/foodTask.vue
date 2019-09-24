@@ -95,11 +95,11 @@
 			<input type="text" v-model="upText" placeholder="请输入评价" />
 			<button type="primary" @click="upRate">提交</button>
 		</view>
-		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[4].key">
+		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[4].key&&userId != upUserId">
 			<button class="rightBtn" type="primary" @click="taskComplite" >已完成</button>
 		</view>
 		<!-- 评价按钮 -->
-		<view class="bottomBtnBox" v-if="taskStatus == 5">
+		<view class="bottomBtnBox" v-if="taskStatus == 5&&userId == upUserId">
 			<button class="rightBtn" type="primary" @click="upUserBox = true">评价</button>
 		</view>
 
@@ -276,13 +276,11 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.upChangeBox = false
 						uni.showToast({
-							title: '选择成功',
-							duration: 1000
+							title: '选择成功'
 						})
 					} else {
 						uni.showToast({
 							title: '好像有点问题嗷',
-							duration: 1000,
 							icon: 'none'
 						})
 					}

@@ -21,7 +21,7 @@
 				taskId: '',
 				type: 0, //0为平台预付款 1为任务全款预付款
 				providerList: [],
-
+				title: ''
 			}
 		},
 		onLoad(options) {
@@ -30,6 +30,7 @@
 			this.type = options.type
 			if (this.type == 1) {
 				this.money = ''
+				this.title = options.title
 			} else if (this.type == 0) {
 				this.money = 0.01
 			}
@@ -38,10 +39,19 @@
 		methods: {
 			//支付宝支付
 			apppayEarnestMoney() {
-				let cnt = {
-					body: '任务创建预付款', // String 对一笔交易的具体描述信息
-					subject: '表扬表扬ta', // String 商品的标题/交易标题/订单标题/订单关键字等
-					totalAmount: this.money, // String 订单总金额，单位为元，精确到小数点后两位
+				let cnt = {}
+				if (this.type == 0) {
+					cnt = {
+						body: '任务创建预付款', // String 对一笔交易的具体描述信息
+						subject: '表扬表扬ta', // String 商品的标题/交易标题/订单标题/订单关键字等
+						totalAmount: this.money, // String 订单总金额，单位为元，精确到小数点后两位
+					}
+				}else{
+					cnt = {
+						body: '任务交易款', // String 对一笔交易的具体描述信息
+						subject:'表扬表扬ta', // String 商品的标题/交易标题/订单标题/订单关键字等
+						totalAmount: this.money, // String 订单总金额，单位为元，精确到小数点后两位
+					}
 				}
 				this.$api.creatAlipayOrder(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -59,7 +69,10 @@
 								}
 							},
 							fail: (error) => {
-								console.log(error)
+								uni.showToast({
+									title: res.data.c,
+									icon: 'none'
+								})
 							}
 						})
 					} else {
@@ -75,6 +88,19 @@
 			payEarnestMoney() {
 				let provider = this.providerList[0]
 				let cnt = {}
+				let taskData = {
+					goodsId: '', //商品id
+					goodsName: '', //商品名字
+					userName: uni.getStorageSync('userName') //用户名字
+				}
+
+				if (this.type == 0) {
+					taskData.goodsName = '创建任务预付款'
+				} else {
+					taskData.goodsId = this.id
+					taskData.goodsName = this.title
+				}
+
 				console.log(provider)
 				if (provider.id == this.$constData.providerList[5].id) {
 					cnt.userId = uni.getStorageSync('openId') // String 支付宝买方用户userId
@@ -85,13 +111,13 @@
 					cnt.openId = uni.getStorageSync('openId') // String 微信用户openId
 					cnt.totalFee = this.money * 100 //int 支付金额，单位为分，单位为分
 					cnt.body = '任务创建预付款' // String 商品描述
+					cnt.attach = JSON.stringify(taskData)
 					this.doUnifiedOrder(cnt, provider)
-				} else if (provider.id == this.$constData.payInfoList[1].id) {
-					cnt.userId = uni.getStorageSync('openId') // String 支付宝买方用户userId
-					cnt.price = this.money // double 支付金额
-					cnt.payCount = '任务创建预付款' // String 商品的标题/交易标题/订单标题/订单关键字等
-					provider.id = this.$constData.providerList[5].id
-					this.creatAlipayAppletOrder(cnt, provider)
+				} else {
+					uni.showToast({
+						title: '暂不支持',
+						icon: 'none'
+					})
 				}
 			},
 
@@ -109,12 +135,24 @@
 							paySign: wx.paySign,
 							success: (res) => {
 								console.log(res)
-								let cnt1 = this.$store.state.createFoodTask.data
-								this.createTask(cnt1)
+								if (this.type == 0) {
+									let cnt1 = this.$store.state.createFoodTask.data
+									this.createTask(cnt1)
+								} else {
+									this.dealTask()
+								}
 							},
 							fail: (error) => {
-								console.log(error)
+								uni.showToast({
+									title: '支付失败',
+									icon: 'none'
+								})
 							}
+						})
+					} else {
+						uni.showToast({
+							title: '服务器错误',
+							icon: 'none'
 						})
 					}
 				})
@@ -129,16 +167,23 @@
 							orderInfo: res.data.c,
 							success: (res) => {
 								console.log(res)
-								let cnt1 = this.$store.state.createFoodTask.data
-								this.createTask(cnt1)
+								if (this.type == 0) {
+									let cnt1 = this.$store.state.createFoodTask.data
+									this.createTask(cnt1)
+								} else {
+									this.dealTask()
+								}
 							},
 							fail: (error) => {
-								console.log(error)
+								uni.showToast({
+									title: '支付失败！',
+									icon: 'none'
+								})
 							}
 						})
 					} else {
 						uni.showToast({
-							title: '失败！',
+							title: '创建订单失败！',
 							icon: 'none'
 						})
 					}
@@ -158,7 +203,7 @@
 						})
 					} else {
 						uni.showToast({
-							title: '错误！',
+							title: '错误！请联系客服',
 							icon: 'none'
 						})
 					}
@@ -181,7 +226,7 @@
 						})
 					} else {
 						uni.showToast({
-							title: '不太行',
+							title: '错误！请联系客服',
 							icon: 'none'
 						})
 					}
