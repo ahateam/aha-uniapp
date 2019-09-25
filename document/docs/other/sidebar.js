@@ -1,8 +1,6 @@
 module.exports = [
-  '/kk-uniapp/info/',
-  '/kk-uniapp/service/wxLogin',
-  '/kk-uniapp/service/wxShare',
-  '/kk-uniapp/component/ahaapi',
+    '/other/caishui',
+
     // {
     //   title:'项目介绍',
     //   collapsable: true,

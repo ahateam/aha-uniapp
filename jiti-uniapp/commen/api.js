@@ -7,6 +7,12 @@ import baseUrl from './url'
 let api = {};
 console.log('开始调用ctrl');
 
+//app版本获取
+api.getVersion = function (cnt,callback) {
+    util.call(baseUrl+'/version/getVersion', cnt, callback)
+}
+
+
 //身份证登录
 api.loginByIdNumber = function (cnt,callback) {
     util.call(baseUrl+'/org/loginByIdNumber', cnt, callback)
@@ -148,4 +154,8 @@ api.getORGUsersLikeIDNumber = function (cnt,callback) {
  api.getORGUsersLikeRealName = function (cnt,callback) {
         util.call(baseUrl+'/org/getORGUsersLikeRealName', cnt, callback)
   }
+  //修改成员职务信息
+api.editORGUser = function (cnt,callback) {
+         util.call(baseUrl+'/org/editORGUser', cnt, callback)
+}
 export default api

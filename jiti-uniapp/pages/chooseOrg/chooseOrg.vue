@@ -1,13 +1,20 @@
 <template>
 	<view>
-		<view class="maincon choose-box">
-
-			<view class="choose-item" v-for="(item,index) in orgList" :key="index" @click="chooseOrgBtn(item)">
-				<view class="title">{{item.name}}</view>
-				<view class="line"></view>
-				<view class="org-address"> {{item.address}} </view>
+		<view class="content">
+			<view class="maincon choose-box">
+			
+				<view v-if="orgList.length>0">
+					<view class="choose-item" v-for="(item,index) in orgList" :key="index" @click="chooseOrgBtn(item)">
+						<view class="title">{{item.name}}</view>
+						<view class="line"></view>
+						<view class="org-address"> {{item.address}} </view>
+					</view>
+				</view>
+				<view v-else class="msg-text">
+					当前用户暂无组织信息
+				</view>
+			
 			</view>
-
 		</view>
 	</view>
 </template>
@@ -126,11 +133,15 @@
 </script>
 
 <style lang="scss" scoped>
+	.content{
+		width: 90%;
+		margin: 0 auto;
+	}
 	.choose-item {
 		margin: 20rpx 0;
-		width: 660rpx;
-		padding: 40rpx 10rpx;
-		background-color: #40c9c6;
+		
+		padding: 40rpx 40rpx;
+		background-color:$jiti-color-blue;
 		border-radius: 20rpx;
 	}
 
@@ -152,5 +163,11 @@
 	.org-address {
 		margin-top: 15rpx;
 		font-size: 24rpx;
+	}
+	.msg-text{
+		text-align: center;
+		font-size: 32rpx;
+		color: #666;
+		line-height: 50rpx;
 	}
 </style>

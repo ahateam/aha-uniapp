@@ -186,16 +186,15 @@
 				this.$api.getNotVoteByUserRoles(cnt, res => {
 					let data = []
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						data = this.$util.tryParseJson(res.data.c)
+						let resData = this.$util.tryParseJson(res.data.c)
+						data = resData.data
+						this.offset = resData.offset
 					} else {
 						data = []
 					}
 					this.voteList = this.voteList.concat(data);
-					if (data.length < this.count) {
-						this.pageOver = true
-					} else {
-						this.pageOver = false
-					}
+					
+					
 				});
 			},
 			//请求已投票的列表
@@ -204,16 +203,14 @@
 					console.log(JSON.parse(res.data.c));
 					let data = [];
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						data = this.$util.tryParseJson(res.data.c);
+						let resData =  this.$util.tryParseJson(res.data.c);
+						data =resData.data
+						this.offset = resData.offset
 					} else {
 						data = [];
 					}
 					this.voteList = this.voteList.concat(data);
-					if (data.length < this.count) {
-						this.pageOver = true;
-					} else {
-						this.pageOver = false
-					}
+				
 				});
 			},
 
@@ -221,6 +218,7 @@
 			changeTag(_index) {
 				this.tabCurrentIndex = _index
 				this.page = 1;
+				this.offset = 0;
 				this.voteList = [];
 				this.loading = false;
 				this.pageOver = false;
@@ -293,7 +291,7 @@
 					userId: this.orgUserInfo.id, // Long 用户编号
 					roles: this.orgUserInfo.orgRoles, // String 角色
 					count: this.count,
-					offset: (this.page - 1) * this.count
+					offset: this.offset
 				};
 				this.getNotVoteByUserRoles(cnt);
 
@@ -306,7 +304,7 @@
 					userId: this.orgUserInfo.id, // Long 用户编号
 					roles: this.orgUserInfo.orgRoles, // String 角色
 					count: this.count,
-					offset: (this.page - 1) * this.count
+					offset: this.offset
 				};
 				this.getVoteByUserRoles(cnt);
 

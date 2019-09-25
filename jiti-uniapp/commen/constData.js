@@ -9,6 +9,10 @@ const constData = {}
 //vote			创建投票模块--单个投票的所有信息
 //userPosition  修改成员职务的时候的 被选中用户信息存储
 
+
+//app版本号
+  constData.version = 106
+
 /* 投票状态*/
 constData.pollStatus = [{
 		key: '-1',
@@ -63,6 +67,8 @@ constData.examineStatus = [{
 	key: 6,
 	val: '已取证'
 }]
-
+constData.permission =[
+    {key:100,val:'发起投票'},{key:102,val:'职务管理'},{key:104,val:'分户审批'},{key:105,val:'股权变更'},
+]
 
 export default constData

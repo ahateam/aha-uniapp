@@ -1,15 +1,15 @@
 {
-    "name" : "demo",
+    "name" : "新集体经济",
     "appid" : "__UNI__8656F60",
     "description" : "集体经济app",
-    "versionName" : "1.0.0",
+    "versionName" : "1.01",
     "versionCode" : "100",
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
         "usingComponents" : true,
         "splashscreen" : {
-            "alwaysShowBeforeRender" : true,
+            "alwaysShowBeforeRender" : false,
             "waiting" : false,
             "autoclose" : true,
             "delay" : 0
@@ -51,37 +51,37 @@
             "sdkConfigs" : {},
             "splashscreen" : {
                 "android" : {
-                    "hdpi" : "static/1qd.png",
-                    "xhdpi" : "static/1qd.png",
-                    "xxhdpi" : "static/1qd.png"
+                    "hdpi" : "static/image/qidong.png",
+                    "xhdpi" : "static/image/qidong.png",
+                    "xxhdpi" : "static/image/qidong.png"
                 },
                 "ios" : {
                     "iphone" : {
-                        "portrait-896h@3x" : "static/1qd.png",
-                        "landscape-896h@3x" : "static/1qd.png",
-                        "portrait-896h@2x" : "static/1qd.png",
-                        "landscape-896h@2x" : "static/1qd.png",
-                        "iphonex" : "static/1qd.png",
-                        "iphonexl" : "static/1qd.png",
-                        "retina55" : "static/1qd.png",
-                        "retina55l" : "static/1qd.png",
-                        "retina47" : "static/1qd.png",
-                        "retina47l" : "static/1qd.png",
-                        "retina40" : "static/1qd.png",
-                        "retina40l" : "static/1qd.png",
-                        "retina35" : "static/1qd.png"
+                        "portrait-896h@3x" : "static/image/qidong.png",
+                        "landscape-896h@3x" : "static/image/qidong.png",
+                        "portrait-896h@2x" : "static/image/qidong.png",
+                        "landscape-896h@2x" : "static/image/qidong.png",
+                        "iphonex" : "static/image/qidong.png",
+                        "iphonexl" : "static/image/qidong.png",
+                        "retina55" : "static/image/qidong.png",
+                        "retina55l" : "static/image/qidong.png",
+                        "retina47" : "static/image/qidong.png",
+                        "retina47l" : "static/image/qidong.png",
+                        "retina40" : "static/image/qidong.png",
+                        "retina40l" : "static/image/qidong.png",
+                        "retina35" : "static/image/qidong.png"
                     },
                     "ipad" : {
-                        "portrait-1366h@2x" : "static/1qd.png",
-                        "landscape-1366h@2x" : "static/1qd.png",
-                        "portrait-1194h@2" : "static/1qd.png",
-                        "landscape-1194h@2x" : "static/1qd.png",
-                        "portrait-1112h@2x" : "static/1qd.png",
-                        "landscape-1112h@2x" : "static/1qd.png",
-                        "portrait-retina7" : "static/1qd.png",
-                        "landscape-retina7" : "static/1qd.png",
-                        "portrait7" : "static/1qd.png",
-                        "landscape7" : "static/1qd.png"
+                        "portrait-1366h@2x" : "static/image/qidong.png",
+                        "landscape-1366h@2x" : "static/image/qidong.png",
+                        "portrait-1194h@2" : "static/image/qidong.png",
+                        "landscape-1194h@2x" : "static/image/qidong.png",
+                        "portrait-1112h@2x" : "static/image/qidong.png",
+                        "landscape-1112h@2x" : "static/image/qidong.png",
+                        "portrait-retina7" : "static/image/qidong.png",
+                        "landscape-retina7" : "static/image/qidong.png",
+                        "portrait7" : "static/image/qidong.png",
+                        "landscape7" : "static/image/qidong.png"
                     }
                 }
             },

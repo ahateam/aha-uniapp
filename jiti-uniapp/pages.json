@@ -173,15 +173,15 @@
 				"text": "首页"
 			},
 			{
-				"pagePath": "pages/task/task",
-				"iconPath": "static/tab-home.png",
-				"selectedIconPath": "static/tab-home-current.png",
-				"text": "活动"
+				"pagePath": "pages/notice/notice",
+				"iconPath": "static/image/notice.png",
+				"selectedIconPath": "static/image/notice1.png",
+				"text": "公告"
 			},
 			{
 				"pagePath": "pages/about/about",
-				"iconPath": "static/tab-home.png",
-				"selectedIconPath": "static/tab-home-current.png",
+				"iconPath": "static/image/user.png",
+				"selectedIconPath": "static/image/user1.png",
 				"text": "我的"
 			}
 		]

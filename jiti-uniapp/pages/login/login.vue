@@ -51,6 +51,8 @@
 			return {
 				userName: '',
 				pwd: '',
+				key:0,
+				provider:'',
 			}
 		},
 		methods: {
@@ -118,21 +120,129 @@
 						})
 					}
 				}
+			},
+			getVersionData(platform){
+		
+				console.log('555555555555555555')
+				this.$api.getVersion({}, (res) => {
+					console.log(res)
+					let resData = JSON.parse(res.data.c)
+					console.log('------------------')
+					console.log(resData.version > this.$constData.version)
+										console.log('------------------')
+					if (resData.version > this.$constData.version) {
+						if (platform == 'android') {
+							this.loadVersionAndroid(resData)
+						} else if (platform == 'android') {
+							this.loadVersionIos(resData)
+						}
+					}else{
+						this.initSet()
+					}
+				})
+			},
+		
+			loadVersionAndroid(resData) {
+				uni.showToast({
+					title: '有新的版本发布，检测到您目前为Wifi连接，程序已启动自动更新。新版本下载完成后将自动弹出安装程序。',
+					mask: false,
+					duration: 5000,
+					icon: "none"
+				});
+				var dtask = plus.downloader.createDownload(resData.android, {}, function(d, status) {
+					// 下载完成  
+					if (status == 200) {
+						plus.runtime.install(plus.io.convertLocalFileSystemURL(d.filename), {}, {}, function(error) {
+							uni.showToast({
+								title: '安装失败',
+								mask: false,
+								duration: 1500
+							});
+						})
+					} else {
+						uni.showToast({
+							title: '更新失败',
+							mask: false,
+							duration: 1500
+						});
+					}
+				});
+				dtask.start();
+			},
+
+			loadVersionIos(resData) {
+				uni.showToast({
+					title: '有新的版本发布，检测到您目前为Wifi连接，程序已启动自动更新。新版本下载完成后将自动弹出安装程序。',
+					mask: false,
+					duration: 5000,
+					icon: "none"
+				});
+				var dtask = plus.downloader.createDownload(resData.ios, {}, function(d, status) {
+					// 下载完成  
+					if (status == 200) {
+						plus.runtime.install(plus.io.convertLocalFileSystemURL(d.filename), {}, {}, function(error) {
+							uni.showToast({
+								title: '安装失败',
+								mask: false,
+								duration: 1500
+							});
+						})
+					} else {
+						uni.showToast({
+							title: '更新失败',
+							mask: false,
+							duration: 1500
+						});
+					}
+				});
+				dtask.start();
+			},
+			
+			initSet(){
+				
+				let userInfo = uni.getStorageSync('userInfo');
+				if (userInfo) {
+					uni.reLaunch({
+						url: '/pages/chooseOrg/chooseOrg'
+					});
+				} else {
+					uni.setStorageSync('userInfo', '');
+				}
 			}
+
+
+
 		},
 		onLoad() {
-			let userInfo = uni.getStorageSync('userInfo');
+		let that = this
+		console.log('11111111111111')
+		/*检查版本号--更新版本*/
+			uni.getProvider({
+				service: 'oauth',
+				success: (res)=> {
+					this.provider = res.provider
+					this.key =1
+					
+				},
+			})
 			
-			console.log(userInfo)
-			console.log(!userInfo)
+			setTimeout(()=>{
+				if(this.key == 1){
+					console.log('2222222222222222222222')
+					if (this.provider.length > 1) { //app
+						console.log('333333333333333')
+						let platform = uni.getSystemInfoSync().platform
+						console.log(platform)
+						this.getVersionData(platform)
+					}else{
+						this.initSet()
+						console.log('4444444444444444444')
+					}
+				}
+			},300)
+
+
 			
-			if (userInfo) {
-				uni.reLaunch({
-				url: '/pages/chooseOrg/chooseOrg'
-				});
-			} else {
-				uni.setStorageSync('userInfo', '');
-			}
 		}
 	}
 </script>

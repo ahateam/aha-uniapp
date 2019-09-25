@@ -21,6 +21,10 @@ module.exports = [
 		link: '/kk-uniapp/info/'
 	},
 	{
+		text: '其他项目',
+		link: '/other/'
+	},
+	{
 		text: '关于项目',
 		link: '/about/',
 		items: [{

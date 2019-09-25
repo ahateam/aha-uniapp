@@ -10,7 +10,7 @@
 				</view>
 				<view class="item-text">
 						{{userPosition.user.realName}}
-				</view>
+				</view><view class="clear-both"></view>
 			</view>
 			<view class="item">
 				<view class="item-title">
@@ -18,7 +18,7 @@
 				</view>
 				<view class="item-text">
 						{{userPosition.user.idNumber}}
-				</view>
+				</view><view class="clear-both"></view>
 			</view>
 			<view class="item">
 				<view class="item-title">
@@ -26,7 +26,7 @@
 				</view>
 				<view class="item-text">
 						{{userPosition.user.mobile}}
-				</view>
+				</view><view class="clear-both"></view>
 			</view>
 		</view>
 		<view class="title-box1">
@@ -47,6 +47,14 @@
 				</view>
 			</view>
 		</view>
+		<view class="footer-box">
+			<button type="primary" @click="setBtn()">
+				确认修改
+			</button>
+			<button type="default" @click="toHomePage()">
+				返回首页
+			</button>
+		</view>
 	</view>
 </template>
 
@@ -62,7 +70,50 @@
 			}
 		},
 		methods:{
+			checkboxChange:function(e){
+				console.log(e)
+				this.role = e.detail.value
+			},
+			editORGUser(cnt){
+              this.$api.editORGUser(cnt,(res)=>{
+                  if(res.data.rc == this.$util.RC.SUCCESS){
+                      uni.showToast({
+                      	icon:'success',
+						title:'更改职务成功'
+                      })
+                  }else{
+                        uni.showToast({
+                     	icon:'none',
+                     	title:'操作失败'
+                     })
+                  }
+				  uni.navigateBack();
+              })
+            },
+			setBtn(){
+			 let cnt = {
+                    orgId:    this.userPosition.orgUser.orgId, // Long 组织编号
+                    userId:  this.userPosition.orgUser.userId, // Long 用户编号
+                    address: this.userPosition.orgUser.address, // String 地址
+                    shareCerNo: this.userPosition.orgUser.shareCerNo, // String 股权证书编号
+                    shareCerImg:'无', // String 股权证书图片地址
+                    shareCerHolder: this.userPosition.orgUser.shareCerHolder, // Boolean 是否持证人
+                    shareAmount:  this.userPosition.orgUser.shareAmount, // Integer 股份数
+                    weight:  this.userPosition.orgUser.weight, // Integer 选举权重
+                    roles: this.role, // Array 角色（股东，董事长，经理等）
+                    groups: this.userPosition.orgUser.groups,
+                    tags: this.userPosition.orgUser.tags, // JSONObject 标签，包含groups,tags,以及其它自定义分组标签列表
+                    familyNumber: this.userPosition.orgUser.familyNumber,
+                    familyMaster:this.userPosition.orgUser.familyMaster,
+                }
+                this.editORGUser(cnt)
+			},
 			
+			toHomePage() {
+				uni.switchTab({
+					url: '/pages/index/index'
+				});
+			}
 		},
 		onLoad() {
 			this.userPosition = JSON.parse(uni.getStorageSync('userPosition'))
@@ -74,7 +125,7 @@
                 }
 				  this.role = JSON.parse(this.userPosition.orgUser.roles)
 				  
-				  
+				  this.roleList.splice(this.roleList.length-2,2)
 				  for(let i =0;i<this.roleList.length;i++){
 					  for(let j=0;j<this.role.length;j++){
 						  if(this.roleList[i].roleId == this.role[j]){
@@ -109,6 +160,7 @@
 		width: auto;
 	}
 	.item-title{
+		float: left;
 		width: 30%;
 		line-height: 50rpx;
 		font-size: 28rpx;
@@ -116,6 +168,7 @@
 		
 	}
 	.item-text{
+			float: left;
 		width: 70%;
 		line-height: 50rpx;
 		font-size: 28rpx;
@@ -158,5 +211,10 @@
 	}
 	.clear-both{
 		clear: both;
+	}
+	.footer-box {
+		width: auto;
+		padding: 40rpx;
+	
 	}
 </style>
