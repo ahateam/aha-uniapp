@@ -38,7 +38,7 @@
 						let arr = this.$util.tryParseJson(res.data.c)
 						this.title = arr.name
 						this.imgSrc = this.$util.tryParseJson(arr.data).src
-						this.type = arr.type
+						this.type = arr.taskType
 						this.text = arr.text
 					}
 				})
@@ -47,7 +47,7 @@
 			//下一步
 			navToNext(){
 				uni.redirectTo({
-					url: `/pages/task/createTask/addFoodTask?type=${this.type}`
+					url: `/pages/task/createTask/addFoodTask?type=${this.type}&title=${this.title}`
 				})
 			},
 		}

@@ -1,8 +1,8 @@
 <template>
-	<view>
+	<view class="body">
 		<view class="taskBox" v-for="(item,index) in list" :key="index">
 			<view @click="navToCreate(item.type)">
-				<image :src="item.imgSrc" mode="widthFix"></image>
+				<view :class="'iconfont '+item.iconClass" style="font-size: 30vw;"></view>
 				<view>{{item.name}}</view>
 				</navigator>
 			</view>
@@ -17,22 +17,22 @@
 				list: [
 					{
 						name: '求表扬',
-						imgSrc: '/static/image/video.png',
+						iconClass: 'kk-kuazan',
 						type: this.$constData.taskType[0].key
 					},
 					{
 						name: '求陪玩',
-						imgSrc: '/static/image/image.png',
+						iconClass: 'kk-wan',
 						type: this.$constData.taskType[1].key
 					},
 					{
 						name: '分享',
-						imgSrc: '/static/image/voice.png',
+						iconClass: 'kk-fenxiang',
 						type: this.$constData.taskType[2].key
 					},
 					{
 						name: '制作',
-						imgSrc: '/static/image/comments.png',
+						iconClass: 'kk-zhizuo',
 						type: this.$constData.taskType[3].key
 					}
 				]
@@ -50,15 +50,21 @@
 </script>
 
 <style lang="scss" scoped>
+	.body{
+		
+	}
+	
 	.taskBox {
 		display: inline-block;
-		box-sizing: border-box;
-		width: 50vw;
-		padding: 5vw;
-		color: $uni-text-color;
+		width: 40vw;
+		margin: 3vw;
+		padding: 2vw;
+		background-image: linear-gradient( 135deg, #5EFCE8 10%, #736EFE 100%);
+		color: #FFECEC;
 		font-size: 40upx;
 		text-align: center;
 		font-weight: bold;
+		border-radius: 10%;
 
 		image {
 			width: 30vw;

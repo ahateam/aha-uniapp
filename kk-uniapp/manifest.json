@@ -7,6 +7,10 @@
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
+        // "compatible" : {
+        //     "runtimeVersion" : "2.3.2", //需要兼容的SDK版本号
+        //     "compilerVersion" : "2.3.3" //当前版本号
+        // },
         "usingComponents" : true,
         "splashscreen" : {
             "alwaysShowBeforeRender" : true,
@@ -56,12 +60,22 @@
             "ios" : {},
             /* SDK配置 */
             "sdkConfigs" : {
-                "oauth" : {},
+                "oauth" : {
+                    "weixin" : {
+                        "appid" : "wxc5a7520814c89f2d",
+                        "appsecret" : "0eb2041974c520362e3550db68d889bd"
+                    }
+                },
                 "payment" : {
                     "weixin" : {
-                        "appid" : "wxf71b4c1f834c8b28"
+                        "appid" : "wxc5a7520814c89f2d"
                     },
                     "alipay" : {}
+                },
+                "share" : {
+                    "weixin" : {
+                        "appid" : "wxc5a7520814c89f2d"
+                    }
                 }
             },
             "icons" : {

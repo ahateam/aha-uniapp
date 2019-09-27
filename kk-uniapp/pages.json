@@ -74,7 +74,9 @@
 		}, {
 			"path": "pages/task/createList/createList",
 			"style": {
-				"navigationBarTitleText": "添加任务"
+				"navigationBarTitleText": "添加任务",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black"
 			}
 		}, {
 			"path": "pages/task/template/template",
@@ -142,7 +144,8 @@
 		{
 			"path": "pages/user/userTask/userAddsTask",
 			"style" : {
-				"navigationBarTitleText": "已发任务"
+				"navigationBarTitleText": "已发任务",
+				"enablePullDownRefresh":true
 			}
 		},
 		{
@@ -151,6 +154,18 @@
 				"navigationBarTitleText": "已领任务"
 			}
 		}
+        ,{
+            "path" : "pages/user/orderList/orderList",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/shoppingList/shoppingList",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/plsdContent/plsdContent",
+            "style" : {}
+        }
     ],
 	"tabBar": {
 		"color": "#C0C4CC",

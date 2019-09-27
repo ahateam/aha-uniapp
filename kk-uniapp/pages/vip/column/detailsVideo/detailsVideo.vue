@@ -26,14 +26,14 @@
 								<text>分享</text>
 							</button>
 						</view>
-					
+
 						<view class="action-item">
 							<button type="primary" @click="createHb">
 								<i class="yticon iconfont kk-friendzone centerBox"></i>
 								<text>朋友圈</text>
 							</button>
 						</view>
-					
+
 						<view class="action-item">
 							<button type="primary">
 								<i class="yticon iconfont kk-shoucang1"></i>
@@ -87,29 +87,7 @@
 					</view>
 				</view>
 
-				<view class="container">
-					<!-- 评论 -->
-					<view class="s-header">
-						<text class="tit">网友评论</text>
-					</view>
-					<view class="evalution">
-						<view class="noEva" v-if="comment.length == 0">
-							还没有人评论哦,快来抢个首发吧~
-						</view>
-						<view v-for="(item, index) in comment" :key="index" class="eva-item">
-							<image :src="item.userHead" mode="aspectFill"></image>
-							<view class="eva-right">
-								<text>{{item.user.name}}</text>
-								<text>{{item.time}}</text>
-								<view class="zan-box" @click="upvote(0,item.id,1,index)">
-									<text>{{item.commentTotalCount}}</text>
-									<text class="yticon iconfont kk-shoucang1"></text>
-								</view>
-								<text class="content">{{item.text}}</text>
-							</view>
-						</view>
-					</view>
-				</view>
+				<comment :comment="comment"></comment>
 
 			</view>
 		</scroll-view>
@@ -143,6 +121,8 @@
 
 <script>
 	import tkiQrcode from '@/components/tki-qrcode/tki-qrcode.vue'
+	import comment from '@/components/comment/comment.vue'
+
 	let context = uni.createCanvasContext('firstCanvas')
 	let upHead = uni.createCanvasContext('upHeadCanvas')
 
@@ -150,6 +130,7 @@
 		components: {
 			// mixLoading,
 			tkiQrcode,
+			comment
 		},
 		data() {
 			return {
@@ -158,9 +139,10 @@
 				upInfo: {},
 				loading: false,
 				contentId: '',
-				channelTitle:'',
-				channelId:'',
-				courseTitle:'',
+				channelTitle: '',
+				channelId: '',
+				courseTitle: '',
+				courseId: '',
 				id1: '',
 
 				/* 点赞 */
@@ -213,14 +195,14 @@
 				uni.showLoading({
 					title: '生成中'
 				})
-				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}`//值改变后自动调取qrR()
+				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}` //值改变后自动调取qrR()
 			},
-			
+
 			qrR(res) { //生成二维码的图片地址
 				this.src = res
 				this.createCanvas()
 			},
-			
+
 			// 生成背景
 			createCanvas() {
 				//生成背景
@@ -234,7 +216,7 @@
 					}
 				})
 			},
-			
+
 			//生成up圆形头像
 			getUpHead() {
 				let img = this.$util.tryParseJson(this.upInfo.ext).userHead
@@ -272,29 +254,29 @@
 					}
 				})
 			},
-			
+
 			//最终生成海报
 			createPoster() {
 				// 二维码图片
 				context.drawImage(this.src, 280, 520, 150, 150)
-			
+
 				// 文字
 				context.setFillStyle('#000000')
 				context.font = '18px Arial'
 				context.fillText(this.upInfo.name, 80, 550)
-			
+
 				context.font = '20px Arial'
 				context.fillText(this.detailData.title, 20, 610)
-			
+
 				context.font = '16px Arial'
 				context.setFillStyle('#aaa')
 				context.fillText('长按扫码查看详情', 20, 650)
-			
+
 				//生成画布
 				context.draw()
-			
+
 				// let that = this
-			
+
 				setTimeout(() => { //延时生成图片
 					uni.canvasToTempFilePath({
 						x: 0,
@@ -314,12 +296,12 @@
 					this.showHb()
 				}, 300)
 			},
-			
+
 			// 展示海报
 			showHb() {
 				this.posterShow = true
 			},
-			
+
 			//保存图片至本地
 			saveImg() {
 				uni.saveImageToPhotosAlbum({
@@ -329,30 +311,30 @@
 					}
 				});
 			},
-			
+
 			hiddenPoster() {
 				this.posterShow = false
 			},
-			
+
 			showImg() {
 				uni.previewImage({
 					urls: [this.posterImg]
 				})
 			},
-			
+
 			/* 分享朋友圈end */
-			
-			
+
+
 			/* 评论 */
 			createComment() {
 				let userId = uni.getStorageSync('userId')
-				// if (userId == '' || userId == '1234567890') {
-				// 	uni.showToast({
-				// 		title: '登录后可评论',
-				// 		icon: 'none'
-				// 	})
-				// 	return
-				// }
+				if (userId == '' || userId == '1234567890') {
+					uni.showToast({
+						title: '登录后可评论',
+						icon: 'none'
+					})
+					return
+				}
 				let cnt = {
 					// module: this.$constData.module, // String 隶属
 					ownerId: this.contentId, // Long 内容编号
@@ -364,17 +346,30 @@
 					title: 'title', // String <选填> 标题
 					ext: '123', // String <选填> 扩展
 				}
-				this.$api.createComment(cnt, (res) => {
+				this.$api.createReply(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '评论成功',
 							duration: 1000
 						});
 						this.hidden = true
+						let time = new Date()
+						let y = time.getFullYear()
+						let m = 1 + time.getMonth()
+						let d = time.getDate()
+
+						let data = {
+							text: this.commentContent,
+							time: `${y}-${m}-${d}`,
+							jsAdd: true,
+							userHead: uni.getStorageSync('userHead'),
+							user: {
+								name: uni.getStorageSync('userName'),
+							}
+						}
+						this.comment.splice(0, 0, data)
+						console.log(this.comment)
 						this.commentContent = ''
-						setTimeout(() => {
-							this.getCommentByContentId()
-						}, 4000)
 					} else {
 						uni.showToast({
 							title: "评论失败",
@@ -399,9 +394,9 @@
 						console.log('评论接口返回数据')
 						console.log(this.$util.tryParseJson(res.data.c))
 						console.log('~~~~~~~~~~~~~~~~~~~~~~~~')
-						this.totalCount = this.$util.tryParseJson(res.data.c).totalCount
-						this.contentUpvote = this.$util.tryParseJson(res.data.c).contentUpvote
-						let comment = this.$util.tryParseJson(res.data.c).list
+						// this.totalCount = this.$util.tryParseJson(res.data.c).totalCount
+						// this.contentUpvote = this.$util.tryParseJson(res.data.c).contentUpvote
+						let comment = this.$util.tryParseJson(res.data.c)
 						for (let i = 0; i < comment.length; i++) {
 							let time = new Date(comment[i].createTime)
 							let y = time.getFullYear()
@@ -425,7 +420,7 @@
 				})
 			},
 			/* 评论end */
-			
+
 			//获取赞数
 			getAppraiseCount() {
 				let cnt = {
@@ -449,7 +444,7 @@
 				this.commentId = conid
 				this.createUpvote(index)
 			},
-			
+
 			createUpvote(index) {
 				let userId = uni.getStorageSync('userId')
 				if (userId == '' || userId == '1234567890') {
@@ -467,6 +462,13 @@
 				}
 				this.$api.createUpvote(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
+						if(this.$util.tryParseJson(res.data.c).value == 10){
+							uni.showToast({
+								title:'请勿重复点赞',
+								icon:'none'
+							})
+							return
+						}
 						uni.showToast({
 							title: '点赞成功',
 							duration: 1000
@@ -508,9 +510,9 @@
 					}
 				}))
 			},
-			
+
 			/* 获取专栏 */
-			getChannel(){
+			getChannel() {
 				let cnt = {
 					id: this.channelId, //专栏id
 				}
@@ -519,13 +521,14 @@
 						console.log('专栏信息')
 						this.channelTitle = this.$util.tryParseJson(res.data.c).title
 						console.log(this.channelTitle)
+						this.getChannlContentTagByChannelId()
 						this.getCouser()
 					} else {
 						console.log('专栏获取失败')
 					}
 				})
 			},
-			
+
 			getCouser() {
 				let data = this.detailData.tags
 				let key = this.channelTitle
@@ -533,25 +536,49 @@
 				this.getContentByChannelId()
 			},
 
-			/* 获取id对应用户 */
-			getUserById(id){
-				let cnt={
-					userId:id,//long 用户编号
+			//获取课程id
+			getChannlContentTagByChannelId() {
+				let cnt = {
+					channelId: this.channelId,
+					count: 10,
+					module: this.$constData.module,
+					offset: 0,
+					status: this.$constData.contentStatus[4].key
 				}
-				this.$api.getUserById(cnt,(res=>{
-					if(res.data.rc == this.$util.RC.SUCCESS){
+				this.$api.getChannlContentTagByChannelId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c)
+						console.log('专栏下标签列表')
+						console.log(arr)
+						for (let i = 0; i < arr.length; i++) {
+							if (arr[i].name == this.courseTitle) {
+								this.courseId = arr[i].id
+								break
+							}
+						}
+					}
+				})
+			},
+
+			/* 获取id对应用户 */
+			getUserById(id) {
+				let cnt = {
+					userId: id, //long 用户编号
+				}
+				this.$api.getUserById(cnt, (res => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log(this.$util.tryParseJson(res.data.c))
 						this.upInfo = this.$util.tryParseJson(res.data.c)
 					}
 				}))
 			},
-			
-			navToPay(){
+
+			navToPay() {
 				uni.navigateTo({
 					url: '/pages/vip/column/payView/payView'
 				});
 			},
-			
+
 			// 从专栏id获取课程列表
 			getContentByChannelId() {
 				let tagJson = `{"${this.channelTitle}":"${this.courseTitle}"}`
@@ -566,7 +593,7 @@
 				this.$api.getContents(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let arr = JSON.parse(res.data.c)
-						
+
 						for (let i = 0; i < arr.length; i++) {
 							let date = new Date(arr[i].createTime)
 							let y = date.getFullYear()
@@ -739,96 +766,6 @@
 			}
 		}
 
-	}
-
-	.mix-loading {
-		transform: translateY(140upx);
-	}
-
-	.s-header {
-		padding: 20upx 30upx;
-		font-size: 30upx;
-		color: #303133;
-		background: #fff;
-		margin-top: 16upx;
-
-		&:before {
-			content: '';
-			width: 0;
-			height: 40upx;
-			margin-right: 24upx;
-			border-left: 6upx solid #ec706b;
-		}
-	}
-
-	/* 评论 */
-	.noEva {
-		font-size: 30upx;
-		color: #303133;
-		padding: 20rpx 30rpx;
-	}
-
-	.evalution {
-		display: flex;
-		flex-direction: column;
-		background: #fff;
-		padding: 20upx 0;
-	}
-
-	.eva-item {
-		display: flex;
-		padding: 20upx 30upx;
-		position: relative;
-
-		image {
-			width: 60upx;
-			height: 60upx;
-			border-radius: 50px;
-			flex-shrink: 0;
-			margin-right: 24upx;
-		}
-
-		&:after {
-			content: '';
-			position: absolute;
-			left: 30upx;
-			bottom: 0;
-			right: 0;
-			height: 0;
-			border-bottom: 1px solid #eee;
-			transform: translateY(50%);
-		}
-
-		&:last-child:after {
-			border: 0;
-		}
-	}
-
-	.eva-right {
-		display: flex;
-		flex-direction: column;
-		flex: 1;
-		font-size: 26upx;
-		color: #909399;
-		position: relative;
-
-		.zan-box {
-			display: flex;
-			align-items: base-line;
-			position: absolute;
-			top: 10upx;
-			right: 10upx;
-
-			.yticon {
-				margin-left: 8upx;
-			}
-		}
-
-		.content {
-			font-size: 28upx;
-			color: #333;
-			padding-top: 20upx;
-		}
 	}
 
 	/* 底部 */
@@ -1005,7 +942,7 @@
 	.blodFont {
 		font-weight: bold;
 	}
-	
+
 	.poster {
 		position: fixed;
 		z-index: 3;
@@ -1015,41 +952,41 @@
 		height: 100vh;
 		background-color: rgba(0, 0, 0, 0.4);
 	}
-	
+
 	.posterImg {
 		position: absolute;
 		top: 20px;
 		width: 85vw;
 		left: 50%;
 		margin-left: -42.5vw;
-	
+
 		image {
 			width: 100%;
 		}
 	}
-	
+
 	.posterBtn {
 		position: absolute;
 		bottom: 20px;
 		font-size: $list-title;
 		width: 100vw;
-	
+
 		.stopBtn {
 			width: 50vw;
 			margin: 0 auto;
 		}
 	}
-	
+
 	.hiddenBox {
 		position: absolute;
 		top: -10000px;
 	}
-	
+
 	.canvasBox {
 		width: 450px;
 		height: 800px;
 	}
-	
+
 	.upHeadBox {
 		width: 100px;
 		height: 100px;

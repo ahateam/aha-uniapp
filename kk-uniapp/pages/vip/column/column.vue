@@ -10,7 +10,7 @@
 
 		<view class="tagBox" :style="fixeTag">
 			<view v-for="(item,index) in tagList" class="tags" :key="index">
-				<UniTag :text="item.name" :type="index == curry?'primary':''" @click="changeContent(index,item.name)"></UniTag>
+				<UniTag :text="item.name" :type="index == curry?'primary':''" @click="changeContent(index,item.name,item.price)"></UniTag>
 			</view>
 		</view>
 		<view class="contentBox" id="salyt">
@@ -29,9 +29,11 @@
 				</view>
 			</view>
 		</view>
-		<view class="bottomBtn">
-			<button type="primary" @click="navToPay">立即支付</button>
+		
+		<view class="bottomBtn" v-if="payOrNo">
+			<button type="primary" @click="navToPay">立即支付{{price}}￥</button>
 		</view>
+		
 	</view>
 </template>
 
@@ -60,15 +62,19 @@
 				tagList: [],
 
 				tagName: '',
+				price:'',//课程价格
+				
+				payOrNo:false,//是否购买
 			}
 		},
 		methods: {
 			//跳转支付页
 			navToPay() {
 				uni.navigateTo({
-					url: `/pages/vip/column/payView/payView?id=${this.id}&columnId=${this.ChannelContentTagId}&title=${this.tagName}`
+					url: `/pages/vip/column/payView/payView?id=${this.id}&columnId=${this.ChannelContentTagId}&title=${this.tagName}&price=${this.price}`
 				})
 			},
+			
 			//路由跳转
 			navigator(list) {
 				let url = ''
@@ -96,7 +102,7 @@
 				}
 				this.$api.getChannelContentTagPower(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let paidStatus = this.$util.tryParseJson(res.data.c)
+						let paidStatus = this.$util.tryParseJson(res.data.c).resultStatus
 						if(paidStatus){
 							let url = ''
 							if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
@@ -107,6 +113,11 @@
 							uni.navigateTo({
 								url: `/pages/vip/column/${url}/${url}?id=${list.id}`
 							})
+						}else{
+							uni.showToast({
+								title: '购买课程可观看',
+								icon:'none'
+							});
 						}
 					} else {
 						console.log(res.data.c)
@@ -127,6 +138,7 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.tagList = this.$util.tryParseJson(res.data.c)
 						this.tagName = this.tagList[0].name
+						this.price = this.tagList[0].price
 						this.ChannelContentTagId = this.tagList[0].id
 						let tagJson = `{"${this.titleText}":"${this.tagName}"}`
 						let cnt1 = {
@@ -138,6 +150,31 @@
 							offset: 0, // Integer 
 						}
 						this.getContentByChannelId(cnt1)
+						this.getPayStatus()
+					}
+				})
+			},
+			
+			//获取当前课程是否购买状态
+			getPayStatus(){
+				let cnt = {
+					modeuleId: this.$constData.module, // Long 模块编号
+					channelId: this.id, // Long 专栏id
+					channelContentTagId: this.ChannelContentTagId, // Long 课程名id
+					userId: uni.getStorageSync('userId'), // Long 用户id
+				}
+				this.$api.getChannelContentTagPower(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let paidStatus = this.$util.tryParseJson(res.data.c).resultStatus
+						
+						if(paidStatus){
+							this.payOrNo = false
+						}else{
+							this.payOrNo = true
+						}
+						// console.log('购买状态'+this.payOrNo)
+					} else {
+						console.log(res.data.c)
 					}
 				})
 			},
@@ -154,10 +191,12 @@
 				})
 			},
 
-			changeContent(e, f) {
+			changeContent(e, f,price) {
 				this.curry = e
 				this.tagName = f
+				this.price = price
 				this.ChannelContentTagId = this.tagList[e].id
+				this.getPayStatus()
 				let tagJson = `{${this.titleText}:"${this.tagName}"}`
 				let cnt = {
 					module: this.$constData.module, // String 模块
@@ -247,6 +286,7 @@
 			left: 0;
 			width: 88vw;
 			padding: $box-margin-top $box-margin-left;
+			font-size: $list-title;
 
 			.titleText {
 				color: rgb(234, 242, 248);

@@ -21,37 +21,44 @@ constData.templateModule = 11705
 constData.payInfoList = [{
 		key: 0,
 		id: 'wxpay',
-		name: '微信支付'
+		name: '微信支付',
+		value:0
 	},
 	{
 		key: 1,
 		id: 'toutiao',
-		name: '头条支付'
+		name: '头条支付',
+		value:1
 	},
 	{
 		key: 2,
 		id: 'qq',
-		name: 'qq支付'
+		name: 'qq支付',
+		value:2
 	},
 	{
 		key: 3,
 		id: 'sinaweibo',
-		name: '新浪微博登录'
+		name: '新浪微博登录',
+		value:3
 	},
 	{
 		key: 4,
 		id: 'xiaomi',
-		name: '小米登录'
+		name: '小米登录',
+		value:4
 	},
 	{
 		key: 5,
 		id: 'alipay',
-		name: '支付宝登录'
+		name: '支付宝登录',
+		value:5
 	},
 	{
 		key: 6,
 		id: 'baidu',
-		name: '百度登录'
+		name: '百度登录',
+		value:6
 	}
 ]
 
@@ -193,7 +200,7 @@ constData.taskType = [{
 /* 任务墙任务状态 */
 constData.taskWallStatus = [{
 		key: 0,
-		val: '已创建'
+		val: '未审核'
 	},
 	{
 		key: 1,
@@ -225,9 +232,16 @@ constData.taskWallStatus = [{
 	},
 	{
 		key: 8,
-		val: '裁决中'
+		val: '发任务方拒绝任务完成申请'
+	},
+	{
+		key:9,
+		val:'指派中'
+	},
+	{
+		key:10,
+		val:'审核未通过'
 	}
-
 ]
 
 /* 任务订单状态 */
@@ -254,6 +268,14 @@ constData.taskStatus = [{
 	{
 		key: 5,
 		val: '未通过'
+	},
+	{
+		key: 6,
+		val: '订单关闭'
+	},
+	{
+		key: 7,
+		val: '指派中'
 	}
 ]
 
@@ -313,7 +335,7 @@ constData.templateType = [{
 	},
 	{
 		key: 4,
-		val: '描述',
+		val: '陪吃',
 	}
 ]
 

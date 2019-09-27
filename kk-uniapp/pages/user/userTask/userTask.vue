@@ -1,18 +1,23 @@
 <template>
 	<view>
 		<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
-			<view v-for="(item,index) in tagsList" :key="index" class="nav-item" :class="{current: index === tabCurrentIndex}"
-			 :id="'tab'+index" @click="changeTag(index,item.status)">{{item.name}}</view>
+			<view v-for="(item,index) in navsList" :key="index" class="nav-item" :class="{current: index === navCurrentIndex}"
+			 :id="'tab'+index" @click="changeNav(index)">{{item.name}}</view>
 		</scroll-view>
 		<view style="padding-top: 90upx;"></view>
+		<view class="tagsList" v-for="(item,index) in navsList[navCurrentIndex].child" :key="index">
+			<uni-tag :type="navsList[navCurrentIndex].tagCurrent == index?'primary':'default'" :text="item.name" @click="changeTag(index,item.status)"></uni-tag>
+		</view>
 		<view v-if="contentData == 0" class="noThing">
 			没有获取到数据呢
 		</view>
 		<view style="position: relative;" v-for="(item,index) in contentData" :key="index" @click="navToTask(item)">
-			<task-list-box v-if="item.task.type == 0" :title="item.task.title" text="陪吃任务" :name="item.task.user.name" :head="item.task.user.head"></task-list-box>
-			<task-list-box v-if="item.task.type == 1" :title="item.task.title" :text="item.task.detail.text" :name="item.task.user.name" :head="item.task.user.head"></task-list-box>
+			<task-list-box class="taskBox" v-if="item.task.type == constData.templateType[4].key" :title="item.taskTitle" text="陪吃任务"
+			 :name="item.task.user.name" :head="item.task.user.head"></task-list-box>
+			<task-list-box class="taskBox" v-if="item.task.type == constData.templateType[1].key" :title="item.taskTitle" :text="item.task.detail.text"
+			 :name="item.task.user.name" :head="item.task.user.head"></task-list-box>
 			<view class="taskStatus">
-				{{item.task.status}}
+				{{item.status}}
 			</view>
 		</view>
 	</view>
@@ -20,98 +25,121 @@
 
 <script>
 	import taskListBox from '@/components/task/taskListBox.vue'
-	
-	let windowWidth = 0
-	
+	import uniTag from '@/components/uni-tag/uni-tag.vue'
+
 	export default {
 		components: {
-			taskListBox
+			taskListBox,
+			uniTag
 		},
 		data() {
 			return {
-				tagsList:[
-					{
-						name:'进行中',
-						status:this.$constData.taskStatus[1].key
+				constData: this.$constData,
+				navsList: [{
+						name: '未完成任务',
+						child: [{
+								name: '领取任务',
+								status: this.$constData.taskStatus[0].key,
+								page: 1,
+							},
+							{
+								name: '未接单',
+								status: this.$constData.taskStatus[7].key,
+								page: 1,
+							},
+							{
+								name: '未确认',
+								status: this.$constData.taskStatus[2].key,
+								page: 1,
+							},
+							{
+								name: '作品未通过',
+								status: this.$constData.taskStatus[4].key,
+								page: 1,
+							}
+						],
+						tagCurrent: 0,
 					},
 					{
-						name:'待审核',
-						status:this.$constData.taskStatus[2].key
-					},
-					{
-						name:'已完成',
-						status:this.$constData.taskStatus[3].key
-					},
-					{
-						name:'未通过',
-						status:this.$constData.taskStatus[4].key
-					},
-					{
-						name:'已关闭',
-						status:this.$constData.taskStatus[5].key
+						name: '历史任务',
+						child: [{
+								name: '已完成',
+								status: this.$constData.taskStatus[3].key,
+								// status: 3,
+								page: 1,
+							},
+							{
+								name: '已关闭',
+								status: this.$constData.taskStatus[5].key,
+								// status: 5,
+								page: 1,
+							}
+						],
+						tagCurrent: 0,
 					}
-				],//标签列表
-				tabCurrentIndex:0,
-				
-				contentData: [],//内容列表
+				], //标签列表
+				navCurrentIndex: 0,
+
+				contentData: [], //内容列表
 				userId: uni.getStorageSync('userId'),
 				count: 10,
 				offset: 0,
 			}
 		},
 		onLoad() {
-			windowWidth = uni.getSystemInfoSync().windowWidth;
 			uni.showLoading({
-				title:'获取数据中'
+				title: '获取数据中'
 			})
 			let cnt = {
 				id: this.userId, // Long 用户id
-				status:this.$constData.taskStatus[1].key,//int
+				status: this.$constData.taskStatus[0].key, //int
 				count: this.count, // int
 				offset: this.offset, // int
 			}
 			this.getTask(cnt)
 		},
 		methods: {
-			async changeTag(_index,status) {
-				this.tabCurrentIndex = _index
-				this.tagName = this.tagsList[_index].name
-				this.page = this.tagsList[_index].page
-			
-				let width = 0;
-				let nowWidth = 0;
-				//获取可滑动总宽度
-				for (let i = 0; i <= _index; i++) {
-					let result = await this.getElSize('tab' + _index)
-					width += result.width
-					if (i === _index) {
-						nowWidth = result.width
-					}
+			//导航栏改变显示内容
+			changeNav(index) {
+				let arr = this.navsList[index]
+				this.navCurrentIndex = index
+				this.contentData = []
+				this.page = arr.child[arr.tagCurrent].page
+
+				if (arr.child[arr.tagCurrent].child) {
+					this.contentData = arr.child[arr.tagCurrent].child
+					return
 				}
-				if (width - nowWidth / 2 > windowWidth / 2) {
-					//如果当前项越过中心点，将其放在屏幕中心
-					this.scrollLeft = width - nowWidth / 2 - windowWidth / 2;
-				} else {
-					this.scrollLeft = 0;
-				}
-			
-				// if (undefined != this.tagsList[_index].child) {
-				// 	this.pageStatus = this.tagsList[_index].pageStatus
-				// 	this.contents = this.tagsList[_index].child
-				// 	console.log(this.contents)
-				// 	return
-				// }
-			
+
 				let cnt = {
 					id: this.userId, // Long 用户id
-					status:status,//int
+					status: arr.child[arr.tagCurrent].status, //int
+					count: this.count, // int
+					offset: this.offset, // int
+				}
+				this.getTask(cnt)
+			},
+
+			//标签改变显示内容
+			changeTag(index, status) {
+				let arr = this.navsList[this.navCurrentIndex]
+				arr.tagCurrent = index
+				this.contentData = []
+
+				if (arr.child[index].child) {
+					this.contentData = arr.child[index].child
+					return
+				}
+
+				let cnt = {
+					id: this.userId, // Long 用户id
+					status: status, //int
 					count: this.count, // int 
 					offset: this.offset, // int 
 				}
-				this.contents = []
 				this.getTask(cnt)
 			},
-			
+
 			//获得元素的size
 			getElSize(id) {
 				return new Promise((res, rej) => {
@@ -125,17 +153,15 @@
 					}).exec();
 				});
 			},
-			
+
 			navToTask(item) {
-				console.log('已经领取跳转')
-				if (item.task.type == 1) {
+				if (item.task.type == this.$constData.templateType[1].key) {
 					console.log('11111')
 					uni.navigateTo({
 						url: `/pages/task/taskView/VideoTask?id=${item.task.id}`
 					})
 				}
-				if (item.task.type == 0) {
-					console.log('-000000')
+				if (item.task.type == this.$constData.templateType[4].key) {
 					uni.navigateTo({
 						url: `/pages/task/taskView/foodTask?id=${item.task.id}`
 					})
@@ -151,34 +177,45 @@
 							arr[i].task.detail = this.$util.tryParseJson(arr[i].task.detail)
 							switch (arr[i].task.status) {
 								case status[0].key:
-									arr[i].task.status = '尚未审核'
+									arr[i].status = '尚未审核'
 									break;
 								case status[1].key:
-									arr[i].task.status = '等待领取'
+									arr[i].status = '等待领取'
 									break;
 								case status[2].key:
-									arr[i].task.status = '已领取，等待确认'
+									arr[i].status = '已领取，等待确认'
 									break;
 								case status[3].key:
-									arr[i].task.status = '未过审'
+									arr[i].status = '已关闭'
 									break;
 								case status[4].key:
-									arr[i].task.status = '进行中'
+									arr[i].status = '进行中'
 									break;
 								case status[5].key:
-									arr[i].task.status = '作品已上传'
+									arr[i].status = '作品已上传'
 									break;
 								case status[6].key:
-									arr[i].task.status = '已完成'
+									arr[i].status = '已完成'
 									break;
 								case status[7].key:
-									arr[i].task.status = '作品不满意'
+									arr[i].status = '作品不满意'
+									break;
+								case status[8].key:
+									arr[i].status = '拒绝任务完成申请'
+									break;
+								case status[9].key:
+									arr[i].status = '指派中'
+									break;
+								case status[10].key:
+									arr[i].status = '审核未通过'
 									break;
 							}
 						}
-						this.contentData = arr
+						this.contentData = this.contentData.concat(arr)
+						let navList = this.navsList[this.navCurrentIndex]
+						navList.child[navList.tagCurrent].child = this.contentData
 						uni.hideLoading()
-						console.log(arr)
+						console.log(this.contentData)
 					}
 				})
 			}
@@ -194,12 +231,12 @@
 		font-size: $list-info;
 		color: $list-info-color;
 	}
-	
-	.noThing{
+
+	.noThing {
 		font-size: $list-title;
 		padding: $box-margin-top $box-margin-left;
 	}
-	
+
 	/* 顶部tabbar */
 	.nav-bar {
 		position: fixed;
@@ -209,17 +246,17 @@
 		white-space: nowrap;
 		box-shadow: 0 2upx 8upx rgba(0, 0, 0, .06);
 		background-color: #fff;
-	
+
 		.nav-item {
 			display: inline-block;
-			width: 150upx;
+			width: 50vw;
 			height: 90upx;
 			text-align: center;
 			line-height: 90upx;
 			font-size: 30upx;
 			color: #303133;
 			position: relative;
-	
+
 			&:after {
 				content: '';
 				width: 0;
@@ -232,13 +269,20 @@
 				transition: .3s;
 			}
 		}
-	
+
 		.current {
 			color: #007aff;
-	
+
 			&:after {
 				width: 50%;
 			}
 		}
+	}
+
+	.tagsList {
+		padding: 15upx;
+		display: inline-block;
+		font-size: $list-info;
+		font-weight: bold;
 	}
 </style>

@@ -9,43 +9,43 @@
 </template>
 
 <script>
-	
 	export default {
 		data() {
 			return {
-				video:'',//视频地址
-				text:'简介简介简介简介简介简介简介简介简介简介简介简介',
-				id:'',//模板id
-				type:'',//任务类型
-				title:'',
+				video: '', //视频地址
+				text: '简介简介简介简介简介简介简介简介简介简介简介简介',
+				id: '', //模板id
+				type: '', //任务类型
+				title: '', //模板标题
 			}
 		},
 		onLoad(res) {
 			this.id = res.id
 			this.getTemplate()
 		},
-		methods:{
-			getTemplate(){
+		methods: {
+			getTemplate() {
 				let cnt = {
-					id:this.id
+					id: this.id
 				}
-				this.$api.getTemplate(cnt,(res)=>{
-					if(res.data.rc == this.$util.RC.SUCCESS){
-						let arr = this.$util.tryParseJson(res.data.c)
-						this.title = arr.name
-						this.video = this.$util.tryParseJson(arr.data).src
-						this.type = arr.type
-						this.text = arr.text
+				this.$api.getTemplate(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						console.log('模板信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓')
+						console.log(obj)
+						this.title = obj.name
+						this.video = this.$util.tryParseJson(obj.data).src
+						this.type = obj.taskType
+						this.text = obj.text
 					}
 				})
 			},
-			
+
 			//下一步方法
-			navToNext(){
+			navToNext() {
 				this.$store.state.taskInfo.text = this.text
 				uni.redirectTo({
-				    url: `/pages/task/createTask/addVideoTask?id=${this.id}&src=${this.video}&type=${this.type}&title=${this.title}&text=${this.text}`
-				    // url: `/pages/task/createTask/addVideoTask?id=${this.id}`
+					url: `/pages/task/createTask/addVideoTask?id=${this.id}`
 				})
 			},
 		}
@@ -53,17 +53,17 @@
 </script>
 
 <style lang="scss">
-	.video{
+	.video {
 		width: 100vw;
 		height: 56.25vw;
 	}
-	
-	.teplateInfo{
+
+	.teplateInfo {
 		padding: $box-margin-top $box-margin-left;
 		font-size: $list-title;
 	}
-	
-	.nextBtn{
+
+	.nextBtn {
 		position: fixed;
 		right: $box-margin-left;
 		bottom: $box-margin-top;

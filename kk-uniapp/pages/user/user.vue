@@ -27,10 +27,10 @@
 			</navigator>
 		</view>
 
-		<view class="bottomBox" v-if="boxShow">
-			<navigator class="autoBoxHeight" url="/pages/index/user/plsdContent/plsdContent">
-				<text class="iconfont kk-shangchuan leftIcon"></text>
-				<text class="bottomTitle">发布</text>
+		<view class="bottomBox" v-if="boxShow" v-for="(item,index) in contentList" :key="index">
+			<navigator class="autoBoxHeight" :url="item.url" >
+				<text :class="item.iconClass"></text>
+				<text class="bottomTitle">{{item.name}}</text>
 				<text class="iconfont kk-xiayibu rightIcon"></text>
 			</navigator>
 		</view>
@@ -48,37 +48,38 @@
 				boxShow: false,
 
 				providerList: [],
+				
+				contentList:[
+					{
+						name:'消费记录',
+						url:'/pages/user/orderList/orderList',
+						iconClass:'iconfont kk-money leftIcon'
+					},
+					{
+						name:'发布',
+						url:'/pages/user/plsdContent/plsdContent',
+						iconClass:'iconfont kk-shangchuan leftIcon'
+					},
+					{
+						name:'已购',
+						url:'/pages/user/shoppingList/shoppingList',
+						iconClass:'iconfont kk-gouwu leftIcon'
+					}
+				],
+				
 			};
 		},
 		onLoad() {
 			this.getProvider()
 		},
 		methods: {
-			loginTest() {
-				uni.showLoading({
-					title: '登录中'
-				})
-				let data = {
-					userHead: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJ3uSWzCySviaU2qfqVAjXouyE9xWK9Bzk0wZt3wkBZ5jJCoibFpbzUWTalBYGKulJJrjVCy1Hb8NfA/132',
-				}
-
-				data = JSON.stringify(data)
-				let cnt = {
-					wxOpenId: 'oRrdQt1vYpuvIl-MXq22fNBnW-cg',
-					name: '時が止まる',
-					ext: data
-				}
-				console.log(cnt)
-				this.WxLogin(cnt)
-			},
-
 			/* app登录 */
 			appLogin() {
-				uni.showLoading({
-					title: '登录中'
-				})
 				uni.login({
 					success: (res) => {
+						uni.showLoading({
+							title: '登录中'
+						})
 						console.log('login success:', res)
 						let openId = res.authResult.openid
 						uni.setStorageSync('openId', openId)
@@ -120,8 +121,8 @@
 				// #endif
 
 				// #ifdef APP-PLUS
-				this.loginTest()
-				// this.appLogin()
+				// this.loginTest()//虚拟登录
+				this.appLogin()
 				return
 				// #endif
 

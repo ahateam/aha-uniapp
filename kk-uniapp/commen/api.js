@@ -119,6 +119,16 @@ api.editApplyTaskData = function(cnt, callback) {
 api.editApplyWorks = function(cnt, callback) {
 	util.call(baseUrl + '/task/editApplyWorks', cnt, callback)
 }
+
+//关闭任务 
+api.editTaskApplyStatusClose = function(cnt, callback) {
+	util.call(baseUrl + '/task/editTaskApplyStatusClose', cnt, callback)
+}
+
+//修改任务订单状态为已指派
+api.editTaskApplyStatusAssigned = function(cnt, callback) {
+	util.call(baseUrl + '/task/editTaskApplyStatusAssigned', cnt, callback)
+}
 /************************ 用户相关接口 **************************/
 //根据id获取用户
 api.getUserById = function(cnt, callback) {
@@ -170,7 +180,7 @@ api.getCommentByContentId = function(cnt, callback) {
 }
 
 //评论 
-api.createComment = function(cnt, callback) {
+api.createReply = function(cnt, callback) {
 	util.call(baseUrl + '/reply/createReply', cnt, callback)
 }
 /************************************模板相关 */
@@ -205,4 +215,13 @@ api.PayChannelContentTag = function(cnt, callback) {
 	util.call(baseUrl + '/channel/PayChannelContentTag', cnt, callback)
 }
 
+//获取订单信息 
+api.getPayOrderByUserId = function(cnt, callback) {
+	util.call(baseUrl + '/task/getPayOrderByUserId', cnt, callback)
+}
+
+//查询用户购买的课程 
+api.getPayChannel = function(cnt, callback) {
+	util.call(baseUrl + '/task/getPayChannel', cnt, callback)
+}
 export default api

@@ -29,7 +29,14 @@
 
 	.titleBox {
 		font-size: $list-title;
+		width: 65vw;
 		// font-weight: bold;
+		word-break: break-all;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.rightBox {

@@ -59,6 +59,7 @@
 							<text v-if="item.status == constData.taskStatus[2].key">已上传，待审核</text>
 							<text v-if="item.status == constData.taskStatus[3].key">已完成</text>
 							<text v-if="item.status == constData.taskStatus[4].key">未通过，重新提交</text>
+							<text v-if="item.status == constData.taskStatus[6].key">指派中</text>
 						</view>
 						<text class="content">电话: {{item.data.tel}}</text>
 					</view>
@@ -66,10 +67,15 @@
 			</view>
 		</view>
 
+		<!-- 关闭任务按钮 -->
+		<view class="bottomBtnBox" v-if="taskStatus <constData.taskWallStatus[3].key && userId == upUserId">
+			<button class="rightBtn" type="primary" @click="closeTask">取消任务</button>
+		</view>
+
 		<!-- 选择乙方盒子 -->
 		<view class="choiceB" v-if="upChangeBox">
 			<view class="choiceTitle">
-				任务将由{{choiceName}}完成
+				任务将指派给{{choiceName}}
 			</view>
 			<view class="choiceBtnBox">
 				<button class="leftBtn" type="primary" @click="upChangeBox = false">取消</button>
@@ -78,7 +84,7 @@
 		</view>
 
 		<!-- 领取任务按钮 -->
-		<view class="bottomBtn" v-if="taskStatus < 3&&userId!=upUserId">
+		<view class="bottomBtn" v-if="taskStatus < constData.taskWallStatus[3].key&&userId!=upUserId&&userStatus">
 			<button type="primary" class="receiveBtn" @click="receiveBtn" v-if="userId != upUserId">领取</button>
 		</view>
 
@@ -96,11 +102,16 @@
 			<button type="primary" @click="upRate">提交</button>
 		</view>
 		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[4].key&&userId != upUserId">
-			<button class="rightBtn" type="primary" @click="taskComplite" >已完成</button>
+			<button class="rightBtn" type="primary" @click="taskComplite">已完成</button>
 		</view>
 		<!-- 评价按钮 -->
-		<view class="bottomBtnBox" v-if="taskStatus == 5&&userId == upUserId">
+		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[5].key&&userId == upUserId">
 			<button class="rightBtn" type="primary" @click="upUserBox = true">评价</button>
+		</view>
+
+		<!-- 二次确定 -->
+		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[9].key&&userId != upUserId">
+			<button class="rightBtn" type="primary" @click="againBtn">确认领取任务</button>
 		</view>
 
 	</view>
@@ -118,11 +129,12 @@
 
 				constData: this.$constData,
 				userId: uni.getStorageSync('userId'), //登录用户id
-				video: '', //视频地址
 				id: '', //模板id
 				upUserId: '', //上传者ID
 				title: '',
 				hidden: false, //隐藏box
+
+				userStatus: true, //用户是否可以领取
 
 				//任务信息
 				taskStatus: 999, //任务状态
@@ -150,9 +162,76 @@
 			this.id = res.id
 			this.getTask()
 			this.getTaskApplys()
+
 		},
 
 		methods: {
+			//用户二次确定领取
+			againBtn() {
+				let cnt = {
+					taskId: this.id, // Long 任务编号
+					status: status, // Byte <选填> 状态
+					userId: this.userId, // Long <选填> 接单者编号
+					// works: works, // Boolean <选填> 是否查询作品
+					count: 1, // int 
+					offset: 0, // int 
+				}
+				this.$api.getTaskApplys(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c)
+						let id = ''
+						if (arr.length > 0) {
+							id = arr[0].id
+						}
+						this.againNext(id)
+					}
+				})
+			},
+			againNext(id) {
+				let cnt = {
+					id: id,
+					taskId: this.id, // Long 任务id
+				}
+				this.$api.TaskApplyConfirm(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url:'/pages/task/task'
+						})
+						uni.showToast({
+							title: '领取成功,快去完成任务吧',
+							icon:'none'
+						})
+					} else {
+						uni.showToast({
+							title: '服务器错误,请稍后再试',
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			//取消任务
+			closeTask() {
+				let cnt = {
+					id: this.id, // Long 任务id
+				}
+				this.$api.editTaskApplyStatusClose(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							title: '关闭成功'
+						})
+						uni.switchTab({
+							url: '/pages/task/task'
+						})
+					} else {
+						uni.showToast({
+							title: '服务器错误,请稍后再试',
+							icon: 'none'
+						})
+					}
+				})
+			},
+
 			//任务完成按钮
 			taskComplite() {
 				let cnt = {
@@ -270,13 +349,13 @@
 			choiceUser() {
 				let cnt = {
 					id: this.accepterId, // Long 订单id
-					taskId: this.id, // Long 任务id
 				}
-				this.$api.TaskApplyConfirm(cnt, (res) => {
+				this.$api.editTaskApplyStatusAssigned(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.upChangeBox = false
 						uni.showToast({
-							title: '选择成功'
+							title: '指派成功,等待对方确认',
+							icon: 'none'
 						})
 					} else {
 						uni.showToast({
@@ -357,10 +436,39 @@
 
 						this.upUserId = arr.upUserId
 						this.taskStatus = arr.status
+						this.getStatus()
 					} else {
 						console.log('erron')
 					}
 				})
+			},
+
+			//判断用户是否领取
+			getStatus() {
+				if (this.userId != this.upUserId && this.taskStatus < this.$constData.taskWallStatus[3].key) {
+					let cnt = {
+						taskId: this.id, // Long 任务编号
+						// status: status, // Byte <选填> 状态
+						userId: this.userId, // Long <选填> 接单者编号
+						// works: works, // Boolean <选填> 是否查询作品
+						count: 1, // int 
+						offset: 0, // int 
+					}
+					this.$api.getTaskApplys(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							console.log('用户接单列表↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓')
+							console.log(this.$util.tryParseJson(res.data.c))
+							if (this.$util.tryParseJson(res.data.c).length > 0) {
+								this.userStatus = false
+							}
+						} else {
+							uni.showToast({
+								title: '服务器错误'
+							})
+							this.userStatus = false
+						}
+					})
+				}
 			},
 
 			getTaskApplys() {

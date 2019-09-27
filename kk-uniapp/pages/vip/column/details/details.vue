@@ -65,11 +65,11 @@
 							{{courseTitle}}
 						</view>
 						<view class="upName">
-							<text>作者:</text><text>作者名</text>
+							<text>作者:</text><text>{{upInfo.name}}</text>
 						</view>
 						<view class="payCourse">
-							<text class="courseMoney">45元</text>
-							<text class="courseInfo">233人购买</text>
+							<text class="courseMoney">{{price}}元</text>
+							<!-- <text class="courseInfo">233人购买</text> -->
 							<button type="primary" @click="navToPay">购买课程</button>
 						</view>
 					</view>
@@ -96,9 +96,8 @@
 					</view>
 				</view>
 
-				<view class="container">
-					<!-- 评论 -->
-					<view class="s-header">
+				<!-- 评论 -->
+				<!-- <view class="s-header">
 						<text class="tit">网友评论</text>
 					</view>
 					<view class="evalution">
@@ -117,8 +116,9 @@
 								<text class="content">{{item.text}}</text>
 							</view>
 						</view>
-					</view>
-				</view>
+					</view> -->
+				<comment :comment="comment"></comment>
+
 			</view>
 		</scroll-view>
 
@@ -151,12 +151,15 @@
 
 <script>
 	import tkiQrcode from '@/components/tki-qrcode/tki-qrcode.vue'
+	import comment from '@/components/comment/comment.vue'
+
 	let context = uni.createCanvasContext('firstCanvas')
 	let upHead = uni.createCanvasContext('upHeadCanvas')
 
 	export default {
 		components: {
 			tkiQrcode,
+			comment
 		},
 		data() {
 			return {
@@ -168,8 +171,10 @@
 				channelId: '', //内容上专栏id
 				constData: this.$constData, //全局变量引入
 				moreCourse: 2, //课程列表展示数量
+				courseId: '', // 课程id
 				channelTitle: '', //专栏标题
 				courseTitle: '', //课程标题
+				price: '', //课程价格
 
 				/* 分享朋友圈 */
 				val: '', // 要生成的二维码值
@@ -370,9 +375,9 @@
 						console.log('评论接口返回数据')
 						console.log(this.$util.tryParseJson(res.data.c))
 						console.log('~~~~~~~~~~~~~~~~~~~~~~~~')
-						this.totalCount = this.$util.tryParseJson(res.data.c).totalCount
-						this.contentUpvote = this.$util.tryParseJson(res.data.c).contentUpvote
-						let comment = this.$util.tryParseJson(res.data.c).list
+						// this.totalCount = this.$util.tryParseJson(res.data.c).totalCount
+						// this.contentUpvote = this.$util.tryParseJson(res.data.c).contentUpvote
+						let comment = this.$util.tryParseJson(res.data.c)
 						for (let i = 0; i < comment.length; i++) {
 							let time = new Date(comment[i].createTime)
 							let y = time.getFullYear()
@@ -399,13 +404,13 @@
 			//创建评论
 			createComment() {
 				let userId = uni.getStorageSync('userId')
-				// if (userId == '' || userId == '1234567890') {
-				// 	uni.showToast({
-				// 		title: '登录后可评论',
-				// 		icon: 'none'
-				// 	})
-				// 	return
-				// }
+				if (userId == '' || userId == '1234567890') {
+					uni.showToast({
+						title: '登录后可评论',
+						icon: 'none'
+					})
+					return
+				}
 				let cnt = {
 					// module: this.$constData.module, // String 隶属
 					ownerId: this.contentId, // Long 内容编号
@@ -417,17 +422,30 @@
 					title: 'title', // String <选填> 标题
 					ext: '123', // String <选填> 扩展
 				};
-				this.$api.createComment(cnt, (res) => {
+				this.$api.createReply(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '评论成功',
 							duration: 1000
 						});
 						this.hidden = true
+						let time = new Date()
+						let y = time.getFullYear()
+						let m = 1 + time.getMonth()
+						let d = time.getDate()
+
+						let data = {
+							text: this.commentContent,
+							time: `${y}-${m}-${d}`,
+							jsAdd: true,
+							userHead: uni.getStorageSync('userHead'),
+							user: {
+								name: uni.getStorageSync('userName'),
+							}
+						}
+						this.comment.splice(0, 0, data)
+						console.log(this.comment)
 						this.commentContent = ''
-						setTimeout(function() {
-							this.getCommentByContentId()
-						}, 4000);
 					} else {
 						uni.showToast({
 							title: "评论失败",
@@ -440,8 +458,8 @@
 			//跳转支付页面
 			navToPay() {
 				uni.navigateTo({
-					url: '/pages/vip/column/payView/payView'
-				});
+					url: `/pages/vip/column/payView/payView?id=${this.channelId}&columnId=${this.courseId}&title=${this.courseTitle}&price=${this.price}`
+				})
 			},
 
 
@@ -473,14 +491,14 @@
 			},
 			createUpvote(index) {
 				let userId = uni.getStorageSync('userId')
-				// if (userId == '' || userId == '1234567890') {
-				// 	uni.showToast({
-				// 		title: '请登录',
-				// 		duration: 1000,
-				// 		icon: 'none'
-				// 	})
-				// 	return
-				// }
+				if (userId == '' || userId == '1234567890') {
+					uni.showToast({
+						title: '请登录',
+						duration: 1000,
+						icon: 'none'
+					})
+					return
+				}
 				let cnt = {
 					ownerId: this.commentId, // Long 内容编号/评论编号
 					userId: 0 + userId, // Long 用户编号
@@ -488,10 +506,18 @@
 				}
 				this.$api.createUpvote(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
+						if(this.$util.tryParseJson(res.data.c).value == 10){
+							uni.showToast({
+								title:'请勿重复点赞',
+								icon:'none'
+							})
+							return
+						}
 						uni.showToast({
 							title: '点赞成功',
 							duration: 1000
 						})
+						this.contentUpvote += 1
 					} else {
 						uni.showToast({
 							title: res.data.c,
@@ -509,21 +535,50 @@
 
 			//跳转其他课程详情
 			navigator(list) {
-				if (list.paid == this.$constData.contentPaid[1].key) {
-					uni.showToast({
-						title: '购买后可观看',
-						duration: 2000,
-						icon: 'none'
-					});
-				}
 				let url = ''
-				if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
-					url = 'details'
-				} else if (list.type == this.$constData.contentType[1].key) {
-					url = 'detailsVideo'
+				console.log(list)
+				if (list.power == this.$constData.contentPaid[1].key) {
+					this.getChannelContentTagPower(list)
+				} else if (list.power == this.$constData.contentPaid[0].key) {
+					if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
+						url = 'details'
+					} else if (list.type == this.$constData.contentType[1].key) {
+						url = 'detailsVideo'
+					}
+					uni.redirectTo({
+						url: `/pages/vip/column/${url}/${url}?id=${list.id}`
+					})
 				}
-				uni.redirectTo({
-					url: `/pages/vip/column/${url}/${url}?id=${list.id}&id1=${list._id}`
+			},
+			getChannelContentTagPower(list) {
+				let cnt = {
+					modeuleId: this.$constData.module, // Long 模块编号
+					channelId: this.channelId, // Long 专栏id
+					channelContentTagId: this.courseId, // Long 课程名id
+					userId: uni.getStorageSync('userId'), // Long 用户id
+				}
+				this.$api.getChannelContentTagPower(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let paidStatus = this.$util.tryParseJson(res.data.c).resultStatus
+						if(paidStatus){
+							let url = ''
+							if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
+								url = 'details'
+							} else if (list.type == this.$constData.contentType[1].key) {
+								url = 'detailsVideo'
+							}
+							uni.navigateTo({
+								url: `/pages/vip/column/${url}/${url}?id=${list.id}`
+							})
+						}else{
+							uni.showToast({
+								title: '购买课程可观看',
+								icon:'none'
+							});
+						}
+					} else {
+						console.log(res.data.c)
+					}
 				})
 			},
 			/* 获取课程对应专栏 */
@@ -534,8 +589,10 @@
 				this.$api.getChannlById(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log('专栏信息')
+						console.log(this.$util.tryParseJson(res.data.c))
 						this.channelTitle = this.$util.tryParseJson(res.data.c).title
 						console.log(this.channelTitle)
+						this.getChannlContentTagByChannelId()
 						this.getCouser()
 					} else {
 						console.log('专栏获取失败')
@@ -562,7 +619,7 @@
 				this.$api.getContents(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let arr = JSON.parse(res.data.c)
-						
+
 						for (let i = 0; i < arr.length; i++) {
 							let date = new Date(arr[i].createTime)
 							let y = date.getFullYear()
@@ -579,6 +636,32 @@
 					}
 				})
 			},
+
+			//获取课程id
+			getChannlContentTagByChannelId() {
+				let cnt = {
+					channelId: this.channelId,
+					count: 10,
+					module: this.$constData.module,
+					offset: 0,
+					status: this.$constData.contentStatus[4].key
+				}
+				this.$api.getChannlContentTagByChannelId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c)
+						console.log('专栏下标签列表')
+						console.log(arr)
+						for (let i = 0; i < arr.length; i++) {
+							if (arr[i].name == this.courseTitle) {
+								this.courseId = arr[i].id
+								this.price = arr[i].price
+								break
+							}
+						}
+					}
+				})
+			},
+
 			/* 获取id对应内容 */
 			getContentById() {
 				let cnt = {
@@ -737,86 +820,6 @@
 			}
 		}
 
-	}
-
-	.s-header {
-		padding: 20upx 30upx;
-		font-size: 30upx;
-		color: #303133;
-		background: #fff;
-		margin-top: 16upx;
-
-		&:before {
-			content: '';
-			width: 0;
-			height: 40upx;
-			margin-right: 24upx;
-			border-left: 6upx solid #ec706b;
-		}
-	}
-
-	/* 评论 */
-	.evalution {
-		display: flex;
-		flex-direction: column;
-		background: #fff;
-		padding: 20upx 0;
-	}
-
-	.eva-item {
-		display: flex;
-		padding: 20upx 30upx;
-		position: relative;
-
-		image {
-			width: 60upx;
-			height: 60upx;
-			border-radius: 50px;
-			flex-shrink: 0;
-			margin-right: 24upx;
-		}
-
-		&:after {
-			content: '';
-			position: absolute;
-			left: 30upx;
-			bottom: 0;
-			right: 0;
-			height: 0;
-			border-bottom: 1px solid #eee;
-			transform: translateY(50%);
-		}
-
-		&:last-child:after {
-			border: 0;
-		}
-	}
-
-	.eva-right {
-		display: flex;
-		flex-direction: column;
-		flex: 1;
-		font-size: 26upx;
-		color: #909399;
-		position: relative;
-
-		.zan-box {
-			display: flex;
-			align-items: base-line;
-			position: absolute;
-			top: 10upx;
-			right: 10upx;
-
-			.yticon {
-				margin-left: 8upx;
-			}
-		}
-
-		.content {
-			font-size: 28upx;
-			color: #333;
-			padding-top: 20upx;
-		}
 	}
 
 	/* 底部 */

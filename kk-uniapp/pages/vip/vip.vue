@@ -55,7 +55,8 @@
 		onLoad() {
 
 			// #ifdef MP
-			this.versionStatus = uni.getStorageSync('versionStatus')
+			// this.versionStatus = uni.getStorageSync('versionStatus')
+			this.versionStatus = this.$constData.showStatus[1].key
 			if (this.versionStatus == this.$constData.showStatus[0].key) {
 				// return
 			}
@@ -72,7 +73,11 @@
 			//根据标签切换内容
 			changeTag(e) {
 				this.tabCurrentIndex = e
-				this.tagName = this.tagsList[e].name
+				if(e == 0){
+					this.tagName = ''
+				}else{
+					this.tagName = this.tagsList[e].name
+				}
 				this.page = this.tagsList[e].page
 				if (this.tagsList[e].child != undefined) {
 					this.columnList = this.tagsList[e].child
@@ -152,6 +157,7 @@
 							this.tagsList.splice(index, 1, obj)
 							this.columnList = this.tagsList[index].child
 						})
+						uni.stopPullDownRefresh()
 					} else {
 						obj.child = []
 						obj.pageStatus = 'nomore'
@@ -168,7 +174,8 @@
 		onPullDownRefresh() {
 			let index = this.tabCurrentIndex
 			this.page = 1
-			this.tagsList.child[index].page = 1
+			this.tagsList[index].child.page = 1
+			this.columnList = []
 
 			let cnt = {
 				module: this.$constData.module, // String 隶属

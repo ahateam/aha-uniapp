@@ -19,8 +19,8 @@
 			</view>
 
 			<view v-for="(item,index) in contentData" :key="index" @click="navToTask(item)">
-				<task-list-box v-if="item.type == 0" :title="item.title" text="陪吃任务" :name="item.user.name" :head="item.user.head"></task-list-box>
-				<task-list-box v-if="item.type == 1" :title="item.title" :text="item.detail" :name="item.user.name" :head="item.user.head"></task-list-box>
+				<task-list-box v-if="item.type == constData.templateType[4].key" :title="item.title" text="陪吃任务" :name="item.user.name" :head="item.user.head"></task-list-box>
+				<task-list-box v-if="item.type == constData.templateType[1].key" :title="item.title" :text="item.detail" :name="item.user.name" :head="item.user.head"></task-list-box>
 			</view>
 			<uni-load-more :status="pageStatus"></uni-load-more>
 		</view>
@@ -116,12 +116,12 @@
 			//跳转至任务详情
 
 			navToTask(item) {
-				if (item.type == 1) {
+				if (item.type == this.$constData.templateType[1].key) {
 					uni.navigateTo({
 						url: `/pages/task/taskView/VideoTask?id=${item.id}`
 					})
 				}
-				if (item.type == 0) {
+				if (item.type == this.$constData.templateType[4].key) {
 					uni.navigateTo({
 						url: `/pages/task/taskView/foodTask?id=${item.id}`
 					})
@@ -320,6 +320,7 @@
 							list[i].detail = this.$util.tryParseJson(list[i].detail).text
 						}
 						this.tryDataList(list)
+						uni.stopPullDownRefresh()
 					} else {
 						uni.showToast({
 							title: '错误！',

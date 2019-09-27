@@ -27,6 +27,7 @@
 							<text v-if="item.status == constData.taskStatus[2].key">已上传，待审核</text>
 							<text v-if="item.status == constData.taskStatus[3].key">已完成</text>
 							<text v-if="item.status == constData.taskStatus[4].key">未通过，重新提交</text>
+							<text v-if="item.status == constData.taskStatus[6].key">指派中</text>
 						</view>
 						<text class="content">电话: {{item.data.tel}}</text>
 					</view>
@@ -35,7 +36,7 @@
 		</view>
 
 
-		<view class="bottomBtn" v-if="taskStatus < constData.taskWallStatus[3].key && userId!=upUserId">
+		<view class="bottomBtn" v-if="taskStatus < constData.taskWallStatus[3].key && userId!=upUserId&&userStatus">
 			<button type="primary" class="receiveBtn" @click="receiveBtn">领取</button>
 		</view>
 
@@ -53,7 +54,7 @@
 			<button type="primary" @click="submission">提交</button>
 		</view>
 		
-		<view class="upLoadBox" v-if="taskStatus == 4 && userId != upUserId ||taskStatus == 5 && userId != upUserId">
+		<view class="upLoadBox" v-if="taskStatus == constData.taskWallStatus[4].key && userId != upUserId ||taskStatus == constData.taskWallStatus[5].key && userId != upUserId">
 			<view style="margin-bottom: 15upx;">
 				上传作品：
 			</view>
@@ -69,10 +70,22 @@
 				<button type="primary" @click="commitVideo">提交</button>
 			</view>
 		</view>
-		<view class="bottomBtnBox" v-if="taskStatus == 5&&userId == upUserId || taskStatus == 6 &&userId == upUserId">
+		
+		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[5].key&&userId == upUserId || taskStatus == constData.taskWallStatus[6].key &&userId == upUserId">
 			<button class="leftBtn" type="primary" @click="navToVideo">查看作品</button>
-			<button class="rightBtn" type="primary">评价</button>
+			<!-- <button class="rightBtn" type="primary">评价</button> -->
 		</view>
+		
+		<!-- 关闭任务按钮 -->
+		<view class="bottomBtnBox" v-if="taskStatus <constData.taskWallStatus[3].key&&userId == upUserId">
+			<button class="rightBtn" type="primary" @click="closeTask">取消任务</button>
+		</view>
+		
+		<!-- 二次确定 -->
+		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[9].key&&userId != upUserId">
+			<button class="rightBtn" type="primary" @click="againBtn">确认领取任务</button>
+		</view>
+		
 	</view>
 </template>
 
@@ -87,6 +100,8 @@
 				text: '',
 				id: '', //模板id
 				upUserId: '', //上传者ID
+				
+				userStatus:false,//用户是否可以领取
 				
 				hidden:false,//隐藏box
 
@@ -110,6 +125,99 @@
 			this.getTaskApplys()
 		},
 		methods: {
+			//用户二次确定领取
+			againBtn() {
+				let cnt1 = {
+					taskId: this.id, // Long 任务编号
+					// status: status, // Byte <选填> 状态
+					userId: this.userId, // Long <选填> 接单者编号
+					// works: works, // Boolean <选填> 是否查询作品
+					count: 1, // int 
+					offset: 0, // int 
+				}
+				this.$api.getTaskApplys(cnt1, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c)
+						let id = ''
+						if(arr.length > 0){
+							id = arr[0].id
+						}
+						this.againNext(id)
+					}
+				})
+			},
+			againNext(id) {
+				let cnt = {
+					taskId: this.id, // Long 任务id
+					id: id, // Long 订单id
+				}
+				this.$api.TaskApplyConfirm(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							title: '领取成功'
+						})
+						this.taskStatus = this.$constData.taskWallStatus[4].key
+					} else {
+						uni.showToast({
+							title: '服务器错误,请稍后再试',
+							icon: 'none'
+						})
+					}
+				})
+			},
+			
+			//判断用户是否领取
+			getStatus() {
+				if (this.userId != this.upUserId && this.taskStatus < this.$constData.taskWallStatus[3].key) {
+					let cnt = {
+						taskId: this.id, // Long 任务编号
+						// status: status, // Byte <选填> 状态
+						userId: this.userId, // Long <选填> 接单者编号
+						// works: works, // Boolean <选填> 是否查询作品
+						count: 1, // int 
+						offset: 0, // int 
+					}
+					this.$api.getTaskApplys(cnt,(res)=>{
+						if(res.data.rc == this.$util.RC.SUCCESS){
+							console.log('用户接单列表↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓')
+							console.log(this.$util.tryParseJson(res.data.c))
+							if(this.$util.tryParseJson(res.data.c).length > 0){
+								this.userStatus = false
+							}else{
+								this.userStatus = true
+							}
+						}else{
+							uni.showToast({
+								title:'服务器错误'
+							})
+							this.userStatus = false
+						}
+					})
+				}
+			},
+			
+			//取消任务
+			closeTask() {
+				let cnt = {
+					id: this.id, // Long 任务id
+				}
+				this.$api.editTaskApplyStatusClose(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url: '/pages/task/task'
+						})
+						uni.showToast({
+							title: '关闭成功'
+						})
+					} else {
+						uni.showToast({
+							title: '服务器错误,请稍后再试',
+							icon: 'none'
+						})
+					}
+				})
+			},
+			
 			//查看作品
 			navToVideo(){
 				let cnt = {
@@ -243,7 +351,7 @@
 			
 			//查看乙方信息
 			navToUserInfo(item){
-				if(this.userId != this.upUserId){
+				if(this.userId != this.upUserId||this.taskStatus >this.$constData.taskStatus[4].key){
 					return
 				}
 				uni.navigateTo({
@@ -418,6 +526,7 @@
 						this.text = data.text
 						
 						this.getTemplate(data.templateId)
+						this.getStatus()
 					}
 				})
 			},

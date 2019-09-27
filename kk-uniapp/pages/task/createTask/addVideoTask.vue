@@ -60,19 +60,32 @@
 		},
 		onLoad(res) {
 			this.id = res.id
-			this.video = res.src
-			this.type = res.type
-			this.title = res.title
-			this.text = res.text
+			this.getTemplate()
 		},
 		onShow(){
 			if(this.$store.state.taskInfo.text){
-				console.log(this.$store.state.taskInfo.text)
+				// console.log(this.$store.state.taskInfo.text)
 				this.text = this.$store.state.taskInfo.text
 			}
 		},
 		
 		methods:{
+			getTemplate(){
+				let cnt = {
+					id: this.id
+				}
+				this.$api.getTemplate(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						console.log('模板信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓')
+						console.log(obj)
+						this.title = obj.name
+						this.video = this.$util.tryParseJson(obj.data).src
+						this.type = obj.taskType
+					}
+				})
+			},
+			
 			changeName(){
 				this.$store.state.taskInfo.name = this.userName
 				console.log(this.$store.state.taskInfo.name)
@@ -87,7 +100,7 @@
 				let cnt = {
 					module: this.$constData.module, // Long 模块编号
 					ask: this.type, // Byte 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
-					type: 1, // Byte 类型（0图文,1视频,2gif表情,3音频,4描述）
+					type: this.$constData.templateType[1].key, // Byte 类型（0图文,1视频,2gif表情,3音频,4描述）
 					upUserId: uni.getStorageSync('userId'), // Long 创建者
 					// tags: tags, // String 标签
 					title: this.title, // String 标题

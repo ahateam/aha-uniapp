@@ -8,11 +8,11 @@
 		</scroll-view>
 		<view style="padding-top: 90upx;"></view>
 		<view class="contentBox" v-for="(item,index) in templateList" :key="index" @click="navToCreate(item)">
-			
-			<image :src="item.data.src" mode="scaleToFill" class="imgs" v-if="item.type == 1"></image>
-			
-			<video class="imgs" :src="item.data.src" controls v-if="item.type == 0"></video>
-			
+
+			<image :src="item.data.src" mode="scaleToFill" class="imgs" v-if="item.tempType == constData.templateType[0].key||item.tempType == constData.templateType[4].key||item.tempType == constData.templateType[2].key"></image>
+
+			<video class="imgs" :src="item.data.src" controls v-if="item.tempType == constData.templateType[1].key"></video>
+
 			<view class="contentTitle">
 				{{item.name}}
 			</view>
@@ -28,30 +28,18 @@
 	export default {
 		data() {
 			return {
+				constData: this.$constData,
 				page: 1,
 				count: 10,
 				offset: 0,
 				type: '',
 
 				contentTagGroupData: [], //标签列表
-				currentSort: -1, //标签选中下标
+				currentSort: 0, //标签选中下标
 				tagName: '', //选中标签
 
 				templateName: '',
-				templateList: [{
-						name: '1',
-						text: '123123213',
-						src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1568011516&di=c7cce7e0bdf1f6caad1532f39f7a9f9a&src=http://b-ssl.duitang.com/uploads/item/201305/26/20130526140022_5fMJe.jpeg',
-						type: 0
-					},
-					{
-						name: '2',
-						text: '123123213',
-						src: 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1568011516&di=c7cce7e0bdf1f6caad1532f39f7a9f9a&src=http://b-ssl.duitang.com/uploads/item/201305/26/20130526140022_5fMJe.jpeg',
-						type: 1
-					}
-				], //模板列表
-
+				templateList: [], //模板列表
 			};
 		},
 		onLoad(res) {
@@ -70,27 +58,27 @@
 		},
 		methods: {
 			//创建任务
-			navToAdd(item){
-				if (item.type == 0) {
+			navToAdd(item) {
+				if (item.tempType == this.$constData.templateType[1].key) {
 					this.$store.state.taskInfo.text = item.text
 					uni.navigateTo({
-					    url: `/pages/task/createTask/addVideoTask?id=${item.id}&src=${item.data.src}&type=${this.type}&title=${item.name}&text=${item.text}`
+						url: `/pages/task/createTask/addVideoTask?id=${item.id}`
 					})
-				} else if (item.type == 1) {
+				} else if (item.tempType == this.$constData.templateType[4].key) {
 					uni.navigateTo({
-						url: `/pages/task/createTask/addFoodTask?type=${this.type}`
+						url: `/pages/task/createTask/addFoodTask?type=${this.type}&title=${item.name}`
 					})
 				}
 			},
-			
+
 			//模板详细
 			navToCreate(item) {
 				console.log(item)
-				if (item.type == 0) {
+				if (item.tempType == this.$constData.templateType[1].key) {
 					uni.navigateTo({
 						url: `/pages/task/createTask/createVideoTask?id=${item.id}`
 					})
-				} else if (item.type == 1) {
+				} else if (item.tempType == this.$constData.templateType[4].key) {
 					uni.navigateTo({
 						url: `/pages/task/createTask/createFoodTask?id=${item.id}`
 					})
@@ -101,14 +89,17 @@
 			changeNav(e) {
 				this.currentSort = e
 				this.tagName = this.contentTagGroupData[e].name
-
+				
 				let cnt = {
 					module: this.$constData.module, // String 隶属
 					type: this.type, // Byte <选填> 类型
 					status: this.$constData.tagStatus[0].key, // Byte <选填> 状态
-					tags: this.tagName, // String <选填> 标签
+					// tags: this.tagName, // String <选填> 标签
 					count: 10, // Integer 
 					offset: 0, // Integer 
+				}
+				if(e > 0){
+					cnt.tags = this.tagName
 				}
 				this.getTemplate(cnt)
 			},
@@ -227,13 +218,14 @@
 		line-height: $list-title-line;
 		color: #409eff;
 		background-color: #FFFFFF;
-		&:after{
+
+		&:after {
 			border: none;
 		}
 	}
-	
-	.button-hover{
+
+	.button-hover {
 		color: #66b1ff;
-		
+
 	}
 </style>

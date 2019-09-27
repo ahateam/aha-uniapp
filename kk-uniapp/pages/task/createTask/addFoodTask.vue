@@ -34,8 +34,8 @@
 				其他要求
 			</view>
 			<view class="bottomInputs">
-				<text class="leftTitle">年龄</text><input style="width: 2em;" type="number" v-model="minOld" placeholder="18" />-<input
-				 style="width: 2em;" type="number" v-model="maxOld" placeholder="24" />
+				<text class="leftTitle">年龄</text><input style="width: 2em;" type="number" v-model="minOld" />-<input
+				 style="width: 2em;" type="number" v-model="maxOld"  />
 			</view>
 			<view class="bottomInputs">
 				<text class="leftTitle">地点</text><input style="text-align: left;" type="text" v-model="taskAddrss" placeholder="请输入地点" />
@@ -125,16 +125,19 @@
 				taskObj: '', //任务对象值 默认列表第一个
 				taskpurpose: '', //任务目的值 默认列表第一个
 
-				minOld: '', //最小年龄
-				maxOld: '', //最大年龄
+				minOld: 18, //最小年龄
+				maxOld: 24, //最大年龄
 				taskAddrss: '', //任务地点
-				money: '', //money
+				money: 50, //money
 				telPhone: '', //电话号码
 			}
 		},
 		onLoad(options) {
 			this.type = options.type
+			this.title = options.title
 			console.log(this.type)
+			this.changeObj(this.objList[0])
+			this.changePurpose(this.purposeList[0])
 		},
 		created() {
 			this.taskObj = this.objList[0].name
@@ -165,7 +168,7 @@
 				let cnt = {
 					module: this.$constData.module, // Long 模块编号
 					ask: this.type, // Byte 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
-					type: this.$constData.templateType[0].key, // Byte 类型（0图文,1视频,2gif表情,3音频,4描述）
+					type: this.$constData.templateType[4].key, // Byte 类型（0图文,1视频,2gif表情,3音频,4描述）
 					upUserId: this.userId, // Long 创建者
 					// tags: tags, // String <选填> 标签
 					title: this.title, // String 标题
