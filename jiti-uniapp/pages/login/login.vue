@@ -23,14 +23,14 @@
 					</view>
 
 					<view class="input_box">
-						<view class="text_login">选择账号登陆</view>
+						<view class="text_login" @click="toTellLogin">选择手机账号登陆</view>
 					</view>
 					<view class="form_btn">
 						<view class="input_box" @click="loginBtn">
 							<button class="login_bin">立 即 登 录</button>
 						</view>
 						<view class="input_box">
-							<button class="other_login_btn">金 融 平 台 登 录</button>
+							<button class="other_login_btn" @click="bankLogin">金 融 银 行 登 录</button>
 						</view>
 						<view class="input_box">
 							<view class="wx_logo">
@@ -51,11 +51,12 @@
 			return {
 				userName: '',
 				pwd: '',
-				key:0,
-				provider:'',
+				key: 0,
+				provider: '',
 			}
 		},
 		methods: {
+			/** 正常登陆*/
 			loginBtn() {
 				if (this.userName == '' || this.pwd == '') {
 					uni.showToast({
@@ -121,27 +122,43 @@
 					}
 				}
 			},
-			getVersionData(platform){
-		
-				console.log('555555555555555555')
+
+			/* 选择手机号登陆*/
+			toTellLogin() {
+				if (this.userName == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入手机号'
+					})
+				} else if (this.userName.length != 11) {
+					uni.showToast({
+						icon: 'none',
+						title: '手机号格式错误'
+					})
+				} else {
+					uni.navigateTo({
+						url: './tellLogin?tell=' + this.userName
+					})
+				}
+			},
+
+			/*检测版本*/
+			getVersionData(platform) {
+
 				this.$api.getVersion({}, (res) => {
-					console.log(res)
 					let resData = JSON.parse(res.data.c)
-					console.log('------------------')
-					console.log(resData.version > this.$constData.version)
-										console.log('------------------')
 					if (resData.version > this.$constData.version) {
 						if (platform == 'android') {
 							this.loadVersionAndroid(resData)
 						} else if (platform == 'android') {
 							this.loadVersionIos(resData)
 						}
-					}else{
+					} else {
 						this.initSet()
 					}
 				})
 			},
-		
+
 			loadVersionAndroid(resData) {
 				uni.showToast({
 					title: '有新的版本发布，检测到您目前为Wifi连接，程序已启动自动更新。新版本下载完成后将自动弹出安装程序。',
@@ -197,10 +214,11 @@
 				});
 				dtask.start();
 			},
-			
-			initSet(){
-				
+
+			initSet() {
+
 				let userInfo = uni.getStorageSync('userInfo');
+				let bankUserInfo = uni.getStorageSync('bankUserInfo');
 				if (userInfo) {
 					uni.reLaunch({
 						url: '/pages/chooseOrg/chooseOrg'
@@ -208,41 +226,91 @@
 				} else {
 					uni.setStorageSync('userInfo', '');
 				}
-			}
+				if (bankUserInfo) {
+					uni.reLaunch({
+						url: '/pages/bank/chooseOrg/chooseOrg'
+					});
+				} else {
+					uni.setStorageSync('bankUserInfo', '');
+				}
+				
+				
+				
+				
+			},
 
+			bankLogin() {
+				let cnt = {
+					mobile: this.userName,
+					pwd: this.pwd,
+				};
+				if (this.userName == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入手机号'
+					})
+
+				} else if (this.pwd == '') {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入密码'
+					})
+				} else {
+					this.$api.loginByMobileAndPwd(cnt, (res) => {
+			
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							let data = this.$util.tryParseJson(res.data.c)
+							uni.setStorageSync('bankUserInfo', JSON.stringify(data))
+							uni.showToast({
+								icon: 'success',
+								title: '登录成功'
+							})
+
+							uni.navigateTo({
+								url:'../bank/chooseOrg/chooseOrg'
+							})
+							
+							
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: '登录失败'
+							})
+
+
+						}
+					})
+				}
+
+			}
 
 
 		},
 		onLoad() {
-		let that = this
-		console.log('11111111111111')
-		/*检查版本号--更新版本*/
+			let that = this
+			/*检查版本号--更新版本*/
 			uni.getProvider({
 				service: 'oauth',
-				success: (res)=> {
+				success: (res) => {
 					this.provider = res.provider
-					this.key =1
-					
+					this.key = 1
+
 				},
 			})
-			
-			setTimeout(()=>{
-				if(this.key == 1){
-					console.log('2222222222222222222222')
+			setTimeout(() => {
+				if (this.key == 1) {
 					if (this.provider.length > 1) { //app
-						console.log('333333333333333')
 						let platform = uni.getSystemInfoSync().platform
 						console.log(platform)
 						this.getVersionData(platform)
-					}else{
+					} else {
 						this.initSet()
-						console.log('4444444444444444444')
 					}
 				}
-			},300)
+			}, 300)
 
 
-			
+
 		}
 	}
 </script>

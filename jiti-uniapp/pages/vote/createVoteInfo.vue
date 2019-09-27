@@ -277,7 +277,7 @@
                         template:this.template,
                         type:this.type,
                         choiceCount:this.choiceCount,
-                        crowd:crowd,
+                        crowd:JSON.stringify(crowd),
                         reeditable:this.reeditable,
                         realName:this.realName,
                         isInternal:this.isInternal,

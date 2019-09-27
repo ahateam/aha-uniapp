@@ -145,7 +145,6 @@
 		},
 		onShow() {
 			this.permissions = JSON.parse(uni.getStorageSync('permission'))
-
 			this.list = []
 			this.page = 1
 

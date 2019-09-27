@@ -11,6 +11,18 @@
 			}
 		},
 		{
+			"path": "pages/login/tellLogin",
+			"style": {
+				"navigationBarTitleText": "选择账号"
+			}
+		},
+		{
+			"path": "pages/login/tellPwd",
+			"style": {
+				"navigationBarTitleText": "密码验证"
+			}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "集体经济首页"
@@ -158,6 +170,31 @@
 		    "path" : "pages/position/setPosition",
 		    "style" : {
 					"navigationBarTitleText": "职务设置"
+			}
+		},
+		/**bank相关*/
+		{
+		    "path" : "pages/bank/chooseOrg/chooseOrg",
+		    "style" : {
+					"navigationBarTitleText": "选择银行"
+			}
+		},
+		{
+		    "path" : "pages/bank/vote/vote",
+		    "style" : {
+					"navigationBarTitleText": "选择合作社查询"
+			}
+		},
+		{
+		    "path" : "pages/bank/vote/voteList",
+		    "style" : {
+					"navigationBarTitleText": "合作社投票列表"
+			}
+		},
+		{
+		    "path" : "pages/bank/vote/voteRes",
+		    "style" : {
+					"navigationBarTitleText": "合作社投票详情"
 			}
 		}
     ],
