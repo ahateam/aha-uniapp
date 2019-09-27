@@ -160,12 +160,17 @@
 				page: 1,
 				pageOver: false, //还能不能分页
 				voteList: [],
+				
+			
 
 			}
 		},
 		methods: {
 			//请求所有的投票列表
 			getVotes(cnt) {
+				uni.showLoading({
+					title: '加载中'
+				});
 				this.$api.getVotes(cnt, res => {
 					let data = []
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -179,48 +184,54 @@
 					} else {
 						this.pageOver = false
 					}
+					uni.hideLoading()
 				});
 			},
 			/*请求未投票的列表*/
 			getNotVoteByUserRoles(cnt) {
+				uni.showLoading({
+					title: '加载中'
+				});
 				this.$api.getNotVoteByUserRoles(cnt, res => {
 					let data = []
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						data = this.$util.tryParseJson(res.data.c)
+						let resData = this.$util.tryParseJson(res.data.c)
+						data = resData.data
+						this.offset = resData.offset
 					} else {
 						data = []
 					}
 					this.voteList = this.voteList.concat(data);
-					if (data.length < this.count) {
-						this.pageOver = true
-					} else {
-						this.pageOver = false
-					}
+					uni.hideLoading()
+					
 				});
 			},
 			//请求已投票的列表
 			getVoteByUserRoles(cnt) {
+				uni.showLoading({
+					title: '加载中'
+				});
 				this.$api.getVoteByUserRoles(cnt, res => {
 					console.log(JSON.parse(res.data.c));
 					let data = [];
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						data = this.$util.tryParseJson(res.data.c);
+						let resData =  this.$util.tryParseJson(res.data.c);
+						data =resData.data
+						this.offset = resData.offset
 					} else {
 						data = [];
 					}
 					this.voteList = this.voteList.concat(data);
-					if (data.length < this.count) {
-						this.pageOver = true;
-					} else {
-						this.pageOver = false
-					}
+				uni.hideLoading()
 				});
 			},
 
 			/* 触发改变选中标签*/
 			changeTag(_index) {
+			
 				this.tabCurrentIndex = _index
 				this.page = 1;
+				this.offset = 0;
 				this.voteList = [];
 				this.loading = false;
 				this.pageOver = false;
@@ -267,8 +278,12 @@
 			}
 
 		},
-		onLoad() {
-
+		onShow() {
+		
+			this.voteList = []
+			this.page = 1
+			this.tabCurrentIndex =0
+			this.offset=0
 			this.orgUserInfo = JSON.parse(uni.getStorageSync('orgUserInfo'))
 
 			let cnt = {
@@ -276,10 +291,11 @@
 				userId: this.orgUserInfo.id, // Long 用户编号
 				roles: this.orgUserInfo.orgRoles, // String 角色
 				count: this.count,
-				offset: this.offset
+				offset: (this.page-1)*this.count
 			}
 
 			this.getNotVoteByUserRoles(cnt)
+			
 		},
 
 		/**分页*/
@@ -293,7 +309,7 @@
 					userId: this.orgUserInfo.id, // Long 用户编号
 					roles: this.orgUserInfo.orgRoles, // String 角色
 					count: this.count,
-					offset: (this.page - 1) * this.count
+					offset: this.offset
 				};
 				this.getNotVoteByUserRoles(cnt);
 
@@ -306,7 +322,7 @@
 					userId: this.orgUserInfo.id, // Long 用户编号
 					roles: this.orgUserInfo.orgRoles, // String 角色
 					count: this.count,
-					offset: (this.page - 1) * this.count
+					offset: this.offset
 				};
 				this.getVoteByUserRoles(cnt);
 

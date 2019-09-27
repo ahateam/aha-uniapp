@@ -50,7 +50,7 @@
 		</view>
 		<view class="poll-btn">
 
-			<button type="primary" v-if="pollInfo.status == '0' &&  isBtnShow" @click="submitVoteBtn()">提交投票</button>
+			<button type="primary" v-if="pollInfo.status == '0' &&  isBtnShow && !voteTimeOver" @click="submitVoteBtn()">提交投票</button>
 
 			<button type="primary" v-else @click="toPollRes">
 				结果详情</button>
@@ -82,6 +82,8 @@
 				/*初始化投票状态相关*/
 				status: -1,
 				successData: [],
+				
+				voteTimeOver:false,
 
 			}
 		},
@@ -100,7 +102,7 @@
 							if (this.pollDetail.ops[i].title == '弃权') {
 								this.waiver += this.pollDetail.ops[i].ballotCount
 							}
-							this.opsNum += this.pollDetail.ops[i].ballotCount
+							this.opsNum += Number(this.pollDetail.ops[i].ballotCount)
 						}
 					}
 				})
@@ -330,12 +332,18 @@
 			let poll = uni.getStorageSync('poll')
 			this.pollInfo = JSON.parse(poll)
 			this.activeNums = this.pollInfo.choiceCount
-			console.log('------------------------------')
-			console.log(this.pollInfo)
-
+	
+			
+			let nowDateTime = new Date()
+			nowDateTime = nowDateTime.getTime()
+			if(nowDateTime>this.pollInfo.expiryTime){
+				this.voteTimeOver = true
+			}
+			
 			let cnt = {
 				voteId: this.pollInfo.id
 			}
+			
 			this.getVoteDetail(cnt)
 			this.getVoteOptions(cnt)
 			

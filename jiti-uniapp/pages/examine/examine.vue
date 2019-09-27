@@ -111,10 +111,7 @@
 
 			},
 			timeFilter(item) {
-				let timer = new Date(item.examineDate).toLocaleDateString() + ' ' + new Date(item.examineDate).toLocaleTimeString(
-					'chinese', {
-						hour12: false
-					})
+				let timer = new Date(item.examineDate).toLocaleDateString() + ' ' + new Date(item.examineDate).toLocaleTimeString('chinese', {hour12: false})
 				return '操作时间: ' + timer
 			},
 			statusFilter(item) {
@@ -148,10 +145,9 @@
 		},
 		onShow() {
 			this.permissions = JSON.parse(uni.getStorageSync('permission'))
-
 			this.list = []
 			this.page = 1
-			
+
 			this.user = JSON.parse(uni.getStorageSync('orgUserInfo'))
 			let cnt = {
 				orgId: this.user.orgId, // Long 组织编号
@@ -180,7 +176,6 @@
 </script>
 
 <style lang="scss">
-
 	/* 顶部tabbar */
 	.nav-bar {
 		position: fixed;
@@ -236,6 +231,9 @@
 
 	.item-box-text {
 		float: left;
+		overflow: hidden;
+		text-overflow:ellipsis;
+		white-space: nowrap;
 		width: 65%;
 
 		.item-box-title {
@@ -246,7 +244,7 @@
 
 		.item-box-time {
 			line-height: 40rpx;
-			font-size: 24rpx;
+			font-size:20rpx;
 			color: #666;
 		}
 

@@ -4,7 +4,7 @@
 			<view class="box" @click="addBtn(1)">
 				<view class="box-img">
 					<view class="img-title">
-						<i class="iconfont icon-toubiao"></i>
+						<i class="iconfont icon-paimingbiaoqian"></i>
 					</view>
 				</view>
 				<view class="box-text">
@@ -20,7 +20,7 @@
 			<view class="box1" @click="addBtn(0)">
 				<view class="box-img">
 					<view class="img-title">
-						<i class="iconfont icon-toupiao1"></i>
+						<i class="iconfont icon-user-list"></i>
 					</view>
 				</view>
 				<view class="box-text">
@@ -62,7 +62,6 @@
 					url: '/pages/index/index'
 				});
 			}
-
 		},
 		onShow(){
 			uni.setStorageSync('vote','')
@@ -74,20 +73,21 @@
 	.box {
 		width: 88%;
 		height: 160rpx;
+		padding: 30rpx 0; 
 		margin: 0 auto;
-		margin-top: 60rpx;
+		margin-top:60rpx;
 		border-radius: 25rpx;
-		background: #40c9c6;
-		;
+		background: $jiti-color-blue;
 	}
 
 	.box1 {
 		width: 88%;
 		height: 160rpx;
+		padding: 30rpx 0; 
 		margin: 0 auto;
 		margin-top: 60rpx;
 		border-radius: 25rpx;
-		background: #36a3f7;
+		background: $jiti-color-purple;
 	}
 
 	.box-img {
@@ -113,7 +113,7 @@
 	}
 
 	.img-title i {
-		font-size: 120rpx;
+		font-size: 100rpx;
 		text-align: center;
 		line-height: 120rpx;
 		color: #fff;

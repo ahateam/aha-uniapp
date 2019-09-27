@@ -26,7 +26,7 @@
 				userId: '',
 				key: '',
 				password: '',
-				mobile: null,
+				mobile: '',
 			}
 		},
 		methods: {
@@ -38,7 +38,7 @@
 				})
 			},
 			toBack() {
-				uni.navigateBack();
+				uni.navigateBack()
 			},
 
 
@@ -86,7 +86,7 @@
 			delMobile() {
 				if (this.password) {
 					let cnt = {
-						userId: this.userId,
+						userId: Number(this.userId),
 						mobile: null,
 						password: this.password
 					}
@@ -104,7 +104,7 @@
 
 					if ((/^1[23456789]\d{9}$/.test(this.mobile))) {
 						let cnt = {
-							userId: this.userId,
+							userId: Number(this.userId),
 							mobile: this.mobile,
 							password: this.password
 						}

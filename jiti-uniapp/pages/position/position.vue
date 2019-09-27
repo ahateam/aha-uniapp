@@ -125,6 +125,9 @@
 		},
 		onShow() {
 			uni.setStorageSync('userPOsition','')
+			this.list= []
+			this.searchData = ''
+			
 		},
 			/**分页*/
 		onReachBottom() {

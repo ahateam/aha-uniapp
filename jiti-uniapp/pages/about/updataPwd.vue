@@ -4,7 +4,7 @@
 			<view class="item-input">
 				<input type="password" class="input-box" placeholder="请输入旧密码" v-model="oldPassword" />
 				<input type="password" class="input-box" placeholder="请输入新密码" v-model="newPassword" />
-				<input type="password" class="input-box" placeholder="再次输入新密码" v-model="newPassword1" />
+				<input type="password" class="input-box" placeholder="请再次输入新密码" v-model="newPassword1" />
 			</view>
 		</view>
 
@@ -22,9 +22,8 @@
 		name: 'updataPwd',
 		data() {
 			return {
-				userInfo: '',
-				oldPassword: '',
-				newPassword1: '',
+				oldPassword:'',
+				newPassword1:'',
 				newPassword: '',
 			}
 		},
@@ -46,7 +45,7 @@
 						if (res.data.c == '0') {
 							uni.showToast({
 								icon: 'none',
-								title: '原密码输入错误'
+								title: '旧密码输入错误'
 							});
 						} else {
 							uni.showToast({

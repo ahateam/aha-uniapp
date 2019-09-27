@@ -1,20 +1,20 @@
 <template>
 	<view>
-		<view>
-			<uni-notice-bar show-icon="true" background-color="#cce0fe" text="[多行] 这是 NoticeBar 通告栏，这是 NoticeBar 通告栏，">
+		<view v-if="noticeList.length>0">
+			<uni-notice-bar show-icon="true" background-color="#cce0fe" :text="noticeList[0].title" @click="toNoticeInfo(noticeList[0])">
 			</uni-notice-bar>
 		</view>
 		<view class="swiper_box">
 			<swiper class="swiper_style" indicator-dots="true" indicator-color="rgba(255, 255, 255, 0.3)" indicator-active-color="#d7cbd1"
 			 autoplay="true">
 				<swiper-item>
-					<image src="../../static/a.jpg"></image>
+					<image src="../../static/banner/banner1.png"></image>
 				</swiper-item>
 				<swiper-item>
-					<image src="../../static/a.jpg"></image>
+					<image src="../../static/banner/banner2.png"></image>
 				</swiper-item>
 				<swiper-item>
-					<image src="../../static/a.jpg"></image>
+					<image src="../../static/banner/banner3.png"></image>
 				</swiper-item>
 			</swiper>
 		</view>
@@ -67,33 +67,46 @@
 				</view>
 			</navigator>
 
-			<navigator url="../notice/notice">
-				<view class="content_box" style="background-color: #fb7eb8;">
-					<view class="content_box_text">
-						<p class="text-box">公告</p>
-						<p class="text-box1">信息</p>
-					</view>
+			<view class="content_box" style="background-color: #fb7eb8;" @click="toNotice()">
+				<view class="content_box_text">
+					<p class="text-box">公告</p>
+					<p class="text-box1">信息</p>
 				</view>
-			</navigator>
+			</view>
+
 		</view>
 
+		<template v-if="userPermission.length>0">
+			<template v-for="(item,index) in userPermission">
+				<view :key="index">
+					<view v-if="item == addVoteId ">
+						<navigator url="../vote/vote">
+							<view class="content_box">
+								<view class="content_box_text">
+									<p class="text-box">发起</p>
+									<p class="text-box1">投票</p>
+								</view>
+							</view>
+						</navigator>
+					</view>
+					<view v-if="item == editPostId ">
+						<navigator url="../position/position">
+							<view class="content_box" style="background-color: #9788ff;">
+								<view class="content_box_text">
+									<p class="text-box">职务</p>
+									<p class="text-box1">管理</p>
+								</view>
+							</view>
+						</navigator>
+					</view>
+				</view>
 
-		<navigator url="../vote/vote">
-				<view class="content_box">
-				<view class="content_box_text">
-					<p class="text-box">发起</p>
-					<p class="text-box1">投票</p>
-				</view>
-			</view>
-		</navigator>
-		<navigator url="../position/position">
-			<view class="content_box" style="background-color: #9788ff;">
-				<view class="content_box_text">
-					<p class="text-box">职务</p>
-					<p class="text-box1">管理</p>
-				</view>
-			</view>
-		</navigator>
+			</template>
+
+		</template>
+
+
+
 
 
 		<view class="content_box" style="background-color: #fb7eb8;" @click="toAbout()">
@@ -133,10 +146,14 @@
 		},
 		data() {
 			return {
-
+				addVoteId: this.$constData.permission[0].key,
+				editPostId: this.$constData.permission[1].key,
+				userPermission: '',
+				noticeList: []
 			}
 		},
 		onLoad() {
+			this.userPermission = JSON.parse(uni.getStorageSync('permission'))
 			let userObj = JSON.parse(uni.getStorageSync('userInfo')) //只有用户信息
 			let orgObj = JSON.parse(uni.getStorageSync('orgInfo')) //只有用户的组织信息
 
@@ -152,20 +169,43 @@
 			}
 			let orgUserInfo = Object.assign(userObj, orgObj)
 			let info = uni.getStorageSync('orgUserInfo')
+
 			if (!info) { //user是否已经存在，若存在就不重新赋值
 				uni.setStorageSync('orgUserInfo', JSON.stringify(orgUserInfo))
 			}
-			
-			
-			if(uni.getStorageSync('vote')){
-				uni.navigateTo({
-					url:'../vote/createVoteOptionPeople'
-				})
-			}
-			
+			this.getNotice()
 
 		},
 		methods: {
+			//请求公告列表
+			getNoticeByRoleGroup(cnt) {
+				this.$api.getNoticeByRoleGroup(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.noticeList = this.$util.tryParseJson(res.data.c)
+					} else {
+						this.noticeList = []
+					}
+					console.log(this.noticeList)
+				})
+			},
+			getNotice() {
+				let userInfo = JSON.parse(uni.getStorageSync('orgInfo'))
+				let groups = []
+				if (userInfo.groups == undefined || userInfo.groups == '' || userInfo.groups.length == 0) {
+					groups[0] = 102
+				} else {
+					groups = userInfo.groups
+				}
+
+				let cnt = {
+					orgId: userInfo.orgId, // Long 组织编号
+					roles: userInfo.orgRoles, // String 角色编号 [102,103,104]
+					groups: groups, // String 分组编号 [1111111,555555,111]
+					count: 1, // Integer
+					offset: 0, // Integer
+				}
+				this.getNoticeByRoleGroup(cnt)
+			},
 			outLogin() {
 				uni.clearStorageSync();
 				uni.reLaunch({
@@ -185,7 +225,19 @@
 				uni.switchTab({
 					url: '../about/about'
 				})
-			}
+			},
+			toNotice() {
+				uni.switchTab({
+					url: '../notice/notice'
+				})
+			},
+			//跳转详情
+			toNoticeInfo(item) {
+				let info = encodeURIComponent(JSON.stringify(item))
+				uni.navigateTo({
+					url: '../notice/noticeInfo?info=' + info
+				})
+			},
 		}
 	}
 </script>
@@ -197,6 +249,7 @@
 
 	.swiper_style image {
 		width: 100%;
+		height: 100%;
 	}
 
 	.content_box {

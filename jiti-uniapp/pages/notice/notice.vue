@@ -35,6 +35,9 @@
 
 			//请求公告列表
 			getNoticeByRoleGroup(cnt) {
+				uni.showLoading({
+					title: '加载中'
+				});
 				this.$api.getNoticeByRoleGroup(cnt, (res) => {
 					let arr = []
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -43,7 +46,8 @@
 						arr = []
 					}
 					this.list = this.list.concat(arr)
-					console.log(this.list)
+					
+					uni.hideLoading()
 				})
 			},
 			timerFilter(timer) {
@@ -66,7 +70,9 @@
 			}
 
 		},
-		onLoad() {
+		onShow() {
+			this.list = []
+			this.page = 1
 			this.userInfo = JSON.parse(uni.getStorageSync('orgInfo'))
 			let groups = []
 			if (this.userInfo.groups == undefined || this.userInfo.groups == '' || this.userInfo.groups.length == 0) {

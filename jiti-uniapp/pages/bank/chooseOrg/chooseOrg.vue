@@ -2,7 +2,7 @@
 	<view>
 		<view class="content">
 			<view class="maincon choose-box">
-			
+
 				<view v-if="orgList.length>0">
 					<view class="choose-item" v-for="(item,index) in orgList" :key="index" @click="chooseOrgBtn(item)">
 						<view class="title">{{item.name}}</view>
@@ -11,14 +11,14 @@
 					</view>
 				</view>
 				<view v-else class="msg-text">
-					当前用户暂无组织信息
+					当前用户暂无银行信息
 				</view>
-			
+
 			</view>
 		</view>
 		<view class="footer-box">
-			<button type="default" @click="toLogin()">
-				返回登录页
+			<button type="warn" @click="toLogin()">
+				注销登录
 			</button>
 		</view>
 	</view>
@@ -37,10 +37,10 @@
 			}
 		},
 		methods: {
-			toLogin(){
+			toLogin() {
 				uni.clearStorageSync();
 				uni.reLaunch({
-					url: '../login/login'
+					url: '../../login/login'
 				})
 			},
 			getUserORGs(cnt) {
@@ -63,31 +63,30 @@
 						this.pageOver = false
 					}
 					uni.hideLoading()
-					console.log('---------------')
-					console.log(this.orgList)
+
 				})
 			},
 
 			/** 选择机构二次登录*/
 			loginInORG(cnt) {
 				this.$api.loginInORG(cnt, (res) => {
-
-					console.log(JSON.parse(res.data.c))
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let info = JSON.parse(res.data.c)
 						let arr = []
-					
 						for (let i = 0; i < info.permissions.length; i++) {
 							arr.push(info.permissions[i].id)
 						}
-						uni.setStorageSync('orgInfo', JSON.stringify(info))
+						uni.setStorageSync('bankOrgInfo', JSON.stringify(info))
 						uni.setStorageSync('permission', JSON.stringify(arr))
 
-						uni.switchTab({
-							url: '/pages/index/index'
-						});
+						uni.navigateTo({
+							url: '../vote/vote'
+						})
 					} else {
-						console.log('11111')
+						uni.showToast({
+							icon: 'none',
+							title: '进入银行失败'
+						})
 					}
 				})
 			},
@@ -104,19 +103,18 @@
 
 		},
 		onLoad() {
-			
-			if(uni.getStorageSync('orgInfo') && uni.getStorageSync('permission')){
-				uni.switchTab({
-					url: '/pages/index/index'
-				});
+
+			if (uni.getStorageSync('bankOrgInfo')) {
+				uni.navigateTo({
+					url: '../vote/vote'
+				})
 			}
-			
-			this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
+			this.userInfo = JSON.parse(uni.getStorageSync('bankUserInfo'))
 			let cnt = {
 				offset: this.offset,
 				count: this.count,
 				userId: this.userInfo.id,
-				level: 4
+				level: 5
 			}
 			this.getUserORGs(cnt)
 
@@ -129,7 +127,7 @@
 				offset: (this.page - 1) * this.count,
 				count: this.count,
 				userId: this.userInfo.id,
-				level: 4
+				level: 5
 			}
 			if (this.pageOver == false) {
 				this.getUserORGs(cnt)
@@ -145,15 +143,16 @@
 </script>
 
 <style lang="scss" scoped>
-	.content{
+	.content {
 		width: 90%;
 		margin: 0 auto;
 	}
+
 	.choose-item {
 		margin: 20rpx 0;
-		
+
 		padding: 40rpx 40rpx;
-		background-color:$jiti-color-blue;
+		background-color: $jiti-color-blue;
 		border-radius: 20rpx;
 	}
 
@@ -176,15 +175,16 @@
 		margin-top: 15rpx;
 		font-size: 24rpx;
 	}
-	.msg-text{
+
+	.msg-text {
 		text-align: center;
 		font-size: 32rpx;
 		color: #666;
 		line-height: 50rpx;
 	}
+
 	.footer-box {
 		width: auto;
 		padding: 40rpx;
-	
 	}
 </style>

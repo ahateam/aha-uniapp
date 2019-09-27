@@ -25,7 +25,12 @@
 					开始时间
 				</view>
 				<view class="list-val">
-					<input type="text" :value="startDate" placeholder="请选择投票开始时间"  @tap="toggleTab(0)"/>
+					<view style="width: auto;" v-if="startDate"  @tap="toggleTab(0)">
+						{{startDate}}
+					</view>
+					<view style="width: auto;" v-else  @tap="toggleTab(0)">
+						请点击选择时间
+					</view>
 				</view>
 				<view class="clear-both"></view>
 			</view>
@@ -36,7 +41,12 @@
 					结束时间
 				</view>
 				<view class="list-val">
-					<input type="text" :value="endDate" placeholder="请选择投票截止时间"  @tap="toggleTab(1)"/>
+					<view style="width: auto;" v-if="endDate"  @tap="toggleTab(1)">
+						{{endDate}}
+					</view>
+					<view style="width: auto;" v-else  @tap="toggleTab(1)">
+						请点击选择时间
+					</view>
 				</view>
 				<view class="clear-both"></view>
 			</view>
@@ -242,7 +252,11 @@
 			passDataChange:function(e){
 				this.passData = e.detail.value
 			},
-			
+			toHomePage() {
+				uni.switchTab({
+					url: '/pages/index/index'
+				});
+			},
 			//创建投票
 			createBtn(){
 				 if(this.remark== '' ||this.title == ''||this.crowd == [] ||this.startDate == '' ||this.endDate == '' ||this.failData == '' || this.passData == ''){
@@ -263,7 +277,7 @@
                         template:this.template,
                         type:this.type,
                         choiceCount:this.choiceCount,
-                        crowd:crowd,
+                        crowd:JSON.stringify(crowd),
                         reeditable:this.reeditable,
                         realName:this.realName,
                         isInternal:this.isInternal,
