@@ -55,7 +55,7 @@
 
 				<!-- 所属课程 -->
 				<view class="courseText">所属课程</view>
-				<view class="courseBox">
+				<view class="courseBox" @click="navToCourse">
 					<view class="columnImgBox">
 						<image class="columnImg" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1567139311188&di=b309ce828b72d42a2c9318f26f7115c7&imgtype=0&src=http%3A%2F%2Fwww.pclady.com.cn%2Fstyle%2Fmovie%2F0509%2Fpic%2Fbb20050920_shjz_06_thumb.jpg"
 						 mode="scaleToFill"></image>
@@ -70,13 +70,13 @@
 						<view class="payCourse">
 							<text class="courseMoney">{{price}}元</text>
 							<!-- <text class="courseInfo">233人购买</text> -->
-							<button type="primary" @click="navToPay">购买课程</button>
+							<button type="primary" @click="navToPay" @click.stop>购买课程</button>
 						</view>
 					</view>
 				</view>
 
 				<!-- 其他内容列表 -->
-				<view>
+				<view v-if="courseList.length > 0">
 					<view class="courseText">课程内容</view>
 					<view v-for="(item,index) in courseList" :key="index" v-if="index <moreCourse">
 						<view class="lists" @click="navigator(item)">
@@ -96,28 +96,7 @@
 					</view>
 				</view>
 
-				<!-- 评论 -->
-				<!-- <view class="s-header">
-						<text class="tit">网友评论</text>
-					</view>
-					<view class="evalution">
-						<view class="noEva" v-if="comment.length == 0">
-							还没有人评论哦,快来抢个首发吧~
-						</view>
-						<view v-for="(item, index) in comment" :key="index" class="eva-item">
-							<image :src="item.userHead" mode="aspectFill"></image>
-							<view class="eva-right">
-								<text>{{item.user.name}}</text>
-								<text>{{item.time}}</text>
-								<view class="zan-box" @click="upvote(0,item.id,1,index)">
-									<text>{{item.commentTotalCount}}</text>
-									<text class="yticon iconfont kk-shoucang1"></text>
-								</view>
-								<text class="content">{{item.text}}</text>
-							</view>
-						</view>
-					</view> -->
-				<comment :comment="comment"></comment>
+				<comment :comment="comment" @upZan="upZan"></comment>
 
 			</view>
 		</scroll-view>
@@ -221,6 +200,18 @@
 
 		},
 		methods: {
+			//更新赞数
+			upZan(index) {
+				this.comment[index].appraiseCount += 1
+			},
+
+			navToCourse() {
+				let color = this.$constData.colorData[Math.floor(Math.random() * this.$constData.colorData.length)]
+				uni.redirectTo({
+					url: `/pages/vip/column/courseView/courseView?channelId=${this.channelId}&id=${this.courseId}&title=${this.courseTitle}&color=${color}`
+				})
+			},
+
 			/* 分享朋友圈 */
 			//开始生成海报
 			createHb() {
@@ -379,6 +370,7 @@
 						// this.contentUpvote = this.$util.tryParseJson(res.data.c).contentUpvote
 						let comment = this.$util.tryParseJson(res.data.c)
 						for (let i = 0; i < comment.length; i++) {
+							comment[i].jsAdd = false
 							let time = new Date(comment[i].createTime)
 							let y = time.getFullYear()
 							let m = 1 + time.getMonth()
@@ -457,9 +449,39 @@
 
 			//跳转支付页面
 			navToPay() {
-				uni.navigateTo({
-					url: `/pages/vip/column/payView/payView?id=${this.channelId}&columnId=${this.courseId}&title=${this.courseTitle}&price=${this.price}`
+				let userId = uni.getStorageSync('userId')
+				if(userId == ''|| userId == '1234567890'){
+					uni.switchTab({
+						url:'/pages/user/user'
+					})
+					uni.showToast({
+						title: '请登录',
+						icon:'none'
+					})
+					return
+				}
+				let cnt = {
+					modeuleId: this.$constData.module, // Long 模块编号
+					channelId: this.channelId, // Long 专栏id
+					channelContentTagId: this.courseId, // Long 课程名id
+					userId: userId, // Long 用户id
+				}
+				this.$api.getChannelContentTagPower(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let paidStatus = this.$util.tryParseJson(res.data.c).resultStatus
+						if (paidStatus == true) {
+							uni.showToast({
+								title: '您已经购买过该课程,感谢支持！',
+								icon: 'none'
+							})
+						} else {
+							uni.navigateTo({
+								url: `/pages/vip/column/payView/payView?id=${this.channelId}&columnId=${this.courseId}&title=${this.courseTitle}&price=${this.price}`
+							})
+						}
+					}
 				})
+
 			},
 
 
@@ -506,10 +528,10 @@
 				}
 				this.$api.createUpvote(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						if(this.$util.tryParseJson(res.data.c).value == 10){
+						if (this.$util.tryParseJson(res.data.c).value == 10) {
 							uni.showToast({
-								title:'请勿重复点赞',
-								icon:'none'
+								title: '请勿重复点赞',
+								icon: 'none'
 							})
 							return
 						}
@@ -560,7 +582,7 @@
 				this.$api.getChannelContentTagPower(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let paidStatus = this.$util.tryParseJson(res.data.c).resultStatus
-						if(paidStatus){
+						if (paidStatus) {
 							let url = ''
 							if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
 								url = 'details'
@@ -570,10 +592,10 @@
 							uni.navigateTo({
 								url: `/pages/vip/column/${url}/${url}?id=${list.id}`
 							})
-						}else{
+						} else {
 							uni.showToast({
 								title: '购买课程可观看',
-								icon:'none'
+								icon: 'none'
 							});
 						}
 					} else {
@@ -618,7 +640,7 @@
 				}
 				this.$api.getContents(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let arr = JSON.parse(res.data.c)
+						let arr = this.$util.tryParseJson(res.data.c)
 
 						for (let i = 0; i < arr.length; i++) {
 							let date = new Date(arr[i].createTime)

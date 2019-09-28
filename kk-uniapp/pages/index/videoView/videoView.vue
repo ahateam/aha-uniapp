@@ -44,7 +44,7 @@
 
 				</view>
 				<!-- 评论区 -->
-				<comment :comment="comment"></comment>
+				<comment :comment="comment" @upZan="upZan"></comment>
 				<!-- 评论end -->
 			</view>
 		</scroll-view>
@@ -139,6 +139,11 @@
 			this.getAppraiseCount()
 		},
 		methods: {
+			//更新赞数
+			upZan(index){
+				this.comment[index].appraiseCount += 1
+			},
+			
 			/* 评论 */
 			createComment() {
 				let userId = uni.getStorageSync('userId')

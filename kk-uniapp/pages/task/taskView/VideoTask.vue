@@ -27,7 +27,7 @@
 							<text v-if="item.status == constData.taskStatus[2].key">已上传，待审核</text>
 							<text v-if="item.status == constData.taskStatus[3].key">已完成</text>
 							<text v-if="item.status == constData.taskStatus[4].key">未通过，重新提交</text>
-							<text v-if="item.status == constData.taskStatus[6].key">指派中</text>
+							<text v-if="item.status == constData.taskStatus[7].key">指派中</text>
 						</view>
 						<text class="content">电话: {{item.data.tel}}</text>
 					</view>
@@ -250,7 +250,6 @@
 				if(this.videoSrc == ''){
 					uni.showToast({
 						title:'请上传作品',
-						duration:1000,
 						icon:'none'
 					})
 					return
@@ -276,12 +275,10 @@
 								})
 								uni.showToast({
 									title:'提交成功',
-									duration:1500
 								})
 							}else{
 								uni.showToast({
 									title:'提交失败',
-									duration:1500,
 									icon:'none'
 								})
 							}
@@ -324,8 +321,7 @@
 							uni.hideLoading()
 							uni.showToast({
 								title: '上传成功',
-								icon: 'success',
-								duration: 1000
+								icon: 'success'
 							})
 							//只管这个变量
 							this.videoSrc = 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/'+nameStr
@@ -342,7 +338,6 @@
 				}, fail: (err) => {
 					uni.showToast({
 						title:err.errMsg,
-						duration:1000,
 						icon:'none'
 					})
 				}
@@ -393,16 +388,14 @@
 								uni.hideLoading()
 								uni.showToast({
 									title: '上传成功',
-									icon: 'success',
-									duration: 1000
+									icon: 'success'
 								})
 								this.imgSrc = 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr
 							},
 							fail: (err) => {
 								uni.showToast({
 									title: err,
-									icon: 'success',
-									duration: 1000
+									icon: 'success'
 								})
 							}
 						});
@@ -434,7 +427,6 @@
 				if(this.userText == ''||this.imgSrc == ''||this.telPhone == ''){
 					uni.showToast({
 						title:'请填写信息',
-						duration:1000,
 						icon:'none'
 					})
 					return
@@ -461,13 +453,11 @@
 							url:'/pages/task/task'
 						})
 						uni.showToast({
-							title:'OK！',
-							duration:1000
+							title:'OK！'
 						})
 					}else{
 						uni.showToast({
 							title:'我觉得不行',
-							duration:1000,
 							icon:'none'
 						})
 					}

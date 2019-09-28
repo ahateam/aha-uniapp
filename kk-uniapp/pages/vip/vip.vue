@@ -73,6 +73,7 @@
 			//根据标签切换内容
 			changeTag(e) {
 				this.tabCurrentIndex = e
+				this.columnList = []
 				if(e == 0){
 					this.tagName = ''
 				}else{
@@ -95,7 +96,7 @@
 				}
 
 				if (e != 0) {
-					cnt.tags = this.tagName
+					cnt.tags = `{"channel":"${this.tagName}"}`
 					this.getChannel(cnt)
 				} else {
 					this.getChannel(cnt)
@@ -187,7 +188,7 @@
 			if (this.tabCurrentIndex == 0) {
 				this.getChannel(cnt)
 			} else {
-				cnt.tags = this.tagName
+				cnt.tags = `{"channel":"${this.tagName}"}`
 				this.getChannel(cnt)
 			}
 		},
@@ -208,7 +209,7 @@
 				offset: offset, // int 
 			}
 			if (index != 0) {
-				cnt.tags = this.tagName
+				cnt.tags = `{"channel":"${this.tagName}"}`
 			}
 			this.getChannel(cnt)
 		}

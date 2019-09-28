@@ -54,8 +54,18 @@
 								page: 1,
 							},
 							{
+								name: '进行中',
+								status: this.$constData.taskWallStatus[4].key,
+								page: 1,
+							},
+							{
 								name: '未确认',
 								status: this.$constData.taskWallStatus[5].key,
+								page: 1,
+							},
+							{
+								name: '作品不满意',
+								status: this.$constData.taskWallStatus[7].key,
 								page: 1,
 							}
 						],
@@ -169,12 +179,12 @@
 			},
 
 			navToTask(item) {
-				if (item.type == 1) {
+				if (item.type == this.$constData.templateType[1].key) {
 					uni.navigateTo({
 						url: `/pages/task/taskView/VideoTask?id=${item.id}`
 					})
 				}
-				if (item.type == 0) {
+				if (item.type == this.$constData.templateType[4].key) {
 					uni.navigateTo({
 						url: `/pages/task/taskView/foodTask?id=${item.id}`
 					})

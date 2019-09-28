@@ -46,30 +46,30 @@
 
 				<!-- 所属课程 -->
 				<view class="courseText">所属课程</view>
-				<view class="courseBox">
+				<view class="courseBox" @click="navToCourse">
 					<view class="columnImgBox">
 						<image class="columnImg" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1567139311188&di=b309ce828b72d42a2c9318f26f7115c7&imgtype=0&src=http%3A%2F%2Fwww.pclady.com.cn%2Fstyle%2Fmovie%2F0509%2Fpic%2Fbb20050920_shjz_06_thumb.jpg"
 						 mode="scaleToFill"></image>
 					</view>
 					<view class="courseRight">
 						<view class="courseText blodFont noPadding">
-							课程名
+							{{courseTitle}}
 						</view>
 						<view class="upName">
-							<text>作者:</text><text>作者名</text>
+							<text>作者:</text><text>{{upInfo.name}}</text>
 						</view>
 						<view class="payCourse">
-							<text class="courseMoney">45元</text>
-							<text class="courseInfo">233人购买</text>
-							<button type="primary" @click="navToPay">购买课程</button>
+							<text class="courseMoney">{{price}}元</text>
+							<!-- <text class="courseInfo">233人购买</text> -->
+							<button type="primary" @click="navToPay" @click.stop>购买课程</button>
 						</view>
 					</view>
 				</view>
 
 				<!-- 其他内容列表 -->
-				<view>
+				<view v-if="courseList.length > 0">
 					<view class="courseText">课程内容</view>
-					<view v-for="(item,index) in comment" :key="index" v-if="index <moreCourse">
+					<view v-for="(item,index) in courseList" :key="index" v-if="index < moreCourse">
 						<view class="lists" @click="navigator(item)">
 							<view class="imgBox">
 								<image v-if="item.type == constData.contentType[2].key" :src="JSON.parse(item.data).imgList[0].src" mode="aspectFill"></image>
@@ -87,7 +87,7 @@
 					</view>
 				</view>
 
-				<comment :comment="comment"></comment>
+				<comment :comment="comment" @upZan="upZan"></comment>
 
 			</view>
 		</scroll-view>
@@ -134,6 +134,7 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
 				detailData: {},
 				contentObj: {},
 				upInfo: {},
@@ -141,9 +142,15 @@
 				contentId: '',
 				channelTitle: '',
 				channelId: '',
+
+				moreCourse: 2,
+
+				id1: '',
+
+				courseList: [],
 				courseTitle: '',
 				courseId: '',
-				id1: '',
+				price: '',
 
 				/* 点赞 */
 				type: 0, //分辨点赞对象是文章还是评论 0为文章 1为评论
@@ -189,6 +196,18 @@
 			this.getAppraiseCount()
 		},
 		methods: {
+			//更新赞数
+			upZan(index) {
+				this.comment[index].appraiseCount += 1
+			},
+
+			navToCourse() {
+				let color = this.$constData.colorData[Math.floor(Math.random() * this.$constData.colorData.length)]
+				uni.redirectTo({
+					url: `/pages/vip/column/courseView/courseView?channelId=${this.channelId}&id=${this.courseId}&title=${this.courseTitle}&color=${color}`
+				})
+			},
+
 			/* 朋友圈分享 */
 			//开始生成海报
 			createHb() {
@@ -398,6 +417,7 @@
 						// this.contentUpvote = this.$util.tryParseJson(res.data.c).contentUpvote
 						let comment = this.$util.tryParseJson(res.data.c)
 						for (let i = 0; i < comment.length; i++) {
+							comment[i].jsAdd = false
 							let time = new Date(comment[i].createTime)
 							let y = time.getFullYear()
 							let m = 1 + time.getMonth()
@@ -462,10 +482,10 @@
 				}
 				this.$api.createUpvote(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						if(this.$util.tryParseJson(res.data.c).value == 10){
+						if (this.$util.tryParseJson(res.data.c).value == 10) {
 							uni.showToast({
-								title:'请勿重复点赞',
-								icon:'none'
+								title: '请勿重复点赞',
+								icon: 'none'
 							})
 							return
 						}
@@ -553,6 +573,7 @@
 						for (let i = 0; i < arr.length; i++) {
 							if (arr[i].name == this.courseTitle) {
 								this.courseId = arr[i].id
+								this.price = arr[i].price
 								break
 							}
 						}
@@ -574,9 +595,40 @@
 			},
 
 			navToPay() {
-				uni.navigateTo({
-					url: '/pages/vip/column/payView/payView'
-				});
+				let userId = uni.getStorageSync('userId')
+				if(userId == ''|| userId == '1234567890'){
+					uni.switchTab({
+						url:'/pages/user/user'
+					})
+					uni.showToast({
+						title: '请登录',
+						icon:'none'
+					})
+					return
+				}
+				let cnt = {
+					modeuleId: this.$constData.module, // Long 模块编号
+					channelId: this.channelId, // Long 专栏id
+					channelContentTagId: this.courseId, // Long 课程名id
+					userId: userId, // Long 用户id
+				}
+				this.$api.getChannelContentTagPower(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let paidStatus = this.$util.tryParseJson(res.data.c).resultStatus
+						console.log(paidStatus)
+						if (paidStatus == true) {
+							uni.showToast({
+								title: '您已经购买过该课程,感谢支持！',
+								icon: 'none'
+							})
+						} else {
+							uni.navigateTo({
+								url: `/pages/vip/column/payView/payView?id=${this.channelId}&columnId=${this.courseId}&title=${this.courseTitle}&price=${this.price}`
+							})
+						}
+					}
+				})
+
 			},
 
 			// 从专栏id获取课程列表
@@ -592,7 +644,7 @@
 				}
 				this.$api.getContents(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let arr = JSON.parse(res.data.c)
+						let arr = this.$util.tryParseJson(res.data.c)
 
 						for (let i = 0; i < arr.length; i++) {
 							let date = new Date(arr[i].createTime)

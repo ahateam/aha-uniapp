@@ -25,8 +25,8 @@
 			</view>
 		</view>
 		<uni-load-more :status="pageStatus"></uni-load-more>
-		<uni-fab :pattern="pattern" :content="content" :horizontal="horizontal" :vertical="vertical" :direction="direction"
-		 @trigger="trigger"></uni-fab>
+		<!-- <uni-fab :pattern="pattern" :content="content" :horizontal="horizontal" :vertical="vertical" :direction="direction"
+		 @trigger="trigger"></uni-fab> -->
 	</view>
 </template>
 
@@ -222,9 +222,9 @@
 									src: this.$util.tryParseJson(list[i].data).imgSrc
 								}]
 								list[i].imgList = imgList
-								if(this.versionStatus == this.$constData.showStatus[0].key){
-									list[i].type = 999
-								}
+								// if(this.versionStatus == this.$constData.showStatus[0].key){
+								// 	list[i].type = 999
+								// }
 							}
 						}
 						this.tryDataList(list)
@@ -300,7 +300,7 @@
 					status: this.constData.contentStatus[4].key, // Byte <选填> 状态
 					power: this.constData.contentPaid[0].key, // Byte <选填> 是否付费
 					// type: type, // Byte <选填> 类型
-					tags: this.tagName, // String <选填> 标签
+					tags: `{"homeCotent":"${this.tagName}"}`, // String <选填> 标签
 					count: this.count, // Integer
 					offset: this.offset, // Integer
 				}
@@ -311,13 +311,13 @@
 			/* 跳转至详情 */
 			navToInfo(info) {
 				if (info.type == this.constData.contentType[2].key || info.type == this.constData.contentType[0].key) {
-					if (info.upChannelId == 0 || info.upChannelId < 100000000000) {
+					if (info.upChannelId) {
 						uni.navigateTo({
-							url: `/pages/index/articleView/articleView?id=${info.id}`
+							url: `/pages/vip/column/details/details?id=${info.id}`
 						})
 					} else {
 						uni.navigateTo({
-							url: `/pages/vip/column/details/details?id=${info.id}`
+							url: `/pages/index/articleView/articleView?id=${info.id}`
 						})
 					}
 
@@ -325,13 +325,13 @@
 					// uni.navigateTo({
 					// 	url: `/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
 					// })
-					if (info.upChannelId == 0 || info.upChannelId.length < 13) {
+					if (info.upChannelId) {
 						uni.navigateTo({
-							url: `/pages/index/videoView/videoView?id=${info.id}`
+							url: `/pages/vip/column/detailsVideo/detailsVideo?id=${info.id}`
 						})
 					} else {
 						uni.navigateTo({
-							url: `/pages/vip/column/detailsVideo/detailsVideo?id=${info.id}`
+							url: `/pages/index/videoView/videoView?id=${info.id}`
 						})
 					}
 				}
@@ -352,12 +352,12 @@
 				offset: this.offset, // Integer
 			}
 			if (this.tagName != '' && this.tagName != '全部') {
-				cnt.tags = this.tagName
+				cnt.tags = `{"homeCotent":"${this.tagName}"}`
 			}
 			this.getContentsByTag(cnt)
 		},
 		//上滑加载更多
-		onReachBottom: function() {
+		onReachBottom() {
 			this.page += 1
 			this.tagsList[this.tabCurrentIndex].page = this.page
 			let cnt = {
@@ -369,7 +369,7 @@
 				offset: (this.page - 1) * this.count, // Integer
 			}
 			if (this.tagName != '' && this.tagName != '全部') {
-				cnt.tags = this.tagName
+				cnt.tags = `{"homeCotent":"${this.tagName}"}`
 			}
 			this.getContentsByTag(cnt)
 		},

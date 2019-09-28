@@ -6,7 +6,7 @@
 				<input type="number" v-model="money" placeholder="请输入支付金额" />
 			</view>
 		</view>
-		
+
 		<view class="payTitle">
 			支付方式<text class="textInfo">(可以任选支付方式)</text>
 		</view>
@@ -28,7 +28,7 @@
 				<!-- #endif -->
 			</radio-group>
 		</view>
-		
+
 		<view class="bottonBox">
 			<button class="payBtn" type="primary" @click="payMoney">支付</button>
 		</view>
@@ -45,7 +45,7 @@
 				type: 0, //0为平台预付款 1为任务全款预付款
 				providerList: [],
 				title: '',
-				
+
 				items: [
 					// {
 					// 	value: '0',
@@ -94,8 +94,8 @@
 						style: 'color:#24af41'
 					}
 				],
-				payMethod:0,
-				current:0,
+				payMethod: 1,
+				current: 0,
 			}
 		},
 		onLoad(options) {
@@ -115,34 +115,49 @@
 				this.payMethod = evt.target.value
 				console.log(evt.target)
 			},
-			
+
 			//支付宝支付
 			apppayEarnestMoney() {
 				let cnt = {}
+				let taskData = {
+					goodsId: '', //商品id
+					goodsName: '', //商品名字
+					userName: uni.getStorageSync('userName'), //用户名字
+					userId: uni.getStorageSync('userId') //用户编号
+				}
+
+				if (this.type == 0) {
+					taskData.goodsName = '创建任务预付款'
+				} else {
+					taskData.goodsId = this.id
+					taskData.goodsName = this.title
+				}
 				if (this.type == 0) {
 					cnt = {
 						body: '任务创建预付款', // String 对一笔交易的具体描述信息
 						subject: '表扬表扬ta', // String 商品的标题/交易标题/订单标题/订单关键字等
 						totalAmount: this.money, // String 订单总金额，单位为元，精确到小数点后两位
+						attach: JSON.stringify(taskData), // String 商家附加数据（jsonobject格式-goodsId-goodsName-userName）
 					}
 				} else {
 					cnt = {
 						body: '任务交易款', // String 对一笔交易的具体描述信息
 						subject: '表扬表扬ta', // String 商品的标题/交易标题/订单标题/订单关键字等
 						totalAmount: this.money, // String 订单总金额，单位为元，精确到小数点后两位
+						attach: JSON.stringify(taskData), // String 商家附加数据（jsonobject格式-goodsId-goodsName-userName）
 					}
 				}
-				if(this.payMethod == 1){
+				if (this.payMethod == 1) {
 					this.appAlipay(cnt)
-				}else{
+				} else {
 					uni.showToast({
-						title:'暂不支持此方式',
-						icon:'none'
+						title: '暂不支持此方式',
+						icon: 'none'
 					})
 				}
 			},
-			
-			appAlipay(cnt){
+
+			appAlipay(cnt) {
 				this.$api.creatAlipayOrder(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log(res.data.c)
@@ -197,7 +212,7 @@
 						userId: uni.getStorageSync('openId'), // String 支付宝买方用户userId
 						price: this.money, // double 支付金额
 						payCount: '任务创建预付款', // String 商品的标题/交易标题/订单标题/订单关键字等
-						attach:JSON.stringify(taskData),// String 商家附加数据（jsonobject格式-goodsId-goodsName-userName）
+						attach: JSON.stringify(taskData), // String 商家附加数据（jsonobject格式-goodsId-goodsName-userName）
 					}
 					this.creatAlipayAppletOrder(cnt, provider)
 				} else if (provider.id == this.$constData.payInfoList[0].id) {
@@ -205,7 +220,7 @@
 						openId: uni.getStorageSync('openId'), // String 微信用户openId
 						totalFee: this.money * 100, //int 支付金额，单位为分，单位为分
 						body: '任务创建预付款', // String 商品描述
-						attach: JSON.stringify(taskData),// String 商家附加数据（jsonobject格式-goodsId-goodsName-userName）
+						attach: JSON.stringify(taskData), // String 商家附加数据（jsonobject格式-goodsId-goodsName-userName）
 					}
 					this.doUnifiedOrder(cnt, provider)
 				} else {
@@ -316,7 +331,8 @@
 							url: '/pages/task/task'
 						})
 						uni.showToast({
-							title: '已指派，等待对方确认'
+							title: '已指派，等待对方确认',
+							icon: 'none'
 						})
 					} else {
 						uni.showToast({
@@ -415,26 +431,26 @@
 	.payBtn {
 		width: 50vw;
 	}
-	
+
 	.rightBox {
 		position: absolute;
 		right: $box-margin-left;
 		top: $box-margin-top;
 		font-size: $list-info;
 	}
-	
+
 	.payTitle {
 		padding: $box-margin-top $box-margin-left;
 		font-size: $list-title;
 		line-hight: $list-title-line;
-	
+
 		.textInfo {
 			font-size: $list-info;
 			line-hight: $list-title-line;
 			color: $list-info-color;
 		}
 	}
-	
+
 	.payList {
 		position: relative;
 		padding: $box-margin-top $box-margin-left;
@@ -442,13 +458,13 @@
 		display: block;
 		margin-bottom: 1px;
 	}
-	
+
 	.payName {
 		margin-left: 10upx;
 		font-size: $list-info;
 		vertical-align: middle;
 	}
-	
+
 	.payIcon {
 		font-size: $list-title-l;
 		vertical-align: middle;

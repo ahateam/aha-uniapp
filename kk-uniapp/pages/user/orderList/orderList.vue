@@ -20,7 +20,7 @@
 		},
 		onLoad() {
 			let cnt = {
-				openId: uni.getStorageSync('openId'), // Long 用户openid
+				userId: uni.getStorageSync('userId'), // Long 用户openid
 				count: 20, // int 
 				offset: 0, // int 
 			}

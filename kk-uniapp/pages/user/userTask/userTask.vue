@@ -48,6 +48,11 @@
 								page: 1,
 							},
 							{
+								name: '进行中',
+								status: this.$constData.taskStatus[1].key,
+								page: 1,
+							},
+							{
 								name: '未确认',
 								status: this.$constData.taskStatus[2].key,
 								page: 1,

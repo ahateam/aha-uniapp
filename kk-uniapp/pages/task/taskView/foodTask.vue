@@ -59,7 +59,7 @@
 							<text v-if="item.status == constData.taskStatus[2].key">已上传，待审核</text>
 							<text v-if="item.status == constData.taskStatus[3].key">已完成</text>
 							<text v-if="item.status == constData.taskStatus[4].key">未通过，重新提交</text>
-							<text v-if="item.status == constData.taskStatus[6].key">指派中</text>
+							<text v-if="item.status == constData.taskStatus[7].key">指派中</text>
 						</view>
 						<text class="content">电话: {{item.data.tel}}</text>
 					</view>
@@ -254,13 +254,11 @@
 									url: '/pages/task/task'
 								})
 								uni.showToast({
-									title: '提交成功',
-									duration: 1500
+									title: '提交成功'
 								})
 							} else {
 								uni.showToast({
 									title: '提交失败',
-									duration: 1500,
 									icon: 'none'
 								})
 							}
@@ -291,7 +289,6 @@
 					} else {
 						uni.showToast({
 							title: '服务器错误',
-							duration: 1000,
 							icon: 'none'
 						})
 					}
@@ -305,13 +302,11 @@
 							url: '/pages/task/task'
 						})
 						uni.showToast({
-							title: '评价成功',
-							duration: 1000
+							title: '评价成功'
 						})
 					} else {
 						uni.showToast({
 							title: '服务器错误',
-							duration: 1000,
 							icon: 'none'
 						})
 					}
@@ -378,7 +373,6 @@
 				if (this.telPhone == '') {
 					uni.showToast({
 						title: '请填写电话',
-						duration: 1000,
 						icon: 'none'
 					})
 					return
@@ -400,13 +394,11 @@
 							url: '/pages/task/task'
 						})
 						uni.showToast({
-							title: '领取成功',
-							duration: 1000
+							title: '领取成功'
 						})
 					} else {
 						uni.showToast({
 							title: '我觉得不行',
-							duration: 1000,
 							icon: 'none'
 						})
 					}

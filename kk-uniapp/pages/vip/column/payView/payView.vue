@@ -164,7 +164,8 @@
 				let taskData = {
 					goodsId: this.columnId, //商品id
 					goodsName: this.title, //商品名字
-					userName: uni.getStorageSync('userName') //用户名字
+					userName: uni.getStorageSync('userName'), //用户名字
+					userId: uni.getStorageSync('userId') //用户编号
 				}
 				let cnt = {
 					body: '购买课程', // String 对一笔交易的具体描述信息
@@ -307,7 +308,9 @@
 			PayChannelContentTag(cnt) {
 				this.$api.PayChannelContentTag(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.navigateBack()
+						uni.switchTab({
+							url:'/pages/vip/vip'
+						})
 						uni.showToast({
 							title: '购买成功'
 						})

@@ -102,22 +102,22 @@ constData.providerList = [{
 
 /** 资讯内容状态*/
 constData.contentStatus = [{
-	key: '0',
+	key: 0,
 	val: '草稿'
 }, {
-	key: '1',
+	key: 1,
 	val: '未发布'
 }, {
-	key: '2',
+	key: 2,
 	val: '已关闭'
 }, {
-	key: '3',
+	key: 3,
 	val: '已删除'
 }, {
-	key: '4',
+	key: 4,
 	val: '已发布'
 }, {
-	key: '5',
+	key: 5,
 	val: '发布失败'
 }]
 

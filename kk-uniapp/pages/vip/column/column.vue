@@ -17,6 +17,8 @@
 			<!-- 课程列表 -->
 			<view v-for="(item,index) in list" :key="index">
 				<view class="lists" @click="navigator(item)">
+					<view class="powerInfo" v-if="item.power == constData.contentPaid[0].key">免费课程</view>
+					<view class="powerInfo" v-if="item.power == constData.contentPaid[1].key">付费课程</view>
 					<view class="imgBox">
 						<image v-if="item.type == constData.contentType[2].key" :src="JSON.parse(item.data).imgList[0].src" mode="aspectFill"></image>
 						<image v-else-if="item.type == constData.contentType[1].key" :src="JSON.parse(item.data).imgSrc" mode="aspectFill"></image>
@@ -29,11 +31,11 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="bottomBtn" v-if="payOrNo">
 			<button type="primary" @click="navToPay">立即支付{{price}}￥</button>
 		</view>
-		
+
 	</view>
 </template>
 
@@ -46,7 +48,7 @@
 		data() {
 			return {
 				curry: 0, //选中标签下标
-				constData: {}, //引入全局变量
+				constData: this.$constData, //引入全局变量
 
 				id: '', //专栏id
 				ChannelContentTagId: '', //课程id
@@ -62,19 +64,30 @@
 				tagList: [],
 
 				tagName: '',
-				price:'',//课程价格
-				
-				payOrNo:false,//是否购买
+				price: '', //课程价格
+
+				payOrNo: false, //是否购买
 			}
 		},
 		methods: {
 			//跳转支付页
 			navToPay() {
+				let userId = uni.getStorageSync('userId')
+				if(userId == ''|| userId == '1234567890'){
+					uni.switchTab({
+						url:'/pages/user/user'
+					})
+					uni.showToast({
+						title: '请登录',
+						icon:'none'
+					})
+					return
+				}
 				uni.navigateTo({
 					url: `/pages/vip/column/payView/payView?id=${this.id}&columnId=${this.ChannelContentTagId}&title=${this.tagName}&price=${this.price}`
 				})
 			},
-			
+
 			//路由跳转
 			navigator(list) {
 				let url = ''
@@ -103,7 +116,7 @@
 				this.$api.getChannelContentTagPower(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let paidStatus = this.$util.tryParseJson(res.data.c).resultStatus
-						if(paidStatus){
+						if (paidStatus) {
 							let url = ''
 							if (list.type == this.$constData.contentType[0].key || list.type == this.$constData.contentType[2].key) {
 								url = 'details'
@@ -113,10 +126,10 @@
 							uni.navigateTo({
 								url: `/pages/vip/column/${url}/${url}?id=${list.id}`
 							})
-						}else{
+						} else {
 							uni.showToast({
 								title: '购买课程可观看',
-								icon:'none'
+								icon: 'none'
 							});
 						}
 					} else {
@@ -154,9 +167,9 @@
 					}
 				})
 			},
-			
+
 			//获取当前课程是否购买状态
-			getPayStatus(){
+			getPayStatus() {
 				let cnt = {
 					modeuleId: this.$constData.module, // Long 模块编号
 					channelId: this.id, // Long 专栏id
@@ -166,10 +179,10 @@
 				this.$api.getChannelContentTagPower(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let paidStatus = this.$util.tryParseJson(res.data.c).resultStatus
-						
-						if(paidStatus){
+
+						if (paidStatus) {
 							this.payOrNo = false
-						}else{
+						} else {
 							this.payOrNo = true
 						}
 						// console.log('购买状态'+this.payOrNo)
@@ -191,7 +204,7 @@
 				})
 			},
 
-			changeContent(e, f,price) {
+			changeContent(e, f, price) {
 				this.curry = e
 				this.tagName = f
 				this.price = price
@@ -253,7 +266,6 @@
 					this.windowHeight = -0.15 * res.windowHeight + 10
 				}
 			})
-			this.constData = this.$constData
 			console.log(options)
 			this.id = options.id
 			this.titleText = options.title
@@ -275,10 +287,10 @@
 		line-height: 0;
 		float: left;
 
-		image {
-			width: 100vw;
-			height: 45vh;
-		}
+		// image {
+		// 	width: 100vw;
+		// 	height: 45vh;
+		// }
 
 		.title {
 			position: absolute;
@@ -347,10 +359,9 @@
 
 	.lists {
 		position: relative;
-		padding: 2vw;
+		padding: $box-margin-top $box-margin-left;
 		height: 24vw;
-		font-size: 18px;
-		line-height: 18px;
+		font-size: $list-title;
 
 		.title {
 			margin-bottom: 50upx;
@@ -411,5 +422,13 @@
 			color: rgba(255, 255, 255, 0.5)
 		}
 
+	}
+	
+	.powerInfo{
+		position: absolute;
+		top: $box-margin-top;
+		right: $box-margin-left;
+		font-size: $list-info;
+		color: $list-info-color;
 	}
 </style>
