@@ -76,7 +76,6 @@
 	.content-box{
 		padding: 40rpx;
 		color: #666;
-		line-height: 20rpx;
 		font-size: 28rpx;
 	}
 	.footer-box {

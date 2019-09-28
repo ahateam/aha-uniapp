@@ -13,8 +13,8 @@ module.exports = [
 		link: '/aha-element/'
 	},
 	{
-		text: '集体uniapp',
-		link: '/jiti-uniapp/'
+		text: '集体经济',
+		link: '/jiti-uniapp/info/'
 	},
 	{
 		text: '夸夸uniapp',

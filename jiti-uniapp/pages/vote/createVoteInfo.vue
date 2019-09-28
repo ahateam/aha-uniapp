@@ -264,8 +264,14 @@
                     	title: '请将信息填写完整'
                     })
                 }else{
+					let crowdArr = []
+					this.crowd.forEach((item)=>{
+						crowdArr.push(Number(item))
+					})
+					
+					
                     let crowd = {
-                        roles:this.crowd,
+                        roles:crowdArr,
                         tags:{groups:[],tag:[]}
                     }
 						
