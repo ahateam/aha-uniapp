@@ -37,6 +37,11 @@
 								<i class="iconfont icon-logo-wechat"></i>
 							</view>
 						</view>
+						<view class="input_box1">
+								<span>
+									版本号:{{version}}
+								</span>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -53,6 +58,7 @@
 				pwd: '',
 				key: 0,
 				provider: '',
+				version:this.$constData.version
 			}
 		},
 		methods: {
@@ -147,6 +153,7 @@
 
 				this.$api.getVersion({}, (res) => {
 					let resData = JSON.parse(res.data.c)
+					console.log(resData)
 					if (resData.version > this.$constData.version) {
 						if (platform == 'android') {
 							this.loadVersionAndroid(resData)
@@ -161,7 +168,7 @@
 
 			loadVersionAndroid(resData) {
 				uni.showToast({
-					title: '有新的版本发布，检测到您目前为Wifi连接，程序已启动自动更新。新版本下载完成后将自动弹出安装程序。',
+					title: '有新的版本发布，程序已启动自动更新。新版本下载完成后将自动弹出安装程序。',
 					mask: false,
 					duration: 5000,
 					icon: "none"
@@ -186,6 +193,7 @@
 				});
 				dtask.start();
 			},
+
 
 			loadVersionIos(resData) {
 				uni.showToast({
@@ -214,6 +222,8 @@
 				});
 				dtask.start();
 			},
+
+
 
 			initSet() {
 
@@ -294,11 +304,8 @@
 				success: (res) => {
 					this.provider = res.provider
 					this.key = 1
-
-				},
-			})
-			setTimeout(() => {
-				if (this.key == 1) {
+					console.log()
+					
 					if (this.provider.length > 1) { //app
 						let platform = uni.getSystemInfoSync().platform
 						console.log(platform)
@@ -306,8 +313,10 @@
 					} else {
 						this.initSet()
 					}
-				}
-			}, 300)
+					
+				},
+			})
+			
 
 
 
@@ -434,5 +443,13 @@
 			font-size: 100rpx;
 			color: #1afa29;
 		}
+	}
+	.input_box1{
+		width: auto;
+		padding-bottom: 40rpx;
+
+		color: #888;
+		font-size: 24rpx;
+		text-align: center;
 	}
 </style>

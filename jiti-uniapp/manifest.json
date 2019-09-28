@@ -2,8 +2,8 @@
     "name" : "集体经济",
     "appid" : "__UNI__8656F60",
     "description" : "集体经济app",
-    "versionName" : "1.0.7",
-    "versionCode" : 107,
+    "versionName" : "1.1.0",
+    "versionCode" : 110,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
