@@ -15,7 +15,7 @@ const constData = {}
 
 
 //app版本号
- constData.version = 108
+ constData.version = 109
 
 /* 投票状态*/
 constData.pollStatus = [{
