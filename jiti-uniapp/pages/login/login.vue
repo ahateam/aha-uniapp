@@ -299,23 +299,21 @@
 		onLoad() {
 			let that = this
 			/*检查版本号--更新版本*/
-			uni.getProvider({
-				service: 'oauth',
-				success: (res) => {
-					this.provider = res.provider
-					this.key = 1
-					console.log()
+			this.initSet()
+			// uni.getProvider({
+			// 	service: 'oauth',
+			// 	success: (res) => {
+			// 		this.provider = res.provider
+			// 		this.key = 1
+			// 		if (this.provider.length > 1) { //app
+			// 			let platform = uni.getSystemInfoSync().platform
+			// 			this.getVersionData(platform)
+			// 		} else {
+			// 			this.initSet()
+			// 		}
 					
-					if (this.provider.length > 1) { //app
-						let platform = uni.getSystemInfoSync().platform
-						console.log(platform)
-						this.getVersionData(platform)
-					} else {
-						this.initSet()
-					}
-					
-				},
-			})
+			// 	},
+			// })
 			
 
 
