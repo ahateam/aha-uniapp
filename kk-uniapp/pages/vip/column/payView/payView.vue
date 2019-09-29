@@ -208,7 +208,8 @@
 				let taskData = {
 					goodsId: this.columnId, //商品id
 					goodsName: this.title, //商品名字
-					userName: uni.getStorageSync('userName') //用户名字
+					userName: uni.getStorageSync('userName'), //用户名字
+					userId:uni.getStorageSync('userId')
 				}
 				let cnt = {
 					openId: uni.getStorageSync('openId'),
@@ -261,7 +262,8 @@
 				let taskData = {
 					goodsId: this.columnId, //商品id
 					goodsName: this.title, //商品名字
-					userName: uni.getStorageSync('userName') //用户名字
+					userName: uni.getStorageSync('userName'), //用户名字
+					userId:uni.getStorageSync('userId')
 				}
 				let cnt = {
 					userId: uni.getStorageSync('openId'),

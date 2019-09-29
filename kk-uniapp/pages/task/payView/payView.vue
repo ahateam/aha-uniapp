@@ -196,7 +196,8 @@
 				let taskData = {
 					goodsId: '', //商品id
 					goodsName: '', //商品名字
-					userName: uni.getStorageSync('userName') //用户名字
+					userName: uni.getStorageSync('userName'), //用户名字
+					userId:uni.getStorageInfoSync('userId')
 				}
 
 				if (this.type == 0) {
