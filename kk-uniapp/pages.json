@@ -182,6 +182,10 @@
             "path" : "pages/vip/column/courseView/courseView",
             "style" : {}
         }
+        ,{
+            "path" : "pages/user/userLogin/userLogin",
+            "style" : {}
+        }
     ],
 	"tabBar": {
 		"color": "#C0C4CC",

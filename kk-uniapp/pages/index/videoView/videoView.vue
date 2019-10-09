@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view class="video-wrapper">
-			<video class="video" :src="contentObj.url" controls objectFit="fill" :autoplay="false"></video>
+			<video class="video" :src="contentObj.url" controls objectFit="contain" :autoplay="false"></video>
 		</view>
 
 		<scroll-view class="scroll" scroll-y>

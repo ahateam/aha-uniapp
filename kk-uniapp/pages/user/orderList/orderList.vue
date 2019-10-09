@@ -1,5 +1,8 @@
 <template>
 	<view>
+		<view class="noThing" v-if="orderList.length == 0">
+			没有获取到数据嗷。
+		</view>
 		<view style="position: relative;" v-for="(item,index) in orderList" :key="index">
 			<list-box :title="item.goodsName" :text="item.time" :name="item.userName" ></list-box>
 			<view class="priceBox">{{item.totalFee}}￥</view>
@@ -59,5 +62,10 @@
 		color: $list-info-color;
 		right: $box-margin-left;
 		top: $box-margin-top;
+	}
+	
+	.noThing{
+		padding: $box-margin-top $box-margin-left;
+		font-size: $list-title;
 	}
 </style>

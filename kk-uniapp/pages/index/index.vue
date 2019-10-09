@@ -184,6 +184,8 @@
 							tagsList[i].page = 1
 						}
 						this.tagsList = tagsList
+						console.log('标签列表:')
+						console.log(this.tagsList)
 						let cnt1 = {
 							module: this.constData.module, // String 所属模块
 							// tags: this.tagActiveId,

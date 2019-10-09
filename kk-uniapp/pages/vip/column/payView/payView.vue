@@ -177,15 +177,19 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.requestPayment({
 							provider: this.$constData.providerList[5].id,
-							orderInfo: this.$util.tryParseJson(res.data.c),
-							success: (res) => {
+							orderInfo: this.$util.tryParseJson(res.data.c).body,
+							success: () => {
 								let cnt1 = {
+									outTradeNo:this.$util.tryParseJson(res.data.c).outTradeNo
+								}
+								this.updatePayOrder(cnt1)
+								let cnt2 = {
 									modeuleId: this.$constData.module, // Long 模块编号
 									channelId: this.id, // Long 专栏id
 									ChannelContentTagId: this.columnId, // Long 课程名id
 									userId: uni.getStorageSync('userId'), // Long 用户id
 								}
-								this.PayChannelContentTag(cnt1)
+								this.PayChannelContentTag(cnt2)
 							},
 							fail: (error) => {
 								uni.showToast({
@@ -231,15 +235,18 @@
 							package: wx.package,
 							signType: 'MD5',
 							paySign: wx.paySign,
-							success: (res) => {
-								console.log(res)
+							success: () => {
 								let cnt1 = {
+									outTradeNo:wx.outTradeNo
+								}
+								this.updatePayOrder(cnt1)
+								let cnt2 = {
 									modeuleId: this.$constData.module, // Long 模块编号
 									channelId: this.id, // Long 专栏id
 									ChannelContentTagId: this.columnId, // Long 课程名id
 									userId: uni.getStorageSync('userId'), // Long 用户id
 								}
-								this.PayChannelContentTag(cnt1)
+								this.PayChannelContentTag(cnt2)
 							},
 							fail: (error) => {
 								uni.showToast({
@@ -281,14 +288,18 @@
 						uni.requestPayment({
 							provider: provider.id,
 							orderInfo: res.data.c,
-							success: (res) => {
+							success: () => {
 								let cnt1 = {
+									transactionId:res.data.c
+								}
+								this.updatePayOrder(cnt1)
+								let cnt2 = {
 									modeuleId: this.$constData.module, // Long 模块编号
 									channelId: this.id, // Long 专栏id
 									ChannelContentTagId: this.columnId, // Long 课程名id
 									userId: uni.getStorageSync('userId'), // Long 用户id
 								}
-								this.PayChannelContentTag(cnt1)
+								this.PayChannelContentTag(cnt2)
 							},
 							fail: (error) => {
 								uni.showToast({
@@ -324,7 +335,17 @@
 					}
 				})
 			},
-
+			
+			//更新订单状态
+			updatePayOrder(cnt){
+				this.$api.updatePayOrder(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						console.log('订单更新成功')
+					}else{
+						console.log('订单更新失败')
+					}
+				})
+			},
 		}
 	}
 </script>

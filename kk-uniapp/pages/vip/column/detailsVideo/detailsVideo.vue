@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view class="video-wrapper">
-			<video class="video" :src="contentObj.url" controls objectFit="fill" :autoplay="false"></video>
+			<video class="video" :src="contentObj.url" controls objectFit="contain" :autoplay="false"></video>
 		</view>
 		<scroll-view class="scroll" scroll-y>
 			<view class="scroll-content">
@@ -698,7 +698,7 @@
 			var options = currentPage.options //如果要获取url中所带的参数可以查看options 
 			var id = options.id
 			var id1 = options.id1
-			var src = `${url}?id=${id}&id1=${id1}`
+			var src = `${url}?id=${id}`
 			console.log(src)
 			if (res.from === 'button') { // 来自页面内分享按钮
 				console.log(res.target)

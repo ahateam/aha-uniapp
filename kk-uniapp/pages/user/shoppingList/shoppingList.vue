@@ -1,5 +1,8 @@
 <template>
 	<view>
+		<view class="noThing" v-if="channelList.length == 0">
+			没有获取到数据嗷。
+		</view>
 		<view v-for="(item,index) in channelList" :key="index" @click="navToChanle(item)">
 			<taskListBox :title="item.name" :text="item.price+'￥'"></taskListBox>
 		</view>
@@ -42,7 +45,7 @@
 						this.channelList = this.$util.tryParseJson(res.data.c)
 						console.log(this.channelList)
 					} else {
-						console.log(res.data.c)
+						this.channelList = []
 						console.log('err')
 					}
 				})
@@ -53,5 +56,8 @@
 </script>
 
 <style lang="scss" scoped>
-
+	.noThing{
+		padding: $box-margin-top $box-margin-left;
+		font-size: $list-title;
+	}
 </style>

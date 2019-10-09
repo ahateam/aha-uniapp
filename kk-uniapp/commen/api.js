@@ -224,4 +224,9 @@ api.getPayOrderByUserId = function(cnt, callback) {
 api.getPayChannel = function(cnt, callback) {
 	util.call(baseUrl + '/task/getPayChannel', cnt, callback)
 }
+
+//更新订单信息  
+api.updatePayOrder = function(cnt, callback) {
+	util.call(baseUrl + '/task/updatePayOrder', cnt, callback)
+}
 export default api

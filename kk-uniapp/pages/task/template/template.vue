@@ -197,6 +197,10 @@
 		margin-left: 21vw;
 		font-size: $list-title;
 		line-height: $list-title-line;
+		width: 60vw;
+		overflow: hidden;
+		text-overflow:ellipsis;
+		white-space: nowrap;
 	}
 
 	.contentTitle {

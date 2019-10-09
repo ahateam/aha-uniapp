@@ -45,7 +45,7 @@
 	.img {
 		position: relative;
 		width: 690upx;
-		height: 240upx;
+		height: 388.125upx;
 		margin: $box-margin-s 0upx;
 
 		image {

@@ -125,7 +125,6 @@
 					userName: uni.getStorageSync('userName'), //用户名字
 					userId: uni.getStorageSync('userId') //用户编号
 				}
-
 				if (this.type == 0) {
 					taskData.goodsName = '创建任务预付款'
 				} else {
@@ -160,15 +159,19 @@
 			appAlipay(cnt) {
 				this.$api.creatAlipayOrder(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('你要找的在下面：')
 						console.log(res.data.c)
 						uni.requestPayment({
 							provider: this.$constData.providerList[5].id,
-							orderInfo: this.$util.tryParseJson(res.data.c),
-							success: (res) => {
-								console.log(res)
-								let cnt1 = this.$store.state.createFoodTask.data
+							orderInfo: this.$util.tryParseJson(res.data.c).body,
+							success: () => {
+								let cnt1 = {
+									outTradeNo:this.$util.tryParseJson(res.data.c).outTradeNo
+								}
+								this.updatePayOrder(cnt1)
+								let cnt2 = this.$store.state.createFoodTask.data
 								if (this.type == 0) {
-									this.createTask(cnt1)
+									this.createTask(cnt2)
 								} else if (this.type == 1) {
 									this.dealTask()
 								}
@@ -197,7 +200,7 @@
 					goodsId: '', //商品id
 					goodsName: '', //商品名字
 					userName: uni.getStorageSync('userName'), //用户名字
-					userId:uni.getStorageInfoSync('userId')
+					userId:uni.getStorageSync('userId')
 				}
 
 				if (this.type == 0) {
@@ -245,10 +248,14 @@
 							signType: 'MD5',
 							paySign: wx.paySign,
 							success: (res) => {
+								let cnt1 = {
+									outTradeNo:wx.outTradeNo
+								}
+								this.updatePayOrder(cnt1)
 								console.log(res)
 								if (this.type == 0) {
-									let cnt1 = this.$store.state.createFoodTask.data
-									this.createTask(cnt1)
+									let cnt2 = this.$store.state.createFoodTask.data
+									this.createTask(cnt2)
 								} else {
 									this.dealTask()
 								}
@@ -273,14 +280,19 @@
 			creatAlipayAppletOrder(cnt, provider) {
 				this.$api.creatAlipayAppletOrder(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log(res.data.c)
 						uni.requestPayment({
 							provider: provider.id,
 							orderInfo: res.data.c,
 							success: (res) => {
+								let cnt1 = {
+									transactionId:res.data.c
+								}
+								this.updatePayOrder(cnt1)
 								console.log(res)
 								if (this.type == 0) {
-									let cnt1 = this.$store.state.createFoodTask.data
-									this.createTask(cnt1)
+									let cnt2 = this.$store.state.createFoodTask.data
+									this.createTask(cnt2)
 								} else {
 									this.dealTask()
 								}
@@ -317,6 +329,17 @@
 							title: '错误！请联系客服',
 							icon: 'none'
 						})
+					}
+				})
+			},
+			
+			//更新订单状态
+			updatePayOrder(cnt){
+				this.$api.updatePayOrder(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						console.log('订单更新成功')
+					}else{
+						console.log('订单更新失败')
 					}
 				})
 			},
