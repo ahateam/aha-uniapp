@@ -623,13 +623,13 @@
 			},
 			getCouser() {
 				let data = this.detailData.tags
-				let key = this.channelTitle
+				let key = `t${this.channelId}`
 				this.courseTitle = data[key][0]
 				this.getContentByChannelId()
 			},
 			// 从专栏id获取课程列表
 			getContentByChannelId() {
-				let tagJson = `{"${this.channelTitle}":"${this.courseTitle}"}`
+				let tagJson = `{"t${this.channelId}":"${this.courseTitle}"}`
 				let cnt = {
 					module: this.$constData.module, // String 隶属
 					upChannelId: this.channelId, // Long 专栏id

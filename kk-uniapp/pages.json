@@ -101,92 +101,102 @@
 			}
 		},
 		{
-			"path":"pages/task/createTask/addFoodTask",
+			"path": "pages/task/createTask/addFoodTask",
 			"style": {
 				"navigationBarTitleText": "创建任务"
 			}
-		}
-	    ,{
-            "path" : "pages/task/taskView/VideoTask",
-            "style" : {
+		}, {
+			"path": "pages/task/taskView/VideoTask",
+			"style": {
 				"navigationBarTitleText": "视频任务"
 			}
-        },{
-            "path" : "pages/task/taskView/foodTask",
-            "style" : {
+		}, {
+			"path": "pages/task/taskView/foodTask",
+			"style": {
 				"navigationBarTitleText": "陪吃任务"
 			}
-        }
-		,{
-			"path" : "pages/task/createTask/createFoodTask",
-			"style" : {
+		}, {
+			"path": "pages/task/createTask/createFoodTask",
+			"style": {
 				"navigationBarTitleText": "任务模板"
 			}
-		}
-        ,{
-            "path" : "pages/task/payView/payView",
-            "style" : {
+		}, {
+			"path": "pages/task/payView/payView",
+			"style": {
 				"navigationBarTitleText": "支付页"
 			}
-        }
-        ,{
-            "path" : "pages/task/choiceUser/choiceUser",
-            "style" : {
+		}, {
+			"path": "pages/task/choiceUser/choiceUser",
+			"style": {
 				"navigationBarTitleText": "选择作者"
 			}
-        }
-        ,{
-            "path" : "pages/task/taskView/userWorks/userWorks",
-            "style" : {
+		}, {
+			"path": "pages/task/taskView/userWorks/userWorks",
+			"style": {
 				"navigationBarTitleText": "查看作品"
 			}
-        },
+		},
 		{
 			"path": "pages/user/userTask/userAddsTask",
-			"style" : {
+			"style": {
 				"navigationBarTitleText": "已发任务",
-				"enablePullDownRefresh":true
+				"enablePullDownRefresh": true
 			}
 		},
 		{
 			"path": "pages/user/userTask/userTask",
-			"style" : {
+			"style": {
 				"navigationBarTitleText": "已领任务"
 			}
-		}
-        ,{
-            "path" : "pages/user/orderList/orderList",
-            "style" : {
+		}, {
+			"path": "pages/user/orderList/orderList",
+			"style": {
 				"navigationBarTitleText": "订单列表",
 				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 10
 			}
-        }
-        ,{
-            "path" : "pages/user/shoppingList/shoppingList",
-            "style" : {
+		}, {
+			"path": "pages/user/shoppingList/shoppingList",
+			"style": {
 				"navigationBarTitleText": "已购内容",
 				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 10
 			}
-        }
-        ,{
-            "path" : "pages/user/plsdContent/plsdContent",
-            "style" : {
+		}, {
+			"path": "pages/user/plsdContent/plsdContent",
+			"style": {
 				"navigationBarTitleText": "已发内容",
 				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 10
 			}
-        }
-        ,{
-            "path" : "pages/vip/column/courseView/courseView",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/user/userLogin/userLogin",
-            "style" : {}
-        }
-    ],
+		}, {
+			"path": "pages/vip/column/courseView/courseView",
+			"style": {
+				"navigationBarTitleText": "课程列表"
+			}
+		}, {
+			"path": "pages/user/userLogin/userLogin",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationBarBackgroundColor": "#FFF",
+				"navigationBarTextStyle": "black"
+			}
+		}, {
+			"path": "pages/user/userLogin/forget",
+			"style": {
+				"navigationBarTitleText": "忘记密码",
+				"navigationBarBackgroundColor": "#FFF",
+				"navigationBarTextStyle": "black"
+			}
+		}, {
+			"path": "pages/user/userLogin/register",
+			"style": {
+				"navigationBarTitleText": "注册",
+				"navigationBarBackgroundColor": "#FFF",
+				"navigationBarTextStyle": "black"
+			}
+		}
+	],
 	"tabBar": {
 		"color": "#C0C4CC",
 		"selectedColor": "#fa436a",

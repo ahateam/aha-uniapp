@@ -22,43 +22,43 @@ constData.payInfoList = [{
 		key: 0,
 		id: 'wxpay',
 		name: '微信支付',
-		value:0
+		value: 0
 	},
 	{
 		key: 1,
 		id: 'toutiao',
 		name: '头条支付',
-		value:1
+		value: 1
 	},
 	{
 		key: 2,
 		id: 'qq',
 		name: 'qq支付',
-		value:2
+		value: 2
 	},
 	{
 		key: 3,
 		id: 'sinaweibo',
 		name: '新浪微博登录',
-		value:3
+		value: 3
 	},
 	{
 		key: 4,
 		id: 'xiaomi',
 		name: '小米登录',
-		value:4
+		value: 4
 	},
 	{
 		key: 5,
 		id: 'alipay',
 		name: '支付宝登录',
-		value:5
+		value: 5
 	},
 	{
 		key: 6,
 		id: 'baidu',
 		name: '百度登录',
-		value:6
+		value: 6
 	}
 ]
 
@@ -130,24 +130,24 @@ constData.tagStatus = [{
 		val: '启用'
 	}],
 
-	/* 标签分组 */
-	constData.tagGroupType = [{
-			key: '0',
-			val: '首页'
-		},
-		{
-			key: '1',
-			val: 'VIP'
-		},
-		{
-			key: '2',
-			val: '任务墙'
-		},
-		{
-			key: '3',
-			val: '模板'
-		}
-	]
+/* 标签分组 */
+constData.tagGroupType = [{
+		key: '0',
+		val: '首页'
+	},
+	{
+		key: '1',
+		val: 'VIP'
+	},
+	{
+		key: '2',
+		val: '任务墙'
+	},
+	{
+		key: '3',
+		val: '模板'
+	}
+]
 
 /* 首页文章展示样式 */
 constData.contentShow = [{
@@ -235,12 +235,12 @@ constData.taskWallStatus = [{
 		val: '发任务方拒绝任务完成申请'
 	},
 	{
-		key:9,
-		val:'指派中'
+		key: 9,
+		val: '指派中'
 	},
 	{
-		key:10,
-		val:'审核未通过'
+		key: 10,
+		val: '审核未通过'
 	}
 ]
 

@@ -153,7 +153,7 @@
 						this.tagName = this.tagList[0].name
 						this.price = this.tagList[0].price
 						this.ChannelContentTagId = this.tagList[0].id
-						let tagJson = `{"${this.titleText}":"${this.tagName}"}`
+						let tagJson = `{"t${this.id}":"${this.tagName}"}`
 						let cnt1 = {
 							module: this.$constData.module, // String 隶属
 							upChannelId: this.id, // Long 专栏id
@@ -210,7 +210,7 @@
 				this.price = price
 				this.ChannelContentTagId = this.tagList[e].id
 				this.getPayStatus()
-				let tagJson = `{${this.titleText}:"${this.tagName}"}`
+				let tagJson = `{t${this.id}:"${this.tagName}"}`
 				let cnt = {
 					module: this.$constData.module, // String 模块
 					// type: type, // Byte <选填> 类型

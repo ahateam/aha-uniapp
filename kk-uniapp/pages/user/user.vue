@@ -8,7 +8,7 @@
 					<view class="userName">{{userName}}</view>
 					<view class="userView" v-if="boxShow">个人主页
 						></view>
-					<button open-type="getUserInfo" type="primary" class="loginBtn" @getuserinfo="wx()" @click="loginBtn" v-else>登录</button>
+					<button type="primary" class="loginBtn" @click="loginBtn" v-else>登录</button>
 				</view>
 				<view class="rightBox" v-if="boxShow">
 					<view class="userMoney">余额 0.00</view>
@@ -28,7 +28,7 @@
 		</view>
 
 		<view class="bottomBox" v-if="boxShow" v-for="(item,index) in contentList" :key="index">
-			<navigator class="autoBoxHeight" :url="item.url" >
+			<navigator class="autoBoxHeight" :url="item.url">
 				<text :class="item.iconClass"></text>
 				<text class="bottomTitle">{{item.name}}</text>
 				<text class="iconfont kk-xiayibu rightIcon"></text>
@@ -44,29 +44,33 @@
 				userName: '您还没有登录',
 				userHead: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1567487052843&di=cbce4c55f56dc06f7a8941ad4c9a307e&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F69ad7a731f43d4b8729f1a2fbe65c43801ca0f033250-EV1vMf_fw658',
 				userId: null,
-				userInfo: Object,
+				
 				boxShow: false,
 
 				providerList: [],
-				
-				contentList:[
-					{
-						name:'消费记录',
-						url:'/pages/user/orderList/orderList',
-						iconClass:'iconfont kk-money leftIcon'
+
+				contentList: [{
+						name: '消费记录',
+						url: '/pages/user/orderList/orderList',
+						iconClass: 'iconfont kk-money leftIcon'
 					},
 					{
-						name:'发布',
-						url:'/pages/user/plsdContent/plsdContent',
-						iconClass:'iconfont kk-shangchuan leftIcon'
+						name: '发布',
+						url: '/pages/user/plsdContent/plsdContent',
+						iconClass: 'iconfont kk-shangchuan leftIcon'
 					},
 					{
-						name:'已购',
-						url:'/pages/user/shoppingList/shoppingList',
-						iconClass:'iconfont kk-gouwu leftIcon'
+						name: '已购',
+						url: '/pages/user/shoppingList/shoppingList',
+						iconClass: 'iconfont kk-gouwu leftIcon'
+					},
+					{
+						name: '登录测试',
+						url: '/pages/user/userLogin/userLogin',
+						iconClass: 'iconfont kk-gouwu leftIcon'
 					}
 				],
-				
+
 			};
 		},
 		onLoad() {
@@ -112,6 +116,11 @@
 			/* APP登录end */
 			/* 非微信登录 */
 			loginBtn() { //获取code
+				uni.navigateTo({
+					url:'/pages/user/userLogin/userLogin'
+				})
+				return
+				
 				let provider = ''
 				// #ifdef MP
 				provider = this.providerList[0]
@@ -375,26 +384,6 @@
 			},
 			//微信登录end!********************************************
 
-			// 根据用户id获取信息
-			getUserById() {
-				if (this.userId != '' && this.userId != '1234567890') {
-					return
-				}
-				let cnt = {
-					userId: this.userId,
-				}
-				this.$api.getUserById(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.userInfo = this.$util.tryParseJson(res.data.c)
-						console.log(this.userInfo)
-						this.userName = this.userInfo.name
-						this.userHead = this.$util.tryParseJson(this.userInfo.ext).userHead
-					} else {
-						console.log('获取失败')
-					}
-				})
-			},
-
 			getProvider() {
 				uni.getProvider({
 					service: 'oauth',
@@ -438,19 +427,14 @@
 			}
 		},
 		onShow() {
-			if (this.userId != '') {
-				let userId = uni.getStorageSync('userId')
-				let userName = uni.getStorageSync('userName')
-				let userHead = uni.getStorageSync('userHead')
-				if (userId != '' && userId != '1234567890') {
-					this.userId = 0 + userId
-					this.userName = userName
-					this.userHead = userHead
-					this.getUserById()
-					this.boxShow = true
-				} else {
-					console.log('咩都牟')
-				}
+			let userId = uni.getStorageSync('userId')
+			if (userId != '' && userId != '1234567890') {
+				this.userName = uni.getStorageSync('userName')
+				this.userHead = uni.getStorageSync('userHead')
+				this.userId = userId
+				this.boxShow = true
+			}else{
+				console.log('未登录')
 			}
 		},
 	};

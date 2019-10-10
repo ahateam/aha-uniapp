@@ -189,8 +189,7 @@
 				}
 				this.$api.getChannlById(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let title = this.$util.tryParseJson(res.data.c).title
-						let a = `{"${title}":"${this.titleText}"}`
+						let a = `{"t${this.channelId}":"${this.titleText}"}`
 						let cnt = {
 							count: 10,
 							module: this.$constData.module,
