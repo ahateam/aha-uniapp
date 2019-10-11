@@ -140,7 +140,6 @@
 				upInfo: {},
 				loading: false,
 				contentId: '',
-				channelTitle: '',
 				channelId: '',
 
 				moreCourse: 2,
@@ -526,27 +525,10 @@
 						console.log(this.detailData)
 						this.getUserById(detailData.upUserId)
 						this.getCommentByContentId()
-						this.getChannel()
-					}
-				}))
-			},
-
-			/* 获取专栏 */
-			getChannel() {
-				let cnt = {
-					id: this.channelId, //专栏id
-				}
-				this.$api.getChannlById(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						console.log('专栏信息')
-						this.channelTitle = this.$util.tryParseJson(res.data.c).title
-						console.log(this.channelTitle)
 						this.getChannlContentTagByChannelId()
 						this.getCouser()
-					} else {
-						console.log('专栏获取失败')
 					}
-				})
+				}))
 			},
 
 			getCouser() {

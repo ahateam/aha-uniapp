@@ -323,7 +323,7 @@
 				uni.showLoading({
 					title: '生成中'
 				})
-				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}` //值改变后自动调取qrR()
+				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}` //this.val的值改变后自动调取this.qrR()
 			},
 
 			qrR(res) { //生成二维码的图片地址
@@ -519,7 +519,7 @@
 			let id = options.id
 			let src = `${url}?id=${id}`
 			console.log(src)
-			if (res.from === 'button') { // 来自页面内分享按钮
+			if (res.from == 'button') { // 来自页面内分享按钮
 				console.log(res.target)
 			}
 			return {

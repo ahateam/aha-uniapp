@@ -34,8 +34,8 @@
 				其他要求
 			</view>
 			<view class="bottomInputs">
-				<text class="leftTitle">年龄</text><input style="width: 2em;" type="number" v-model="minOld" />-<input
-				 style="width: 2em;" type="number" v-model="maxOld"  />
+				<text class="leftTitle">年龄</text><input style="width: 2em;" type="number" v-model="minOld" />-<input style="width: 2em;"
+				 type="number" v-model="maxOld" />
 			</view>
 			<view class="bottomInputs">
 				<text class="leftTitle">地点</text><input style="text-align: left;" type="text" v-model="taskAddrss" placeholder="请输入地点" />
@@ -59,67 +59,67 @@
 	export default {
 		data() {
 			return {
-				userId:uni.getStorageSync('userId'),
-				title:'',
-				
+				userId: uni.getStorageSync('userId'),
+				title: '',
+
 				objList: [{
 						name: '油腻大叔',
-						status:false
+						status: false
 					},
 					{
 						name: '体贴暖男',
-						status:false
+						status: false
 					},
 					{
 						name: '风趣帅哥',
-						status:false
+						status: false
 					},
 					{
 						name: '豪爽爷们',
-						status:false
+						status: false
 					},
 					{
 						name: '性感女神',
-						status:false
+						status: false
 					},
 					{
 						name: '知性美女',
-						status:false
+						status: false
 					},
 					{
 						name: '清纯佳人',
-						status:false
+						status: false
 					}
 				], //陪吃列表
-				choiceObj:[],
+				choiceObj: [],
 				objMore: 7, //显示多少个对象选项
 
 				purposeList: [{
 						name: '吃饭聊天',
-						status:false
+						status: false
 					},
 					{
 						name: '交友',
-						status:false
+						status: false
 					},
 					{
 						name: '发泄郁闷',
-						status:false
+						status: false
 					},
 					{
 						name: '放松心情',
-						status:false
+						status: false
 					},
 					{
 						name: '假扮男友',
-						status:false
+						status: false
 					},
 					{
 						name: '假扮女友',
-						status:false
+						status: false
 					}
 				], //目的列表
-				choicePurpose:[],
+				choicePurpose: [],
 				purposeMore: 7, //控制显示个数
 
 				taskObj: '', //任务对象值 默认列表第一个
@@ -154,17 +154,17 @@
 					})
 					return
 				}
-				
+
 				let data = {
-					purpose:this.choicePurpose,
-					obj:this.choiceObj,
-					age:`${this.minOld}-${this.maxOld}`,
-					addrss:this.taskAddrss,
-					tel:this.telPhone
+					purpose: this.choicePurpose,
+					obj: this.choiceObj,
+					age: `${this.minOld}-${this.maxOld}`,
+					addrss: this.taskAddrss,
+					tel: this.telPhone
 				}
-				
+
 				data = JSON.stringify(data)
-				
+
 				let cnt = {
 					module: this.$constData.module, // Long 模块编号
 					ask: this.type, // Byte 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
@@ -181,25 +181,24 @@
 				this.$store.state.createFoodTask.data = cnt
 				console.log(this.$store.state.createFoodTask.data)
 				uni.navigateTo({
-					url:`/pages/task/payView/payView?type=0`
+					url: `/pages/task/payView/payView?type=0`
 				})
-				
 			},
 
 			//改变对象
 			changeObj(item) {
-				if(item.status == false){
+				if (item.status == false) {
 					item.status = true
 					let data = {
-						name:item.name
+						name: item.name
 					}
 					this.choiceObj.push(data)
-				}else{
+				} else {
 					item.status = false
 					let arr = this.choiceObj
-					for(let i= 0;i<arr.length;i++){
-						if(arr[i].name==item.name){
-							arr.splice(i,1)
+					for (let i = 0; i < arr.length; i++) {
+						if (arr[i].name == item.name) {
+							arr.splice(i, 1)
 						}
 					}
 					this.choiceObj = arr
@@ -209,18 +208,18 @@
 
 			//改变目的
 			changePurpose(item) {
-				if(item.status == false){
+				if (item.status == false) {
 					item.status = true
 					let data = {
-						name:item.name
+						name: item.name
 					}
 					this.choicePurpose.push(data)
-				}else{
+				} else {
 					item.status = false
 					let arr = this.choicePurpose
-					for(let i= 0;i<arr.length;i++){
-						if(arr[i].name==item.name){
-							arr.splice(i,1)
+					for (let i = 0; i < arr.length; i++) {
+						if (arr[i].name == item.name) {
+							arr.splice(i, 1)
 						}
 					}
 					this.choicePurpose = arr

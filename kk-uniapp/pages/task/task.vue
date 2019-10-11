@@ -19,8 +19,10 @@
 			</view>
 
 			<view v-for="(item,index) in contentData" :key="index" @click="navToTask(item)">
-				<task-list-box v-if="item.type == constData.templateType[4].key" :title="item.title" text="陪吃任务" :name="item.user.name" :head="item.user.head"></task-list-box>
-				<task-list-box v-if="item.type == constData.templateType[1].key" :title="item.title" :text="item.detail" :name="item.user.name" :head="item.user.head"></task-list-box>
+				<task-list-box v-if="item.type == constData.templateType[4].key" :title="item.title" text="陪吃任务" :name="item.user.name"
+				 :head="item.user.head"></task-list-box>
+				<task-list-box v-if="item.type == constData.templateType[1].key" :title="item.title" :text="item.detail" :name="item.user.name"
+				 :head="item.user.head"></task-list-box>
 			</view>
 			<uni-load-more :status="pageStatus"></uni-load-more>
 		</view>
@@ -57,8 +59,8 @@
 				page: 1,
 				count: 10,
 				offset: 0,
-				pageStatus:'loading',
-				pageOver:false,
+				pageStatus: 'loading',
+				pageOver: false,
 
 				// 导航栏数据
 				scrollLeft: 0,
@@ -146,17 +148,18 @@
 			async changeNav(e, index) {
 				this.contentData = []
 				this.currentSort = index
-				
+
 				this.type = e
 				this.tagName = ''
 				this.tagCurrent = -1
-				
-				if(this.contentTagGroupData[index].child){
+
+				if (this.contentTagGroupData[index].child) {
 					this.contentData = this.contentTagGroupData[index].child
 					this.pageStatus = this.contentTagGroupData[index].pageStatus
+					this.pageOver = this.contentTagGroupData[index].pageOver
 					this.page = this.contentTagGroupData[index].page
 					return
-				}else{
+				} else {
 					this.page = 1
 					this.contentTagGroupData[index].page = 1
 				}
@@ -296,7 +299,7 @@
 				]
 
 				this.contentTagGroupData = list
-				
+
 				let cnt1 = {
 					module: this.$constData.module, // Long 模块编号
 					// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
@@ -311,7 +314,6 @@
 				this.pageStatus = 'loading'
 				this.$api.getHomeTasks(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						console.log(this.$util.tryParseJson(res.data.c).list)
 						let list = this.$util.tryParseJson(res.data.c).list
 						for (let i = 0; i < list.length; i++) {
 							if (list[i].user) {
@@ -320,7 +322,6 @@
 							list[i].detail = this.$util.tryParseJson(list[i].detail).text
 						}
 						this.tryDataList(list)
-						uni.stopPullDownRefresh()
 					} else {
 						uni.showToast({
 							title: '错误！',
@@ -330,25 +331,31 @@
 					}
 				})
 			},
-			tryDataList(list){
+			tryDataList(list) {
 				let index = this.currentSort
-				if(list.length <this.count){ //判断长度是否为等于设定this.count，是则可能还有剩余数据，否则无
+				console.log(list.length,this.count)
+				if (list.length < this.count) { //判断长度是否为等于设定this.count，是则可能还有剩余数据，否则无
 					this.contentTagGroupData[index].pageOver = true //结束拉取
 					this.contentTagGroupData[index].pageStatus = 'nomore'
-				}else{
+					console.log('结束拉取数据')
+					console.log(this.contentTagGroupData[index].pageStatus)
+				} else {
 					this.contentTagGroupData[index].pageOver = false
 					this.contentTagGroupData[index].pageStatus = 'more'
 				}
 				this.pageStatus = this.contentTagGroupData[index].pageStatus //改变'uni-load-more'组件的状态
+				this.pageOver = this.contentTagGroupData[index].pageOver
 				
 				let arr = this.contentData.concat(list)
 				this.contentData = arr
-				
+
 				let obj = this.$util.tryParseJson(JSON.stringify(this.contentTagGroupData[index]))
 				obj.child = arr
 				this.$nextTick(function() {
 					this.contentTagGroupData.splice(index, 1, obj)
 				})
+				console.log(this.pageStatus)
+				uni.stopPullDownRefresh()
 			}
 		},
 		//下拉刷新
@@ -363,27 +370,27 @@
 				count: this.count, // int 
 				offset: this.offset, // int 
 			}
-			if(this.currentSort > 0){
+			if (this.currentSort > 0) {
 				cnt.type = this.type
 			}
 			this.getTask(cnt)
 		},
 		//上滑加载
 		onReachBottom: function() {
-			if(this.pageOver == false){
+			if (this.pageOver == true) {
 				return
 			}
 			this.pageStatus = 'loading'
 			this.page += 1
-			this.tagsList[this.currentSort].page += 1
+			this.contentTagGroupData[this.currentSort].page += 1
 			let cnt = {
 				module: this.$constData.module, // Long 模块编号
 				// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
 				// type: type, // Byte <选填> 类型
 				count: this.count, // int 
-				offset: (this.page-1)*this.count, // int 
+				offset: (this.page - 1) * this.count, // int 
 			}
-			if(this.currentSort > 0){
+			if (this.currentSort > 0) {
 				cnt.type = this.type
 			}
 			this.getTask(cnt)

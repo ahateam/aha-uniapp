@@ -39,25 +39,25 @@ constData.payInfoList = [{
 	{
 		key: 3,
 		id: 'sinaweibo',
-		name: '新浪微博登录',
+		name: '新浪微博支付',
 		value: 3
 	},
 	{
 		key: 4,
 		id: 'xiaomi',
-		name: '小米登录',
+		name: '小米支付',
 		value: 4
 	},
 	{
 		key: 5,
 		id: 'alipay',
-		name: '支付宝登录',
+		name: '支付宝支付',
 		value: 5
 	},
 	{
 		key: 6,
 		id: 'baidu',
-		name: '百度登录',
+		name: '百度支付',
 		value: 6
 	}
 ]

@@ -603,24 +603,6 @@
 					}
 				})
 			},
-			/* 获取课程对应专栏 */
-			getChannel() {
-				let cnt = {
-					id: this.channelId, //专栏id
-				}
-				this.$api.getChannlById(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						console.log('专栏信息')
-						console.log(this.$util.tryParseJson(res.data.c))
-						this.channelTitle = this.$util.tryParseJson(res.data.c).title
-						console.log(this.channelTitle)
-						this.getChannlContentTagByChannelId()
-						this.getCouser()
-					} else {
-						console.log('专栏获取失败')
-					}
-				})
-			},
 			getCouser() {
 				let data = this.detailData.tags
 				let key = `t${this.channelId}`
@@ -705,7 +687,8 @@
 						this.flow = JSON.parse(detailData.data).editor
 						this.getUserById(detailData.upUserId)
 						this.getCommentByContentId()
-						this.getChannel()
+						this.getChannlContentTagByChannelId()
+						this.getCouser()
 					}
 				}))
 			},

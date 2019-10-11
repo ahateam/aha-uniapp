@@ -111,6 +111,13 @@
       "unicode_decimal": 59046
     },
     {
+      "icon_id": "9213853",
+      "name": "头条",
+      "font_class": "toutiao",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
       "icon_id": "9704704",
       "name": "夸赞",
       "font_class": "kuazan",

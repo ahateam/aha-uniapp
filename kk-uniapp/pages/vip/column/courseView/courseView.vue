@@ -51,23 +51,25 @@
 			this.color = res.color
 			this.id = res.id
 			this.channelId = res.channelId
-			let cnt = {
-				channelId: this.channelId,
-				count: 50,
-				module: this.$constData.module,
-				offset: 0,
-				status: this.$constData.contentStatus[4].key
-			}
-			this.getChannl()
 			this.getChannlContentTagByChannelId()
 			this.getPayStatus()
+			let a = `{"t${this.channelId}":"${this.titleText}"}`
+			let cnt = {
+				count: 10,
+				module: this.$constData.module,
+				offset: 0,
+				status: this.$constData.contentStatus[4].key,
+				tags: this.$util.tryParseJson(a),
+				upChannelId: this.channelId
+			}
+			this.getContent(cnt)
 		},
 		methods: {
 			//获取专栏下标签
 			getChannlContentTagByChannelId() {
 				let cnt = {
 					module: this.$constData.module, // String 模块编号
-					channelId: parseInt(this.id), // Long 专栏编号
+					channelId: parseInt(this.channelId), // Long 专栏编号
 					status: this.$constData.contentStatus[4].key, // Byte <选填> 内容状态
 					count: 500, // Integer 
 					offset: 0, // Integer 
@@ -124,7 +126,6 @@
 						} else {
 							this.payOrNo = true
 						}
-						console.log('购买状态'+this.payOrNo)
 					} else {
 						console.log(res.data.c)
 					}
@@ -178,27 +179,6 @@
 						}
 					} else {
 						console.log(res.data.c)
-					}
-				})
-			},
-
-			//获取专栏
-			getChannl() {
-				let cnt = {
-					id: this.channelId
-				}
-				this.$api.getChannlById(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let a = `{"t${this.channelId}":"${this.titleText}"}`
-						let cnt = {
-							count: 10,
-							module: this.$constData.module,
-							offset: 0,
-							status: this.$constData.contentStatus[4].key,
-							tags: this.$util.tryParseJson(a),
-							upChannelId: this.channelId
-						}
-						this.getContent(cnt)
 					}
 				})
 			},

@@ -117,7 +117,7 @@
 							offset: 0, // Integer 
 						}
 						this.getTagsList(cnt)
-						this.returnTabBar()
+						// this.returnTabBar()
 						/* 根据默认标签获取内容列表*/
 					}
 				})
