@@ -18,10 +18,6 @@
 			},
 
 			getVersion() {
-
-
-
-
 				this.$api.getVersion({}, (res) => {
 					let resData = JSON.parse(res.data.c)
 					let platform = uni.getSystemInfoSync().platform

@@ -13,6 +13,13 @@
       "unicode_decimal": 58943
     },
     {
+      "icon_id": "705659",
+      "name": "齿轮",
+      "font_class": "chilun",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
       "icon_id": "810917",
       "name": "下载",
       "font_class": "xiazai",
@@ -48,6 +55,13 @@
       "unicode_decimal": 59002
     },
     {
+      "icon_id": "4138030",
+      "name": "直播 播放 摄像机 天线 线性",
+      "font_class": "zhibobofangshexiangjitianxianxianxing",
+      "unicode": "e8c9",
+      "unicode_decimal": 59593
+    },
+    {
       "icon_id": "5162650",
       "name": "上 传",
       "font_class": "shangchuan",
@@ -55,11 +69,25 @@
       "unicode_decimal": 58888
     },
     {
+      "icon_id": "5258984",
+      "name": "箭头",
+      "font_class": "jiantou",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
       "icon_id": "5593086",
       "name": "收 藏",
       "font_class": "shoucang1",
       "unicode": "e600",
       "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "6280870",
+      "name": "搜索--1",
+      "font_class": "sousuo",
+      "unicode": "e604",
+      "unicode_decimal": 58884
     },
     {
       "icon_id": "6565011",
@@ -116,6 +144,13 @@
       "font_class": "toutiao",
       "unicode": "e605",
       "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "9336343",
+      "name": "定位",
+      "font_class": "location",
+      "unicode": "e606",
+      "unicode_decimal": 58886
     },
     {
       "icon_id": "9704704",

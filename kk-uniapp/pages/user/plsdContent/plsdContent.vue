@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view v-for="(item,index) in contentList" :key="index">
+		<view v-for="(item,index) in contentList" :key="index" @click="navView(item)">
 			<listBox :title="item.title" :text="item.status"></listBox>
 		</view>
 		<uniLoadMore :status="pageStatus"></uniLoadMore>
@@ -43,6 +43,34 @@
 			this.getContents(cnt)
 		},
 		methods: {
+			navView(info){
+				if (info.type == this.constData.contentType[2].key || info.type == this.constData.contentType[0].key) {
+					if (info.upChannelId) {
+						uni.navigateTo({
+							url: `/pages/vip/column/details/details?id=${info.id}`
+						})
+					} else {
+						uni.navigateTo({
+							url: `/pages/index/articleView/articleView?id=${info.id}`
+						})
+					}
+				
+				} else if (info.type == this.constData.contentType[1].key) {
+					// uni.navigateTo({
+					// 	url: `/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
+					// })
+					if (info.upChannelId) {
+						uni.navigateTo({
+							url: `/pages/vip/column/detailsVideo/detailsVideo?id=${info.id}`
+						})
+					} else {
+						uni.navigateTo({
+							url: `/pages/index/videoView/videoView?id=${info.id}`
+						})
+					}
+				}
+			},
+			
 			getContents(cnt) {
 				this.$api.getContents(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {

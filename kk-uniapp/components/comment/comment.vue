@@ -13,9 +13,9 @@
 				<view class="eva-right">
 					<text>{{item.user.name}}</text>
 					<text>{{item.time}}</text>
-					<view class="zan-box" @click="upvote(item.sequenceId,index)" v-if="item.jsAdd == false">
+					<view class="zan-box" @click="upvote(item.sequenceId,index,item)" v-if="item.jsAdd == false">
 						<text>{{item.appraiseCount}}</text><!-- 点赞数 -->
-						<text class="yticon iconfont kk-shoucang1"></text>
+						<text class="yticon iconfont kk-shoucang1" :class="{iconCurrent:item.isAppraise}"></text>
 					</view>
 					<text class="content">{{item.text}}</text>
 				</view>
@@ -29,37 +29,63 @@
 		props: ['comment'],
 		data() {
 			return {
-				upvote(id,index) {
-					let cnt = {
-						ownerId: id, // Long 内容编号
-						userId: uni.getStorageSync('userId'), // Long 用户编号
-						value: this.$constData.appraise[0].key, // Byte 状态
-					}
-					this.$api.createUpvote(cnt,(res)=>{
-						if(res.data.rc == this.$util.RC.SUCCESS){
-							if(this.$util.tryParseJson(res.data.c).value == 10){
-								uni.showToast({
-									title:'请勿重复点赞',
-									icon:'none'
-								})
-								return
-							}
-							uni.showToast({
-								title:'点赞成功'
-							})
-							this.$emit('upZan',index)
-						}else{
-							uni.showToast({
-								title:res.data.c,
-								icon:'none'
-							})
-						}
-					})
-				}
+
 			}
 		},
 		methods: {
+			delAppraise(id, index) {
+				let cnt = {
+					ownerId: id,
+					userId: uni.getStorageSync('userId')
+				}
+				this.$api.delAppraise(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.$emit('delZan', index)
+					}
+				})
+			},
 
+			upvote(id, index, item) {
+				let userId = uni.getStorageSync('userId')
+				if (userId == '' || userId == '1234567890') {
+					uni.showToast({
+						title: '请登录',
+						icon: 'none'
+					})
+					return
+				}
+
+				if (item.isAppraise) {
+					this.delAppraise(id, index)
+					return
+				}
+
+				let cnt = {
+					ownerId: id, // Long 内容编号
+					userId: uni.getStorageSync('userId'), // Long 用户编号
+					value: this.$constData.appraise[0].key, // Byte 状态
+				}
+				this.$api.createUpvote(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						if (this.$util.tryParseJson(res.data.c).value == 10) {
+							uni.showToast({
+								title: '你已经点过赞啦',
+								icon: 'none'
+							})
+							return
+						}
+						uni.showToast({
+							title: '点赞成功'
+						})
+						this.$emit('upZan', index)
+					} else {
+						uni.showToast({
+							title: res.data.c,
+							icon: 'none'
+						})
+					}
+				})
+			},
 		}
 	}
 </script>
@@ -148,5 +174,9 @@
 			color: #333;
 			padding-top: 20upx;
 		}
+	}
+	
+	.iconCurrent {
+		color: $color-main;
 	}
 </style>

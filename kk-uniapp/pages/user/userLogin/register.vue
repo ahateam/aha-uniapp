@@ -11,7 +11,6 @@
 				<wInput v-model="phoneData" type="text" maxlength="11" placeholder="手机号"></wInput>
 				<wInput v-model="passData" type="password" maxlength="11" placeholder="登录密码" isShowPass></wInput>
 				<wInput v-model="verCode" type="number" maxlength="4" placeholder="验证码" isShowCode ref="runCode" @setCode="getVerCode()"></wInput>
-
 			</view>
 
 			<wButton text="注 册" :rotate="isRotate" @click.native="startReg()"></wButton>

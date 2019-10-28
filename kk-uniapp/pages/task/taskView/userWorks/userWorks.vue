@@ -165,19 +165,19 @@
 					id: this.id, // Long 订单id
 					res: e, // boolean 是否满意（true：满意，false：不满意）
 				}
+				console.log(cnt)
 				this.$api.editApplyWorks(cnt,(res)=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
 						uni.switchTab({
 						    url: '/pages/task/task'
 						})
 						uni.showToast({
-							title:'评价成功',
-							duration:1000
+							title:'评价成功'
 						})
 					}else{
+						console.log(res.data.c)
 						uni.showToast({
-							title:'失败！',
-							duration:1000,
+							title:res.data.c,
 							icon:'none'
 						})
 					}

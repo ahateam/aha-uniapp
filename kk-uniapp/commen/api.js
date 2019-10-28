@@ -169,14 +169,24 @@ api.createUpvote = function(cnt, callback) {
 	util.call(baseUrl + '/appraise/createAppraise', cnt, callback)
 }
 
+//取消点赞 
+api.delAppraise = function(cnt, callback) {
+	util.call(baseUrl + '/appraise/delAppraise', cnt, callback)
+}
+
 //获取点赞数量 
 api.getAppraiseCount = function(cnt, callback) {
 	util.call(baseUrl + '/appraise/getAppraiseCount', cnt, callback)
 }
 
+//获取是否点赞 
+api.judgeAppraise = function(cnt, callback) {
+	util.call(baseUrl + '/appraise/judgeAppraise', cnt, callback)
+}
+
 //获取评论列表 
 api.getCommentByContentId = function(cnt, callback) {
-	util.call(baseUrl + '/reply/getReplyList', cnt, callback)
+	util.call(baseUrl + '/kkqtUser/getReplyList', cnt, callback)
 }
 
 //评论 
@@ -229,4 +239,26 @@ api.getPayChannel = function(cnt, callback) {
 api.updatePayOrder = function(cnt, callback) {
 	util.call(baseUrl + '/task/updatePayOrder', cnt, callback)
 }
+
+/* 关注 */
+//创建关注 
+api.createUserFavorite = function(cnt, callback) {
+	util.call(baseUrl + '/kkqtUser/createUserFavorite', cnt, callback)
+}
+
+//删除关注 
+api.delUserFavorite = function(cnt, callback) {
+	util.call(baseUrl + '/kkqtUser/delUserFavorite', cnt, callback)
+}
+
+//查询是否关注 
+api.getBoolFavoriteUser = function(cnt, callback) {
+	util.call(baseUrl + '/kkqtUser/getBoolFavoriteUser', cnt, callback)
+}
+
+//查询关注内容 
+api.getAUserFavorite = function(cnt, callback) {
+	util.call(baseUrl + '/kkqtUser/getAUserFavorite', cnt, callback)
+}
+/* 关注end */
 export default api

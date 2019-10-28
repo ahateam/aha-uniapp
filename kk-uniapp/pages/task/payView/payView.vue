@@ -209,7 +209,6 @@
 					taskData.goodsId = this.id
 					taskData.goodsName = this.title
 				}
-
 				console.log(provider)
 				if (provider.id == this.$constData.providerList[5].id) {
 					cnt = {
@@ -359,6 +358,7 @@
 							icon: 'none'
 						})
 					} else {
+						console.log(res.data.c)
 						uni.showToast({
 							title: '错误！请联系客服',
 							icon: 'none'

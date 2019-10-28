@@ -1,5 +1,8 @@
 <template>
 	<view class="body">
+		<navBar :back="false" bgColor="#ec706b" fontColor="#FFFFFF" title="夸夸其谈">
+			<view slot="right" class="iconfont kk-jia addBtn" @click="navToAdd"></view>
+		</navBar>
 		<!-- 顶部选项卡 -->
 		<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
 			<view v-for="(item,index) in tagsList" :key="index" class="nav-item" :class="{current: index === tabCurrentIndex}"
@@ -9,19 +12,19 @@
 		<view v-for="(item,index) in contents" :key="index" @click="navToInfo(item)">
 			<view v-if="item.type == constData.contentType[1].key||item.type == constData.contentType[2].key">
 				<view v-if="item.show == constData.contentShow[0].key">
-					<trans-video :title="item.title" :upName="item.user.name" :imgSrc="item.imgList[0].src" time="1小时前" :type="item.type"></trans-video>
+					<trans-video :title="item.title" :upName="item.user.name" :imgSrc="item.imgList[0].src" :time="item.time" :type="item.type"></trans-video>
 				</view>
 
 				<view v-else-if="item.show == constData.contentShow[1].key">
-					<right-video :title="item.title" :upName="item.user.name" :imgSrc="item.imgList[0].src" time="1小时前" :type="item.type"></right-video>
+					<right-video :title="item.title" :upName="item.user.name" :imgSrc="item.imgList[0].src" :time="item.time" :type="item.type"></right-video>
 				</view>
 
 				<view v-else-if="item.show == constData.contentShow[2].key&&item.type == constData.contentType[2].key">
-					<three-img :title="item.title" :upName="item.user.name" :imgList="item.imgList" time="1小时前" :type="item.type"></three-img>
+					<three-img :title="item.title" :upName="item.user.name" :imgList="item.imgList" :time="item.time" :type="item.type"></three-img>
 				</view>
 			</view>
 			<view v-else-if="item.type == constData.contentType[0].key">
-				<only-text :title="item.title" :upName="item.user.name" time="1小时前"></only-text>
+				<only-text :title="item.title" :upName="item.user.name" :time="item.time"></only-text>
 			</view>
 		</view>
 		<uni-load-more :status="pageStatus"></uni-load-more>
@@ -37,6 +40,7 @@
 	import threeImg from '@/components/article/threeImg.vue'
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
 	import uniFab from '@/components/uni-fab/uni-fab.vue'
+	import navBar from '@/components/zhouWei-navBar/index.vue'
 
 	let windowWidth = 0
 
@@ -47,7 +51,8 @@
 			rightVideo,
 			threeImg,
 			uniLoadMore,
-			uniFab
+			uniFab,
+			navBar
 		},
 		data() {
 			return {
@@ -97,7 +102,7 @@
 			this.userId = uni.getStorageSync('userId')
 
 			// console.log(this.constData)
-			
+
 		},
 		methods: {
 			//获取版本
@@ -137,11 +142,28 @@
 				});
 			},
 
+			navToAdd() {
+				if (this.userId == '' || this.userId == '1234567890') {
+					uni.switchTab({
+						url: '/pages/user/user'
+					})
+					uni.showToast({
+						title: '请登录',
+						icon: 'none',
+						duration: 1000
+					})
+					return
+				}
+				uni.navigateTo({
+					url: '/pages/index/addArticle/addArticle'
+				})
+			},
+
 			//按钮点击跳转
 			trigger(e) {
 				if (this.userId == '' || this.userId == '1234567890') {
 					uni.switchTab({
-					    url: '/pages/user/user'
+						url: '/pages/user/user'
 					})
 					uni.showToast({
 						title: '请登录',
@@ -228,6 +250,12 @@
 								// 	list[i].type = 999
 								// }
 							}
+
+							let time = new Date(list[i].createTime)
+							let y = time.getFullYear()
+							let m = 1 * time.getMonth() + 1
+							let d = time.getDate()
+							list[i].time = `${y}-${m}-${d}`
 						}
 						this.tryDataList(list)
 						uni.stopPullDownRefresh()
@@ -267,7 +295,7 @@
 				})
 			},
 
-			/* 触发改变选中标签*/
+			/* 触发改变选中标签 */
 			async changeTag(_index) {
 				this.tabCurrentIndex = _index
 				this.tagName = this.tagsList[_index].name
@@ -290,10 +318,22 @@
 					this.scrollLeft = 0;
 				}
 
-				if (undefined != this.tagsList[_index].child) {
+				if (this.tagsList[_index].child) {
 					this.pageStatus = this.tagsList[_index].pageStatus
 					this.contents = this.tagsList[_index].child
 					console.log(this.contents)
+					return
+				}
+
+				this.contents = []
+				if (this.tagName == '关注') {
+					let cnt1 = {
+						moduleId: this.$constData.module, // String 模块编号
+						userId: uni.getStorageSync('userId'), // Long 用户id
+						count: this.count, // int 
+						offset: this.offset, // int 
+					}
+					this.getAUserFavorite(cnt1)
 					return
 				}
 
@@ -306,8 +346,56 @@
 					count: this.count, // Integer
 					offset: this.offset, // Integer
 				}
-				this.contents = []
 				this.getContentsByTag(cnt)
+			},
+
+			//获取关注者内容
+			getAUserFavorite(cnt) {
+				let index = this.tabCurrentIndex
+				if (this.tagsList[index].pageOver === true) {
+					return
+				}
+				this.pageStatus = 'loading'
+				this.$api.getAUserFavorite(cnt, (res) => {
+					let list = []
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						list = this.$util.tryParseJson(res.data.c)
+						for (let i = 0; i < list.length; i++) {
+							let show = this.$util.tryParseJson(list[i].data).show
+							list[i].show = show
+							if (list[i].type == this.$constData.contentType[2].key) {
+								let imgList = this.$util.tryParseJson(list[i].data).imgList
+								list[i].imgList = imgList
+							}
+							if (list[i].type == this.$constData.contentType[1].key) {
+								let imgList = [{
+									src: this.$util.tryParseJson(list[i].data).imgSrc
+								}]
+								list[i].imgList = imgList
+								// if(this.versionStatus == this.$constData.showStatus[0].key){
+								// 	list[i].type = 999
+								// }
+							}
+
+							let time = new Date(list[i].createTime)
+							let y = time.getFullYear()
+							let m = 1 * time.getMonth() + 1
+							let d = time.getDate()
+							list[i].time = `${y}-${m}-${d}`
+						}
+						this.tryDataList(list)
+						uni.stopPullDownRefresh()
+					} else {
+						this.tagsList[index].pageOver = true //结束拉取
+						this.tagsList[index].pageStatus = 'nomore'
+						this.pageStatus = this.tagsList[index].pageStatus
+						let obj = this.$util.tryParseJson(JSON.stringify(this.tagsList[index]))
+						obj.child = []
+						this.$nextTick(function() {
+							this.tagsList.splice(index, 1, obj)
+						})
+					}
+				})
 			},
 
 			/* 跳转至详情 */
@@ -353,7 +441,16 @@
 				count: this.count, // Integer
 				offset: this.offset, // Integer
 			}
-			if (this.tagName != '' && this.tagName != '全部') {
+			if (this.tagName == '关注') {
+				let cnt1 = {
+					moduleId: this.$constData.module, // String 模块编号
+					userId: uni.getStorageSync('userId'), // Long 用户id
+					count: this.count, // int 
+					offset: this.offset, // int 
+				}
+				this.getAUserFavorite(cnt1)
+				return
+			} else if (this.tagName != '' && this.tagName != '全部') {
 				cnt.tags = `{"homeCotent":"${this.tagName}"}`
 			}
 			this.getContentsByTag(cnt)
@@ -370,7 +467,16 @@
 				count: this.count, // Integer
 				offset: (this.page - 1) * this.count, // Integer
 			}
-			if (this.tagName != '' && this.tagName != '全部') {
+			if (this.tagName == '关注') {
+				let cnt1 = {
+					moduleId: this.$constData.module, // String 模块编号
+					userId: uni.getStorageSync('userId'), // Long 用户id
+					count: this.count, // int 
+					offset: (this.page - 1) * this.count, // Integer
+				}
+				this.getAUserFavorite(cnt1)
+				return
+			} else if (this.tagName != '' && this.tagName != '全部') {
 				cnt.tags = `{"homeCotent":"${this.tagName}"}`
 			}
 			this.getContentsByTag(cnt)
@@ -390,7 +496,7 @@
 	/* 顶部tabbar */
 	.nav-bar {
 		position: fixed;
-		top: 0;
+		top: 64px;
 		z-index: 10;
 		height: 90upx;
 		white-space: nowrap;
@@ -434,5 +540,11 @@
 		height: 200rpx;
 		background: #fff;
 		margin-top: 10rpx;
+	}
+
+	.addBtn {
+		// font-size: ;
+		color: #FFFFFF;
+		padding: 0 20upx;
 	}
 </style>

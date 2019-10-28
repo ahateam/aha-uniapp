@@ -55,13 +55,11 @@
 						<text v-if="item.user">{{item.user.name}} </text>
 						<text>{{item.time}}</text>
 						<view class="zan-box">
-							<text v-if="item.status == constData.taskStatus[1].key">进行中</text>
-							<text v-if="item.status == constData.taskStatus[2].key">已上传，待审核</text>
-							<text v-if="item.status == constData.taskStatus[3].key">已完成</text>
-							<text v-if="item.status == constData.taskStatus[4].key">未通过，重新提交</text>
-							<text v-if="item.status == constData.taskStatus[7].key">指派中</text>
+							<text>{{listStatus(item)}}</text>
+							<text v-if="userId == upUserId&&taskStatus < constData.taskWallStatus[3].key" style="color: #007AFF;padding: 20upx;"
+							 @click="navToPay(item)" @click.stop>指派TA</text>
 						</view>
-						<text class="content">电话: {{item.data.tel}}</text>
+						<text class="content" v-if="userId == upUserId">电话: {{item.data.tel}}</text>
 					</view>
 				</view>
 			</view>
@@ -91,14 +89,14 @@
 		<!-- 填写资料盒子 -->
 		<view class="hiddenBox" v-if="hidden">
 			<view class="colseBox" @click="colseBox">X</view>
-			<input type="number" v-model="telPhone" placeholder="请输入电话号码" />
+			<input class="input_box" type="number" v-model="telPhone" placeholder="请输入电话号码" />
 			<button type="primary" @click="submission">提交</button>
 		</view>
 
 		<view class="hiddenBox" v-if="upUserBox">
 			<view class="colseBox" @click="upUserBox =! upUserBox">X</view>
 			给对方评分<uni-rate class="rateBox" @change="setRate"></uni-rate>
-			<input type="text" v-model="upText" placeholder="请输入评价" />
+			<input class="input_box" style="margin-top: 0;" type="text" v-model="upText" placeholder="请输入评价" />
 			<button type="primary" @click="upRate">提交</button>
 		</view>
 		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[4].key&&userId != upUserId">
@@ -166,11 +164,30 @@
 		},
 
 		methods: {
+			navToPay(item) {
+				this.accepterId = item.id
+				this.choiceUser()
+			},
+
+			listStatus(item) {
+				if (item.status == this.constData.taskStatus[1].key) {
+					return '进行中'
+				} else if (item.status == this.constData.taskStatus[2].key) {
+					return '已上传，待审核'
+				} else if (item.status == this.constData.taskStatus[3].key) {
+					return '已完成'
+				} else if (item.status == this.constData.taskStatus[4].key) {
+					return '未通过，重新提交'
+				} else if (item.status == this.constData.taskStatus[7].key) {
+					return '指派中'
+				}
+			},
+
 			//用户二次确定领取
 			againBtn() {
 				let cnt = {
 					taskId: this.id, // Long 任务编号
-					status: status, // Byte <选填> 状态
+					// status: status, // Byte <选填> 状态
 					userId: this.userId, // Long <选填> 接单者编号
 					// works: works, // Boolean <选填> 是否查询作品
 					count: 1, // int 
@@ -195,11 +212,11 @@
 				this.$api.TaskApplyConfirm(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.switchTab({
-							url:'/pages/task/task'
+							url: '/pages/task/task'
 						})
 						uni.showToast({
 							title: '领取成功,快去完成任务吧',
-							icon:'none'
+							icon: 'none'
 						})
 					} else {
 						uni.showToast({
@@ -359,12 +376,18 @@
 						})
 					}
 				})
-
-
 			},
 
 			//领取任务
 			receiveBtn() {
+				let userId = uni.getStorageSync('userId')
+				if (userId == '' || userId == '1234567890') {
+					uni.showToast({
+						title: '登录后可领取',
+						icon: 'none'
+					})
+					return false
+				}
 				this.hidden = true
 			},
 
@@ -632,7 +655,7 @@
 		box-sizing: border-box;
 		padding: $box-margin-top $box-margin-left;
 		background-color: #fff;
-		height: 210upx;
+		height: 350upx;
 		width: 100vw;
 		bottom: 0;
 		box-shadow: 0px -5px 5px #888888;
@@ -647,8 +670,9 @@
 		}
 
 		input {
-			width: 10em;
+			// width: 10em;
 			font-size: $list-title;
+			border-bottom: 1px #AAAAAA solid;
 		}
 
 		// z-index: 3;
@@ -743,5 +767,12 @@
 	.rateBox {
 		display: inline-block;
 		margin-bottom: 10upx;
+	}
+
+	.input_box {
+		margin-top: 70upx;
+		padding: 30upx 0;
+		width: 702upx;
+		// box-sizing: border-box;
 	}
 </style>

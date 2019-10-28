@@ -55,6 +55,7 @@
 
 		data() {
 			return {
+				loading:true,//是否第一次进
 				constData: this.$constData, //全局变量
 				page: 1,
 				count: 10,
@@ -80,7 +81,26 @@
 				versionStatus: '', //版本号
 			}
 		},
+		onShow() {
+			if (this.loading) {
+				return
+			}
 
+			this.contentData = []
+			this.page = 1
+			this.contentTagGroupData[this.currentSort].page = 1
+			let cnt = {
+				module: this.$constData.module, // Long 模块编号
+				// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
+				// type: type, // Byte <选填> 类型
+				count: this.count, // int 
+				offset: this.offset, // int 
+			}
+			if (this.currentSort > 0) {
+				cnt.ask = this.type
+			}
+			this.getTask(cnt)
+		},
 		onLoad() {
 			// #ifdef MP
 			// this.versionStatus = uni.getStorageSync('versionStatus')
@@ -198,7 +218,7 @@
 					offset: 0
 				}
 				if (e != 'a') {
-					cnt1.type = e
+					cnt1.ask = e
 				}
 				this.getTask(cnt1)
 
@@ -252,7 +272,7 @@
 				let typeData = this.$constData.taskType
 				for (let i = 0; i < typeData.length; i++) {
 					if (this.type == typeData[i].val) {
-						cnt.type = typeData[i].key
+						cnt.ask = typeData[i].key
 					}
 				}
 				this.getTask(cnt)
@@ -302,6 +322,7 @@
 
 				let cnt1 = {
 					module: this.$constData.module, // Long 模块编号
+					// status: this.$constData.taskWallStatus[1].key,
 					// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
 					// type: type, // Byte <选填> 类型
 					count: this.count, // int 
@@ -314,6 +335,7 @@
 				this.pageStatus = 'loading'
 				this.$api.getHomeTasks(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.loading = false
 						let list = this.$util.tryParseJson(res.data.c).list
 						for (let i = 0; i < list.length; i++) {
 							if (list[i].user) {
@@ -333,7 +355,6 @@
 			},
 			tryDataList(list) {
 				let index = this.currentSort
-				console.log(list.length,this.count)
 				if (list.length < this.count) { //判断长度是否为等于设定this.count，是则可能还有剩余数据，否则无
 					this.contentTagGroupData[index].pageOver = true //结束拉取
 					this.contentTagGroupData[index].pageStatus = 'nomore'
@@ -345,16 +366,17 @@
 				}
 				this.pageStatus = this.contentTagGroupData[index].pageStatus //改变'uni-load-more'组件的状态
 				this.pageOver = this.contentTagGroupData[index].pageOver
-				
+
 				let arr = this.contentData.concat(list)
 				this.contentData = arr
-
+				
+				console.log(this.contentData)
+				
 				let obj = this.$util.tryParseJson(JSON.stringify(this.contentTagGroupData[index]))
 				obj.child = arr
 				this.$nextTick(function() {
 					this.contentTagGroupData.splice(index, 1, obj)
 				})
-				console.log(this.pageStatus)
 				uni.stopPullDownRefresh()
 			}
 		},
@@ -371,7 +393,7 @@
 				offset: this.offset, // int 
 			}
 			if (this.currentSort > 0) {
-				cnt.type = this.type
+				cnt.ask = this.type
 			}
 			this.getTask(cnt)
 		},
@@ -391,7 +413,7 @@
 				offset: (this.page - 1) * this.count, // int 
 			}
 			if (this.currentSort > 0) {
-				cnt.type = this.type
+				cnt.ask = this.type
 			}
 			this.getTask(cnt)
 		},

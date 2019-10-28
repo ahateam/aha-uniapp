@@ -23,13 +23,11 @@
 						<text>{{item.user.name}}</text>
 						<text>{{item.time}}</text>
 						<view class="zan-box">
-							<text v-if="item.status == constData.taskStatus[1].key">进行中</text>
-							<text v-if="item.status == constData.taskStatus[2].key">已上传，待审核</text>
-							<text v-if="item.status == constData.taskStatus[3].key">已完成</text>
-							<text v-if="item.status == constData.taskStatus[4].key">未通过，重新提交</text>
-							<text v-if="item.status == constData.taskStatus[7].key">指派中</text>
+							<text>{{listStatus(item)}}</text>
+							<text v-if="userId == upUserId&&taskStatus < constData.taskWallStatus[3].key" style="color: #007AFF;padding: 20upx;"
+							 @click="navToPay(item)" @click.stop>指派TA</text>
 						</view>
-						<text class="content">电话: {{item.data.tel}}</text>
+						<text class="content" v-if="userId == upUserId">电话: {{item.data.tel}}</text>
 					</view>
 				</view>
 			</view>
@@ -98,8 +96,9 @@
 				userId: uni.getStorageSync('userId'), //登录用户id
 				video: '', //视频地址
 				text: '',
-				id: '', //模板id
+				id: '', //任务id
 				upUserId: '', //上传者ID
+				title:'',//任务标题
 				
 				userStatus:false,//用户是否可以领取
 				
@@ -125,6 +124,26 @@
 			this.getTaskApplys()
 		},
 		methods: {
+			navToPay(item) {
+				uni.navigateTo({
+					url: `/pages/task/payView/payView?id=${item.id}&taskId=${this.id}&type=1&title=${this.title}`
+				})
+			},
+			
+			listStatus(item) {
+				if (item.status == this.constData.taskStatus[1].key) {
+					return '进行中'
+				} else if (item.status == this.constData.taskStatus[2].key) {
+					return '已上传，待审核'
+				} else if (item.status == this.constData.taskStatus[3].key) {
+					return '已完成'
+				} else if (item.status == this.constData.taskStatus[4].key) {
+					return '未通过，重新提交'
+				} else if (item.status == this.constData.taskStatus[7].key) {
+					return '指派中'
+				}
+			},
+			
 			//用户二次确定领取
 			againBtn() {
 				let cnt1 = {
@@ -443,7 +462,7 @@
 				let cnt = {
 					taskId: this.id, // Long 任务id
 					userId: this.userId, // Long 接单用户编号
-					taskTitle: this.text, // String 任务标题
+					taskTitle: this.title, // String 任务标题
 					data: data, // String <选填> 推荐信息
 				}
 				this.$api.createTaskApply(cnt,(res)=>{
@@ -514,7 +533,7 @@
 						this.upUserId = arr.upUserId
 						let data = this.$util.tryParseJson(arr.detail)
 						this.text = data.text
-						
+						this.title = arr.title
 						this.getTemplate(data.templateId)
 						this.getStatus()
 					}
@@ -671,7 +690,7 @@
 		box-sizing: border-box;
 		padding: $box-margin-top $box-margin-left;
 		background-color: #fff;
-		height: 40vh;
+		height: 50vh;
 		width: 100vw;
 		bottom: 0;
 		box-shadow: 0px -5px 5px #888888;
@@ -683,16 +702,23 @@
 			width: 5em;
 			margin-left: -2.5em;
 			font-size: $list-title;
-			
 		}
 		
 		textarea{
 			height: 200upx;
 			font-size: $list-title;
+			width: 702upx;
+			border: 1px #AAAAAA solid;
+			border-radius: 10upx;
+			box-sizing: border-box;
+			padding: 20upx;
 		}
 		
 		input{
+			margin: 50upx 0;
+			padding: 10upx 0;
 			font-size: $list-title;
+			border-bottom: 1px #AAAAAA solid;
 		}
 	}
 	

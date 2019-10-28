@@ -106,6 +106,9 @@
 					show: 0
 				}
 				data = JSON.stringify(data)
+				
+				let tagData = '{"homeCotent":"夸友广场"}'
+				
 				let cnt = {
 					upUserId: parseInt(this.userId), // Long 用户编号
 					module: this.$constData.module, // String 用户编号
@@ -116,6 +119,7 @@
 					power: this.$constData.contentPaid[0].key, // Byte 是否付费 0免费  1付费
 					// proviteData: proviteData, // String <选填> 私密信息
 					// ext: ext, // String <选填> 扩展信息
+					tags: tagData, // JSONObject <选填> 标签
 				}
 				if (this.imgList.length > 0) {
 					cnt.type = this.$constData.contentType[2].key

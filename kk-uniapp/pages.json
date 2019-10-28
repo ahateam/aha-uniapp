@@ -5,7 +5,8 @@
 			"style": {
 				"navigationBarTitleText": "夸夸奇谈",
 				"enablePullDownRefresh": true,
-				"onReachBottomDistance": 10
+				"onReachBottomDistance": 10,
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -140,13 +141,16 @@
 			"path": "pages/user/userTask/userAddsTask",
 			"style": {
 				"navigationBarTitleText": "已发任务",
-				"enablePullDownRefresh": true
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 10
 			}
 		},
 		{
 			"path": "pages/user/userTask/userTask",
 			"style": {
-				"navigationBarTitleText": "已领任务"
+				"navigationBarTitleText": "已领任务",
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 10
 			}
 		}, {
 			"path": "pages/user/orderList/orderList",

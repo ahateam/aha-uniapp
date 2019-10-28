@@ -39,6 +39,10 @@
 				navsList: [{
 						name: '已发任务',
 						child: [{
+								name: '全部',
+								status: -1,
+								page: 1,
+							}, {
 								name: '未领取',
 								status: this.$constData.taskWallStatus[1].key,
 								page: 1,
@@ -111,7 +115,7 @@
 				module: this.$constData.module, // Long 模块编号
 				// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
 				// type: type, // Byte <选填> 类型
-				status: this.$constData.taskWallStatus[1].key, // Byte <选填> 状态
+				// status: this.$constData.taskWallStatus[1].key, // Byte <选填> 状态
 				upUserId: this.userId, // Long <选填> 创建者编号
 				// tags: tags, // String <选填> 标签
 				// title: title, // String <选填> 标题
@@ -136,10 +140,13 @@
 
 				let cnt = {
 					upUserId: this.userId, // Long 用户id
-					status: arr.child[arr.tagCurrent].status, //int
+					// status: arr.child[arr.tagCurrent].status, //int
 					count: this.count, // int 
 					offset: this.offset, // int 
 					module: this.$constData.module, // Long 模块编号
+				}
+				if(index != 0){
+					cnt.status = arr.child[arr.tagCurrent].status //int
 				}
 				this.getTask(cnt)
 			},
@@ -250,25 +257,35 @@
 				})
 			}
 		},
+		
+		//下拉刷新
 		onPullDownRefresh() {
 			this.page = 1
 			this.contentData = []
 			let arr = this.navsList[this.navCurrentIndex]
+			arr.child[arr.tagCurrent].page = 1
 			let index = arr.tagCurrent
 
 			let cnt = {
 				module: this.$constData.module, // Long 模块编号
 				// ask: ask, // Byte <选填> 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
 				// type: type, // Byte <选填> 类型
-				status: arr.child[index].status, // Byte <选填> 状态
+				// status: arr.child[index].status, // Byte <选填> 状态
 				upUserId: this.userId, // Long <选填> 创建者编号
 				// tags: tags, // String <选填> 标签
 				// title: title, // String <选填> 标题
 				count: this.count, // int 
 				offset: this.offset, // int 
 			}
+			if(index != 0){
+				cnt.status = arr.child[index].status //int
+			}
 			this.getTask(cnt)
-		}
+		},
+		
+		onReachBottom(){
+			
+		},
 	}
 </script>
 
