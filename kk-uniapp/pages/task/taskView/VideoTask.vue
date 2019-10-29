@@ -52,7 +52,7 @@
 			<button type="primary" @click="submission">提交</button>
 		</view>
 		
-		<view class="upLoadBox" v-if="taskStatus == constData.taskWallStatus[4].key && userId != upUserId ||taskStatus == constData.taskWallStatus[5].key && userId != upUserId">
+		<view class="upLoadBox" v-if="taskStatus == constData.taskWallStatus[4].key && userId != upUserId&&userTaskStatus ||taskStatus == constData.taskWallStatus[5].key && userId != upUserId&&userTaskStatus">
 			<view style="margin-bottom: 15upx;">
 				上传作品：
 			</view>
@@ -92,6 +92,7 @@
 		data() {
 			return {
 				constData:this.$constData,
+				userTaskStatus:false,
 				
 				userId: uni.getStorageSync('userId'), //登录用户id
 				video: '', //视频地址
@@ -122,8 +123,34 @@
 			this.id = res.id
 			this.getTask()
 			this.getTaskApplys()
+			this.getTaskStatus()
 		},
 		methods: {
+			getTaskStatus(){
+				let cnt1 = {
+					taskId: this.id, // Long 任务编号
+					// status: status, // Byte <选填> 状态
+					userId: this.userId, // Long <选填> 接单者编号
+					// works: works, // Boolean <选填> 是否查询作品
+					count: 1, // int 
+					offset: 0, // int 
+				}
+				this.$api.getTaskApplys(cnt1, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c)
+						if(arr.length > 0){
+							if(arr[0].status == this.$constData.taskStatus[0]){
+								this.userTaskStatus = false
+							}else{
+								this.userTaskStatus = true
+							}
+						}
+					}else{
+						console.log('error')
+					}
+				})
+			},
+			
 			navToPay(item) {
 				uni.navigateTo({
 					url: `/pages/task/payView/payView?id=${item.id}&taskId=${this.id}&type=1&title=${this.title}`
