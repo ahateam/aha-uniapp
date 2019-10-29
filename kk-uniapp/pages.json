@@ -200,7 +200,11 @@
 				"navigationBarTextStyle": "black"
 			}
 		}
-	],
+        ,{
+            "path" : "pages/user/userData/userData",
+            "style" : {}
+        }
+    ],
 	"tabBar": {
 		"color": "#C0C4CC",
 		"selectedColor": "#fa436a",

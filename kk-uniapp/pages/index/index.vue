@@ -143,7 +143,9 @@
 			},
 
 			navToAdd() {
-				if (this.userId == '' || this.userId == '1234567890') {
+				let userId = uni.getStorageSync('userId')
+				
+				if (userId == '' || userId == '1234567890') {
 					uni.switchTab({
 						url: '/pages/user/user'
 					})
@@ -496,7 +498,7 @@
 	/* 顶部tabbar */
 	.nav-bar {
 		position: fixed;
-		top: 64px;
+		// top: 64px;
 		z-index: 10;
 		height: 90upx;
 		white-space: nowrap;

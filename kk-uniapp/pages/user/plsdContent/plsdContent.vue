@@ -24,8 +24,8 @@
 				count: 10,
 				offset: 0,
 				page: 1,
-				pageOver:false,
-				pageStatus:'loading'
+				pageOver: false,
+				pageStatus: 'loading'
 			}
 		},
 		onLoad() {
@@ -43,8 +43,8 @@
 			this.getContents(cnt)
 		},
 		methods: {
-			navView(info){
-				if (info.type == this.constData.contentType[2].key || info.type == this.constData.contentType[0].key) {
+			navView(info) {
+				if (info.type == this.$constData.contentType[2].key || info.type == this.$constData.contentType[0].key) {
 					if (info.upChannelId) {
 						uni.navigateTo({
 							url: `/pages/vip/column/details/details?id=${info.id}`
@@ -54,8 +54,8 @@
 							url: `/pages/index/articleView/articleView?id=${info.id}`
 						})
 					}
-				
-				} else if (info.type == this.constData.contentType[1].key) {
+
+				} else if (info.type == this.$constData.contentType[1].key) {
 					// uni.navigateTo({
 					// 	url: `/pages/index/videoView/videoView?id=${info.id}&id1=${info._id}`
 					// })
@@ -70,7 +70,7 @@
 					}
 				}
 			},
-			
+
 			getContents(cnt) {
 				this.$api.getContents(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -139,7 +139,7 @@
 		},
 		onReachBottom() {
 			this.page += 1
-			if(this.pageOver == true){
+			if (this.pageOver == true) {
 				return
 			}
 			this.pageStatus = 'loading'

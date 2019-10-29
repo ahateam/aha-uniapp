@@ -10,7 +10,7 @@
 
 		<view class="tagBox" :style="fixeTag">
 			<view v-for="(item,index) in tagList" class="tags" :key="index">
-				<UniTag :text="item.name" :type="index == curry?'primary':''" @click="changeContent(index,item.name,item.price)"></UniTag>
+				<UniTag :text="item.name" :type="index == curry?'primary':''" @click="changeContent(index,item)"></UniTag>
 			</view>
 		</view>
 		<view class="contentBox" id="salyt">
@@ -32,7 +32,7 @@
 			</view>
 		</view>
 
-		<view class="bottomBtn" v-if="payOrNo">
+		<view class="bottomBtn" v-if="payOrNo&&power == 1">
 			<button type="primary" @click="navToPay">立即支付{{price}}￥</button>
 		</view>
 
@@ -65,6 +65,7 @@
 
 				tagName: '',
 				price: '', //课程价格
+				power: 0, //
 
 				payOrNo: false, //是否购买
 			}
@@ -73,13 +74,13 @@
 			//跳转支付页
 			navToPay() {
 				let userId = uni.getStorageSync('userId')
-				if(userId == ''|| userId == '1234567890'){
+				if (userId == '' || userId == '1234567890') {
 					uni.switchTab({
-						url:'/pages/user/user'
+						url: '/pages/user/user'
 					})
 					uni.showToast({
 						title: '请登录',
-						icon:'none'
+						icon: 'none'
 					})
 					return
 				}
@@ -150,8 +151,10 @@
 				this.$api.getChannlContentTagByChannelId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.tagList = this.$util.tryParseJson(res.data.c)
+						console.log(this.tagList)
 						this.tagName = this.tagList[0].name
 						this.price = this.tagList[0].price
+						this.power = this.tagList[0].power
 						this.ChannelContentTagId = this.tagList[0].id
 						let tagJson = `{"t${this.id}":"${this.tagName}"}`
 						let cnt1 = {
@@ -204,10 +207,11 @@
 				})
 			},
 
-			changeContent(e, f, price) {
+			changeContent(e, f) {
 				this.curry = e
-				this.tagName = f
-				this.price = price
+				this.tagName = f.name
+				this.price = f.price
+				this.power = f.power
 				this.ChannelContentTagId = this.tagList[e].id
 				this.getPayStatus()
 				let tagJson = `{t${this.id}:"${this.tagName}"}`
@@ -423,8 +427,8 @@
 		}
 
 	}
-	
-	.powerInfo{
+
+	.powerInfo {
 		position: absolute;
 		top: $box-margin-top;
 		right: $box-margin-left;

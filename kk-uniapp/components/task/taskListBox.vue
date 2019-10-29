@@ -5,7 +5,7 @@
 		<view class="contentBox">{{text}}</view>
 		<view class="bottomBox" v-if="head">
 			<view class="headImg">
-				<image :src="head" mode="widthFix"></image>
+				<image :src="head" mode="aspectFill"></image>
 			</view>
 			<text class="nameBox">{{name}}</text>
 		</view>

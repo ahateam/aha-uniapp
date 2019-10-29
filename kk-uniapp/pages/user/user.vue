@@ -64,11 +64,11 @@
 						url: '/pages/user/shoppingList/shoppingList',
 						iconClass: 'iconfont kk-gouwu leftIcon'
 					},
-					{
-						name: '登录测试',
-						url: '/pages/user/userLogin/userLogin',
-						iconClass: 'iconfont kk-gouwu leftIcon'
-					}
+					// {
+					// 	name: '登录测试',
+					// 	url: '/pages/user/userLogin/userLogin',
+					// 	iconClass: 'iconfont kk-gouwu leftIcon'
+					// }
 				],
 
 			};

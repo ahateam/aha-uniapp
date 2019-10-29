@@ -10,7 +10,7 @@
 						<text>{{upInfo.name}}</text>
 						<!-- <text>105阅读</text> -->
 						<text>{{detailData.time}}</text>
-						
+
 						<button @click="createUserFavorite" class="followBtn" v-if="followStatus == false">关注</button>
 						<button @click="delUserFavorite" class="followBtn" v-else-if="followStatus == true">已关注</button>
 					</view>
@@ -131,7 +131,7 @@
 
 				/* 点赞 */
 				commentId: Number, //点赞对象id
-				upvoteStatus:false,//是否给文章点赞
+				upvoteStatus: false, //是否给文章点赞
 				/* 点赞end */
 
 				/* 评论 */
@@ -140,10 +140,10 @@
 				contentUpvote: Number, //文章点赞数
 				commentContent: '', //评论内容
 				/* 评论end */
-				
+
 				/* 关注 */
 				followStatus: false, //是否关注
-				followId:'',//关注者id
+				followId: '', //关注者id
 				/* 关注end */
 			}
 		},
@@ -175,7 +175,7 @@
 					}
 				})
 			},
-			
+
 			//取关
 			delUserFavorite() {
 				let cnt = {
@@ -197,7 +197,7 @@
 					}
 				})
 			},
-			
+
 			//创建关注
 			createUserFavorite() {
 				let userId = uni.getStorageSync('userId')
@@ -208,7 +208,7 @@
 					})
 					return
 				}
-			
+
 				let cnt = {
 					moduleId: this.$constData.module, // String 模块编号
 					concernId: this.upInfo.id, // Long 被关注用户id
@@ -230,19 +230,19 @@
 					}
 				})
 			},
-			
+
 			//更新讚數
-			delZan(index){
+			delZan(index) {
 				this.comment[index].appraiseCount -= 1
 				this.comment[index].isAppraise = false
 			},
-			
+
 			//更新赞数
-			upZan(index){
+			upZan(index) {
 				this.comment[index].appraiseCount += 1
 				this.comment[index].isAppraise = true
 			},
-			
+
 			/* 评论 */
 			createComment() {
 				let userId = uni.getStorageSync('userId')
@@ -304,7 +304,7 @@
 					ownerId: this.contentId, // Long 内容编号
 					// status: status, // Byte <选填> 审核状态，不填表示全部，STATUS_UNEXAMINED = 0未审核，STATUS_ACCEPT = 1已通过，STATUS_REJECT = 2已回绝
 					orderDesc: true, // Boolean 是否降序（较新的排前面）
-					userId:uni.getStorageSync('userId'),// Long <选填> 当前用户id
+					userId: uni.getStorageSync('userId'), // Long <选填> 当前用户id
 					count: 10, // Integer 
 					offset: 0, // Integer 
 				}
@@ -358,7 +358,7 @@
 					}
 				})
 			},
-			
+
 			//点赞btn
 			upvote(conid, index) {
 				let userId = uni.getStorageSync('userId')
@@ -378,7 +378,7 @@
 				this.commentId = conid
 				this.createUpvote(index)
 			},
-			
+
 			//点赞
 			createUpvote(index) {
 				let userId = uni.getStorageSync('userId')
@@ -397,10 +397,10 @@
 				}
 				this.$api.createUpvote(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						if(this.$util.tryParseJson(res.data.c).value == 10){
+						if (this.$util.tryParseJson(res.data.c).value == 10) {
 							uni.showToast({
-								title:'请勿重复点赞',
-								icon:'none'
+								title: '请勿重复点赞',
+								icon: 'none'
 							})
 							return
 						}
@@ -418,7 +418,7 @@
 					}
 				})
 			},
-			
+
 			//取消点赞
 			delAppraise(id) {
 				let cnt = {
@@ -441,7 +441,8 @@
 				uni.showLoading({
 					title: '生成中'
 				})
-				this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}` //this.val的值改变后自动调取this.qrR()
+				// this.val = `https://wx.zyxhj.cn?id=${this.contentId}&id1=${this.id1}` //值改变后自动调取qrR()
+				this.val = `http://weapp.datanc.cn/kkqt/app/android/${this.$constData.version}/qqkt.apk` //值改变后自动调取qrR()
 			},
 
 			qrR(res) { //生成二维码的图片地址
@@ -456,11 +457,32 @@
 				context.fillRect(0, 0, 450, 800)
 				let imgList = this.$util.tryParseJson(this.detailData.data).imgList
 				let bgImg = ''
+
+				//背景
+				let src =
+					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1572340464285&di=588bb4334825a9f4094456ba284d97ad&imgtype=0&src=http%3A%2F%2Ft-1.tuzhan.com%2F897b04c31fa7%2Fc-2%2Fl%2F2014%2F02%2F27%2F02%2F46d9ce1a7cb14bccae06589b9a3fe418.jpg'
+
 				if (imgList.length > 0) {
 					uni.downloadFile({
 						url: imgList[0].src,
 						success: (res) => {
 							context.drawImage(res.tempFilePath, 0, 0, 450, 500)
+							this.getUpHead()
+						},
+						fail: (err) => {
+							context.drawImage(src, 0, 0, 450, 500)
+							this.getUpHead()
+						}
+					})
+				} else {
+					uni.downloadFile({
+						url: src,
+						success: (res) => {
+							context.drawImage(res.tempFilePath, 0, 0, 450, 500)
+							this.getUpHead()
+						},
+						fail: (err) => {
+							context.drawImage(src, 0, 0, 450, 500)
 							this.getUpHead()
 						}
 					})
@@ -478,55 +500,75 @@
 					success: (res) => {
 						imgSrc = res.tempFilePath
 						console.log(imgSrc)
-						upHead.arc(50, 50, 50, 0, 2 * Math.PI)
-						upHead.clip()
-						upHead.drawImage(imgSrc, 0, 0, 100, 100)
-						upHead.draw()
-						setTimeout(() => { //延时生成图片
-							uni.canvasToTempFilePath({
-								x: 0,
-								y: 0,
-								width: 100,
-								height: 100,
-								destWidth: 100,
-								destHeight: 100,
-								canvasId: 'upHeadCanvas',
-								success: (res) => {
-									// 在H5平台下，tempFilePath 为 base64
-									context.drawImage(res.tempFilePath, 20, 520, 50, 50)
-									this.createPoster()
-								},
-								fail: (error) => {
-									console.log(error)
-								}
-							})
-						}, 400)
+						this.setTimeImg(imgSrc)
+					},
+					fail: (err) => {
+						//头像
+						let url =
+							'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1572340857731&di=acfd33c7a3844a48d21dedbc2b75d39c&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201810%2F18%2F20181018162951_kgwzm.thumb.700_0.jpeg'
+						this.setTimeImg(url)
 					}
 				})
+			},
+
+			//延时生成图片
+			setTimeImg(imgSrc) {
+				upHead.arc(50, 50, 50, 0, 2 * Math.PI)
+				upHead.clip()
+				upHead.drawImage(imgSrc, 0, 0, 100, 100)
+				upHead.draw()
+				setTimeout(() => {
+					uni.canvasToTempFilePath({
+						x: 0,
+						y: 0,
+						width: 100,
+						height: 100,
+						destWidth: 100,
+						destHeight: 100,
+						canvasId: 'upHeadCanvas',
+						success: (res) => {
+							// 在H5平台下，tempFilePath 为 base64
+							context.drawImage(res.tempFilePath, 20, 520, 50, 50)
+							this.createPoster()
+						},
+						fail: (error) => {
+							console.log(error)
+						}
+					})
+				}, 400)
 			},
 
 			//最终生成海报
 			createPoster() {
 				// 二维码图片
 				context.drawImage(this.src, 280, 520, 150, 150)
-
+			
 				// 文字
 				context.setFillStyle('#000000')
 				context.font = '18px Arial'
 				context.fillText(this.upInfo.name, 80, 550)
-
+				
 				context.font = '20px Arial'
-				context.fillText(this.detailData.title, 20, 610)
-
+				let text = this.detailData.title
+				if(text.length > 11){
+					let data = text.substring(0,11)+'···'
+					context.fillText(data, 20, 610)
+				}else{
+					context.fillText(text, 20, 610)
+				}
+				
+				
+				
+			
 				context.font = '16px Arial'
 				context.setFillStyle('#aaa')
 				context.fillText('长按扫码查看详情', 20, 650)
-
+			
 				//生成画布
 				context.draw()
-
+			
 				// let that = this
-
+			
 				setTimeout(() => { //延时生成图片
 					uni.canvasToTempFilePath({
 						x: 0,
@@ -541,6 +583,7 @@
 							// 在H5平台下，tempFilePath 为 base64
 							this.posterImg = res.tempFilePath
 							console.log(this.posterImg)
+							this.val = ''
 						}
 					})
 					this.showHb()
@@ -557,7 +600,15 @@
 				uni.saveImageToPhotosAlbum({
 					filePath: this.posterImg,
 					success: function() {
-						console.log('save success');
+						uni.showToast({
+							title:'保存成功！'
+						})
+					},
+					fail() {
+						uni.showToast({
+							title:'保存失败！',
+							icon:'none'
+						})
 					}
 				});
 			},
@@ -595,7 +646,7 @@
 					}
 				}))
 			},
-			
+
 			//查询是否关注
 			getBoolFavoriteUser(userId) {
 				let cnt = {
@@ -641,11 +692,26 @@
 
 			//app分享
 			appShare() {
-				// uni.share({
-				// 	provider:this.$constData.providerList[0].id,
-				// 	scene:'WXSceneSession'
-
-				// })
+				uni.share({
+					provider: "weixin",
+					scene: "WXSceneSession",
+					type: 0,
+					href: `http://weapp.datanc.cn/kkqt/app/android/${this.$constData.version}/qqkt.apk`,
+					title: "表揚表揚TA",
+					summary: "我正在使用表揚表揚TA，赶紧跟我一起来体验！",
+					imageUrl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1572435385&di=3633a97230e161bda396cb159418e90c&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201210%2F05%2F20121005184845_rSCUj.thumb.700_0.jpeg",
+					success: function(res) {
+						uni.showToast({
+							title: '分享成功！'
+						})
+					},
+					fail: function(err) {
+						uni.showToast({
+							title: '分享失败',
+							icon: 'none'
+						})
+					}
+				})
 			}
 		},
 		onShareAppMessage(res) {
@@ -877,7 +943,7 @@
 			margin: 0 auto;
 		}
 	}
-	
+
 	.followBtn {
 		position: absolute;
 		right: $box-margin-left;
@@ -890,13 +956,13 @@
 		line-height: 2em;
 		color: $color-button-back;
 		background-color: $color-main;
-	
-	
+
+
 		&:after {
 			border: none;
 		}
 	}
-	
+
 	.currentIcon {
 		color: $color-main;
 	}

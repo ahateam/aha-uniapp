@@ -11,6 +11,9 @@ constData.showStatus = [{
 	}
 ]
 
+//版本號
+ constData.version = 100
+
 /** 首页常量*/
 constData.module = 1170
 

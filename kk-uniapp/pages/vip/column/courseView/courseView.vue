@@ -21,7 +21,7 @@
 			</view>
 		</view>
 
-		<view class="bottomBtn" v-if="payOrNo">
+		<view class="bottomBtn" v-if="payOrNo&&power == 1">
 			<button type="primary" @click="navToPay">立即支付{{price}}￥</button>
 		</view>
 	</view>
@@ -41,7 +41,8 @@
 				channelId: '', //专栏id
 
 				payOrNo: false, //是否购买
-
+				
+				power:0,//是否付费课程
 				price: '', //课程价格
 			}
 		},
@@ -83,6 +84,7 @@
 							console.log(i)
 							if (arr[i].name == this.titleText) {
 								this.price = arr[i].price
+								this.power = arr[i].power
 								console.log(this.price)
 								return
 							}
