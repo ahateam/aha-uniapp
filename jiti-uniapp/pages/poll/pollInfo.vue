@@ -50,7 +50,7 @@
 		</view>
 		<view class="poll-btn">
 
-			<button type="primary" v-if="pollInfo.status == '0' &&  isBtnShow && !voteTimeOver" @click="submitVoteBtn()">提交投票</button>
+			<button type="primary" v-if=" isBtnShow && !voteTimeOver" @click="submitVoteBtn()">提交投票</button>
 
 			<button type="primary" v-else @click="toPollRes">
 				结果详情</button>
@@ -91,9 +91,25 @@
 
 			/*获取投票详情*/
 			getVoteDetail(cnt) {
+				uni.showLoading({
+					title: '加载中'
+				});
 				this.$api.getVoteDetail(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.pollDetail = this.$util.tryParseJson(res.data.c)
+						
+						this.pollInfo = this.$util.tryParseJson(res.data.c).vote
+						this.activeNums = this.pollInfo.choiceCount
+						this.pollDetail =this.$util.tryParseJson(res.data.c)
+						console.log('---------')
+						console.log(this.pollInfo)
+						let nowDateTime = new Date()
+						nowDateTime = nowDateTime.getTime()
+						if(nowDateTime>this.pollInfo.expiryTime){
+							this.voteTimeOver = true
+						}
+						
+						this.getVoteOptions(cnt)
+
 
 						this.ticketCount = this.pollDetail.ticketCount
 						this.quorum = this.pollDetail.vote.quorum
@@ -118,6 +134,7 @@
 						}
 						console.log(cnt)
 						this.getVoteTicket(cnt)
+						
 					}
 				})
 			},
@@ -261,7 +278,7 @@
 						}
 					}
 				}
-
+				uni.hideLoading()
 			},
 
 			submitVoteBtn() {
@@ -273,7 +290,7 @@
 					}
 				}
 				let user = JSON.parse(uni.getStorageSync('orgUserInfo'))
-				let vote = JSON.parse(uni.getStorageSync('poll'))
+				let vote = this.pollInfo
 
 				let cnt = {
 					orgId: user.orgId,
@@ -305,15 +322,13 @@
 			},
 
 			resetData() {
-				let poll = uni.getStorageSync('poll')
-				this.pollInfo = JSON.parse(poll)
-				this.activeNums = this.pollInfo.choiceCount
+				let poll = Number(uni.getStorageSync('poll'))
+				
 
 				let cnt = {
-					voteId: this.pollInfo.id
+					voteId:poll
 				}
 				this.getVoteDetail(cnt)
-				this.getVoteOptions(cnt)
 			},
 
 			/** 跳转投票结果详情页*/
@@ -329,23 +344,23 @@
 
 		},
 		onLoad() {
-			let poll = uni.getStorageSync('poll')
-			this.pollInfo = JSON.parse(poll)
-			this.activeNums = this.pollInfo.choiceCount
-	
+			let poll = Number(uni.getStorageSync('poll'))
+			// this.pollInfo = JSON.parse(poll)
+			// this.activeNums = this.pollInfo.choiceCount
+			console.log(this.pollInfo)
 			
-			let nowDateTime = new Date()
-			nowDateTime = nowDateTime.getTime()
-			if(nowDateTime>this.pollInfo.expiryTime){
-				this.voteTimeOver = true
-			}
+			// let nowDateTime = new Date()
+			// nowDateTime = nowDateTime.getTime()
+			// if(nowDateTime>this.pollInfo.expiryTime){
+			// 	this.voteTimeOver = true
+			// }
 			
 			let cnt = {
-				voteId: this.pollInfo.id
+				voteId: poll
 			}
 			
 			this.getVoteDetail(cnt)
-			this.getVoteOptions(cnt)
+			
 			
 			
 

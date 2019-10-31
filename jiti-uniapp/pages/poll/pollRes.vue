@@ -63,23 +63,16 @@
 				passData: 0,
 			}
 		},
-		onLoad() {
-			let poll = uni.getStorageSync('poll')
-			this.pollInfo = JSON.parse(poll)
-			console.log('----------------------')
-			// console.log(poll)
-			let cnt = {
-				voteId: this.pollInfo.id
-			}
-			this.getVoteDetail(cnt)
 
-		},
+
+
 		methods: {
 			/*获取投票详情*/
 			getVoteDetail(cnt) {
 				this.$api.getVoteDetail(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.pollDetail = this.$util.tryParseJson(res.data.c)
+						this.pollInfo = this.pollDetail.vote
 						console.log('------------')
 						console.log(this.pollDetail)
 						this.ticketCount = this.pollDetail.ticketCount
@@ -161,7 +154,18 @@
 					delta: 2
 				});
 			}
-		}
+		},
+		onLoad() {
+			let poll = uni.getStorageSync('poll')
+
+			console.log('----------------------')
+			// console.log(poll)
+			let cnt = {
+				voteId: poll
+			}
+			this.getVoteDetail(cnt)
+
+		},
 	}
 </script>
 

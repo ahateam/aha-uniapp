@@ -76,13 +76,15 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let info = JSON.parse(res.data.c)
 						let arr = []
-					
+						console.log('----------permissions------------')
+						console.log(info.permissions)
 						for (let i = 0; i < info.permissions.length; i++) {
 							arr.push(info.permissions[i].id)
 						}
+						console.log(arr)
 						uni.setStorageSync('orgInfo', JSON.stringify(info))
 						uni.setStorageSync('permission', JSON.stringify(arr))
-
+							
 						uni.switchTab({
 							url: '/pages/index/index'
 						});

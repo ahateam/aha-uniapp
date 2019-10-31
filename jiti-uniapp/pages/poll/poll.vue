@@ -80,7 +80,6 @@
 										结果
 									</span>
 								</view>
-
 								<view class="vote-item-info">{{item.remark}}</view>
 							</view>
 						</view>
@@ -265,7 +264,8 @@
 
 			/** 选中投票*/
 			checkItemBtn(item) {
-				uni.setStorageSync('poll', JSON.stringify(item));
+				console.log(item)
+				uni.setStorageSync('poll', item.id);
 				uni.navigateTo({
 					url: './pollInfo'
 				});

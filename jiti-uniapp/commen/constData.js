@@ -15,7 +15,7 @@ const constData = {}
 
 
 //app版本号
- constData.version = 111
+ constData.version = 112
 
 /* 投票状态*/
 constData.pollStatus = [{
@@ -74,5 +74,7 @@ constData.examineStatus = [{
 constData.permission =[
     {key:100,val:'发起投票'},{key:102,val:'职务管理'},{key:104,val:'分户审批'},{key:105,val:'股权变更'},
 ]
+
+constData.tags = [{key:0,val:'vote'},{key:1,val:'examine'}]
 
 export default constData

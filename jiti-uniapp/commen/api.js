@@ -179,5 +179,18 @@ api.getORGByBank = function(cnt, callback) {
 	util.call(baseUrl + '/bank/getORGByBank', cnt, callback)
 }
 
+//消息通知
+api.latlestMail = function(cnt, callback) {
+	util.call(baseUrl + '/org/latlestMail', cnt, callback)
+}
+//已通知到消息
 
+api.delMail = function(cnt, callback) {
+	util.call(baseUrl + '/node/delMail', cnt, callback)
+}
+//消息跳转审批详情（分户+股权变更）
+api.getExamineById = function(cnt, callback) {
+	util.call(baseUrl + '/org/getExamineById', cnt, callback)
+}
+	
 export default api

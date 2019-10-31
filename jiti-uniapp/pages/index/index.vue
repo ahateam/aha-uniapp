@@ -104,21 +104,12 @@
 			</template>
 
 		</template>
-
-
-
-
-
 		<view class="content_box" style="background-color: #fb7eb8;" @click="toAbout()">
 			<view class="content_box_text">
 				<p class="text-box">个人</p>
 				<p class="text-box1">信息</p>
 			</view>
 		</view>
-
-
-
-
 		<view class="content_box" @click="toChooseOrg">
 			<view class="content_box_text">
 				<p class="text-box">更换</p>
@@ -149,33 +140,11 @@
 				addVoteId: this.$constData.permission[0].key,
 				editPostId: this.$constData.permission[1].key,
 				userPermission: '',
-				noticeList: []
+				noticeList: [],
+				msgInfo: ''
 			}
 		},
-		onLoad() {
-			this.userPermission = JSON.parse(uni.getStorageSync('permission'))
-			let userObj = JSON.parse(uni.getStorageSync('userInfo')) //只有用户信息
-			let orgObj = JSON.parse(uni.getStorageSync('orgInfo')) //只有用户的组织信息
 
-			if (!userObj) {
-				uni.reLaunch({
-					url: '../login/login'
-				})
-			}
-			if (!orgObj) {
-				uni.reLaunch({
-					url: '../chooseOrg/chooseOrg'
-				})
-			}
-			let orgUserInfo = Object.assign(userObj, orgObj)
-			let info = uni.getStorageSync('orgUserInfo')
-
-			if (!info) { //user是否已经存在，若存在就不重新赋值
-				uni.setStorageSync('orgUserInfo', JSON.stringify(orgUserInfo))
-			}
-			this.getNotice()
-
-		},
 		methods: {
 			//请求公告列表
 			getNoticeByRoleGroup(cnt) {
@@ -238,7 +207,113 @@
 					url: '../notice/noticeInfo?info=' + info
 				})
 			},
-		}
+			//消息跳转审批详情（分户+股权变更）
+			toExamine() {
+				console.log('111')
+				let cnt = {
+					examineId: Number(this.msgInfo.action)
+				}
+				this.$api.getExamineById(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						console.log(JSON.parse(res.data.c))
+					}
+				})
+
+			},
+			//通知完成
+			delMail() {
+				console.log(this.msgInfo)
+				let cnt = {
+					moduleId: this.msgInfo.moduleId, // Long 模块编号
+					receiver: this.msgInfo.receiver, // String 接收者编号列表，JSONArray格式
+					sequenceId: this.msgInfo.sequenceId, // Long 接收者编号
+					tags: this.msgInfo.tags, // JSONArray <选填> 标签
+					sender: this.msgInfo.sender, // String 发送者编号
+					title: this.msgInfo.title, // String 标题
+					text: this.msgInfo.text, // String 正文
+					action: false, // String <选填> 消息行为
+					createTime: this.msgInfo.createTime, // Long <选填> 消息行为
+					ext: this.msgInfo.ext, // String <选填> 消息扩展
+				}
+				this.$api.delMail(cnt, (res) => {
+					console.log(res)
+				})
+			},
+			//消息提示框
+			notice() {
+				let tag = JSON.parse(this.msgInfo.tags)[0]
+				uni.showModal({
+					title: this.msgInfo.title,
+					content: this.msgInfo.text,
+					confirmText: '立即查看',
+					success: (res) => {
+						if (res.confirm) {
+							this.delMail()
+							if (tag == this.$constData.tags[0].val) { //投票提醒
+								uni.setStorageSync('poll', this.msgInfo.action)
+								uni.navigateTo({
+									url: '../poll/pollInfo',
+								});
+							} else if (tag == this.$constData.tags[1].val) { //审批提醒
+								this.toExamine()
+							}
+						} else if (res.cancel) {
+							this.delMail()
+						}
+					}
+				});
+			},
+
+
+			showModel() {
+
+				let cnt = {
+					userId: JSON.parse(uni.getStorageSync('userInfo')).id
+				}
+				this.$api.latlestMail(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.msgInfo = this.$util.tryParseJson(res.data.c)
+						console.log('+++++++++')
+						console.log(this.msgInfo)
+						if (Object.keys(this.msgInfo).length) {
+							this.notice()
+						}
+
+					}
+
+				})
+
+
+			}
+		},
+		onLoad() {
+			this.userPermission = JSON.parse(uni.getStorageSync('permission'))
+			let userObj = JSON.parse(uni.getStorageSync('userInfo')) //只有用户信息
+			let orgObj = JSON.parse(uni.getStorageSync('orgInfo')) //只有用户的组织信息
+
+			if (!userObj) {
+				uni.reLaunch({
+					url: '../login/login'
+				})
+			}
+			if (!orgObj) {
+				uni.reLaunch({
+					url: '../chooseOrg/chooseOrg'
+				})
+			}
+			let orgUserInfo = Object.assign(userObj, orgObj)
+			let info = uni.getStorageSync('orgUserInfo')
+
+			if (!info) { //user是否已经存在，若存在就不重新赋值
+				uni.setStorageSync('orgUserInfo', JSON.stringify(orgUserInfo))
+			}
+			this.getNotice()
+
+			this.showModel()
+
+
+
+		},
 	}
 </script>
 
