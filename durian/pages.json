@@ -21,7 +21,7 @@
 		{
 			"path": "pages/login/mobilePassword",
 			"style": {
-
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -29,20 +29,19 @@
 			"style": {
 
 			}
-		}
-	    ,{
-            "path" : "pages/login/Treaty/Treaty",
-            "style" : {
-				
+		}, {
+			"path": "pages/login/Treaty/Treaty",
+			"style": {
+
 			}
-        },
+		},
 		{
-			"path":"pages/login/Treaty/secret",
-			"style":{
-				
+			"path": "pages/login/Treaty/secret",
+			"style": {
+
 			}
 		}
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
