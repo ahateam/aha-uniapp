@@ -29,7 +29,7 @@
 		</view>
 
 		<view class="add-box">
-			<input type="text" v-model="searchData" class="input-title" focus  placeholder="输入被选举人的名字/身份证号搜索" />
+			<input type="text" v-model="searchData" class="input-title" focus placeholder="输入被选举人的名字/身份证号搜索" />
 			<view class="add-btn" @click="searchBtn">搜索</view>
 		</view>
 		<view class="title-box1">
@@ -41,13 +41,13 @@
 					<view class="item-title1">
 						{{item.user.realName}}
 					</view>
-					<view class="item-icon1" >
-							{{item.user.idNumber}}
+					<view class="item-icon1">
+						{{item.user.idNumber}}
 					</view>
 				</view>
 			</view>
-			<view v-else>
-					暂无搜索到的成员
+			<view style="color: #666;font-size: 26rpx;padding: 20rpx;" v-else >
+				暂无搜索到的成员
 			</view>
 		</view>
 		<view class="footer-box">
@@ -107,7 +107,7 @@
 			},
 
 			searchBtn() {
-		
+
 				if (this.searchData == '') {
 					uni.showToast({
 						icon: 'none',
@@ -139,27 +139,27 @@
 				}
 			},
 
-   //新增选项
-            addVoteOption(cnt){
-                this.$api.addVoteOption(cnt,(res)=>{
-                  if (res.data.rc == this.$util.RC.SUCCESS) {
-                  	uni.showToast({
-                  		icon: 'success',
-                  		title: '新增成功'
-                  	})
-                  } else {
-                  	uni.showToast({
-                  		icon: 'none',
-                  		title: '新增失败'
-                  	})
-                  }
-                  this.addInput = ''
-                  this.getVoteOptions()
-                })
-            },
+			//新增选项
+			addVoteOption(cnt) {
+				this.$api.addVoteOption(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							icon: 'success',
+							title: '新增成功'
+						})
+					} else {
+						uni.showToast({
+							icon: 'none',
+							title: '新增失败'
+						})
+					}
+					this.addInput = ''
+					this.getVoteOptions()
+				})
+			},
 
 
-	
+
 
 			//删除选项
 			delVoteOption(id) {
@@ -189,21 +189,21 @@
 					url: '/pages/index/index'
 				});
 			},
-			addBtn(info){
-                let ext = {
-                    userId:info.user.userId,
-                    idNumber:info.user.idNumber,
-                    realName:info.user.realName,
-                }
-                let cnt ={
-                    voteId:this.vote.id,
-                    title:info.user.realName,
-                    remark:'无',
-                    ext:ext
-                }
-                this.addVoteOption(cnt)
+			addBtn(info) {
+				let ext = {
+					userId: info.user.userId,
+					idNumber: info.user.idNumber,
+					realName: info.user.realName,
+				}
+				let cnt = {
+					voteId: this.vote.id,
+					title: info.user.realName,
+					remark: '无',
+					ext: ext
+				}
+				this.addVoteOption(cnt)
 
-            },
+			},
 		},
 		onShow() {
 
@@ -311,13 +311,14 @@
 
 	.item {
 		margin-top: 20rpx;
-		padding:20rpx 40rpx;
+		padding: 20rpx 40rpx;
 		width: auto;
 		height: 60rpx;
 		line-height: 60rpx;
 		border-bottom: 1px solid #eee;
 
 	}
+
 	.item1 {
 
 		padding: 30rpx 40rpx;
@@ -325,8 +326,9 @@
 		height: 60rpx;
 		line-height: 60rpx;
 		border-bottom: 1px solid #eee;
-	
+
 	}
+
 	.title-box1 {
 		width: auto;
 		padding: 20rpx;
@@ -337,7 +339,7 @@
 		background: $jiti-color-blue;
 		margin-top: 20rpx;
 	}
-	
+
 
 	.title-box {
 		width: auto;
@@ -349,6 +351,7 @@
 		background: $jiti-color-blue;
 		margin-top: 20rpx;
 	}
+
 	.item-title1 {
 		float: left;
 		width: 40%;
@@ -358,9 +361,9 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-	
+
 	}
-	
+
 	.item-icon1 {
 		float: left;
 		width: 50%;
@@ -378,7 +381,7 @@
 		width: 70%;
 		line-height: 50rpx;
 		color: #666;
-		
+
 		font-size: 28rpx;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -402,8 +405,16 @@
 			line-height: 50rpx;
 		}
 	}
-.footer-box {
-			width: auto;
-			padding: 40rpx;
-		}
+
+	.footer-box {
+		width: auto;
+		padding: 40rpx;
+	}
+
+	.list-search-item {
+		color: #666;
+		font-size: 26rpx;
+		padding: 20rpx;
+
+	}
 </style>

@@ -15,9 +15,9 @@ const constData = {}
 
 
 //app版本号
- constData.version = 112
+ constData.version = 113
 
-/* 投票状态*/
+/* 投票状态---前端*/
 constData.pollStatus = [{
 		key: '-1',
 		val: '投票未完成'
@@ -33,6 +33,20 @@ constData.pollStatus = [{
 	{
 		key: '2',
 		val: '失败'
+	},
+]
+/* 投票状态---后端返回*/
+constData.voteStatus = [{
+		key: '0',
+		val: '进行中'
+	},
+	{
+		key: '1',
+		val: '未开始'
+	},
+	{
+		key: '4',
+		val: '已结束'
 	},
 ]
 
@@ -75,6 +89,11 @@ constData.permission =[
     {key:100,val:'发起投票'},{key:102,val:'职务管理'},{key:104,val:'分户审批'},{key:105,val:'股权变更'},
 ]
 
+//消息通知类型
 constData.tags = [{key:0,val:'vote'},{key:1,val:'examine'}]
+
+//审批分类
+constData.examineType=[{key:1,val:'分户申请'},{key:2,val:'股权变更'}]
+
 
 export default constData

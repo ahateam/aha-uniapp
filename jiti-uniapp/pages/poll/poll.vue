@@ -23,7 +23,9 @@
 									</span>
 								</view>
 								<view class="vote-item-text">
-									<view class="vote-item-status"></view>
+									<view class="vote-item-status status-success-color" v-if="item.status == voteStatus[0].key ">{{voteStatus[0].val}}</view>
+									<view class="vote-item-status status-warning-color" v-else-if="item.status == voteStatus[1].key ">{{voteStatus[1].val}}</view>
+									<view class="vote-item-status status-danger-color" v-else-if="item.status == voteStatus[2].key ">{{voteStatus[2].val}}</view>
 									<view class="vote-item-title-box">{{item.title}}</view>
 								</view>
 							</view>
@@ -68,7 +70,9 @@
 									</span>
 								</view>
 								<view class="vote-item-text">
-									<view class="vote-item-status"></view>
+									<view class="vote-item-status status-success-color" v-if="item.status == voteStatus[0].key ">{{voteStatus[0].val}}</view>
+									<view class="vote-item-status status-warning-color" v-else-if="item.status == voteStatus[1].key ">{{voteStatus[1].val}}</view>
+									<view class="vote-item-status status-danger-color" v-else-if="item.status == voteStatus[2].key ">{{voteStatus[2].val}}</view>
 									<view class="vote-item-title-box">{{item.title}}</view>
 								</view>
 							</view>
@@ -103,7 +107,9 @@
 									</span>
 								</view>
 								<view class="vote-item-text">
-									<view class="vote-item-status"></view>
+									<view class="vote-item-status status-success-color" v-if="item.status == voteStatus[0].key ">{{voteStatus[0].val}}</view>
+									<view class="vote-item-status status-warning-color" v-else-if="item.status == voteStatus[1].key ">{{voteStatus[1].val}}</view>
+									<view class="vote-item-status status-danger-color" v-else-if="item.status == voteStatus[2].key ">{{voteStatus[2].val}}</view>
 									<view class="vote-item-title-box">{{item.title}}</view>
 								</view>
 							</view>
@@ -159,8 +165,8 @@
 				page: 1,
 				pageOver: false, //还能不能分页
 				voteList: [],
-				
-			
+				voteStatus: this.$constData.voteStatus
+
 
 			}
 		},
@@ -178,6 +184,7 @@
 						data = []
 					}
 					this.voteList = this.voteList.concat(data)
+
 					if (data.length < this.count) {
 						this.pageOver = true;
 					} else {
@@ -201,8 +208,10 @@
 						data = []
 					}
 					this.voteList = this.voteList.concat(data);
+					console.log('----------voteList----------')
+					console.log(this.voteList)
 					uni.hideLoading()
-					
+
 				});
 			},
 			//请求已投票的列表
@@ -214,20 +223,21 @@
 					console.log(JSON.parse(res.data.c));
 					let data = [];
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let resData =  this.$util.tryParseJson(res.data.c);
-						data =resData.data
+						let resData = this.$util.tryParseJson(res.data.c);
+						data = resData.data
 						this.offset = resData.offset
 					} else {
 						data = [];
 					}
 					this.voteList = this.voteList.concat(data);
-				uni.hideLoading()
+					uni.hideLoading()
 				});
 			},
 
+
 			/* 触发改变选中标签*/
 			changeTag(_index) {
-			
+
 				this.tabCurrentIndex = _index
 				this.page = 1;
 				this.offset = 0;
@@ -270,7 +280,7 @@
 					url: './pollInfo'
 				});
 			},
-			
+
 			toHomePage() {
 				uni.switchTab({
 					url: '/pages/index/index'
@@ -279,11 +289,11 @@
 
 		},
 		onShow() {
-		
+
 			this.voteList = []
 			this.page = 1
-			this.tabCurrentIndex =0
-			this.offset=0
+			this.tabCurrentIndex = 0
+			this.offset = 0
 			this.orgUserInfo = JSON.parse(uni.getStorageSync('orgUserInfo'))
 
 			let cnt = {
@@ -291,11 +301,11 @@
 				userId: this.orgUserInfo.id, // Long 用户编号
 				roles: this.orgUserInfo.orgRoles, // String 角色
 				count: this.count,
-				offset: (this.page-1)*this.count
+				offset: (this.page - 1) * this.count
 			}
 
 			this.getNotVoteByUserRoles(cnt)
-			
+
 		},
 
 		/**分页*/
@@ -340,8 +350,8 @@
 
 			}
 		}
-		
-		
+
+
 
 	}
 </script>
@@ -456,7 +466,7 @@
 					width: 100rpx;
 					height: 60rpx;
 					font-size: 24rpx;
-					color: #666;
+				
 					text-align: center;
 				}
 
@@ -517,5 +527,15 @@
 		width: auto;
 		padding: 40rpx;
 
+	}
+	
+	.status-success-color{
+		color: $jiti-color-success;
+	}
+	.status-warning-color{
+		color: $jiti-color-warning;
+	}
+	.status-danger-color{
+		color: $jiti-color-danger;
 	}
 </style>

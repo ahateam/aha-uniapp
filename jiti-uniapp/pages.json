@@ -80,10 +80,14 @@
 
 		{
 			"path": "pages/examine/familyInfo",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "分户审批"
+			}
 		}, {
 			"path": "pages/examine/shareInfo",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "股权变更"
+			}
 		},
 		{
 			"path": "pages/assets/assets",

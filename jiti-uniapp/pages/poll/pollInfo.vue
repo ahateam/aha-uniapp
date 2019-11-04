@@ -50,9 +50,9 @@
 		</view>
 		<view class="poll-btn">
 
-			<button type="primary" v-if=" isBtnShow && !voteTimeOver" @click="submitVoteBtn()">提交投票</button>
+			<button type="primary" v-if=" isBtnShow && !voteTimeOver " @click="submitVoteBtn()">提交投票</button>
 
-			<button type="primary" v-else @click="toPollRes">
+			<button type="primary" v-if="!isBtnShow || voteTimeOver || isInfoShow" @click="toPollRes">
 				结果详情</button>
 			<button type="default" @click="toBack">
 				返回上一页</button>
@@ -84,6 +84,8 @@
 				successData: [],
 				
 				voteTimeOver:false,
+				
+				isInfoShow:false,
 
 			}
 		},
@@ -302,29 +304,46 @@
 				}
 				this.$api.vote(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.showToast({
-							icon: 'success',
-							title: '投票成功',
-							duration: 1500
-						});
-						this.isPollShow = true //已投票
-						this.isBtnShow = false //隐藏投票按钮
-						this.resetData()
+						if(res.data.c == 'null'){
+							uni.showToast({
+								icon: 'none',
+								title: '投票失败，无权限或已超时',
+								duration: 1500
+							});
+							setTimeout(()=>{
+									this.resetData()
+							},1000)
+											
+						}else{
+							uni.showToast({
+								icon: 'success',
+								title: '投票成功',
+								duration: 1500
+							});
+							this.isPollShow = true //已投票
+							this.isBtnShow = false //隐藏投票按钮
+							setTimeout(()=>{
+									this.resetData()
+							},1000)
+											
+						}
 					} else {
 						uni.showToast({
 							icon: 'none',
-							title: '投票失败，无权限或已超时',
+							title: '投票失败，您无权限参与投票',
 							duration: 1500
 						});
-						this.resetData()
+						this.isInfoShow = true
+						setTimeout(()=>{
+								this.resetData()
+						},1000)
+				
 					}
-				})
+				}) 
 			},
 
 			resetData() {
 				let poll = Number(uni.getStorageSync('poll'))
-				
-
 				let cnt = {
 					voteId:poll
 				}

@@ -209,20 +209,28 @@
 			},
 			//消息跳转审批详情（分户+股权变更）
 			toExamine() {
-				console.log('111')
 				let cnt = {
 					examineId: Number(this.msgInfo.action)
 				}
 				this.$api.getExamineById(cnt,(res)=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
-						console.log(JSON.parse(res.data.c))
+						let data = this.$util.tryParseJson(res.data.c)
+						let infoData = encodeURIComponent(JSON.stringify(data))
+						if(data.type == this.$constData.examineType[0].key){
+							uni.navigateTo({
+								url: '../examine/familyInfo?info=' + infoData,
+							})
+						}else if(data.type == this.$constData.examineType[1].key){
+							uni.navigateTo({
+								url: '../examine/shareInfo?info=' + infoData,
+							})
+						}
 					}
 				})
 
 			},
 			//通知完成
 			delMail() {
-				console.log(this.msgInfo)
 				let cnt = {
 					moduleId: this.msgInfo.moduleId, // Long 模块编号
 					receiver: this.msgInfo.receiver, // String 接收者编号列表，JSONArray格式
@@ -273,8 +281,7 @@
 				this.$api.latlestMail(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.msgInfo = this.$util.tryParseJson(res.data.c)
-						console.log('+++++++++')
-						console.log(this.msgInfo)
+						
 						if (Object.keys(this.msgInfo).length) {
 							this.notice()
 						}
