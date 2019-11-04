@@ -11,6 +11,20 @@
       "font_class": "wechat",
       "unicode": "e601",
       "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "5388069",
+      "name": "眼睛_显示_o",
+      "font_class": "yanjing_xianshi_o",
+      "unicode": "ebcc",
+      "unicode_decimal": 60364
+    },
+    {
+      "icon_id": "5388071",
+      "name": "眼睛_隐藏_o",
+      "font_class": "yanjing_yincang_o",
+      "unicode": "ebcd",
+      "unicode_decimal": 60365
     }
   ]
 }

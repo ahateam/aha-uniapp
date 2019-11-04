@@ -27,7 +27,7 @@
 		{
 			"path": "pages/login/resetPassword",
 			"style": {
-
+				"navigationStyle": "custom"
 			}
 		}, {
 			"path": "pages/login/Treaty/Treaty",

@@ -79,7 +79,7 @@
 	
 	.tipBox {
 		margin-bottom: 51rpx;
-		color: #FFFFFF;
+		color: rgba($color: #FFFFFF, $alpha: 0.5);
 		font-size: 24rpx;
 		line-height: 33rpx;
 	}

@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<navBar :back="false" type="transparent" fontColor="#FFF">
-			<view slot="right" class="navTitle">密码登录</view>
+			<view slot="right" class="navTitle" @click="navToPassLogin">密码登录</view>
 		</navBar>
 		<image class="bgImg" :src="bgSrc" mode="aspectFill"></image>
 		<!-- 标题 -->
@@ -59,11 +59,23 @@
 					})
 				}
 			},
+			
+			navToPassLogin(){
+				uni.redirectTo({
+				    url: '/pages/login/mobilePassword'
+				})
+			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	button{
+		&:after{
+			border: none;
+		}
+	}
+	
 	.bgImg {
 		position: absolute;
 		top: 0;

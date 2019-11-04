@@ -1,15 +1,12 @@
 <template>
 	<view>
 		<navBar :back="false" type="transparent" fontColor="#FFF">
-			<view slot="right" class="navTitle">密码登录</view>
+			<view slot="right" class="navTitle" @click="navToMobile">免密登录</view>
 		</navBar>
 		<image class="bgImg" :src="bgSrc" mode="aspectFill"></image>
 		<!-- 标题 -->
 		<view class="titleBox">
-			手机号登录
-			<view class="titleInfo">
-				榴莲出国-记录你的澳洲征程
-			</view>
+			密码登录
 		</view>
 		<!-- 主要功能区 -->
 		<view class="functionBox">
@@ -19,10 +16,15 @@
 			<input type="number" v-model="phoneNumber" placeholder="输入手机号码" maxlength="11" />
 		</view>
 
-		<button type="primary" class="functionBox codeBtn" @click="navToCode">获取验证码</button>
+		<view class="functionBox">
+			<text class="iconfont areaCode" :class="eyeIcon" @click="changeHidden"></text>
+			<input type="number" v-model="passData" placeholder="请输入密码" :password="eyeStatus" minlength="6" />
+		</view>
 
-		<view class="infoBox">
-			未注册手机验证后自动登录
+		<button type="primary" class="functionBox codeBtn" @click="login">登录</button>
+
+		<view class="infoBox" @click="navToReset">
+			忘记密码
 		</view>
 		<!-- 下方附属功能 -->
 		<otherFct></otherFct>
@@ -41,29 +43,67 @@
 		data() {
 			return {
 				areaCode: '+86',
-				bgSrc: this.$constData.oss + '/image/mobileBG.png',
+				bgSrc: this.$constData.oss + '/image/passwordBG.png',
+
 				phoneNumber: '',
+				passData: '',
+
+				eyeIcon: 'icon-yanjing_yincang_o',
+				eyeStatus: true,
 
 			}
 		},
 		methods: {
-			navToCode() {
+			login() {
 				if (this.phoneNumber.length < 10) {
 					uni.showToast({
 						title: '请输入正确的号码',
 						icon: 'none'
 					})
+				} else if (this.passData.length < 6) {
+					uni.showToast({
+						title: '请输入正确的密码',
+						icon: 'none'
+					})
 				} else {
-					uni.navigateTo({
-						url: `./code?phone=${this.phoneNumber}`
+					uni.showToast({
+						title: '登录'
 					})
 				}
+			},
+
+			changeHidden() {
+				if (this.eyeIcon == 'icon-yanjing_yincang_o') {
+					this.eyeStatus = false
+					this.eyeIcon = 'icon-yanjing_xianshi_o'
+				} else {
+					this.eyeStatus = true
+					this.eyeIcon = 'icon-yanjing_yincang_o'
+				}
+			},
+
+			navToReset() {
+				uni.redirectTo({
+					url: '/pages/login/resetPassword'
+				})
+			},
+
+			navToMobile() {
+				uni.redirectTo({
+					url: '/pages/login/mobile'
+				})
 			},
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	button{
+		&:after{
+			border: none;
+		}
+	}
+	
 	.bgImg {
 		position: absolute;
 		top: 0;
@@ -84,13 +124,6 @@
 		line-height: 78rpx;
 		color: #FFFFFF;
 		margin: 184rpx 0 0 90rpx;
-	}
-
-	.titleInfo {
-		margin-top: 10rpx;
-		font-size: 34rpx;
-		line-height: 48rpx;
-		color: rgba($color: #FFFFFF, $alpha: 0.5);
 	}
 
 	.functionBox {
@@ -121,21 +154,21 @@
 		margin-top: -18rpx;
 	}
 
+	.infoBox {
+		position: relative;
+		width: 750rpx;
+		margin-top: 50rpx;
+		text-align: center;
+		color: #FFFFFF;
+		font-size: 24rpx;
+		line-height: 33rpx;
+	}
+
 	.codeBtn {
 		margin-top: 60rpx;
 		line-height: 102rpx;
 		color: #587685;
 		background-color: #FFFFFF;
 		opacity: 0.8;
-	}
-
-	.infoBox {
-		position: relative;
-		width: 750rpx;
-		margin-top: 50rpx;
-		text-align: center;
-		color: rgba($color: #FFFFFF, $alpha: 0.5);
-		font-size: 24rpx;
-		line-height: 33rpx;
 	}
 </style>
