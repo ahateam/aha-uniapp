@@ -2,6 +2,6 @@
 
 const constData = {}
 
-
+constData.oss = 'http://durian-oss.oss-cn-hangzhou.aliyuncs.com'
 
 export default constData
