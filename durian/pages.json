@@ -9,7 +9,7 @@
 		{
 			"path": "pages/login/mobile",
 			"style": {
-
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -30,7 +30,19 @@
 
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/login/Treaty/Treaty",
+            "style" : {
+				
+			}
+        },
+		{
+			"path":"pages/login/Treaty/secret",
+			"style":{
+				
+			}
+		}
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

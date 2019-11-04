@@ -1,0 +1,16 @@
+{
+  "id": "1491734",
+  "name": "durian",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "澳洲留学-榴莲项目",
+  "glyphs": [
+    {
+      "icon_id": "871628",
+      "name": "微信",
+      "font_class": "wechat",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    }
+  ]
+}
