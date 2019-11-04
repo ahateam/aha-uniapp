@@ -12,6 +12,7 @@
 			}
 		},
 		onLoad() {
+			console.log(uni.getStorageSync('userId'))
 			if(!uni.getStorageSync('userId')){
 				uni.reLaunch({
 				    url: '../login/mobile'

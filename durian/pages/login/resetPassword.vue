@@ -1,8 +1,8 @@
 <template>
 	<view>
-		<navBar :back="false" type="transparent" fontColor="#FFF">
+		<!-- <navBar :back="false" type="transparent" fontColor="#FFF">
 			<view slot="right" class="navTitle" @click="navToMobile">免密登录</view>
-		</navBar>
+		</navBar> -->
 		<image class="bgImg" :src="bgSrc" mode="aspectFill"></image>
 		<!-- 标题 -->
 		<view class="titleBox">
