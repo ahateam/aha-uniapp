@@ -92,23 +92,26 @@
 			<input class="input_box" type="number" v-model="telPhone" placeholder="请输入电话号码" />
 			<button type="primary" @click="submission">提交</button>
 		</view>
-
+		
+		<!-- 乙方申请任务完成 -->
+		<view class="bottomBtnBox" v-if="userTaskStatus">
+			<button class="rightBtn" type="primary" @click="taskComplite">已完成</button>
+		</view>
+		
+		<!-- 评价按钮 -->
+		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[5].key&&userId == upUserId">
+			<button class="rightBtn" type="primary" @click="upUserBox = true">评价</button>
+		</view>
 		<view class="hiddenBox" v-if="upUserBox">
 			<view class="colseBox" @click="upUserBox =! upUserBox">X</view>
 			给对方评分<uni-rate class="rateBox" @change="setRate"></uni-rate>
 			<input class="input_box" style="margin-top: 0;" type="text" v-model="upText" placeholder="请输入评价" />
 			<button type="primary" @click="upRate">提交</button>
 		</view>
-		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[4].key&&userId != upUserId">
-			<button class="rightBtn" type="primary" @click="taskComplite">已完成</button>
-		</view>
-		<!-- 评价按钮 -->
-		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[5].key&&userId == upUserId">
-			<button class="rightBtn" type="primary" @click="upUserBox = true">评价</button>
-		</view>
+		<!-- 评价end -->
 
 		<!-- 二次确定 -->
-		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[9].key&&userId != upUserId">
+		<view class="bottomBtnBox" v-if="signStatus">
 			<button class="rightBtn" type="primary" @click="againBtn">确认领取任务</button>
 		</view>
 
@@ -142,7 +145,7 @@
 				objList: [],
 				purposeList: [],
 				age: '18-20',
-				address: '遵义',
+				address: '',
 				money: '50',
 
 				//选择陪吃人盒子
@@ -152,7 +155,11 @@
 				//评分盒子
 				upUserBox: false,
 				rate: '',
-
+				
+				//当前用户订单状态
+				signStatus:false,
+				userTaskStatus:false,
+				
 			}
 		},
 
@@ -160,10 +167,37 @@
 			this.id = res.id
 			this.getTask()
 			this.getTaskApplys()
-
+			this.getTaskStatus()
 		},
 
 		methods: {
+			getTaskStatus(){
+				let cnt1 = {
+					taskId: this.id, // Long 任务编号
+					// status: status, // Byte <选填> 状态
+					userId: this.userId, // Long <选填> 接单者编号
+					// works: works, // Boolean <选填> 是否查询作品
+					count: 1, // int 
+					offset: 0, // int 
+				}
+				this.$api.getTaskApplys(cnt1, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c)
+						if(arr.length > 0){
+							console.log('---------------')
+							console.log(arr[0].status +':'+this.$constData.taskStatus[0].key)
+							if(arr[0].status == this.$constData.taskStatus[7].key){
+								this.signStatus = true
+							}else if(arr[0].status == this.$constData.taskStatus[1].key){
+								this.userTaskStatus = true
+							}
+						}
+					}else{
+						console.log('error')
+					}
+				})
+			},
+			
 			navToPay(item) {
 				this.accepterId = item.id
 				this.choiceUser()
@@ -440,15 +474,16 @@
 						let arr = this.$util.tryParseJson(res.data.c)
 						console.log(arr)
 						arr.detail = this.$util.tryParseJson(arr.detail)
-
+						
 						this.title = arr.title
 						this.objList = arr.detail.obj
 						this.purposeList = arr.detail.purpose
 
 						this.age = arr.detail.age
-						this.address = arr.detail.address
+						this.address = arr.detail.addrss
 						// this.telPhone = arr.detail.tel
-
+						this.money = arr.detail.money
+						
 						this.upUserId = arr.upUserId
 						this.taskStatus = arr.status
 						this.getStatus()

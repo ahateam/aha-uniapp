@@ -7,6 +7,11 @@ import baseUrl from './url'
 let api = {};
 console.log('开始调用ctrl');
 
+//获取是否有新版本 
+api.getVersion = function(cnt, callback) {
+	util.call(baseUrl + '/kkqtUser/getVersion', cnt, callback)
+}
+
 //获取版本 
 api.getVersionStatus = function(cnt, callback) {
 	util.call(baseUrl + '/task/getVersionStatus', cnt, callback)

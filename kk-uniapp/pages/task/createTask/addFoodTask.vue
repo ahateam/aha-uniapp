@@ -157,6 +157,7 @@
 
 				let data = {
 					purpose: this.choicePurpose,
+					money:this.money,
 					obj: this.choiceObj,
 					age: `${this.minOld}-${this.maxOld}`,
 					addrss: this.taskAddrss,

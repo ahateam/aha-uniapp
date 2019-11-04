@@ -52,7 +52,7 @@
 			<button type="primary" @click="submission">提交</button>
 		</view>
 		
-		<view class="upLoadBox" v-if="taskStatus == constData.taskWallStatus[4].key && userId != upUserId&&userTaskStatus ||taskStatus == constData.taskWallStatus[5].key && userId != upUserId&&userTaskStatus">
+		<view class="upLoadBox" v-if="userTaskStatus">
 			<view style="margin-bottom: 15upx;">
 				上传作品：
 			</view>
@@ -80,7 +80,7 @@
 		</view>
 		
 		<!-- 二次确定 -->
-		<view class="bottomBtnBox" v-if="taskStatus == constData.taskWallStatus[9].key&&userId != upUserId">
+		<view class="bottomBtnBox" v-if="signStatus">
 			<button class="rightBtn" type="primary" @click="againBtn">确认领取任务</button>
 		</view>
 		
@@ -93,6 +93,7 @@
 			return {
 				constData:this.$constData,
 				userTaskStatus:false,
+				signStatus:false,
 				
 				userId: uni.getStorageSync('userId'), //登录用户id
 				video: '', //视频地址
@@ -138,10 +139,11 @@
 				this.$api.getTaskApplys(cnt1, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let arr = this.$util.tryParseJson(res.data.c)
+						console.log(arr[0].status +':'+this.$constData.taskStatus[0].key)
 						if(arr.length > 0){
-							if(arr[0].status == this.$constData.taskStatus[0]){
-								this.userTaskStatus = false
-							}else{
+							if(arr[0].status == this.$constData.taskStatus[7].key){
+								this.signStatus = true
+							}else if(arr[0].status == this.$constData.taskStatus[1].key){
 								this.userTaskStatus = true
 							}
 						}
