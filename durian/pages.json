@@ -3,7 +3,31 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+
+			}
+		},
+		{
+			"path": "pages/login/mobile",
+			"style": {
+
+			}
+		},
+		{
+			"path": "pages/login/code",
+			"style": {
+
+			}
+		},
+		{
+			"path": "pages/login/mobilePassword",
+			"style": {
+
+			}
+		},
+		{
+			"path": "pages/login/resetPassword",
+			"style": {
+
 			}
 		}
 	],
