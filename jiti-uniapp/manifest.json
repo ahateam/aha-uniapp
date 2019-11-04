@@ -138,7 +138,7 @@
     },
     "h5" : {
         "title" : "集体经济",
-        "domain" : "jiti.online.3ch.org.cn",
+        "domain" : "jiti.test.3ch.org.cn",
         "router" : {
             "mode" : "hash",
             "base" : "/wap/"
