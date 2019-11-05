@@ -39,7 +39,7 @@
 		},
 		data() {
 			return {
-				areaCode: '+86',
+				areaCode: '86',
 				bgSrc: this.$constData.oss + '/image/passwordBG.png',
 
 				phoneNumber: '',
@@ -56,9 +56,9 @@
 			},
 			
 			login() {
-				if (this.phoneNumber.length < 10) {
+				if (this.phoneNumber == '') {
 					uni.showToast({
-						title: '请输入正确的号码',
+						title: '请输入手机号',
 						icon: 'none'
 					})
 				} else if (this.passData.length < 6) {

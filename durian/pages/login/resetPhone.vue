@@ -29,7 +29,7 @@
 		data() {
 			return {
 				bgSrc: this.$constData.oss + '/image/phoneBG.png',
-				areaCode: '+86',
+				areaCode: '86',
 
 				phoneNumber: '',
 			}
@@ -48,9 +48,9 @@
 			},
 
 			navToReset() {
-				if (this.phoneNumber.length < 10) {
+				if (this.phoneNumber == '') {
 					uni.showToast({
-						title: '请输入正确手机号',
+						title: '请输入手机号',
 						icon: 'none'
 					})
 				} else {

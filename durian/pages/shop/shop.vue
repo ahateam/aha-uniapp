@@ -9,17 +9,32 @@
 				<text class="iconText">我要发布商品</text>
 			</view>
 		</view>
-		<view class="noShop">
+		<view class="noShop" v-if="contentList.length == 0">
 			<image src="/static/image/noShop.png" mode="aspectFill"></image>
 			<view style="margin-top: 81rpx;">暂无商品</view>
 		</view>
+		<shopList :list="contentList"></shopList>
 	</view>
 </template>
 
 <script>
+	import shopList from '@/components/shopList/shopList.vue'
+	
 	export default {
+		components:{
+			shopList
+		},
 		data() {
-			return {}
+			return {
+				contentList:[
+					{
+						title:'联想小新Pro 13标压锐龙版',
+						src:'https://p1.lefile.cn/product/adminweb/2019/09/19/JwqNf6gO94RbJxobKIE9ig6Er-6597.jpg',
+						price:'AUD 2333'
+					}
+				],
+				
+			}
 		},
 
 		onLoad() {},

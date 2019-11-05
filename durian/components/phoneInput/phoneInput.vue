@@ -1,7 +1,7 @@
 <template>
 	<view class="functionBox">
 		<text class="areaCode" @click="changeCode">
-			{{areaCode}}
+			+{{areaCode}}
 		</text>
 		<input type="number" :value="value" @input="changeNumber" placeholder="输入手机号码" :maxlength="maxlength" />
 	</view>
@@ -18,7 +18,7 @@
 		},
 		data() {
 			return {
-				areaCode: '+86',
+				areaCode: '86',
 				maxlength:11,
 			}
 		},
@@ -27,11 +27,11 @@
 				this.$emit('input', e.target.value)
 			},
 			changeCode() {
-				if (this.areaCode == '+86') {
-					this.areaCode = '+61'
+				if (this.areaCode == '86') {
+					this.areaCode = '61'
 					this.maxlength = 10
 				} else {
-					this.areaCode = '+86'
+					this.areaCode = '86'
 					this.maxlength = 11
 				}
 				this.$emit('changeCode',this.areaCode)

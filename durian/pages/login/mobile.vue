@@ -13,7 +13,7 @@
 		</view>
 		<!-- 主要功能区 -->
 		<phoneInput v-model="phoneNumber" @changeCode="codeFct"></phoneInput>
-		
+
 		<button type="primary" class="functionBox codeBtn" @click="navToCode">获取验证码</button>
 
 		<view class="infoBox">
@@ -37,21 +37,21 @@
 		},
 		data() {
 			return {
-				areaCode: '+86',
+				areaCode: '86',
 				bgSrc: this.$constData.oss + '/image/mobileBG.png',
 				phoneNumber: '',
 			}
 		},
 		methods: {
-			codeFct(res){
+			codeFct(res) {
 				this.areaCode = res
 			},
-			
+
 			navToCode() {
-				if (this.phoneNumber.length < 10) {
+				if (this.phoneNumber == '') {
 					uni.showToast({
-						title: '请输入正确的号码',
-						icon: 'none'
+						title: '请输入手机号',
+						icon:'none'
 					})
 				} else {
 					uni.navigateTo({
@@ -59,10 +59,10 @@
 					})
 				}
 			},
-			
-			navToPassLogin(){
+
+			navToPassLogin() {
 				uni.redirectTo({
-				    url: '/pages/login/mobilePassword'
+					url: '/pages/login/mobilePassword'
 				})
 			}
 		}
@@ -70,12 +70,12 @@
 </script>
 
 <style lang="scss" scoped>
-	button{
-		&:after{
+	button {
+		&:after {
 			border: none;
 		}
 	}
-	
+
 	.bgImg {
 		position: absolute;
 		top: 0;
