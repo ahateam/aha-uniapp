@@ -1,9 +1,13 @@
 <template>
 	<view>
-		<view class="contentList" v-for="(item,index) in list" :key="index">
+		<view class="contentList" :style="item.type == 1?cardBg:''" v-for="(item,index) in list" :key="index">
+			<!-- <image src="" mode=""></image> -->
 			<view class="titleBox">{{item.title}}</view>
-			<view class="priceBox">{{item.price}}</view>
-			<image :src="item.src" mode="aspectFill"></image>
+			<view class="priceBox" :style="item.type == 1?cardInfo:''">{{item.price}}</view>
+			<image :src="item.src" mode="aspectFill" v-if="item.type == 0"></image>
+			<view class="cardPrice" v-else-if="item.type == 1">
+				平台币{{item.cardPrice}}
+			</view>
 		</view>
 	</view>
 </template>
@@ -13,7 +17,8 @@
 		props:['list'],
 		data() {
 			return {
-
+				cardInfo:'color:#B6C4D2',
+				cardBg:'background:linear-gradient(120deg, #DCE4EB, #B6C4D2);'
 			}
 		}
 	}
@@ -57,5 +62,19 @@
 		font-size: 28rpx;
 		line-height: 40rpx;
 		color: $group-color-curr;
+	}
+	
+	.cardPrice{
+		position: absolute;
+		top: 50%;
+		right: 20rpx;
+		font-size: 28rpx;
+		line-height: 50rpx;
+		height: 50rpx;
+		padding: 0 20rpx;
+		margin-top: -25rpx;
+		color: $group-color-curr;
+		border: 1rpx solid $group-color-curr;
+		border-radius: 25rpx;
 	}
 </style>
