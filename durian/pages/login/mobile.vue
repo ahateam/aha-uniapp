@@ -55,7 +55,7 @@
 					})
 				} else {
 					uni.navigateTo({
-						url: `./code?phone=${this.areaCode}${this.phoneNumber}`
+						url: `./code?tell=${this.areaCode}${this.phoneNumber}`
 					})
 				}
 			},

@@ -1,35 +1,123 @@
 <template>
-	<view >
+	<view>
 		<view class="box" :style="boxBg">
-			
+			<view class="content-box">
+				<view class="title-box">
+					输入验证码
+				</view>
+				<view class="title-tell">
+					<view class="code-text">
+						已发送4位验证码至
+					</view>
+					<view class="tell-text">
+						+8613426****79
+					</view>
+				</view>
+				<view class="code-box">
+					<valid-code :maxlength="4" :isPwd="false" @finish="finish"></valid-code>
+				</view>
+				<view class="code-btn">
+						确定
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	
-export default {
-		name:'code',
-		data(){
+	import ValidCode from '../../components/code/ValidCode.vue'
+	export default {
+		name: 'code',
+		data() {
 			return {
-				boxBg:""
+				boxBg: "",
+				code:'',
+				tell:'',
 			}
 		},
-		onLoad() {
-			// const { windowWidth, windowHeight } = uni.getSystemInfoSync();
-			// let boxHeight = windowHeight
-			// this.boxStyle.Height = boxHeight+'px'
-			// this.boxStyle.Width = '100%'
-			this.boxBg = 'background:url('+this.$constData.oss+'/image/codeBG.png)'
+		components: {
+			ValidCode
+		},
+		methods: {
+			changeBtn(key) {
+				if (this.codeArr[key]) {
+
+				}
+			},
+			finish(res){
+				this.code = res
+			}
+		},
+		onLoad(option) {
+			this.boxBg = 'background:url(' + this.$constData.oss + '/image/codeBG.png)'
+			let tell = option.tell
+			this.tell =  tell
+			console.log(this.tell)
 		}
-		
+
 	}
 </script>
 
 <style scoped lang="scss">
-		.box{
-			width: 100%;
-			height: 100vh;
-			
-		}
+	.box {
+		width: 100%;
+		height: 100vh;
+		background-size: cover;
+		background-position: center;
+	}
+
+	.content-box {
+		width: 572rpx;
+		margin: 0 auto;
+		padding-top: 184rpx;
+
+	}
+
+	.title-box {
+		width: 100%;
+		height: 78rpx;
+		font-size: 56rpx;
+		color: #fff;
+	}
+
+	.title-tell {
+		margin-top: 10rpx;
+		height: 48rpx;
+		width: 100%;
+		opacity: .5;
+		color: #fff;
+		font-size: 34rpx;
+	}
+
+	.code-text {
+		float: left;
+		height: 48rpx;
+		line-height: 48rpx;
+	}
+
+	.tell-text {
+		float: left;
+		margin-left: 12rpx;
+		height: 48rpx;
+		line-height: 48rpx;
+	}
+
+	.code-box {
+		width: 100%;
+		height: 102rpx;
+		margin-top: 67rpx;
+	}
+	.code-btn{
+		width: 100%;
+		height: 100rpx;
+		opacity: .8;
+		border-radius: 6rpx;
+		background: #fff;
+		margin-top: 56rpx;
+		text-align: center;
+		font-szie:36rpx;
+		line-height: 100rpx;
+		color: #587685;
+	}
+	
 </style>
