@@ -30,7 +30,14 @@
 					{
 						title:'联想小新Pro 13标压锐龙版',
 						src:'https://p1.lefile.cn/product/adminweb/2019/09/19/JwqNf6gO94RbJxobKIE9ig6Er-6597.jpg',
-						price:'AUD 2333'
+						price:'AUD 2333',
+						type:0
+					},
+					{
+						title:'Coles购物卡',
+						price:'(面值233澳元)',
+						cardPrice:'100',
+						type:1
 					}
 				],
 				
