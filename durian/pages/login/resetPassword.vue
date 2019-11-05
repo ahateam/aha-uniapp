@@ -20,19 +20,15 @@
 		</view>
 
 		<button type="primary" class="functionBox codeBtn" @click="navToCode">保存</button>
-		<!-- 下方附属功能 -->
-		<otherFct></otherFct>
 	</view>
 </template>
 
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
-	import otherFct from '@/components/otherFct/otherFct.vue'
 
 	export default {
 		components: {
 			navBar,
-			otherFct
 		},
 		data() {
 			return {
@@ -86,12 +82,6 @@
 					}
 				}
 				
-			},
-			
-			navToReset(){
-				uni.redirectTo({
-				    url: '/pages/login/resetPassword'
-				})
 			},
 			
 			navToMobile(){

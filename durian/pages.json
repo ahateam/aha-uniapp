@@ -25,6 +25,12 @@
 			}
 		},
 		{
+			"path": "pages/login/resetPhone",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/login/resetPassword",
 			"style": {
 				"navigationStyle": "custom"
@@ -41,7 +47,11 @@
 
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/find/find",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

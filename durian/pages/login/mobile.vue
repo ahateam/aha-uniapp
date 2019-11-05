@@ -12,13 +12,15 @@
 			</view>
 		</view>
 		<!-- 主要功能区 -->
-		<view class="functionBox">
+		<!-- <view class="functionBox">
 			<text class="areaCode">
 				{{areaCode}}
 			</text>
 			<input type="number" v-model="phoneNumber" placeholder="输入手机号码" maxlength="11" />
-		</view>
-
+		</view> -->
+		<phoneInput @changeInput="inputFct" @changeCode="codeFct"></phoneInput>
+		
+		
 		<button type="primary" class="functionBox codeBtn" @click="navToCode">获取验证码</button>
 
 		<view class="infoBox">
@@ -32,11 +34,13 @@
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import otherFct from '@/components/otherFct/otherFct.vue'
+	import phoneInput from '@/components/phoneInput/phoneInput.vue'
 
 	export default {
 		components: {
 			navBar,
-			otherFct
+			otherFct,
+			phoneInput
 		},
 		data() {
 			return {
@@ -47,6 +51,14 @@
 			}
 		},
 		methods: {
+			inputFct(res){
+				this.phoneNumber = res
+			},
+			
+			codeFct(res){
+				this.areaCode = res
+			},
+			
 			navToCode() {
 				if (this.phoneNumber.length < 10) {
 					uni.showToast({
@@ -55,7 +67,7 @@
 					})
 				} else {
 					uni.navigateTo({
-						url: `./code?phone=${this.phoneNumber}`
+						url: `./code?phone=${this.areaCode}${this.phoneNumber}`
 					})
 				}
 			},

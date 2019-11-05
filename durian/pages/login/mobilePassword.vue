@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<navBar :back="false" type="transparent" fontColor="#FFF">
-			<view slot="right" class="navTitle" @click="navToMobile">免密登录</view>
+			<view slot="right" class="navTitle" @click="navToMobile">验证码登录</view>
 		</navBar>
 		<image class="bgImg" :src="bgSrc" mode="aspectFill"></image>
 		<!-- 标题 -->
@@ -66,8 +66,8 @@
 						icon: 'none'
 					})
 				} else {
-					uni.showToast({
-						title: '登录'
+					uni.reLaunch({
+						url:'/pages/find/find'
 					})
 				}
 			},
@@ -83,8 +83,8 @@
 			},
 
 			navToReset() {
-				uni.redirectTo({
-					url: '/pages/login/resetPassword'
+				uni.navigateTo({
+					url: '/pages/login/resetPhone'
 				})
 			},
 
@@ -98,12 +98,12 @@
 </script>
 
 <style lang="scss" scoped>
-	button{
-		&:after{
+	button {
+		&:after {
 			border: none;
 		}
 	}
-	
+
 	.bgImg {
 		position: absolute;
 		top: 0;

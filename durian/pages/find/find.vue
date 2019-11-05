@@ -1,0 +1,440 @@
+<template>
+	<view class="body">
+		<view class="topBox">
+			<view class="title_box">
+				发现
+			</view>
+			<view class="searchBox">
+				<text class="iconfont  searchIcon"></text>
+				<text class="iconText">发帖</text>
+			</view>
+		</view>
+		<view class="navBox">
+			<view class="navList" v-for="(item,index) in navList" :key="index" :style="index==1?'margin-right:0;':''" @click="changeNav(index)">
+				<image :src="item.imgSrc" mode="aspectFill"></image>
+				<view class="mask"></view>
+				<view class="navTitle">
+					{{item.name}}
+				</view>
+				<!-- 選中样式 -->
+				<view class="beforCurr" :class="{displayBox:index == navCurrtent}"></view>
+				<view class="currNav" :class="{displayBox:index == navCurrtent}">
+					<text>√</text>
+				</view>
+				<!-- the end -->
+			</view>
+		</view>
+
+		<view class="tagBox">
+			<view class="tagsList" :class="{currTag:index == tagCurrtent}" v-for="(item,index) in tagList" :key="index" :style="index != 0?'margin-left:50rpx':''"
+			 @click="changeTag(index)">{{item.name}}</view>
+		</view>
+
+		<view>
+			<view class="listBox" :class="{autoList:index != 0}" v-for="(item,index) in contentList" :key="index" @click="navToContent(item)">
+				<rightVideo :title="item.posting.postingTextDate" :upName="item.posting.name" :upHead="JSON.parse(item.posting.ext).userHead"
+				 :imgSrc="JSON.parse(item.posting.postingDate)[0]" :time="newTime(item.posting.postingCreateTime)" :type="item.posting.postingType"
+				 v-if="item.posting.postingType == constData.groupType[3].key"></rightVideo>
+
+				<rightVideo :title="item.posting.postingTextDate" :upName="item.posting.name" :upHead="JSON.parse(item.posting.ext).userHead"
+				 :imgSrc="JSON.parse(item.posting.postingDate)[0]" :time="newTime(item.posting.postingCreateTime)" :type="item.posting.postingType"
+				 v-if="item.posting.postingType == constData.groupType[1].key" :listLength="JSON.parse(item.posting.postingDate).length"></rightVideo>
+
+				<onlyText :title="item.posting.postingTextDate" :upName="item.posting.name" :upHead="JSON.parse(item.posting.ext).userHead"
+				 :time="newTime(item.posting.postingCreateTime)" v-if="item.posting.postingType == constData.groupType[0].key"></onlyText>
+
+				<view class="abilityBox">
+					<view>
+						<text class="iconfont icon-yanjing_xianshi_o"></text>
+						<text class="iconText">{{item.posting.postingPageView}}</text>
+					</view>
+
+					<view :class="{currentIcon:item.isAppraise}" @click.stop="createAppraise(item,index)">
+						<text class="iconfont kk-kuazan"></text>
+						<text class="iconText">{{item.appraiseCount}}</text>
+					</view>
+
+					<view :class="{currentIcon:item.isShare}" @click.stop="shareBtn(item,index)">
+						<text class="iconfont kk-fenxiang"></text>
+						<text class="iconText">{{item.posting.postingShareNumber}}</text>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import rightVideo from '@/components/find/rightVideo.vue'
+	import onlyText from '@/components/find/onlyText.vue'
+
+	export default {
+		components: {
+			rightVideo,
+			onlyText
+		},
+		data() {
+			return {
+				constData: this.$constData,
+				count: 10,
+				offset: 0,
+				page: 1,
+
+				navList: [{
+						name: '校内向外',
+						imgSrc: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg'
+					},
+					{
+						name: '热点',
+						imgSrc: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg'
+					}
+				],
+				navCurrtent: 0,
+
+				tagList: [{
+						name: '最新'
+					},
+					{
+						name: '精选'
+					},
+					{
+						name: '热门'
+					}
+				],
+				tagCurrtent: 0,
+
+				contentList: []
+			}
+		},
+
+		onLoad() {
+			uni.setStorageSync('userId',4651658961564)
+			let cnt = {
+				moduleId: this.$constData.module, // String 模块
+				sort: true, // boolean 是否倒序
+				// type: type, // Byte <选填> 类型
+				// status: status, // Byte <选填> 状态编号
+				// power: power, // Byte <选填> 权力
+				// upUserId: upUserId, // Long <选填> 上传用户编号
+				// upChannelId: upChannelId, // Long <选填> 上传专栏编号
+				// tags: tags, // JSONObject <选填> 标签
+				userId: uni.getStorageSync('userId'), // Long <选填> 当前用户编号
+				count: this.count, // int 
+				offset: this.offset, // int
+			}
+			this.getContentsByUser(cnt)
+		},
+
+		methods: {
+			navToAdd() {
+				uni.navigateTo({
+					url: '/pages/group/createView/createView'
+				})
+			},
+
+			createAppraise(item, index) {
+				let id = item.posting.postingId
+				if (this.contentList[index].upvoteStatus) {
+					this.delAppraise(id, index)
+					return
+				}
+				this.contentList[index].upvoteStatus = true
+				this.createUpvote(index, id)
+			},
+
+			delAppraise(id, index) {
+				let cnt = {
+					ownerId: id,
+					userId: uni.getStorageSync('userId')
+				}
+				this.$api.delAppraise(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.contentList[index].upvoteStatus = false
+						this.contentList[index].appraiseCount -= 1
+					}
+				})
+			},
+
+			createUpvote(index, id) {
+				let cnt = {
+					ownerId: id, // Long 内容编号/评论编号
+					userId: uni.getStorageSync('userId'), // Long 用户编号
+					value: this.$constData.appraise[0].key //Byte 状态
+				}
+				this.$api.createUpvote(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							title: '点赞成功',
+							duration: 1000
+						})
+						this.contentList[index].upvoteStatus = true
+						this.contentList[index].appraiseCount += 1
+					} else {
+						uni.showToast({
+							title: '服务器错误！',
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			shareBtn(item, index) {
+				uni.share({
+					provider: "weixin",
+					scene: "WXSceneSession",
+					type: 0,
+					href: `http://weapp.datanc.cn/kkqt/app/android/${this.$constData.version}/kkqt.apk`,
+					title: "表揚表揚TA",
+					summary: item.posting.postingTextDate,
+					imageUrl: this.$util.tryParseJson(item.posting.postingDate)[0],
+					success: (res) => {
+						uni.showToast({
+							title: '分享成功！'
+						})
+						let cnt1 = {
+							userId: uni.getStorageSync('userId'), // Long 用户id
+							ownerId: item.posting.postingId, // Long 内容id
+						}
+						this.createUserShare(cnt1, index)
+					},
+					fail: (err) => {
+						uni.showToast({
+							title: '分享失败',
+							icon: 'none'
+						})
+					}
+				})
+			},
+			
+			createUserShare(cnt, index) {
+				this.$api.createUserShare(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.contentList[index].isShare = true
+						this.contentList[index].posting.postingShareNumber += 1
+					} else {
+						console.log('错误')
+					}
+				})
+			},
+
+			changeNav(index) {
+				this.navCurrtent = index
+			},
+
+			changeTag(index) {
+				this.tagCurrtent = index
+			},
+
+			newTime(time) {
+				let newData = new Date(time)
+				let y = newData.getFullYear()
+				let m = newData.getMonth() * 1 + 1
+				let d = newData.getDate()
+				return `${y}-${m}-${d}`
+			},
+			navToContent(item) {
+				if (item.posting.postingType == this.$constData.groupType[3].key) {
+					uni.navigateTo({
+						url: `/pages/group/videoView/videoView?id=${item.posting.postingId}`
+					})
+				} else {
+					uni.navigateTo({
+						url: `/pages/group/imgView/imgView?id=${item.posting.postingId}`
+					})
+				}
+
+			},
+
+			getContentsByUser(cnt) {
+				this.$api.getPostingList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.contentList = this.$util.tryParseJson(res.data.c)
+						console.log(this.contentList)
+					} else {
+						console.log('error')
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	// @font-face {
+	// 	font-family: 'appleFont';
+	// 	src: url('~@/static/font/appleFont.ttf'), ;
+	// }
+
+	.body {
+		padding: 0 $group-margin-left;
+		// font-family: 'appleFont';
+	}
+
+	.topBox {
+		position: relative;
+	}
+
+	.title_box {
+		font-size: $group-font-big;
+		line-height: $group-font-big-line;
+		font-weight: $group-title-weight;
+		color: $group-color;
+	}
+
+	.searchBox {
+		position: absolute;
+		right: 0;
+		top: $group-margin-s;
+		height: $group-font-big;
+		box-sizing: border-box;
+		display: inline-block;
+		font-size: $group-font;
+		color: $group-color-befor;
+		background-color: $group-color-search;
+		border-radius: 25rpx;
+		overflow: hidden;
+		padding: 7rpx 20rpx;
+
+		.searchIcon {
+			font-size: $group-font;
+			margin-right: $group-margin-s;
+			vertical-align: middle;
+		}
+	}
+
+	.iconText {
+		vertical-align: middle;
+	}
+
+	.navBox {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		width: 100%;
+		height: 120rpx;
+		margin-top: 34rpx;
+		margin-bottom: 24rpx;
+	}
+
+	.navList {
+		position: relative;
+		flex: 1;
+		color: $group-color-w;
+		margin-right: 20rpx;
+
+		image {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border-radius: 6rpx;
+			overflow: hidden;
+		}
+	}
+
+	.beforCurr {
+		position: absolute;
+		right: 45rpx;
+		top: -9rpx;
+		width: 0;
+		height: 0;
+		border: 5rpx solid;
+		border-color: transparent transparent #F7E6B6;
+		transition: all 0.3s;
+		opacity: 0;
+	}
+
+	.currNav {
+		position: absolute;
+		right: $group-margin-s;
+		top: -5rpx;
+		background-color: #FFF8E5;
+		border-radius: 0 4rpx 16rpx 16rpx;
+		overflow: hidden;
+		width: 40rpx;
+		height: 40rpx;
+		text-align: center;
+		font-weight: bold;
+		transition: all 0.3s;
+		opacity: 0;
+
+		text {
+			display: block;
+			font-size: 22rpx;
+			color: #587685;
+			line-height: 40rpx;
+		}
+	}
+
+	.displayBox {
+		opacity: 1;
+	}
+
+	.mask {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background-color: rgba($color: #64BCCC, $alpha: 0.6);
+		border-radius: 6rpx;
+		overflow: hidden;
+	}
+
+	.navTitle {
+		position: relative;
+		font-size: $group-font-befor;
+		line-height: $group-font-befor-line;
+		color: $group-color-w;
+		padding: 40rpx;
+	}
+
+	.listBox {
+		padding: $group-margin-top 0;
+	}
+
+	.autoList {
+		border-top: 1rpx rgba($color: $group-color-border, $alpha: 0.8) solid;
+	}
+
+	.abilityBox {
+		padding: 0 44rpx;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		margin-top: 40rpx;
+		font-size: $group-font;
+		color: $group-color-befor;
+	}
+
+	.currentIcon {
+		color: $group-color-curr;
+	}
+
+	.iconfont {
+		font-size: $group-font-befor;
+		margin-right: 4rpx;
+		vertical-align: middle;
+	}
+
+	.iconText {
+		vertical-align: middle;
+	}
+
+	.tagBox {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+
+	}
+
+	.tagsList {
+		// flex: 1;
+		font-size: $group-font-befor;
+		line-height: $group-font-befor-line;
+		color: $group-color;
+		padding: 20rpx 0;
+		transition: all 0.3s;
+	}
+
+	.currTag {
+		color: $group-color-curr;
+	}
+</style>
