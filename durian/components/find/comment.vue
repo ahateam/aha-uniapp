@@ -11,7 +11,7 @@
 
 				<!-- 点赞 -->
 				<view class="zan-box" :class="{iconCurr:list.isAppraise}" v-if="list.reply.sequenceId" @click="zan(list,index)">
-					<text class="iconfont kk-kuazan"></text>
+					<text class="iconfont icon-zan"></text>
 					<text>{{list.appraiseCount}}</text>
 				</view>
 			</view>
@@ -151,7 +151,7 @@
 	}
 
 	.commentBox {
-		padding: $box-margin-top 0;
+		padding: 24rpx 0;
 		border-top: 1rpx rgba($color: $group-color-border, $alpha: 0.8) solid;
 	}
 </style>

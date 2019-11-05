@@ -46,16 +46,49 @@
 			"style": {
 
 			}
+		}, {
+			"path": "pages/find/find",
+			"style": {}
+		}, {
+			"path": "pages/find/videoView/videoView",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/find/imgView/imgView",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/find/createView/createView",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}
-	    ,{
-            "path" : "pages/find/find",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#FFFFFF"
+	},
+	"tabBar": {
+		"color": "#587685",
+		"selectedColor": "#64BCCC",
+		"borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabIcon/tab-home.png",
+				"selectedIconPath": "static/tabIcon/tab-home-curr.png",
+				"text": "资询"
+			},
+			{
+				"pagePath": "pages/find/find",
+				"iconPath": "static/tabIcon/tab-home.png",
+				"selectedIconPath": "static/tabIcon/tab-home-curr.png",
+				"text": "发现"
+			}
+		]
 	}
 }

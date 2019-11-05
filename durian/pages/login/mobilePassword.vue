@@ -9,12 +9,7 @@
 			密码登录
 		</view>
 		<!-- 主要功能区 -->
-		<view class="functionBox">
-			<text class="areaCode">
-				{{areaCode}}
-			</text>
-			<input type="number" v-model="phoneNumber" placeholder="输入手机号码" maxlength="11" />
-		</view>
+		<phoneInput v-model="phoneNumber" @changeCode="codeFct"></phoneInput>
 
 		<view class="functionBox">
 			<text class="iconfont areaCode" :class="eyeIcon" @click="changeHidden"></text>
@@ -34,11 +29,13 @@
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import otherFct from '@/components/otherFct/otherFct.vue'
+	import phoneInput from '@/components/phoneInput/phoneInput.vue'
 
 	export default {
 		components: {
 			navBar,
-			otherFct
+			otherFct,
+			phoneInput
 		},
 		data() {
 			return {
@@ -54,6 +51,10 @@
 			}
 		},
 		methods: {
+			codeFct(res){
+				this.areaCode = res
+			},
+			
 			login() {
 				if (this.phoneNumber.length < 10) {
 					uni.showToast({

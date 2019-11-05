@@ -12,14 +12,7 @@
 			</view>
 		</view>
 		<!-- 主要功能区 -->
-		<!-- <view class="functionBox">
-			<text class="areaCode">
-				{{areaCode}}
-			</text>
-			<input type="number" v-model="phoneNumber" placeholder="输入手机号码" maxlength="11" />
-		</view> -->
-		<phoneInput @changeInput="inputFct" @changeCode="codeFct"></phoneInput>
-		
+		<phoneInput v-model="phoneNumber" @changeCode="codeFct"></phoneInput>
 		
 		<button type="primary" class="functionBox codeBtn" @click="navToCode">获取验证码</button>
 
@@ -51,10 +44,6 @@
 			}
 		},
 		methods: {
-			inputFct(res){
-				this.phoneNumber = res
-			},
-			
 			codeFct(res){
 				this.areaCode = res
 			},

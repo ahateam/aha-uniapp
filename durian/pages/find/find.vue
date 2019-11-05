@@ -4,15 +4,15 @@
 			<view class="title_box">
 				发现
 			</view>
-			<view class="searchBox">
-				<text class="iconfont  searchIcon"></text>
-				<text class="iconText">发帖</text>
+			<view class="searchBox" @click="navToAdd">
+				<text class="iconfont icon-xie searchIcon"></text>
+				<text class="iconText" style="vertical-align: bottom;">发帖</text>
 			</view>
 		</view>
 		<view class="navBox">
 			<view class="navList" v-for="(item,index) in navList" :key="index" :style="index==1?'margin-right:0;':''" @click="changeNav(index)">
 				<image :src="item.imgSrc" mode="aspectFill"></image>
-				<view class="mask"></view>
+				<view class="mask" :class="{displayBox:index == navCurrtent}"></view>
 				<view class="navTitle">
 					{{item.name}}
 				</view>
@@ -26,7 +26,7 @@
 		</view>
 
 		<view class="tagBox">
-			<view class="tagsList" :class="{currTag:index == tagCurrtent}" v-for="(item,index) in tagList" :key="index" :style="index != 0?'margin-left:50rpx':''"
+			<view class="tagsList" :class="{currTag:index == navList[navCurrtent].tagCurrtent}" v-for="(item,index) in navList[navCurrtent].tagList" :key="index" :style="index != 0?'margin-left:30rpx':''"
 			 @click="changeTag(index)">{{item.name}}</view>
 		</view>
 
@@ -50,12 +50,12 @@
 					</view>
 
 					<view :class="{currentIcon:item.isAppraise}" @click.stop="createAppraise(item,index)">
-						<text class="iconfont kk-kuazan"></text>
+						<text class="iconfont icon-zan"></text>
 						<text class="iconText">{{item.appraiseCount}}</text>
 					</view>
 
 					<view :class="{currentIcon:item.isShare}" @click.stop="shareBtn(item,index)">
-						<text class="iconfont kk-fenxiang"></text>
+						<text class="iconfont icon-fenxiang"></text>
 						<text class="iconText">{{item.posting.postingShareNumber}}</text>
 					</view>
 				</view>
@@ -82,33 +82,37 @@
 
 				navList: [{
 						name: '校内向外',
-						imgSrc: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg'
+						imgSrc: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg',
+						tagList: [{
+								name: '只看校内'
+							},
+							{
+								name:'只看校外'
+							}
+						],
+						tagCurrtent:0,
 					},
 					{
 						name: '热点',
-						imgSrc: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg'
+						imgSrc: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg',
+						tagList: [{
+								name: '最新'
+							},
+							{
+								name: '精选'
+							}
+						],
+						tagCurrtent:0,
 					}
 				],
 				navCurrtent: 0,
-
-				tagList: [{
-						name: '最新'
-					},
-					{
-						name: '精选'
-					},
-					{
-						name: '热门'
-					}
-				],
-				tagCurrtent: 0,
 
 				contentList: []
 			}
 		},
 
 		onLoad() {
-			uni.setStorageSync('userId',4651658961564)
+			uni.setStorageSync('userId', 4651658961564)
 			let cnt = {
 				moduleId: this.$constData.module, // String 模块
 				sort: true, // boolean 是否倒序
@@ -128,7 +132,7 @@
 		methods: {
 			navToAdd() {
 				uni.navigateTo({
-					url: '/pages/group/createView/createView'
+					url: '/pages/find/createView/createView'
 				})
 			},
 
@@ -205,7 +209,7 @@
 					}
 				})
 			},
-			
+
 			createUserShare(cnt, index) {
 				this.$api.createUserShare(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -222,7 +226,7 @@
 			},
 
 			changeTag(index) {
-				this.tagCurrtent = index
+				this.navList[this.navCurrtent].tagCurrtent = index
 			},
 
 			newTime(time) {
@@ -235,11 +239,11 @@
 			navToContent(item) {
 				if (item.posting.postingType == this.$constData.groupType[3].key) {
 					uni.navigateTo({
-						url: `/pages/group/videoView/videoView?id=${item.posting.postingId}`
+						url: `/pages/find/videoView/videoView?id=${item.posting.postingId}`
 					})
 				} else {
 					uni.navigateTo({
-						url: `/pages/group/imgView/imgView?id=${item.posting.postingId}`
+						url: `/pages/find/imgView/imgView?id=${item.posting.postingId}`
 					})
 				}
 
@@ -289,9 +293,7 @@
 		box-sizing: border-box;
 		display: inline-block;
 		font-size: $group-font;
-		color: $group-color-befor;
-		background-color: $group-color-search;
-		border-radius: 25rpx;
+		color: $group-color-curr;
 		overflow: hidden;
 		padding: 7rpx 20rpx;
 
@@ -366,7 +368,7 @@
 	}
 
 	.displayBox {
-		opacity: 1;
+		opacity: 1 !important;
 	}
 
 	.mask {
@@ -375,7 +377,6 @@
 		height: 100%;
 		background-color: rgba($color: #64BCCC, $alpha: 0.6);
 		border-radius: 6rpx;
-		overflow: hidden;
 	}
 
 	.navTitle {
@@ -410,7 +411,7 @@
 
 	.iconfont {
 		font-size: $group-font-befor;
-		margin-right: 4rpx;
+		margin-right: $group-margin-s;
 		vertical-align: middle;
 	}
 
@@ -422,19 +423,21 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
-
 	}
 
 	.tagsList {
 		// flex: 1;
 		font-size: $group-font-befor;
 		line-height: $group-font-befor-line;
-		color: $group-color;
-		padding: 20rpx 0;
+		color: $group-color-curr;
+		padding: 4rpx 20rpx;
 		transition: all 0.3s;
+		border: 1rpx solid $group-color-curr;
+		border-radius: 25rpx;
 	}
 
 	.currTag {
-		color: $group-color-curr;
+		color: $group-color-w;
+		background-color: $group-color-curr;
 	}
 </style>

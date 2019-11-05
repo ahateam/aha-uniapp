@@ -2,7 +2,7 @@
 	<view>
 		<navBar :back="false" type="transparent" fontColor="#FFF">
 			<!-- <view slot="right" class="navTitle" @click="navToMobile">免密登录</view> -->
-			<view slot="left" class="iconfont icon-fanhui"></view>
+			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
 		</navBar>
 		<image class="bgImg" :src="bgSrc" mode="aspectFill"></image>
 		<!-- 标题 -->
@@ -10,12 +10,7 @@
 			忘记密码
 		</view>
 		<!-- 主要功能区 -->
-		<view class="functionBox">
-			<text class="areaCode">
-				{{areaCode}}
-			</text>
-			<input type="number" v-model="phoneNumber" placeholder="请输入手机号码" maxlength="11" />
-		</view>
+		<phoneInput v-model="phoneNumber" @changeCode="codeFct"></phoneInput>
 
 		<button type="primary" class="functionBox codeBtn" @click="navToReset">下一步</button>
 
@@ -24,25 +19,45 @@
 
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
-
+	import phoneInput from '@/components/phoneInput/phoneInput.vue'
 
 	export default {
 		components: {
-			navBar
+			navBar,
+			phoneInput
 		},
 		data() {
 			return {
 				bgSrc: this.$constData.oss + '/image/phoneBG.png',
 				areaCode: '+86',
-				
+
 				phoneNumber: '',
 			}
 		},
 		methods: {
+			inputFct(res) {
+				this.phoneNumber = res
+			},
+
+			codeFct(res) {
+				this.areaCode = res
+			},
+
+			navBack() {
+				uni.navigateBack()
+			},
+
 			navToReset() {
-				uni.redirectTo({
-					url: '/pages/login/resetPassword'
-				})
+				if (this.phoneNumber.length < 10) {
+					uni.showToast({
+						title: '请输入正确手机号',
+						icon: 'none'
+					})
+				} else {
+					uni.redirectTo({
+						url: '/pages/login/resetPassword'
+					})
+				}
 			},
 
 			navToMobile() {
@@ -118,8 +133,8 @@
 		background-color: #FFFFFF;
 		opacity: 0.8;
 	}
-	
-	.icon-fanhui{
+
+	.icon-fanhui {
 		font-size: 33rpx;
 		color: #FFFFFF;
 		position: absolute;

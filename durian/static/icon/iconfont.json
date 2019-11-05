@@ -20,6 +20,34 @@
       "unicode_decimal": 58928
     },
     {
+      "icon_id": "1447508",
+      "name": "星",
+      "font_class": "xing1",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "2098754",
+      "name": "图片",
+      "font_class": "tupianx",
+      "unicode": "e6d4",
+      "unicode_decimal": 59092
+    },
+    {
+      "icon_id": "2718755",
+      "name": "赞",
+      "font_class": "zan",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "3926267",
+      "name": "加",
+      "font_class": "jia",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
       "icon_id": "5388069",
       "name": "眼睛_显示_o",
       "font_class": "yanjing_xianshi_o",
@@ -39,6 +67,41 @@
       "font_class": "fanhui",
       "unicode": "e656",
       "unicode_decimal": 58966
+    },
+    {
+      "icon_id": "6537182",
+      "name": "分享",
+      "font_class": "fenxiang",
+      "unicode": "e66c",
+      "unicode_decimal": 58988
+    },
+    {
+      "icon_id": "6919135",
+      "name": "锁",
+      "font_class": "suo",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "10109066",
+      "name": "写",
+      "font_class": "xie",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "10154216",
+      "name": "下一步",
+      "font_class": "xiayibu",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "10721328",
+      "name": "星",
+      "font_class": "xing",
+      "unicode": "e634",
+      "unicode_decimal": 58932
     }
   ]
 }
