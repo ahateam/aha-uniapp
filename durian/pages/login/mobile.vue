@@ -40,7 +40,6 @@
 				areaCode: '+86',
 				bgSrc: this.$constData.oss + '/image/mobileBG.png',
 				phoneNumber: '',
-
 			}
 		},
 		methods: {

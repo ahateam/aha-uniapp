@@ -65,7 +65,15 @@
 				"navigationStyle": "custom"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/shop/shop",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/user",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
@@ -88,6 +96,18 @@
 				"iconPath": "static/tabIcon/tab-home.png",
 				"selectedIconPath": "static/tabIcon/tab-home-curr.png",
 				"text": "发现"
+			},
+			{
+				"pagePath": "pages/shop/shop",
+				"iconPath": "static/tabIcon/tab-home.png",
+				"selectedIconPath": "static/tabIcon/tab-home-curr.png",
+				"text": "商城"
+			},
+			{
+				"pagePath": "pages/user/user",
+				"iconPath": "static/tabIcon/tab-home.png",
+				"selectedIconPath": "static/tabIcon/tab-home-curr.png",
+				"text": "我的"
 			}
 		]
 	}

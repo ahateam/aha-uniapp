@@ -215,11 +215,11 @@
 		border: 1rpx solid rgba($color: $group-color-border, $alpha: 0.8);
 		border-left: none;
 		border-right: none;
-		padding: 40rpx $group-margin-left;
+		padding: $group-margin-left $group-margin-left;
 		font-size: $group-font-befor;
 		color: $group-color;
 		.iconfont{
-			margin-right: 30rpx;
+			margin-right: $group-margin-top;
 			font-size: $group-font-befor;
 		}
 	}
