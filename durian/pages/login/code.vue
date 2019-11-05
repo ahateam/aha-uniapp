@@ -10,14 +10,21 @@
 						已发送4位验证码至
 					</view>
 					<view class="tell-text">
-						+8613426****79
+						+{{tell}}
 					</view>
 				</view>
 				<view class="code-box">
 					<valid-code :maxlength="4" :isPwd="false" @finish="finish"></valid-code>
 				</view>
-				<view class="code-btn">
-						确定
+				<view class="code-btn" @click="submitBtn">
+					确定
+				</view>
+				<view class="send-btn-num" v-if="num>0">
+					重发验证码({{num}}s)
+				</view>
+
+				<view class="send-btn" v-else @click="sendBtn">
+					重发验证码
 				</view>
 			</view>
 		</view>
@@ -31,28 +38,46 @@
 		data() {
 			return {
 				boxBg: "",
-				code:'',
-				tell:'',
+				code: '',
+				tell: '',
+				moblie: '',
+				num: 60,
+				timer: ''
 			}
 		},
 		components: {
 			ValidCode
 		},
-		methods: {
-			changeBtn(key) {
-				if (this.codeArr[key]) {
-
+		watch: {
+			num(newValue, oldValue) {
+				if (newValue == 0) {
+					clearInterval(this.timer)
 				}
+			}
+		},
+		methods: {
+			submitBtn(){
+				console.log(this.code)
 			},
-			finish(res){
+			finish(res) {
 				this.code = res
+			},
+			sendBtn() {
+				this.num = 60
+				this.timer = setInterval(() => {
+					this.num--
+				}, 1000)
 			}
 		},
 		onLoad(option) {
 			this.boxBg = 'background:url(' + this.$constData.oss + '/image/codeBG.png)'
+		
 			let tell = option.tell
-			this.tell =  tell
-			console.log(this.tell)
+			this.moblie = tell
+			this.tell = tell.substr(0, tell.length - 6) + '****' + tell.substr(tell.length - 2)
+		
+			this.sendBtn()
+
 		}
 
 	}
@@ -107,7 +132,8 @@
 		height: 102rpx;
 		margin-top: 67rpx;
 	}
-	.code-btn{
+
+	.code-btn {
 		width: 100%;
 		height: 100rpx;
 		opacity: .8;
@@ -115,9 +141,29 @@
 		background: #fff;
 		margin-top: 56rpx;
 		text-align: center;
-		font-szie:36rpx;
+		font-szie: 36rpx;
 		line-height: 100rpx;
 		color: #587685;
 	}
-	
+
+	.send-btn {
+		width: 100%;
+		height: 33rpx;
+		font-size: 24rpx;
+		line-height: 33rpx;
+		text-align: center;
+		color: #fff;
+		margin-top: 52rpx;
+	}
+
+	.send-btn-num {
+		width: 100%;
+		height: 33rpx;
+		font-size: 24rpx;
+		line-height: 33rpx;
+		text-align: center;
+		color: #fff;
+		margin-top: 52rpx;
+		opacity: .5;
+	}
 </style>
