@@ -46,7 +46,13 @@
 
 		onLoad() {},
 
-		methods: {}
+		methods: {
+			navToAdd(){
+				uni.navigateTo({
+					url:'/pages/shop/addGoods/addGoods'
+				})
+			},
+		}
 	}
 </script>
 

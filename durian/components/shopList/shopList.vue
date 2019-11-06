@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="contentList" :style="item.type == 1?cardBg:''" v-for="(item,index) in list" :key="index">
+		<view class="contentList" :style="item.type == 1?cardBg:''" v-for="(item,index) in list" :key="index" @click="navToInfo(item)">
 			<!-- <image src="" mode=""></image> -->
 			<view class="titleBox">{{item.title}}</view>
 			<view class="priceBox" :style="item.type == 1?cardInfo:''">{{item.price}}</view>
@@ -14,12 +14,19 @@
 
 <script>
 	export default {
-		props:['list'],
+		props: ['list'],
 		data() {
 			return {
-				cardInfo:'color:#B6C4D2',
-				cardBg:'background:linear-gradient(120deg, #DCE4EB, #B6C4D2);'
+				cardInfo: 'color:#B6C4D2',
+				cardBg: 'background:linear-gradient(10deg, #2c3e50 , #bdc3c7);'
 			}
+		},
+		methods: {
+			navToInfo(item) {
+				uni.navigateTo({
+					url: `/pages/shop/goodsInfo/goodsInfo?type=${item.type}`
+				})
+			},
 		}
 	}
 </script>
@@ -52,19 +59,19 @@
 		margin-top: 25rpx;
 		margin-bottom: 20rpx;
 		margin-right: 155rpx;
-		word-break:keep-all;
-		white-space:nowrap;
-		overflow:hidden;
-		text-overflow:ellipsis;
+		word-break: keep-all;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
-	
-	.priceBox{
+
+	.priceBox {
 		font-size: 28rpx;
 		line-height: 40rpx;
 		color: $group-color-curr;
 	}
-	
-	.cardPrice{
+
+	.cardPrice {
 		position: absolute;
 		top: 50%;
 		right: 20rpx;

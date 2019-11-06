@@ -64,14 +64,34 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
+		}, {
+			"path": "pages/shop/shop",
+			"style": {}
+		}, {
+			"path": "pages/user/user",
+			"style": {}
+		}, {
+			"path": "pages/shop/addGoods/addGoods",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/shop/goodsInfo/goodsInfo",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}
 	    ,{
-            "path" : "pages/shop/shop",
-            "style" : {}
+            "path" : "pages/shop/goodsInfo/exchange/exchange",
+            "style" : {
+				"navigationStyle": "custom"
+			}
         }
         ,{
-            "path" : "pages/user/user",
-            "style" : {}
+            "path" : "pages/shop/goodsInfo/buyGoods/buyGoods",
+            "style" : {
+				"navigationStyle": "custom"
+			}
         }
     ],
 	"globalStyle": {
