@@ -93,6 +93,10 @@
 				"navigationStyle": "custom"
 			}
         }
+        ,{
+            "path" : "pages/index/consult/consult",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
