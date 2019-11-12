@@ -1,5 +1,6 @@
 <template>
 	<view class="body">
+		<button type="primary" @click="navToUser">ssss</button>
 		<button @click="backLogin">·µ»ØµÇÂ¼</button>
 	</view>
 </template>
@@ -12,6 +13,11 @@
 			}
 		},
 		methods:{
+			navToUser(){
+				uni.navigateTo({
+					url:'/pages/user/userData/userData'
+				})
+			},
 			backLogin(){
 				uni.clearStorageSync('userId')
 				uni.reLaunch({

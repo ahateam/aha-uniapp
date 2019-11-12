@@ -97,6 +97,16 @@
             "path" : "pages/index/consult/consult",
             "style" : {}
         }
+        ,{
+            "path" : "pages/login/choicePort/choicePort",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/user/userData/userData",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
