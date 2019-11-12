@@ -14,23 +14,23 @@
 		</view>
 
 		<view class="content-List">
-			
-			<view class="content-box">
+
+			<view class="content-box" @click="showName = true">
 				<view class="left-box">昵称</view>
 				<view class="right-box">
 					<text>{{name}}</text>
-					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
+					<image :hidden="showName"  src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
-			
-			<view class="content-box">
+
+			<view class="content-box" >
 				<view class="left-box">性别</view>
 				<view class="right-box">
 					<text>{{sex}}</text>
 					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
-			
+
 			<view class="content-box">
 				<view class="left-box">生日</view>
 				<view class="right-box">
@@ -38,7 +38,7 @@
 					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
-			
+
 			<view class="content-box">
 				<view class="left-box">所在学校</view>
 				<view class="right-box">
@@ -46,7 +46,7 @@
 					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
-			
+
 			<view class="content-box">
 				<view class="left-box">注册手机号</view>
 				<view class="right-box">
@@ -54,27 +54,47 @@
 					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
+
+			<uni-popup :show="showName" type="bottom" :mask-click="true" @change="change">
+				<input type="text" v-model="name" />
+			</uni-popup>
 		</view>
 	</view>
 </template>
 
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
+	import uniPopup from "@/components/uni-popup/uni-popup.vue"
 
 	export default {
 		components: {
-			navBar
+			navBar,
+			uniPopup
 		},
 		data() {
 			return {
-				name:'墨尔本来的鱼',
-				sex:'男',
-				birthday:'1999-10-10',
-				school:'北大青鸟',
-				tel:'13426885478'
+				name: '墨尔本来的鱼',
+				showName: false,
+
+				sex: '男',
+				showSex: false,
+
+				birthday: '1999-10-10',
+				showBirth: false,
+
+				school: '北大青鸟',
+				showSchool: false,
+
+				tel: '13426885478',
+				showTel: false,
+
 			}
 		},
 		methods: {
+			change(){
+				this.showName = false
+			},
+			
 			navBack() {
 				uni.navigateBack()
 			}
@@ -148,13 +168,13 @@
 		max-width: 375rpx;
 
 		text {
-			margin-right: 20rpx;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
 		}
 
 		image {
+			margin-left: 20rpx;
 			width: 21rpx;
 			height: 21rpx;
 		}
