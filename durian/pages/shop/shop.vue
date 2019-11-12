@@ -2,7 +2,7 @@
 	<view class="body">
 		<view class="topBox">
 			<view class="title_box">
-				商城
+				商城1111222
 			</view>
 			<view class="searchBox" @click="navToAdd">
 				<text class="iconfont icon-jia searchIcon"></text>
