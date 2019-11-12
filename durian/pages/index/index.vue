@@ -1,7 +1,7 @@
 <template>
 	<view class="body">
 		<view class="topBox">
-			<view class="title_box">
+			<view class="title_box" @click="navTest">
 				咨询
 			</view>
 		</view>
@@ -61,6 +61,12 @@
 					url:'/pages/index/consult/consult'
 				})
 			},
+			
+			navTest(){
+				uni.navigateTo({
+					url:'/pages/login/choicePort/choicePort'
+				})
+			}
 		}
 	}
 </script>

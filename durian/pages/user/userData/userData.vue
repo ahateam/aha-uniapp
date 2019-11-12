@@ -1,19 +1,162 @@
 <template>
 	<view>
-		
+		<nav-bar :back="false" type="transparent" fontColor="#333333" title="个人资料">
+			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
+			<view slot="right" class="save-Btn">保存</view>
+		</nav-bar>
+		<view style="padding-top: 64px;"></view>
+
+		<view class="head-box">
+			<view class="head-change">
+				<image src="/static/image/user/icon_xj.png" mode="aspectFit"></image>
+			</view>
+			<view class="head-text">更换头像</view>
+		</view>
+
+		<view class="content-List">
+			
+			<view class="content-box">
+				<view class="left-box">昵称</view>
+				<view class="right-box">
+					<text>{{name}}</text>
+					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			
+			<view class="content-box">
+				<view class="left-box">性别</view>
+				<view class="right-box">
+					<text>{{sex}}</text>
+					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			
+			<view class="content-box">
+				<view class="left-box">生日</view>
+				<view class="right-box">
+					<text>{{birthday}}</text>
+					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			
+			<view class="content-box">
+				<view class="left-box">所在学校</view>
+				<view class="right-box">
+					<text>{{school}}</text>
+					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			
+			<view class="content-box">
+				<view class="left-box">注册手机号</view>
+				<view class="right-box">
+					<text>{{tel}}</text>
+					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
 <script>
+	import navBar from '@/components/zhouWei-navBar/index.vue'
+
 	export default {
+		components: {
+			navBar
+		},
 		data() {
 			return {
-				
-			};
+				name:'墨尔本来的鱼',
+				sex:'男',
+				birthday:'1999-10-10',
+				school:'北大青鸟',
+				tel:'13426885478'
+			}
+		},
+		methods: {
+			navBack() {
+				uni.navigateBack()
+			}
 		}
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+	.icon-fanhui {
+		font-size: 33rpx;
+		position: absolute;
+		color: #587685;
+		left: 29rpx;
+	}
 
+	.save-Btn {
+		color: #587685;
+		margin-right: 30rpx;
+		font-size: 32rpx;
+	}
+
+	.head-box {
+		text-align: center;
+		color: $group-color;
+		font-size: $group-font;
+		margin-top: $group-margin-top;
+	}
+
+	.head-change {
+		margin: 0 auto;
+		border-radius: 50%;
+		background-color: #F2F5F7;
+		width: 120rpx;
+		height: 120rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		image {
+			width: 40rpx;
+			height: 40rpx;
+		}
+	}
+
+	.head-text {
+		margin-top: 20rpx;
+	}
+
+	.content-List {
+		padding: 46rpx 40rpx 0;
+	}
+
+	.content-box {
+		padding: 38rpx 0;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border-bottom: 1rpx solid $group-color-border;
+	}
+
+	.left-box {
+		font-size: $group-font-befor;
+		color: #999999;
+	}
+
+	.right-box {
+		display: flex;
+		align-items: center;
+		font-size: $group-font-befor;
+		color: #333333;
+		max-width: 375rpx;
+
+		text {
+			margin-right: 20rpx;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		image {
+			width: 21rpx;
+			height: 21rpx;
+		}
+	}
 </style>
