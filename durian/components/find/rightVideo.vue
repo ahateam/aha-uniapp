@@ -1,24 +1,25 @@
 <template>
 	<view class="body">
 		<view class="userBox">
-			<image :src="upHead" mode="aspectFill"></image>
+			<image :src="item.posting.userHead" mode="aspectFill"></image>
 			<view class="rightBox">
-				<view>{{upName}}</view>
-				<view class="time">{{time}}</view>
+				<view>{{item.posting.userName}}</view>
+				<view class="time">{{newTime(item.posting.postingCreateTime)}}</view>
 			</view>
 		</view>
 
-		<view class="title">{{title}}</view>
+		<view class="title">{{item.posting.postingTextDate}}</view>
 
-		<view class="img">
-			<image :src="imgSrc" mode="aspectFill"></image>
-			<view class="videoBtn" v-if="type == constData.groupType[3].key">
-				<image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAEC0lEQVRoQ+2ajVEVMRDHdzuwA6ACpQKxArECtQKxAqECoQKhAqECoQKxAqEDrWCdn7Nx8vJy+bp3T4YhM2+O8S7J/rO7//2IKo9k6CPBIU9Acpo0s10ReSkiPA8mtH0tIncicqOqPDcyZmvEhX8rIu8cQI9gtyJyKSIXc0ENA3EAnxxAj/BT356LyEdV/TWyWDcQM3smIgA4mtjwXkQ4aX4Mngj3QkSYy5PfTmb+laoeLg7EzBDga8aEEB4TOVfVAKAoj2sUc+QXQC0PxMzY8Esi3W8ROVbV05FTDHPMDC1AEBzEcqY1AeLMQQxtXANuZvjMa/cb/i6Oqo9kQKCFI1WtLl7bfOq9mUHd3/w9ND1F5f+WKAJxn/gebQiIg1Y/mAEEUsDX8J0zVZ0iljoQZydAYLuMrYCIwXOQrYc2qREzw4E/RAu/X9KcRrUX5mWBODX+jBY/UdXjuZuNznd5PnscepNjtikgODJpRzCp3VFaHBU+MTEOkSDMIJ0hFKyMNSAZbZA2NMUJn7ujqjebABDWyDDnXpqb5YDEvnGvqsHZi7I5CMgBxiHDxRx5bmSYGZlyyADWmCwHBN8IwjdRH5Im3B+En5UIJuYFBeMnjFtV3Y/frwDJmNV+K/1NAGEvIv+pqp7MUU1GthXzSoHE+VSzWRU0EsuOaUDhw+aWmNdKOEiBxOzQlYkWNJIqAiAI0V0dmhkZNvkXYyUkpEDYhFJ17cOaWXQACUtxaPhgc9JpZvFBr+Rg/xNI8B+0w0lXR0LDzUCIoE0bNPpISdC1uJD7uJQVlzTyEIFQgFGhMpo10pVfDfgIwlAiU9s0af4h+gglARkE8WURZ98G/V65Fhal3zgg3qnqXpVK/IMG0/rhAOYExDh9KgZEcqy4DtlEirKpTgutqLjsnk5RnEaLWeaUhiY0srFOS1KxrqVPtTS+2by8xsdsnkONNN5G0pDCQcVmtcaoLYVVV63e0zDo8L+0OVgvrNy84lIXemRiM022CtjynWsabVCwMdpKXQeSOlZXcGwRsPWbJAgyLZvOPOh2UKZWn6xYS0Dibl/IVF+1VoytJ15wbqyCtmkwKdIZGnZZE+9tmbLI4mC8VRuDAG8xpo00sQFDi2iRJrabU2jGBYVVmbMKxJ0/dzfSXeGVzM3ZiRZt2tGsgmDdJiAFMGiHNPxijk+YGV1NsuHgD82aCB82A4lomdohvf8jrQm3s61XbzgzAMJtVXwWOPZhD7F0AXEwnBrqjzv1sRCACnfp/HvIdsNlTbiDn+pgDuVn3UCCxN4wA1Bods+xrr8R26/yuuuULh8p8D0nSzsTE8ldOZcAhttgKsUhAEM+Ujty1xIm1PJfOK7nCh/LM2xaNVDbfv8EZNsnXtvvDyrmF1FIBKIwAAAAAElFTkSuQmCC"
-				 mode="widthFix"></image>
+		<view class="img-box" v-if="imgList.length > 3&&imgList.length < 9||imgList.length == 2">
+			<view style="line-height: 0;" v-for="(item,index) in imgList" :key="index">
+				<image v-if="index < 4" style="width:328rpx;height: 328rpx;" :style="(index + 1) % 2 == 0?'margin-right:0;':''"
+				 :src="item" mode="aspectFill"></image>
 			</view>
-			<view class="imgNum" v-if="type == constData.groupType[1].key">
-				<text class="iconfont icon-tupianx"></text>
-				<text>{{listLength}}</text>
+		</view>
+
+		<view class="img-box" v-else>
+			<view style="line-height: 0;" v-for="(item,index) in imgList" :key="index">
+				<image :style="(index + 1) % 3 == 0?'margin-right:0;':''" :src="item" mode="aspectFill"></image>
 			</view>
 		</view>
 	</view>
@@ -26,10 +27,17 @@
 
 <script>
 	export default {
-		props: ['title', 'imgSrc', 'upName', 'time', 'type', 'upHead','listLength'],
+		props: ['item', 'listLength'],
 		data() {
 			return {
-				constData:this.$constData
+				constData: this.$constData,
+				imgList: []
+			}
+		},
+		methods: {
+			newTime(time) {
+				this.imgList = JSON.parse(this.item.posting.postingDate)
+				return this.$commen.getNewDate(time)
 			}
 		}
 	}
@@ -44,32 +52,28 @@
 	}
 
 	.title {
-		font-size: $group-font;
-		color: $group-color;
+		font-size: $group-font-befor;
+		color: #333333;
 		line-height: $group-font-line;
 		margin-top: 30rpx;
-		padding-right: 210rpx;
 		box-sizing: border-box;
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2; //需要显示时文本行数
+		-webkit-line-clamp: 4; //需要显示时文本行数
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
 
-	.img {
-		position: absolute;
-		top: 50%;
-		margin-top: -85rpx;
-		right: 0;
-		width: 170rpx;
-		height: 170rpx;
-		border-radius: 4rpx;
-		overflow: hidden;
+	.img-box {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		margin-top: 30rpx;
 
 		image {
-			width: 100%;
-			height: 100%;
+			width: 214rpx;
+			height: 214rpx;
+			margin: 0 14rpx 14rpx 0;
 		}
 	}
 
