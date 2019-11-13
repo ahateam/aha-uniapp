@@ -22,6 +22,7 @@
 	import phoneInput from '@/components/phoneInput/phoneInput.vue'
 
 	export default {
+		name:'resetPhone',
 		components: {
 			navBar,
 			phoneInput

@@ -23,9 +23,9 @@
 				<text>修改个人资料</text>
 			</view>
 		</view>
-		
+
 		<view class="content-List">
-			<view class="content-box" v-for="(item,index) in contentList" :key="index">
+			<view class="content-box" v-for="(item,index) in contentList" :key="index" @click="navToView(item.path)">
 				<view class="left-box">
 					<image class="left-icon" :src="item.iconSrc" mode="aspectFill"></image>
 					<text>{{item.text}}</text>
@@ -48,35 +48,42 @@
 			return {
 				imgSrc: 'https://img-blog.csdn.net/20180629153527977?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0OTg1NzE1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70',
 				name: '土耳其的鸟',
-				contentList:[
-					{
-						text:'我的申请',
-						iconSrc:'/static/image/user/icon_wdsq.png',
-						path:''
+				contentList: [{
+						text: '我的申请',
+						iconSrc: '/static/image/user/icon_wdsq.png',
+						path: ''
 					},
 					{
-						text:'我的商品',
-						iconSrc:'/static/image/user/icon_wdsp.png',
-						path:''
+						text: '我的商品',
+						iconSrc: '/static/image/user/icon_wdsp.png',
+						path: ''
 					},
 					{
-						text:'账户安全',
-						iconSrc:'/static/image/user/icon_zhaq.png',
-						path:''
+						text: '账户安全',
+						iconSrc: '/static/image/user/icon_zhaq.png',
+						path: '/pages/user/userSafe/userSafe'
 					},
 					{
-						text:'帮助中心',
-						iconSrc:'/static/image/user/icon_bzzx.png',
-						path:''
+						text: '帮助中心',
+						iconSrc: '/static/image/user/icon_bzzx.png',
+						path: ''
 					}
 				]
 			}
 		},
 		methods: {
-			navToUser(){
+			navToUser() {
 				uni.navigateTo({
-					url:'/pages/user/userData/userData'
+					url: '/pages/user/userData/userData'
 				})
+			},
+
+			navToView(url) {
+				if (url) {
+					uni.navigateTo({
+						url: url
+					})
+				}
 			}
 		}
 	}
@@ -180,34 +187,34 @@
 		border: 1rpx solid #00C8BE;
 		color: #00C8BE;
 	}
-	
-	.content-List{
+
+	.content-List {
 		margin-top: 52rpx;
 		padding: 0 40rpx;
 		font-size: 30rpx;
 		color: #333333;
 	}
-	
-	.content-box{
+
+	.content-box {
 		display: flex;
 		align-items: center;
-		justify-content:space-between;
+		justify-content: space-between;
 		padding: 34rpx 0 34rpx 20rpx;
 		border-bottom: 1rpx solid rgba($color: $group-color-border, $alpha: 0.7);
 	}
-	
-	.left-box{
+
+	.left-box {
 		display: flex;
 		align-items: center;
 	}
-	
-	.left-icon{
+
+	.left-icon {
 		width: 35rpx;
 		height: 35rpx;
 		margin-right: 40rpx;
 	}
-	
-	.right-icon{
+
+	.right-icon {
 		width: 22rpx;
 		height: 22rpx;
 	}

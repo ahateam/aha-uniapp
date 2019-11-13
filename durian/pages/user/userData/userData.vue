@@ -2,7 +2,7 @@
 	<view>
 		<nav-bar :back="false" type="transparent" fontColor="#333333" title="个人资料">
 			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
-			<view slot="right" class="save-Btn">保存</view>
+			<view slot="right" class="save-Btn" @click="saveData">保存</view>
 		</nav-bar>
 		<view style="padding-top: 64px;"></view>
 
@@ -19,11 +19,11 @@
 				<view class="left-box">昵称</view>
 				<view class="right-box">
 					<text>{{name}}</text>
-					<image :hidden="showName"  src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
+					<image :hidden="showName" src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
 
-			<view class="content-box" >
+			<view class="content-box" @click="showSex = true">
 				<view class="left-box">性别</view>
 				<view class="right-box">
 					<text>{{sex}}</text>
@@ -31,7 +31,7 @@
 				</view>
 			</view>
 
-			<view class="content-box">
+			<view class="content-box" @click="timeChange">
 				<view class="left-box">生日</view>
 				<view class="right-box">
 					<text>{{birthday}}</text>
@@ -56,8 +56,19 @@
 			</view>
 
 			<uni-popup :show="showName" type="bottom" :mask-click="true" @change="change">
-				<input type="text" v-model="name" />
+				<view class="name-input">
+					<input type="text" v-model="newName" />
+				</view>
 			</uni-popup>
+			
+			<uni-popup :show="showSex" type="bottom" :mask-click="true" @change="change">
+				<view class="sex-list">
+					<view class="sex-border" @click="choiceSex(1)">男</view>
+					<view @click="choiceSex(0)">女</view>
+				</view>
+			</uni-popup>
+
+			<sen-set-picker ref="setpicker" @colseBox="quxiaobutton" :shixian="shixian" @quxiaoButton="quxiaobutton" @quedingButton="quedingbutton"></sen-set-picker>
 		</view>
 	</view>
 </template>
@@ -65,16 +76,23 @@
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import uniPopup from "@/components/uni-popup/uni-popup.vue"
+	import senSetPicker from '@/components/sen-pickerview/picker-view-set.vue'
 
 	export default {
+		name:'userData',
 		components: {
 			navBar,
-			uniPopup
+			uniPopup,
+			senSetPicker
 		},
 		data() {
+			const currentDate = this.getDate({
+				format: true
+			})
 			return {
 				name: '墨尔本来的鱼',
 				showName: false,
+				newName: '',
 
 				sex: '男',
 				showSex: false,
@@ -88,15 +106,71 @@
 				tel: '13426885478',
 				showTel: false,
 
+				inputValue: currentDate,
+				shixian: false
 			}
+
 		},
 		methods: {
-			change(){
-				this.showName = false
+			choiceSex(e){
+				if(e == 0){
+					this.sex = '女'
+				}else{
+					this.sex = '男'
+				}
+				this.showSex = false
 			},
 			
+			change(e) {
+				if (!e.show) {
+					this.showName = false
+					this.showSex = false
+				}
+			},
+
 			navBack() {
 				uni.navigateBack()
+			},
+			
+			timeChange: function () {
+					this.$refs.setpicker.confirm(this.inputValue)
+					this.shixian = true;			
+			},
+			quxiaobutton: function() {
+				this.shixian = false
+			},
+			quedingbutton: function(bangdingyear, bangdingmonth, bangdingday) {
+				this.shixian = false
+				this.inputValue = bangdingyear + "-" + bangdingmonth + "-" + bangdingday
+				this.birthday = this.inputValue
+			},
+			getDate(type) {
+				const date = new Date();
+
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
+
+				if (type === 'start') {
+					year = year - 60;
+				} else if (type === 'end') {
+					year = year + 2;
+				} else if (type === 'now') {
+					year = year;
+				}
+				month = month > 9 ? month : '0' + month;;
+				day = day > 9 ? day : '0' + day;
+
+				return `${year}-${month}-${day}`;
+			},
+			
+			saveData(){
+				uni.switchTab({
+					url:'/pages/user/user'
+				})
+				uni.showToast({
+					title:'保存成功！'
+				})
 			}
 		}
 	}
@@ -178,5 +252,22 @@
 			width: 21rpx;
 			height: 21rpx;
 		}
+	}
+
+	.name-input {
+		background-color: #FFFFFF;
+	}
+	
+	.sex-list{
+		border-radius: 40rpx 40rpx 0 0;
+		background-color: #FFF;
+		color: #333333;
+		font-size: 36rpx;
+		text-align: center;
+		line-height: 120rpx;
+	}
+	
+	.sex-border{
+		border-bottom: 1rpx solid $group-color-border;
 	}
 </style>
