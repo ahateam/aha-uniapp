@@ -116,6 +116,15 @@
 				<p class="text-box1">组织</p>
 			</view>
 		</view>
+		
+		<navigator url="../customer/customer">
+			<view class="content_box" style="background-color: #9788ff;">
+				<view class="content_box_text">
+					<p class="text-box">联系</p>
+					<p class="text-box1">客服</p>
+				</view>
+			</view>
+		</navigator>
 
 		<view class="content_box" @click="outLogin()" style="background-color: #fb7eb8;">
 			<view class="content_box_text">
@@ -123,6 +132,9 @@
 				<p class="text-box1">登录</p>
 			</view>
 		</view>
+		
+		
+		
 
 	</view>
 

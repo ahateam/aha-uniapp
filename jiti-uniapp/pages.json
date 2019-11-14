@@ -201,6 +201,16 @@
 					"navigationBarTitleText": "合作社投票详情"
 			}
 		}
+        ,{
+            "path" : "pages/customer/customer",
+            "style" : {
+				"navigationBarTitleText": "联系客服"
+			}
+        }
+        ,{
+            "path" : "pages/customer/feedback",
+            "style" : {"navigationBarTitleText": "意见反馈"}
+        }
     ],
 	"tabBar": {
 		"color": "#C0C4CC",

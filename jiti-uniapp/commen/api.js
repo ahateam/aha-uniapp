@@ -7,6 +7,12 @@ import baseUrl from './url'
 let api = {};
 console.log('开始调用ctrl');
 
+//客服信息查询
+api.getCustomer = function(cnt, callback) {
+	util.call(baseUrl + '/customer/getCustomer', cnt, callback)
+}
+
+
 //app版本获取
 api.getVersion = function(cnt, callback) {
 	util.call(baseUrl + '/version/getVersion', cnt, callback)
