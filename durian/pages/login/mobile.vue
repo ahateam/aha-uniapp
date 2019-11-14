@@ -38,7 +38,7 @@
 		data() {
 			return {
 				areaCode: '86',
-				bgSrc: this.$constData.oss + '/image/mobileBG.png',
+				bgSrc: '/static/image/login/mobileBG.png',
 				phoneNumber: '',
 			}
 		},

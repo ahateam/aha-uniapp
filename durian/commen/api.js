@@ -26,7 +26,7 @@ api.getPosting = function(cnt, callback) {
 
 //获取评论 
 api.getReplyList = function(cnt, callback) {
-	util.call(baseUrl + '/posting/getReplyList', cnt, callback)
+	util.call(baseUrl + '/reply/getReplyList', cnt, callback)
 }
 
 //分享 
@@ -44,5 +44,51 @@ api.createReply = function(cnt, callback) {
 	util.call(baseUrl + '/reply/createReply', cnt, callback)
 }
 
+// 创建收藏 
+api.createUserFavorite = function(cnt, callback) {
+	util.call(baseUrl + '/posting/createUserFavorite', cnt, callback)
+}
 
+// 取消收藏 
+api.delUserFavorite = function(cnt, callback) {
+	util.call(baseUrl + '/posting/delUserFavorite', cnt, callback)
+}
+
+/** 赞 */
+//内容点赞 
+api.createAppraise = function(cnt, callback) {
+	util.call(baseUrl + '/appraise/createAppraise', cnt, callback)
+}
+
+//取消赞 
+api.delAppraise = function(cnt, callback) {
+	util.call(baseUrl + '/appraise/delAppraise', cnt, callback)
+}
+
+/* 登录 */
+// 发送验证码
+api.sendSms = function(cnt, callback) {
+	util.call(baseUrl + '/user/sendSms', cnt, callback)
+}
+
+//绑定手机号
+api.bindingPhone = function(cnt, callback) {
+	util.call(baseUrl + '/user/bindingPhone', cnt, callback)
+}
+
+// 验证码登录 
+api.loginByCode = function(cnt, callback) {
+	util.call(baseUrl + '/user/loginByCode', cnt, callback)
+}
+
+// 设置密码 
+api.setPwd = function(cnt, callback) {
+	util.call(baseUrl + '/user/setPwd', cnt, callback)
+}
+
+/* 兴趣 */
+ //设置用户兴趣 
+ api.setUserInterest = function(cnt, callback) {
+ 	util.call(baseUrl + '/user/setUserInterest', cnt, callback)
+ }
 export default api

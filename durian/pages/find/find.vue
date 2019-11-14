@@ -24,7 +24,7 @@
 				<!-- the end -->
 			</view>
 		</view>
-		
+
 		<!-- 标签栏 -->
 		<view class="tagBox auto-margin">
 			<view class="tagsList" :class="{currTag:index == navList[navCurrtent].tagCurrtent}" v-for="(item,index) in navList[navCurrtent].tagList"
@@ -33,43 +33,52 @@
 
 		<view>
 			<view class="listBox" :class="{autoList:index != 0}" v-for="(item,index) in contentList" :key="index" @click="navToContent(item)">
-				<trans-video :item="item"></trans-video>
+				<trans-video :item="item" v-if="item.posting.postingType == constData.groupType[3].key"></trans-video>
 
-				<!-- <right-video v-if="item.posting.postingType == constData.groupType[1].key" :item="item" :listLength="JSON.parse(item.posting.postingDate).length"></right-video>
+				<img-box v-if="item.posting.postingType == constData.groupType[1].key" :item="item" :imgList="$util.tryParseJson(item.posting.postingDate)"></img-box>
 
-				<only-text :item="item" v-if="item.posting.postingType == constData.groupType[0].key"></only-text> -->
+				<only-text :item="item" v-if="item.posting.postingType == constData.groupType[0].key"></only-text>
 
-				<view class="abilityBox">
-					<view>
-						<text class="iconfont icon-yanjing_xianshi_o"></text>
+				<view class="abilityBox" @click.stop>
+					<view class="icon-box">
+						<image src="/static/image/find/icon_llrs.png" mode="aspectFit"></image>
 						<text class="iconText">{{item.posting.postingPageView}}</text>
 					</view>
 
-					<view :class="{currentIcon:item.isAppraise}" @click.stop="createAppraise(item,index)">
-						<text class="iconfont icon-zan"></text>
+					<view class="icon-box" :class="{currentIcon:item.isAppraise}" @click="createAppraise(item,index)">
+						<image :src="item.isAppraise?'/static/image/find/icon_z_p.png':'/static/image/find/icon_z.png'" mode="aspectFit"></image>
 						<text class="iconText">{{item.appraiseCount}}</text>
 					</view>
 
-					<view :class="{currentIcon:item.isShare}" @click.stop="shareBtn(item,index)">
-						<text class="iconfont icon-fenxiang"></text>
+					<view class="icon-box" @click="shareBtn(item,index)">
+						<image src="/static/image/find/icon_zf.png" mode="aspectFit"></image>
 						<text class="iconText">{{item.posting.postingShareNumber}}</text>
 					</view>
 				</view>
 			</view>
 		</view>
 
+		<view class="add-btn" @click="navToAdd">
+			<view>
+				<!-- <image src="/static/image/user/icon_xggrxx.png" mode="aspectFit"></image> -->
+				<view class="iconfont icon-xie"></view>
+				<view>
+					发帖
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
 <script>
-	import rightVideo from '@/components/find/rightVideo.vue'
+	import ImgBox from '@/components/find/ImgBox.vue'
 	import transVideo from '@/components/find/TransVideo.vue'
 	import onlyText from '@/components/find/onlyText.vue'
-	
+
 
 	export default {
 		components: {
-			rightVideo,
+			ImgBox,
 			transVideo,
 			onlyText
 		},
@@ -138,12 +147,12 @@
 
 			createAppraise(item, index) {
 				let id = item.posting.postingId
-				if (this.contentList[index].upvoteStatus) {
+				if (this.contentList[index].isAppraise) {
 					this.delAppraise(id, index)
-					return
+				} else {
+					this.contentList[index].isAppraise = true
+					this.createUpvote(index, id)
 				}
-				this.contentList[index].upvoteStatus = true
-				this.createUpvote(index, id)
 			},
 
 			delAppraise(id, index) {
@@ -153,7 +162,7 @@
 				}
 				this.$api.delAppraise(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.contentList[index].upvoteStatus = false
+						this.contentList[index].isAppraise = false
 						this.contentList[index].appraiseCount -= 1
 					}
 				})
@@ -165,7 +174,7 @@
 					userId: uni.getStorageSync('userId'), // Long 用户编号
 					value: this.$constData.appraise[0].key //Byte 状态
 				}
-				this.$api.createUpvote(cnt, (res) => {
+				this.$api.createAppraise(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '点赞成功',
@@ -183,6 +192,14 @@
 			},
 
 			shareBtn(item, index) {
+				let imgSrc = ''
+				if (item.posting.postingType == this.$constData.groupType[1].key) {
+					imgSrc = item.posting.postingDate[0]
+				} else {
+					imgSrc =
+						'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573727184965&di=94d6c6315581a3056ec469a499361e49&imgtype=0&src=http%3A%2F%2Fimgs.qunarzz.com%2Fp%2Ftts1%2F1603%2Fa3%2F5b79a7b9f9989ff7.jpg'
+				}
+
 				uni.share({
 					provider: "weixin",
 					scene: "WXSceneSession",
@@ -190,7 +207,7 @@
 					href: `http://weapp.datanc.cn/kkqt/app/android/${this.$constData.version}/kkqt.apk`,
 					title: "表揚表揚TA",
 					summary: item.posting.postingTextDate,
-					imageUrl: this.$util.tryParseJson(item.posting.postingDate)[0],
+					imageUrl: imgSrc,
 					success: (res) => {
 						uni.showToast({
 							title: '分享成功！'
@@ -202,6 +219,7 @@
 						this.createUserShare(cnt1, index)
 					},
 					fail: (err) => {
+						console.log(err)
 						uni.showToast({
 							title: '分享失败',
 							icon: 'none'
@@ -264,7 +282,7 @@
 	// 	font-family: 'appleFont';
 	// 	src: url('~@/static/font/appleFont.ttf'), ;
 	// }
-	.auto-margin{
+	.auto-margin {
 		padding: 0 $group-margin-left;
 	}
 
@@ -278,7 +296,7 @@
 		font-size: $group-font-big;
 		line-height: $group-font-big-line;
 		font-weight: $group-title-weight;
-		color: $group-color;
+		color: #333333;
 	}
 
 	.searchBox {
@@ -291,7 +309,7 @@
 		border-radius: 4rpx;
 		font-size: 28rpx;
 		color: $group-color-befor;
-		
+
 
 		.searchIcon {
 			font-size: $group-font;
@@ -348,7 +366,8 @@
 		height: 40rpx;
 		transition: all 0.3s;
 		opacity: 0;
-		image{
+
+		image {
 			width: 100%;
 			height: 100%;
 		}
@@ -389,11 +408,11 @@
 		justify-content: space-between;
 		margin-top: 16rpx;
 		font-size: $group-font;
-		color: $group-color-befor;
+		color: #999999;
 	}
 
 	.currentIcon {
-		color: $group-color-curr;
+		color: #FE5A6E;
 	}
 
 	.iconfont {
@@ -419,8 +438,8 @@
 		color: #333333;
 		padding: 4rpx 20rpx;
 		padding-bottom: 26rpx;
-		
-		&:after{
+
+		&:after {
 			content: '';
 			position: absolute;
 			left: 50%;
@@ -436,9 +455,42 @@
 	}
 
 	.currTag {
-		&:after{
+		&:after {
 			width: 20rpx;
 			height: 6rpx;
+		}
+	}
+
+	.add-btn {
+		position: fixed;
+		bottom: 50rpx;
+		right: 50rpx;
+		width: 110rpx;
+		height: 110rpx;
+		background: linear-gradient(225deg, #01E9DE, #00C8BE);
+		border-radius: 50%;
+		box-shadow: 0 2rpx 36rpx 0 #00C8BE;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #FFFFFF;
+		font-size: 24rpx;
+		text-align: center;
+
+		.icon-xie {
+			font-size: 30rpx;
+			margin: 0;
+		}
+	}
+
+	.icon-box {
+		display: flex;
+		align-items: center;
+
+		image {
+			width: 30rpx;
+			height: 30rpx;
+			margin-right: 10rpx;
 		}
 	}
 </style>

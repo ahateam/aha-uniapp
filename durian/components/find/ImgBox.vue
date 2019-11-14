@@ -10,7 +10,7 @@
 
 		<view class="title">{{item.posting.postingTextDate}}</view>
 
-		<view class="img-box" v-if="imgList.length > 3&&imgList.length < 9||imgList.length == 2">
+		<view class="img-box" v-if="imgList.length > 3&&imgList.length < 9&&imgList.length != 6 ||imgList.length == 2">
 			<view style="line-height: 0;" v-for="(item,index) in imgList" :key="index">
 				<image v-if="index < 4" style="width:328rpx;height: 328rpx;" :style="(index + 1) % 2 == 0?'margin-right:0;':''"
 				 :src="item" mode="aspectFill"></image>
@@ -19,24 +19,23 @@
 
 		<view class="img-box" v-else>
 			<view style="line-height: 0;" v-for="(item,index) in imgList" :key="index">
-				<image :style="(index + 1) % 3 == 0?'margin-right:0;':''" :src="item" mode="aspectFill"></image>
+				<image :style="(index + 1) % 3 == 0?'margin-right:0;':''" :src="item" mode="aspectFill" v-if="index < 9"></image>
 			</view>
 		</view>
+
 	</view>
 </template>
 
 <script>
 	export default {
-		props: ['item', 'listLength'],
+		props: ['item','imgList'],
 		data() {
 			return {
-				constData: this.$constData,
-				imgList: []
+				constData: this.$constData
 			}
 		},
 		methods: {
 			newTime(time) {
-				this.imgList = JSON.parse(this.item.posting.postingDate)
 				return this.$commen.getNewDate(time)
 			}
 		}

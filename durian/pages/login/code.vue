@@ -56,26 +56,67 @@
 			}
 		},
 		methods: {
-			submitBtn(){
-				console.log(this.code)
+			sendSms(cnt) {
+				this.$api.sendSms(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							title: '验证码已发送'
+						})
+
+						this.timer = setInterval(() => {
+							this.num--
+						}, 1000)
+					} else {
+						this.num = 0
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+			submitBtn() {
+				let cnt = {
+					phone: this.moblie, // String 手机号
+					code: this.code, // String 验证码
+				}
+				this.$api.loginByCode(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let userInfo = this.$util.tryParseJson(res.data.c)
+						console.log(userInfo)
+						uni.setStorageSync('userId',userInfo.userId)
+						uni.setStorageSync('userHead',userInfo.userHead)
+						uni.setStorageSync('userName',userInfo.userName)
+						uni.redirectTo({
+							url:'/pages/login/interest/interest'
+						})
+					} else {
+						uni.showToast({
+							title:res.data.rm,
+							icon:'none'
+						})
+					}
+				})
 			},
 			finish(res) {
 				this.code = res
 			},
 			sendBtn() {
+				let cnt = {
+					phone: this.moblie, // String 手机号
+					type: this.$constData.codeType[0].key, // String <选填> 类型
+				}
+				this.sendSms(cnt)
 				this.num = 60
-				this.timer = setInterval(() => {
-					this.num--
-				}, 1000)
 			}
 		},
 		onLoad(option) {
 			this.boxBg = 'background:url(' + this.$constData.oss + '/image/codeBG.png)'
-		
+
 			let tell = option.tell
 			this.moblie = tell
 			this.tell = tell.substr(0, tell.length - 6) + '****' + tell.substr(tell.length - 2)
-		
+
 			this.sendBtn()
 
 		}

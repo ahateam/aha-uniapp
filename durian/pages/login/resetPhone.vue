@@ -29,7 +29,7 @@
 		},
 		data() {
 			return {
-				bgSrc: this.$constData.oss + '/image/phoneBG.png',
+				bgSrc: '/static/image/login/phoneBG.png',
 				areaCode: '86',
 
 				phoneNumber: '',

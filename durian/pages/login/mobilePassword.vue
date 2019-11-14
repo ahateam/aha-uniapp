@@ -12,7 +12,7 @@
 		<phoneInput v-model="phoneNumber" @changeCode="codeFct"></phoneInput>
 
 		<view class="functionBox">
-			<text class="iconfont areaCode" :class="eyeIcon" @click="changeHidden"></text>
+			<image class="areaCode" :src="eyeIcon" mode="aspectFit" @click="changeHidden"></image>
 			<input type="number" v-model="passData" placeholder="请输入密码" :password="eyeStatus" minlength="6" />
 		</view>
 
@@ -40,12 +40,12 @@
 		data() {
 			return {
 				areaCode: '86',
-				bgSrc: this.$constData.oss + '/image/passwordBG.png',
+				bgSrc: '/static/image/login/passwordBG.png',
 
 				phoneNumber: '',
 				passData: '',
 
-				eyeIcon: 'icon-yanjing_yincang_o',
+				eyeIcon: '/static/image/login/icon_close_eyes.png',
 				eyeStatus: true,
 
 			}
@@ -74,12 +74,12 @@
 			},
 
 			changeHidden() {
-				if (this.eyeIcon == 'icon-yanjing_yincang_o') {
-					this.eyeStatus = false
-					this.eyeIcon = 'icon-yanjing_xianshi_o'
-				} else {
+				if (this.eyeIcon == '/static/image/login/icon_open_eyes.png') {
 					this.eyeStatus = true
-					this.eyeIcon = 'icon-yanjing_yincang_o'
+					this.eyeIcon = '/static/image/login/icon_close_eyes.png'
+				} else {
+					this.eyeStatus = false
+					this.eyeIcon = '/static/image/login/icon_open_eyes.png'
 				}
 			},
 
@@ -152,7 +152,9 @@
 		position: absolute;
 		left: 30rpx;
 		top: 50%;
-		margin-top: -18rpx;
+		margin-top: -20rpx;
+		width: 40rpx;
+		height: 40rpx;
 	}
 
 	.infoBox {

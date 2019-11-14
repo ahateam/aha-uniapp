@@ -10,13 +10,13 @@
 		</view>
 		<!-- 主要功能区 -->
 		<view class="functionBox">
-			<text class="iconfont areaCode" :class="eyeIcon" @click="changeHidden(0)"></text>
+			<image class="areaCode" :src="eyeIcon" mode="aspectFit" @click="changeHidden(0)"></image>
 			<input type="number" v-model="passData" :password="eyeStatus" placeholder="请输入至少6位新密码" minlength="6" />
 		</view>
-		
+
 		<view class="functionBox">
-			<text class="iconfont areaCode" :class="eyeIcon1" @click="changeHidden(1)"></text>
-			<input type="number" v-model="passDataAgin" placeholder="确认密码" :password="eyeStatus1" minlength="6"/>
+			<image class="areaCode" :src="eyeIcon1" mode="aspectFit" @click="changeHidden(1)"></image>
+			<input type="number" v-model="passDataAgin" placeholder="确认密码" :password="eyeStatus1" minlength="6" />
 		</view>
 
 		<button type="primary" class="functionBox codeBtn" @click="navToCode">保存</button>
@@ -32,16 +32,16 @@
 		},
 		data() {
 			return {
-				bgSrc: this.$constData.oss + '/image/passwordBG.png',
-				
-				passData:'',
-				passDataAgin:'',
-				
-				eyeIcon:'icon-yanjing_yincang_o',
-				eyeStatus:true,
-				
-				eyeIcon1:'icon-yanjing_yincang_o',
-				eyeStatus1:true,
+				bgSrc: '/static/image/login/passwordBG.png',
+
+				passData: '',
+				passDataAgin: '',
+
+				eyeIcon: '/static/image/login/icon_close_eyes.png',
+				eyeStatus: true,
+
+				eyeIcon1: '/static/image/login/icon_close_eyes.png',
+				eyeStatus1: true,
 			}
 		},
 		methods: {
@@ -51,7 +51,7 @@
 						title: '请输入正确密码',
 						icon: 'none'
 					})
-				} else if(this.passData != this.passDataAgin){
+				} else if (this.passData != this.passDataAgin) {
 					uni.showToast({
 						title: '密码不相同',
 						icon: 'none'
@@ -60,33 +60,36 @@
 					uni.showToast({
 						title: '保存成功'
 					})
+					uni.redirectTo({
+						url:'/pages/login/mobilePassword'
+					})
 				}
 			},
-			
-			changeHidden(e){
-				if(e == 0){
-					if(this.eyeIcon == 'icon-yanjing_yincang_o'){
-						this.eyeStatus = false
-						this.eyeIcon = 'icon-yanjing_xianshi_o'
-					}else{
+
+			changeHidden(e) {
+				if (e == 0) {
+					if (this.eyeIcon == '/static/image/login/icon_open_eyes.png') {
 						this.eyeStatus = true
-						this.eyeIcon = 'icon-yanjing_yincang_o'
+						this.eyeIcon = '/static/image/login/icon_close_eyes.png'
+					} else {
+						this.eyeStatus = false
+						this.eyeIcon = '/static/image/login/icon_open_eyes.png'
 					}
-				}else{
-					if(this.eyeIcon1 == 'icon-yanjing_yincang_o'){
-						this.eyeStatus1 = false
-						this.eyeIcon1 = 'icon-yanjing_xianshi_o'
-					}else{
+				} else {
+					if (this.eyeIcon1 == '/static/image/login/icon_open_eyes.png') {
 						this.eyeStatus1 = true
-						this.eyeIcon1 = 'icon-yanjing_yincang_o'
+						this.eyeIcon1 = '/static/image/login/icon_close_eyes.png'
+					} else {
+						this.eyeStatus1 = false
+						this.eyeIcon1 = '/static/image/login/icon_open_eyes.png'
 					}
 				}
-				
+
 			},
-			
-			navToMobile(){
+
+			navToMobile() {
 				uni.redirectTo({
-				    url: '/pages/login/mobile'
+					url: '/pages/login/mobile'
 				})
 			},
 		}
@@ -94,12 +97,12 @@
 </script>
 
 <style lang="scss" scoped>
-	button{
-		&:after{
+	button {
+		&:after {
 			border: none;
 		}
 	}
-	
+
 	.bgImg {
 		position: absolute;
 		top: 0;
@@ -147,9 +150,11 @@
 		position: absolute;
 		left: 30rpx;
 		top: 50%;
-		margin-top: -18rpx;
+		margin-top: -20rpx;
+		width: 40rpx;
+		height: 40rpx;
 	}
-	
+
 	.codeBtn {
 		margin-top: 60rpx;
 		line-height: 102rpx;

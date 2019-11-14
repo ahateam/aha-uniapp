@@ -3,7 +3,7 @@
 		<navBar :back="false" class="navBox">
 			<view slot="left" class="iconfont icon-fanhui backIcon" @click="navBack"></view>
 			<view slot="right" class="rightNav">
-				<text class="iconfont icon-xing navMargin"></text>
+				<text class="iconfont icon-xing navMargin" :class="{isfavorite:isfavorite}" @click="createCollect"></text>
 				<text class="iconfont icon-fenxiang" @click="share"></text>
 			</view>
 		</navBar>
@@ -16,8 +16,8 @@
 				<image :src="item" mode="aspectFill" v-for="(item,index) in imgList" :key="index" :style="index == 2?'margin:0':''"></image>
 			</view>
 			<view class="abilityBox">
-				<view>
-					<text class="iconfont icon-yanjing_xianshi_o"></text>
+				<view class="icon-box">
+					<image src="/static/image/find/icon_llrs.png" mode="aspectFit"></image>
 					<text class="iconText">{{watchNumber}}</text>
 				</view>
 
@@ -41,9 +41,9 @@
 			</view>
 			<view v-if="commentList.length == 0&&commentApi" class="noCommentBox">
 				<view class="noComIcon">
-					<image src="/static/image/noCom.png" mode="aspectFit"></image>
+					<image src="/static/image/find/bg-ly.png" mode="aspectFit"></image>
 					<view class="noComText">
-						来当第一个发言的人吧
+						爱我就留言，不用跪榴莲。
 					</view>
 				</view>
 			</view>
@@ -82,6 +82,8 @@
 			return {
 				opacity: 'opacity: 0',
 
+				id: '', //文章id
+
 				// 评论分页
 				commentApi: false, //是否返回数据
 				count: 10,
@@ -108,6 +110,9 @@
 
 				sheetStatus: false,
 				money: 5, //打赏价格
+
+				//收藏
+				isfavorite: false, //是否收藏
 			}
 		},
 
@@ -124,7 +129,7 @@
 			let cnt1 = {
 				ownerId: this.id, // Long 帖子id
 				userId: uni.getStorageSync('userId'), // Long 当前用户id
-				sort: true, // Boolean 是否排序
+				orderDesc: true, // Boolean 是否排序
 				count: this.count, // int 
 				offset: this.offset, // int 
 			}
@@ -132,13 +137,60 @@
 		},
 
 		methods: {
+			// 收藏按钮
+			createCollect() {
+				if (this.isfavorite) {
+					this.delUserFavorite()
+				} else {
+					this.createUserFavorite()
+				}
+			},
+
+			// 删除收藏
+			delUserFavorite() {
+				let cnt = {
+					postingId: this.id, // Long 被关注帖子id
+					userId: uni.getStorageSync('userId'), // Long 用户id
+				}
+				this.$api.delUserFavorite(cnt, (res) => {
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						this.isfavorite = false
+					}else{
+						uni.showToast({
+							title:res.data.rm,
+							icon:'none'
+						})
+					}
+				})
+			},
+
+			// 创建收藏
+			createUserFavorite() {
+				let cnt = {
+					postingId: this.id, // Long 被关注帖子id
+					userId: uni.getStorageSync('userId'), // Long 用户id
+				}
+				this.$api.createUserFavorite(cnt, (res) => {
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						this.isfavorite = true
+						uni.showToast({
+							title:'已收藏'
+						})
+					}else{
+						uni.showToast({
+							title:res.data.rm,
+							icon:'none'
+						})
+					}
+				})
+			},
+			
 			createAppraise() {
 				if (this.isAppraise) {
 					this.delAppraise(this.id)
-					return
+				} else {
+					this.createUpvote(this.id)
 				}
-				this.isAppraise = true
-				this.createUpvote(this.id)
 			},
 
 			delAppraise(id, index) {
@@ -165,7 +217,7 @@
 					userId: uni.getStorageSync('userId'), // Long 用户编号
 					value: this.$constData.appraise[0].key //Byte 状态
 				}
-				this.$api.createUpvote(cnt, (res) => {
+				this.$api.createAppraise(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '点赞成功',
@@ -276,7 +328,7 @@
 								name: uni.getStorageSync('userName'),
 								ext: userHead
 							},
-							reply:{
+							reply: {
 								createTime: Math.round(new Date()),
 								text: this.replayText
 							}
@@ -318,8 +370,9 @@
 						this.watchNumber = data.posting.postingPageView
 						this.appraiseCount = data.appraiseCount
 						this.isAppraise = data.isAppraise
-						this.upName = data.posting.name
-						this.upHead = this.$util.tryParseJson(data.posting.ext).userHead
+						this.isfavorite = data.isFavorite
+						this.upName = data.posting.userName
+						this.upHead = data.posting.userHead
 						this.text = data.posting.postingTextDate
 						this.imgList = this.$util.tryParseJson(data.posting.postingDate)
 						this.time = this.getTime(data.posting.postingCreateTime)
@@ -485,22 +538,19 @@
 		color: $group-color-befor;
 		text-align: center;
 		line-height: $group-font;
+	}
 
-		.noComText {
-			margin-top: $group-margin-top;
-		}
-
-		image {
-			height: 102rpx;
-		}
+	.noComText {
+		margin-top: 59rpx;
 	}
 
 	.noComIcon {
-		margin-top: 150rpx;
+		margin-top: 50rpx;
 		width: 100%;
 
 		image {
-			width: 100%;
+			width: 149rpx;
+			height: 196rpx;
 		}
 	}
 
@@ -524,5 +574,20 @@
 
 	.rightNav {
 		margin-right: 50rpx;
+	}
+
+	.icon-box {
+		display: flex;
+		align-items: center;
+
+		image {
+			width: 30rpx;
+			height: 30rpx;
+			margin-right: 10rpx;
+		}
+	}
+
+	.isfavorite {
+		color: #FFB900 !important;
 	}
 </style>

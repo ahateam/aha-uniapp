@@ -67,6 +67,11 @@
 						text: '帮助中心',
 						iconSrc: '/static/image/user/icon_bzzx.png',
 						path: ''
+					},
+					{
+						text: '收藏',
+						iconSrc: '/static/image/user/icon_scdlr.png',
+						path: ''
 					}
 				]
 			}
