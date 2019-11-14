@@ -1,23 +1,28 @@
 <template>
 	<view class="body">
 		<view class="userBox">
-			<image :src="upHead" mode="aspectFill"></image>
+			<image :src="item.posting.userHead" mode="aspectFill"></image>
 			<view class="rightBox">
-				<view>{{upName}}</view>
-				<view class="time">{{time}}</view>
+				<view>{{item.posting.userName}}</view>
+				<view class="time">{{newTime(item.posting.postingCreateTime)}}</view>
 			</view>
 		</view>
 		
-		<view class="title">{{title}}</view>
+		<view class="title">{{item.posting.postingTextDate}}</view>
 	</view>
 </template>
 
 <script>
 	export default {
-		props: ['title', 'upName', 'time', 'type','upHead'],
+		props: ['item','title', 'upName', 'time', 'type','upHead'],
 		data() {
 			return {
 				
+			}
+		},
+		methods:{
+			newTime(time){
+				return this.$commen.getNewDate(time)
 			}
 		}
 	}

@@ -128,7 +128,7 @@
 				count: this.count, // int 
 				offset: this.offset, // int 
 			}
-			this.getReplys(cnt1)
+			this.getReplyList(cnt1)
 		},
 
 		methods: {
@@ -329,8 +329,8 @@
 				})
 			},
 
-			getReplys(cnt) {
-				this.$api.getReplys(cnt, (res) => {
+			getReplyList(cnt) {
+				this.$api.getReplyList(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.commentApi = true
 						this.commentList = this.$util.tryParseJson(res.data.c)

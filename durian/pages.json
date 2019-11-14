@@ -2,9 +2,7 @@
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/index/index",
-			"style": {
-
-			}
+			"style": {}
 		},
 		{
 			"path": "pages/login/mobile",
@@ -69,7 +67,9 @@
 			"style": {}
 		}, {
 			"path": "pages/user/user",
-			"style": {}
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}, {
 			"path": "pages/shop/addGoods/addGoods",
 			"style": {
@@ -80,23 +80,48 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
+		}, {
+			"path": "pages/shop/goodsInfo/exchange/exchange",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/shop/goodsInfo/buyGoods/buyGoods",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/index/consult/consult",
+			"style": {}
+		}, {
+			"path": "pages/login/choicePort/choicePort",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/user/userData/userData",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/login/interest/interest",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/user/userSafe/userSafe",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/user/userSafe/setNewPass/setNewPass",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}
-	    ,{
-            "path" : "pages/shop/goodsInfo/exchange/exchange",
-            "style" : {
-				"navigationStyle": "custom"
-			}
-        }
-        ,{
-            "path" : "pages/shop/goodsInfo/buyGoods/buyGoods",
-            "style" : {
-				"navigationStyle": "custom"
-			}
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#FFFFFF",
 		"backgroundColor": "#FFFFFF"
 	},

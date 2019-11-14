@@ -1,15 +1,16 @@
 <template>
 	<view class="body">
-		<view class="topBox">
+		<view class="topBox auto-margin">
 			<view class="title_box">
 				发现
 			</view>
 			<view class="searchBox" @click="navToAdd">
-				<text class="iconfont icon-xie searchIcon"></text>
-				<text class="iconText" style="vertical-align: bottom;">发帖</text>
+				<text class="iconfont icon-iconfonticonfontsousuo1 searchIcon"></text>
+				<text class="iconText" style="vertical-align: bottom;">发现新鲜事</text>
 			</view>
 		</view>
-		<view class="navBox">
+		<!-- 导航栏 -->
+		<view class="navBox auto-margin">
 			<view class="navList" v-for="(item,index) in navList" :key="index" :style="index==1?'margin-right:0;':''" @click="changeNav(index)">
 				<image :src="item.imgSrc" mode="aspectFill"></image>
 				<view class="mask" :class="{displayBox:index == navCurrtent}"></view>
@@ -17,31 +18,26 @@
 					{{item.name}}
 				</view>
 				<!-- 選中样式 -->
-				<view class="beforCurr" :class="{displayBox:index == navCurrtent}"></view>
 				<view class="currNav" :class="{displayBox:index == navCurrtent}">
-					<text>√</text>
+					<image src="/static/image/find/icon_xt.png" mode="aspectFit"></image>
 				</view>
 				<!-- the end -->
 			</view>
 		</view>
-
-		<view class="tagBox">
-			<view class="tagsList" :class="{currTag:index == navList[navCurrtent].tagCurrtent}" v-for="(item,index) in navList[navCurrtent].tagList" :key="index" :style="index != 0?'margin-left:30rpx':''"
-			 @click="changeTag(index)">{{item.name}}</view>
+		
+		<!-- 标签栏 -->
+		<view class="tagBox auto-margin">
+			<view class="tagsList" :class="{currTag:index == navList[navCurrtent].tagCurrtent}" v-for="(item,index) in navList[navCurrtent].tagList"
+			 :key="index" :style="index != 0?'margin-left:30rpx':''" @click="changeTag(index)">{{item.name}}</view>
 		</view>
 
 		<view>
 			<view class="listBox" :class="{autoList:index != 0}" v-for="(item,index) in contentList" :key="index" @click="navToContent(item)">
-				<rightVideo :title="item.posting.postingTextDate" :upName="item.posting.name" :upHead="JSON.parse(item.posting.ext).userHead"
-				 :imgSrc="JSON.parse(item.posting.postingDate)[0]" :time="newTime(item.posting.postingCreateTime)" :type="item.posting.postingType"
-				 v-if="item.posting.postingType == constData.groupType[3].key"></rightVideo>
+				<trans-video :item="item"></trans-video>
 
-				<rightVideo :title="item.posting.postingTextDate" :upName="item.posting.name" :upHead="JSON.parse(item.posting.ext).userHead"
-				 :imgSrc="JSON.parse(item.posting.postingDate)[0]" :time="newTime(item.posting.postingCreateTime)" :type="item.posting.postingType"
-				 v-if="item.posting.postingType == constData.groupType[1].key" :listLength="JSON.parse(item.posting.postingDate).length"></rightVideo>
+				<!-- <right-video v-if="item.posting.postingType == constData.groupType[1].key" :item="item" :listLength="JSON.parse(item.posting.postingDate).length"></right-video>
 
-				<onlyText :title="item.posting.postingTextDate" :upName="item.posting.name" :upHead="JSON.parse(item.posting.ext).userHead"
-				 :time="newTime(item.posting.postingCreateTime)" v-if="item.posting.postingType == constData.groupType[0].key"></onlyText>
+				<only-text :item="item" v-if="item.posting.postingType == constData.groupType[0].key"></only-text> -->
 
 				<view class="abilityBox">
 					<view>
@@ -61,16 +57,20 @@
 				</view>
 			</view>
 		</view>
+
 	</view>
 </template>
 
 <script>
 	import rightVideo from '@/components/find/rightVideo.vue'
+	import transVideo from '@/components/find/TransVideo.vue'
 	import onlyText from '@/components/find/onlyText.vue'
+	
 
 	export default {
 		components: {
 			rightVideo,
+			transVideo,
 			onlyText
 		},
 		data() {
@@ -82,19 +82,19 @@
 
 				navList: [{
 						name: '校内向外',
-						imgSrc: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg',
+						imgSrc: '/static/image/find/bg_xnxw.png',
 						tagList: [{
 								name: '只看校内'
 							},
 							{
-								name:'只看校外'
+								name: '只看校外'
 							}
 						],
-						tagCurrtent:0,
+						tagCurrtent: 0,
 					},
 					{
 						name: '热点',
-						imgSrc: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg',
+						imgSrc: '/static/image/find/bg_rd.png',
 						tagList: [{
 								name: '最新'
 							},
@@ -102,7 +102,7 @@
 								name: '精选'
 							}
 						],
-						tagCurrtent:0,
+						tagCurrtent: 0,
 					}
 				],
 				navCurrtent: 0,
@@ -126,7 +126,7 @@
 				count: this.count, // int 
 				offset: this.offset, // int
 			}
-			this.getContentsByUser(cnt)
+			this.getPostingList(cnt)
 		},
 
 		methods: {
@@ -230,11 +230,7 @@
 			},
 
 			newTime(time) {
-				let newData = new Date(time)
-				let y = newData.getFullYear()
-				let m = newData.getMonth() * 1 + 1
-				let d = newData.getDate()
-				return `${y}-${m}-${d}`
+				return this.$commen.getNewDate(time)
 			},
 			navToContent(item) {
 				if (item.posting.postingType == this.$constData.groupType[3].key) {
@@ -249,7 +245,7 @@
 
 			},
 
-			getContentsByUser(cnt) {
+			getPostingList(cnt) {
 				this.$api.getPostingList(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.contentList = this.$util.tryParseJson(res.data.c)
@@ -268,14 +264,14 @@
 	// 	font-family: 'appleFont';
 	// 	src: url('~@/static/font/appleFont.ttf'), ;
 	// }
-
-	.body {
+	.auto-margin{
 		padding: 0 $group-margin-left;
-		// font-family: 'appleFont';
 	}
 
 	.topBox {
-		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 
 	.title_box {
@@ -286,16 +282,16 @@
 	}
 
 	.searchBox {
-		position: absolute;
-		right: 0;
-		top: $group-margin-s;
-		height: $group-font-big;
+		width: 231rpx;
+		line-height: 40rpx;
 		box-sizing: border-box;
 		display: inline-block;
-		font-size: $group-font;
-		color: $group-color-curr;
-		overflow: hidden;
-		padding: 7rpx 20rpx;
+		padding: 10rpx 20rpx;
+		background-color: $group-color-search;
+		border-radius: 4rpx;
+		font-size: 28rpx;
+		color: $group-color-befor;
+		
 
 		.searchIcon {
 			font-size: $group-font;
@@ -312,7 +308,6 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
-		width: 100%;
 		height: 120rpx;
 		margin-top: 34rpx;
 		margin-bottom: 24rpx;
@@ -349,21 +344,13 @@
 		position: absolute;
 		right: $group-margin-s;
 		top: -5rpx;
-		background-color: #FFF8E5;
-		border-radius: 0 4rpx 16rpx 16rpx;
-		overflow: hidden;
 		width: 40rpx;
 		height: 40rpx;
-		text-align: center;
-		font-weight: bold;
 		transition: all 0.3s;
 		opacity: 0;
-
-		text {
-			display: block;
-			font-size: 22rpx;
-			color: #587685;
-			line-height: 40rpx;
+		image{
+			width: 100%;
+			height: 100%;
 		}
 	}
 
@@ -388,11 +375,11 @@
 	}
 
 	.listBox {
-		padding: $group-margin-top 0;
+		padding: $group-margin-top $group-margin-left;
 	}
 
 	.autoList {
-		border-top: 1rpx rgba($color: $group-color-border, $alpha: 0.8) solid;
+		border-top: 20rpx rgba($color: $group-color-border, $alpha: 0.8) solid;
 	}
 
 	.abilityBox {
@@ -400,7 +387,7 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
-		margin-top: 40rpx;
+		margin-top: 16rpx;
 		font-size: $group-font;
 		color: $group-color-befor;
 	}
@@ -426,18 +413,32 @@
 	}
 
 	.tagsList {
-		// flex: 1;
+		position: relative;
 		font-size: $group-font-befor;
 		line-height: $group-font-befor-line;
-		color: $group-color-curr;
+		color: #333333;
 		padding: 4rpx 20rpx;
-		transition: all 0.3s;
-		border: 1rpx solid $group-color-curr;
-		border-radius: 25rpx;
+		padding-bottom: 26rpx;
+		
+		&:after{
+			content: '';
+			position: absolute;
+			left: 50%;
+			bottom: 0;
+			transition: all 0.3s;
+			width: 0;
+			height: 0;
+			margin-left: -10rpx;
+			transition: all .3;
+			background-color: #24D4D0;
+			border-radius: 25rpx;
+		}
 	}
 
 	.currTag {
-		color: $group-color-w;
-		background-color: $group-color-curr;
+		&:after{
+			width: 20rpx;
+			height: 6rpx;
+		}
 	}
 </style>

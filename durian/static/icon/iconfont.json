@@ -6,6 +6,13 @@
   "description": "澳洲留学-榴莲项目",
   "glyphs": [
     {
+      "icon_id": "584245",
+      "name": "搜索",
+      "font_class": "iconfonticonfontsousuo1",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
       "icon_id": "871628",
       "name": "微信",
       "font_class": "wechat",
@@ -25,6 +32,13 @@
       "font_class": "xing1",
       "unicode": "e60b",
       "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "1517637",
+      "name": "关闭",
+      "font_class": "guanbi",
+      "unicode": "e654",
+      "unicode_decimal": 58964
     },
     {
       "icon_id": "2098754",

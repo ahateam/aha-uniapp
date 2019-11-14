@@ -4,7 +4,7 @@ const constData = {}
 
 constData.oss = 'http://durian-oss.oss-cn-hangzhou.aliyuncs.com'
 
-constData.module = 1170
+constData.module = 1190
 
 /* 帖子变量 */
 constData.groupType = [{
@@ -25,5 +25,7 @@ constData.groupType = [{
 		}
 	]
 /* end */
+
+
 
 export default constData
