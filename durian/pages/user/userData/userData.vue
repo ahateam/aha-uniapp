@@ -6,15 +6,15 @@
 		</nav-bar>
 		<view style="padding-top: 64px;"></view>
 
-		<view class="head-box">
-			<view class="head-change">
+		<view class="head-box" @click="upLoadImg">
+			<view class="head-change" v-if="headSrc == ''">
 				<image src="/static/image/user/icon_xj.png" mode="aspectFit"></image>
 			</view>
+			<image class="head-img" :src="headSrc" mode="aspectFill" v-else></image>
 			<view class="head-text">更换头像</view>
 		</view>
 
 		<view class="content-List">
-
 			<view class="content-box" @click="showName = true">
 				<view class="left-box">昵称</view>
 				<view class="right-box">
@@ -39,7 +39,7 @@
 				</view>
 			</view>
 
-			<view class="content-box">
+			<view class="content-box" @click="showSchoolBox">
 				<view class="left-box">所在学校</view>
 				<view class="right-box">
 					<text>{{school}}</text>
@@ -50,17 +50,25 @@
 			<view class="content-box">
 				<view class="left-box">注册手机号</view>
 				<view class="right-box">
-					<text>{{tel}}</text>
+					<text>+{{tel}}</text>
 					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
 
 			<uni-popup :show="showName" type="bottom" :mask-click="true" @change="change">
 				<view class="name-input">
-					<input type="text" v-model="newName" />
+					<input type="text" v-model="newName" placeholder="请输入昵称" />
+					<button class="name-btn" @click="changeName">确定</button>
 				</view>
 			</uni-popup>
-			
+
+			<uni-popup :show="showSchool" type="bottom" :mask-click="true" @change="change">
+				<view class="name-input">
+					<input type="text" v-model="newSchool" placeholder="请输入学校名" />
+					<button class="name-btn" @click="changeSchool">确定</button>
+				</view>
+			</uni-popup>
+
 			<uni-popup :show="showSex" type="bottom" :mask-click="true" @change="change">
 				<view class="sex-list">
 					<view class="sex-border" @click="choiceSex(1)">男</view>
@@ -68,7 +76,8 @@
 				</view>
 			</uni-popup>
 
-			<sen-set-picker ref="setpicker" @colseBox="quxiaobutton" :shixian="shixian" @quxiaoButton="quxiaobutton" @quedingButton="quedingbutton"></sen-set-picker>
+			<sen-set-picker ref="setpicker" @colseBox="quxiaobutton" :shixian="shixian" @quxiaoButton="quxiaobutton"
+			 @quedingButton="quedingbutton"></sen-set-picker>
 		</view>
 	</view>
 </template>
@@ -79,31 +88,35 @@
 	import senSetPicker from '@/components/sen-pickerview/picker-view-set.vue'
 
 	export default {
-		name:'userData',
+		name: 'userData',
 		components: {
 			navBar,
 			uniPopup,
 			senSetPicker
 		},
+
 		data() {
 			const currentDate = this.getDate({
 				format: true
 			})
 			return {
-				name: '墨尔本来的鱼',
+				headSrc: '',
+
+				name: uni.getStorageSync('userName'),
 				showName: false,
 				newName: '',
 
-				sex: '男',
+				sex: uni.getStorageSync('userSex'),
 				showSex: false,
 
-				birthday: '1999-10-10',
+				birthday: uni.getStorageSync('userBirthday'),
 				showBirth: false,
 
-				school: '北大青鸟',
+				school: uni.getStorageSync('userSchool'),
 				showSchool: false,
+				newSchool: '',
 
-				tel: '13426885478',
+				tel: uni.getStorageSync('userTel'),
 				showTel: false,
 
 				inputValue: currentDate,
@@ -112,29 +125,103 @@
 
 		},
 		methods: {
-			choiceSex(e){
-				if(e == 0){
+			upLoadImg() {
+				let tiemr = new Date()
+				let address = tiemr.getFullYear() + "" + (tiemr.getMonth() + 1) + "" + tiemr.getDate()
+				address = 'image/' + address + '/'
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['compressed'],
+					sourceType: ['album', 'camera'],
+					success: (res) => {
+						let imageSrc = res.tempFilePaths[0]
+						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
+						let nameStr = address + tiemr.getTime() + str
+						// nameStr =  res.tempFilePaths[0]
+						console.log(nameStr)
+						uni.showLoading({
+							title: '上传中'
+						})
+						this.upLoadOss(imageSrc, nameStr)
+					},
+					fail: (err) => {
+						uni.showToast({
+							title: '已取消',
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			// 上传至oss
+			upLoadOss(imageSrc, nameStr) {
+				uni.uploadFile({
+					url: 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com',
+					filePath: imageSrc,
+					fileType: 'image',
+					name: 'file',
+					formData: {
+						name: nameStr,
+						'key': nameStr,
+						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMi0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+						'OSSAccessKeyId': 'LTAIJ9mYIjuW54Cj',
+						'success_action_status': '200',
+						//让服务端返回200,不然，默认会返回204
+						'signature': 'kgQ5n4s0oKpFHp35EI12CuTFvVM=',
+					},
+					success: (res) => {
+						console.log(res)
+						uni.hideLoading()
+						uni.showToast({
+							title: '上传成功',
+							icon: 'success',
+							duration: 1000
+						})
+						//只管这个变量
+						this.headSrc = 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr
+						console.log(this.headSrc)
+					},
+					fail: (err) => {
+						console.log('uploadImage fail', err);
+						uni.showModal({
+							content: err.errMsg,
+							showCancel: false
+						})
+					}
+				})
+			},
+
+			choiceSex(e) {
+				if (e == 0) {
 					this.sex = '女'
-				}else{
+				} else {
 					this.sex = '男'
 				}
 				this.showSex = false
 			},
-			
+
+			showSchoolBox() {
+				this.showSchool = true
+				console.log(this.$refs)
+			},
+
 			change(e) {
 				if (!e.show) {
 					this.showName = false
 					this.showSex = false
+					this.showBirth = false
+					this.showSchool = false
+					this.showTel = false
 				}
 			},
 
 			navBack() {
 				uni.navigateBack()
 			},
-			
-			timeChange: function () {
-					this.$refs.setpicker.confirm(this.inputValue)
-					this.shixian = true;			
+
+			timeChange: function() {
+				this.$refs.setpicker.confirm(this.inputValue)
+				this.shixian = true;
 			},
 			quxiaobutton: function() {
 				this.shixian = false
@@ -145,32 +232,71 @@
 				this.birthday = this.inputValue
 			},
 			getDate(type) {
-				const date = new Date();
-
-				let year = date.getFullYear();
-				let month = date.getMonth() + 1;
-				let day = date.getDate();
+				const date = new Date()
+				let year = date.getFullYear()
+				let month = date.getMonth() + 1
+				let day = date.getDate()
 
 				if (type === 'start') {
-					year = year - 60;
+					year = year - 60
 				} else if (type === 'end') {
-					year = year + 2;
+					year = year + 2
 				} else if (type === 'now') {
-					year = year;
+					year = year
 				}
-				month = month > 9 ? month : '0' + month;;
-				day = day > 9 ? day : '0' + day;
+				month = month > 9 ? month : '0' + month
+				day = day > 9 ? day : '0' + day
 
-				return `${year}-${month}-${day}`;
+				return `${year}-${month}-${day}`
 			},
-			
-			saveData(){
-				uni.switchTab({
-					url:'/pages/user/user'
-				})
-				uni.showToast({
-					title:'保存成功！'
-				})
+
+			saveData() {
+				if (this.name == '') {
+					uni.showToast({
+						title: '请填写你的昵称',
+						icon: 'none'
+					})
+				} else {
+					let cnt = {
+						userId: uni.getStorageSync('userId'), // Long 用户编号
+						userName: this.name, // String 用户名
+						// sex: this.sex, // String 性别
+						// brithday: brithday, // Date 出生年月
+						// school: this.school, // String 学校
+						// accountName: accountName, // String 收款账户名
+						// BsbNumber: BsbNumber, // String BSB号
+						// account: account, // String 收款账户号
+						// email: email, // String 电子邮件
+						// marnNumber: marnNumber, // String MARN号
+						// fierNumber: fierNumber, // String FIER号
+						// naatiNumber: naatiNumber, // String NAATI号
+					}
+					if (this.birthday) {
+						cnt.brithday = `${this.birthday} 00:00:00`
+					}
+
+					if (this.sex) {
+						cnt.sex = this.sex
+					}
+
+					if (this.school) {
+						cnt.school = this.school
+					}
+
+					if (this.headSrc) {
+						cnt.userHead = this.headSrc
+					}
+					
+					
+				}
+
+
+				// uni.switchTab({
+				// 	url: '/pages/user/user'
+				// })
+				// uni.showToast({
+				// 	title: '保存成功！'
+				// })
 			}
 		}
 	}
@@ -255,10 +381,36 @@
 	}
 
 	.name-input {
-		background-color: #FFFFFF;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background-color: #F6F6F6;
+		height: 110rpx;
+		padding: 0 20rpx;
+
+		input {
+			background-color: #fdfdfd;
+			padding: 0 20rpx;
+			height: 80rpx;
+			width: 580rpx;
+		}
 	}
-	
-	.sex-list{
+
+	.name-btn {
+		line-height: 80rpx;
+		padding: 0 15rpx;
+		font-size: $group-font-befor;
+		color: $group-color-w;
+		background-color: #00C8BE;
+		border-radius: 6rpx;
+		margin: 0;
+
+		&:after {
+			border: none;
+		}
+	}
+
+	.sex-list {
 		border-radius: 40rpx 40rpx 0 0;
 		background-color: #FFF;
 		color: #333333;
@@ -266,8 +418,16 @@
 		text-align: center;
 		line-height: 120rpx;
 	}
-	
-	.sex-border{
+
+	.sex-border {
 		border-bottom: 1rpx solid $group-color-border;
+	}
+
+	.head-img {
+		display: block;
+		margin: 0 auto;
+		border-radius: 50%;
+		width: 120rpx;
+		height: 120rpx;
 	}
 </style>

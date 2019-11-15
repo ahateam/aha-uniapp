@@ -10,7 +10,7 @@
 			<textarea v-model="text" placeholder="告诉大家你今天的分享…" />
 			</view>
 		<view class="imgBox">
-			<image @dragstart="drag(event)" :src="item" mode="aspectFill" v-for="(item,index) in imgList" :key="index" :style="(index+1)%3 == 0?'margin-right:0':''"></image>
+			<image :src="item" mode="aspectFill" v-for="(item,index) in imgList" :key="index" :style="(index+1)%3 == 0?'margin-right:0':''"></image>
 			<view class="addImgBtn" @click="openPopup" v-if="imgList.length < 9">
 				<text class="iconfont icon-jia"></text>
 			</view>
@@ -48,9 +48,7 @@
 		data() {
 			return {
 				text:'',
-				imgList:[
-					'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1573693392&di=a324bfbae1fb6ee0d44759eff79e873c&src=http://qiniuimg.qingmang.mobi/image/orion/bfabf2536bb332d84b73ea39e11aa8cf_1200_800.jpeg',
-				],
+				imgList:[],
 				statusName:'公开',
 				showPopup:false,
 				
@@ -80,11 +78,9 @@
 			},
 			
 			changeStatus(){
-				if(this.statusName == '公开'){
-					this.statusName = '仅校友可见'
-				}else{
-					this.statusName = '公开'
-				}
+				uni.navigateTo({
+					url:`./canSee`
+				})
 			},
 			
 			addContent(){
@@ -105,7 +101,7 @@
 				this.$api.createPosting(cnt,(res)=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
 						uni.switchTab({
-							url:'/pages/group/group'
+							url:'/pages/find/find'
 						})
 						uni.showToast({
 							title:'发表成功'
@@ -227,14 +223,14 @@
 	.rightBtn {
 		margin-right: 25rpx;
 		button{
+			line-height: 60rpx;
 			font-size: $group-font-befor;
-			line-height: $group-font-befor-line;
-			padding: 4rpx 20rpx;
 			color: $group-color-w;
-			background-color: $group-color-curr;
 			border-radius: 4rpx;
-			vertical-align: middle;
-			&:after{
+			background-color: #24D4D0;
+			padding: 0 20rpx;
+			
+			&:after {
 				border: none;
 			}
 		}

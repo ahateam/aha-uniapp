@@ -40,14 +40,15 @@
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 
 	export default {
+		name: 'user',
 		components: {
 			navBar
 		},
 		name: 'user',
 		data() {
 			return {
-				imgSrc: 'https://img-blog.csdn.net/20180629153527977?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0OTg1NzE1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70',
-				name: '土耳其的鸟',
+				imgSrc: uni.getStorageSync('userHead'),
+				name: uni.getStorageSync('userName'),
 				contentList: [{
 						text: '我的申请',
 						iconSrc: '/static/image/user/icon_wdsq.png',
@@ -66,7 +67,7 @@
 					{
 						text: '帮助中心',
 						iconSrc: '/static/image/user/icon_bzzx.png',
-						path: ''
+						path: '/pages/user/helpCenter/helpCenter'
 					},
 					{
 						text: '收藏',

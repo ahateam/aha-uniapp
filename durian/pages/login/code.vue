@@ -62,7 +62,6 @@
 						uni.showToast({
 							title: '验证码已发送'
 						})
-
 						this.timer = setInterval(() => {
 							this.num--
 						}, 1000)
@@ -87,6 +86,8 @@
 						uni.setStorageSync('userId',userInfo.userId)
 						uni.setStorageSync('userHead',userInfo.userHead)
 						uni.setStorageSync('userName',userInfo.userName)
+						uni.setStorageSync('userSex',userInfo.sex)
+						uni.setStorageSync('userTel',this.moblie)
 						uni.redirectTo({
 							url:'/pages/login/interest/interest'
 						})

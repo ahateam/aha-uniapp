@@ -71,6 +71,11 @@ api.sendSms = function(cnt, callback) {
 	util.call(baseUrl + '/user/sendSms', cnt, callback)
 }
 
+// 密码 
+api.login = function(cnt, callback) {
+	util.call(baseUrl + '/user/login', cnt, callback)
+}
+
 //绑定手机号
 api.bindingPhone = function(cnt, callback) {
 	util.call(baseUrl + '/user/bindingPhone', cnt, callback)
@@ -86,9 +91,20 @@ api.setPwd = function(cnt, callback) {
 	util.call(baseUrl + '/user/setPwd', cnt, callback)
 }
 
+// 验证码设置密码 
+api.forgetPwd = function(cnt, callback) {
+	util.call(baseUrl + '/user/forgetPwd', cnt, callback)
+}
+
 /* 兴趣 */
- //设置用户兴趣 
- api.setUserInterest = function(cnt, callback) {
- 	util.call(baseUrl + '/user/setUserInterest', cnt, callback)
- }
+//设置用户兴趣 
+api.setUserInterest = function(cnt, callback) {
+	util.call(baseUrl + '/user/setUserInterest', cnt, callback)
+}
+
+/* 用户相关 */
+// 修改用户资料 
+api.updateUser = function(cnt, callback) {
+	util.call(baseUrl + '/user/updateUser', cnt, callback)
+}
 export default api

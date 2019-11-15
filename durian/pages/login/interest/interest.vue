@@ -2,7 +2,7 @@
 	<view>
 		<navBar :back="false" type="transparent" fontColor="#869CA7">
 			<!-- <view slot="right" class="navTitle" @click="navToMobile">免密登录</view> -->
-			<image slot="left" class="back-icon" @click="navBack" src="/static/image/icon/icon_fh.png"></image>
+			<image slot="left" class="back-icon" @click="navBack" src="/static/image/icon/icon_fh.png" mode="aspectFit"></image>
 			<view slot="right" class="next-btn" @click="navHome">跳过</view>
 		</navBar>
 		<view style="padding-top: 64px;"></view>

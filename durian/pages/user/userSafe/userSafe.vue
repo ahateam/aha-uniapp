@@ -22,7 +22,7 @@
 				<switch :checked="wxBindStatus" color="#00C8BE" @change="wxBind" style="transform: scale(0.74,0.78)" />
 			</view>
 		</view>
-		
+
 		<view class="out-login-box">
 			<button class="out-login-btn" @click="outLogin">退出</button>
 		</view>
@@ -48,9 +48,9 @@
 			newTel() {
 				let telData = this.telData
 				if (telData.length == 13) {
-					this.telData = telData.substr(0, telData.length - 6) + '****' + telData.substr(telData.length - 3)
+					this.telData = telData.substr(0, telData.length - 7) + '****' + telData.substr(telData.length - 3)
 				} else {
-					this.telData = telData.substr(0, telData.length - 6) + '****' + telData.substr(telData.length - 2)
+					this.telData = telData.substr(0, telData.length - 7) + '****' + telData.substr(telData.length - 2)
 				}
 			},
 
@@ -62,21 +62,30 @@
 			navBack() {
 				uni.navigateBack()
 			},
+
 			setPass() {
-				uni.navigateTo({
-					url:'/pages/user/userSafe/setNewPass/setNewPass'
-				})
+				let passWord = uni.getStorageSync('userPass')
+				if(passWord){
+					uni.navigateTo({
+						url: '/pages/user/userSafe/setNewPass/setNewPass'
+					})
+				}else{
+					uni.navigateTo({
+						url: '/pages/user/userSafe/setNewPass/noPass'
+					})
+				}
+				
 			},
-			
-			outLogin(){
+
+			outLogin() {
 				uni.clearStorageSync()
 				uni.reLaunch({
-					url:'/pages/login/mobilePassword'
+					url: '/pages/login/mobilePassword'
 				})
 			}
 		},
 		onLoad() {
-			this.telData = '8613445654157'
+			this.telData = uni.getStorageSync('userTel')
 			this.newTel()
 		}
 	}
@@ -129,14 +138,14 @@
 		color: #666666;
 		margin-top: $group-margin-top;
 	}
-	
-	.out-login-box{
+
+	.out-login-box {
 		position: fixed;
 		bottom: 0;
 		padding: 0 40rpx 40rpx;
 	}
-	
-	.out-login-btn{
+
+	.out-login-btn {
 		width: 670rpx;
 		background-color: #00C8BE;
 		line-height: 100rpx;
@@ -144,9 +153,9 @@
 		font-size: 36rpx;
 		border-radius: 6rpx;
 		padding: 0;
-		
-		
-		&:after{
+
+
+		&:after {
 			border: none;
 		}
 	}

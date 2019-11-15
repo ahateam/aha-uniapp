@@ -51,10 +51,10 @@
 			}
 		},
 		methods: {
-			codeFct(res){
+			codeFct(res) {
 				this.areaCode = res
 			},
-			
+
 			login() {
 				if (this.phoneNumber == '') {
 					uni.showToast({
@@ -67,8 +67,27 @@
 						icon: 'none'
 					})
 				} else {
-					uni.reLaunch({
-						url:'/pages/find/find'
+					let cnt = {
+						phone: this.areaCode + this.phoneNumber, // String 手机号
+						pwd: this.passData, // String 密码
+					}
+					this.$api.login(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							let userInfo = this.$util.tryParseJson(res.data.c)
+							uni.setStorageSync('userId', userInfo.userId)
+							uni.setStorageSync('userHead', userInfo.userHead)
+							uni.setStorageSync('userName', userInfo.userName)
+							uni.setStorageSync('userSex', userInfo.sex)
+							uni.setStorageSync('userTel', this.phoneNumber)
+							uni.reLaunch({
+								url: '../index/index'
+							})
+						} else {
+							uni.showToast({
+								title: res.data.rm,
+								icon: 'none'
+							})
+						}
 					})
 				}
 			},

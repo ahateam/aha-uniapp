@@ -88,7 +88,8 @@
 				count: 10,
 				offset: 0,
 				page: 1,
-
+				
+				
 				navList: [{
 						name: '校内向外',
 						imgSrc: '/static/image/find/bg_xnxw.png',
@@ -121,7 +122,6 @@
 		},
 
 		onLoad() {
-			uni.setStorageSync('userId', 4651658961564)
 			let cnt = {
 				moduleId: this.$constData.module, // String 模块
 				sort: true, // boolean 是否倒序
@@ -164,6 +164,11 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.contentList[index].isAppraise = false
 						this.contentList[index].appraiseCount -= 1
+					}else{
+						uni.showToast({
+							title:'网络错误',
+							icon:'none'
+						})
 					}
 				})
 			},
@@ -268,11 +273,29 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.contentList = this.$util.tryParseJson(res.data.c)
 						console.log(this.contentList)
+						uni.stopPullDownRefresh()
 					} else {
 						console.log('error')
 					}
 				})
 			}
+		},
+		onPullDownRefresh() {
+			let cnt = {
+				moduleId: this.$constData.module, // String 模块
+				sort: true, // boolean 是否倒序
+				// type: type, // Byte <选填> 类型
+				// status: status, // Byte <选填> 状态编号
+				// power: power, // Byte <选填> 权力
+				// upUserId: upUserId, // Long <选填> 上传用户编号
+				// upChannelId: upChannelId, // Long <选填> 上传专栏编号
+				// tags: tags, // JSONObject <选填> 标签
+				userId: uni.getStorageSync('userId'), // Long <选填> 当前用户编号
+				count: this.count, // int 
+				offset: this.offset, // int
+			}
+			this.contentList = []
+			this.getPostingList(cnt)
 		}
 	}
 </script>

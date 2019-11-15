@@ -6,15 +6,15 @@
 		<view style="padding-top: 64px;"></view>
 
 		<view v-for="(item,index) in passArr" :key="index">
-			<view class="auto-input auto-margin flex-box" :hidden="index == 0&&!oldPass">
+			<view class="auto-input auto-margin flex-box">
 				<view class="left-title">
 					{{item.name}}
 				</view>
-				<input type="text" v-model="item.value" :placeholder="item.text" />
+				<input type="text" v-model="item.value" :placeholder="item.text" :focus="index == 0" />
 			</view>
 		</view>
 		<view class="auto-margin">
-			<button class="submit-btn">提交</button>
+			<button class="submit-btn" @click="changePass">提交</button>
 		</view>
 	</view>
 </template>
@@ -23,6 +23,7 @@
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 
 	export default {
+		name:'setNewPass',
 		components: {
 			navBar
 		},
@@ -43,17 +44,60 @@
 						text: '请再次输入密码',
 						value: ''
 					}
-				],
-				oldPass: '',
+				]
 			}
 		},
 		methods: {
+			
+			
+			changePass() {
+				if (this.passArr[1].value == '' || this.passArr[2].value == '') {
+					uni.showToast({
+						title: '请输入密码'
+					})
+				}else if(this.passArr[1].value.length < 6){
+					uni.showToast({
+						title:'请至少输入六位密码',
+						icon:'none'
+					})
+				} else if (this.passArr[1].value != this.passArr[2].value) {
+					uni.showToast({
+						title: '两次密码不相同'
+					})
+				} else {
+					let cnt = {
+						userId: uni.getStorageSync('userId'), // Long 用户编号
+						pwd: this.passArr[1].value, // String 密码
+						oldPwd: this.passArr[0].value, // String 原密码
+					}
+					this.setPwd(cnt)
+				}
+			},
+
 			navBack() {
 				uni.navigateBack()
-			}
+			},
+			
+			setPwd(cnt){
+				this.$api.setPwd(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						uni.switchTab({
+							url:'/pages/user/user'
+						})
+						uni.showToast({
+							title:'修改密码成功'
+						})
+					}else{
+						uni.showToast({
+							title:res.data.rm,
+							icon:'none'
+						})
+					}
+				})
+			},
 		},
 		onLoad() {
-			this.oldPass = 'zxcas56d432'
+
 		}
 	}
 </script>
