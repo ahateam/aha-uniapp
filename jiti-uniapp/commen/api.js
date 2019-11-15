@@ -198,5 +198,10 @@ api.delMail = function(cnt, callback) {
 api.getExamineById = function(cnt, callback) {
 	util.call(baseUrl + '/org/getExamineById', cnt, callback)
 }
-	
+
+//反馈信息
+api.createFeedback = function(cnt, callback) {
+	util.call(baseUrl + '/customer/createFeedback', cnt, callback)
+}
+
 export default api

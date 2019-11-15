@@ -1,5 +1,10 @@
 <template>
 	<view class="box">
+		<view class="content-box">
+			<view class="title-box">
+				<span>客服联系方式</span>
+			</view>
+		</view>
 		<view class="customer-row" v-if="customer != null">
 			<p class="row">
 				<view class="title">客服姓名:</view>
@@ -23,9 +28,10 @@
 				<view class="content">{{customer.wxNumber}}</view>
 			</p>
 		</view>
-		<navigator url="/pages/customer/feedback" class="content_box">
-				意见反馈
-		</navigator>
+			<view class="content-box"> 
+				<button type="primary" @click="toFeedBack">意见反馈</button>
+					<button type="default" @click="toHome">返回首页</button>
+			</view>
 	</view>
 </template>
 
@@ -37,7 +43,16 @@
 			}
 		},
 		methods: {
-
+			toFeedBack(){
+				uni.navigateTo({
+				    url: './feedback'
+				});
+			},
+			toHome(){
+				uni.switchTab({
+				    url: '/pages/index/index'
+				});
+			}
 		},
 		onLoad() {
 			let cnt = {};
@@ -48,14 +63,16 @@
 	}
 </script>
 
-<style>
+<style lang="scss" scoped>
 	.content_box{
 		position: fixed;
 		bottom: 40rpx;
 		text-align: center;
+		padding: 20rpx 0;
 		width: 100%;
-		color: #404040;
+		color: #fff;
 		font-size: 28rpx;
+		background: $jiti-color-blue;
 	}
 	.box {
 		width: 100%;
@@ -84,5 +101,21 @@
 	.content {
 		padding-left: 20rpx;
 		float: left;
+	}
+	.content-box {
+		width: 94%;
+		margin: 0 auto;
+	}
+	.title-box {
+		margin-top: 20rpx;
+		width: auto;
+		height: 50rpx;
+		color: #fff;
+		font-size: 32rpx;
+		line-height: 50rpx;
+		background: $jiti-color-blue;
+		padding: 20rpx;
+		text-align: center;
+	
 	}
 </style>
