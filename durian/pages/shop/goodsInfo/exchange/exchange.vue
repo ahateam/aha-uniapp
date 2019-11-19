@@ -2,10 +2,10 @@
 	<view class="body">
 		<navBar :back="false" type="transparent" fontColor="#000">
 			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
-			<view class="title-box">商品兑换</view>
+			<view class="title-box">付款成功</view>
 		</navBar>
 		<view style="padding-top: 64px;"></view>
-		<image class="imgBox" src="/static/image/exChange.png" mode="aspectFill"></image>
+		<image class="imgBox" src="/static/image/shop/dhcg.png" mode="aspectFit"></image>
 		<view class="titleText">兑换成功</view>
 		<view class="tipText">可在我的商品中查看哦</view>
 	</view>
@@ -48,16 +48,16 @@
 	}
 	
 	.imgBox{
-		margin-top: 130rpx;
-		width: 216rpx;
-		height: 216rpx;
+		margin-top: 120rpx;
+		width: 233rpx;
+		height: 327rpx;
 	}
 	
 	.titleText{
 		color: #666666;
 		font-size: 40rpx;
 		line-height: 56rpx;
-		margin-top: 134rpx;
+		margin-top: 60rpx;
 	}
 	
 	.tipText{

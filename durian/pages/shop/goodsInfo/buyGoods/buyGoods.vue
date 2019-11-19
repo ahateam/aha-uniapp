@@ -6,15 +6,19 @@
 		</navBar>
 		<view style="padding-top: 64px;"></view>
 		<view class="tipBox">
-			<text class="leftLine"></text>
-			<text>给卖家留个地址个电话吧</text>
-			<text class="rightLine"></text>
+			<image src="/static/image/shop/icon_l.png" mode="aspectFit"></image>
+			<text>请准确填写收货信息</text>
+			<image src="/static/image/shop/icon_r.png" mode="aspectFit"></image>
 		</view>
+
+		<view class="autoTitle" style="margin-top: 50rpx;">收货人</view>
+		<input type="text" class="autoInput" v-model="name" />
 
 		<view class="autoTitle" style="margin-top: 50rpx;">收货地址</view>
 		<input type="text" class="autoInput" v-model="address" />
 
-		<view class="autoTitle">手机号<text class="rightBox">{{newTel()}}</text></view>
+		<view class="autoTitle">手机号</view>
+		<input type="text" class="autoInput" v-model="phone" />
 
 		<view class="autoTitle" style="font-size: 26rpx;">送卖家一句话</view>
 		<input type="text" class="autoInput" v-model="remark" />
@@ -30,13 +34,17 @@
 		components: {
 			navBar
 		},
+
 		data() {
 			return {
+				name: '', //收货人姓名
 				address: '', //地址
 				tel: '18772229999', //电话
 				remark: '', //备注
+				phone: '',
 			}
 		},
+
 		methods: {
 			payMoney() {
 				if (this.address == '') {
@@ -53,21 +61,12 @@
 					})
 				}
 			},
-
-			newTel() {
-				let arr = this.tel.split('')
-				let newNumber = ''
-				for (let i = 0; i < arr.length; i++) {
-					if (i > 3 && i < 8) {
-						arr[i] = '*'
-					}
-					newNumber = newNumber + arr[i]
-				}
-				return newNumber
-			},
 			navBack() {
 				uni.navigateBack()
 			},
+		},
+		onLoad(res) {
+			console.log(res)
 		}
 	}
 </script>
@@ -88,38 +87,13 @@
 	.tipBox {
 		margin-top: 30rpx;
 		font-size: $group-font;
-		color: $group-color-befor;
+		color: #999999;
 		text-align: center;
-	}
 
-	.leftLine,
-	.rightLine {
-		position: relative;
-		border-right: 1rpx solid $group-color-befor;
-		margin: 0 24rpx;
-
-		&:after {
-			content: '';
-			position: absolute;
-			left: -139.5rpx;
-			top: 50%;
-			margin-top: -0.5rpx;
-			width: 140rpx;
-			height: 1rpx;
-			border-bottom: 1px solid;
-			border-image: linear-gradient(to right, rgba($color: #DCE4EB, $alpha: 0), #B6C4D2) 0 0 1;
-		}
-	}
-
-	.rightLine {
-		border: none;
-		border-left: 1rpx solid $group-color-befor;
-
-		&:after {
-			content: '';
-			position: absolute;
-			left: 0;
-			border-image: linear-gradient(to right, #B6C4D2, rgba($color: #DCE4EB, $alpha: 0)) 0 0 1;
+		image {
+			width: 141rpx;
+			height: 16rpx;
+			margin: 0 24rpx;
 		}
 	}
 
@@ -133,7 +107,7 @@
 	}
 
 	.autoInput {
-		margin: 30rpx;
+		margin: 40rpx;
 		margin-bottom: 0;
 		border: 1rpx solid $group-color-befor;
 		border-radius: 6rpx;
@@ -150,15 +124,17 @@
 	}
 
 	.bottomBtn {
+		position: fixed;
+		bottom: 0;
+		width: 100%;
 		display: block;
-		width: 690rpx;
 		font-size: 36rpx;
 		color: $group-color-w;
 		line-height: 102rpx;
-		margin: 0 auto;
-		background-color: $group-color-curr;
+		background-color: #00C8BE;
 		border-radius: 6rpx;
 		margin-top: 100rpx;
+		border-radius: 0;
 
 		&:after {
 			border: none;

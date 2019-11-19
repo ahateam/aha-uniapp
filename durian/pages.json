@@ -77,7 +77,13 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
-		}, {
+		},{
+			"path": "pages/shop/goodsInfo/studyGoods",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}
+		, {
 			"path": "pages/shop/goodsInfo/goodsInfo",
 			"style": {
 				"navigationStyle": "custom"
@@ -142,7 +148,13 @@
 				"navigationStyle": "custom"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/shop/search/search",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",

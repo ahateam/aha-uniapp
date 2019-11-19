@@ -4,7 +4,7 @@
 			<view class="modelSheet" @click.stop="otherClick()">
 				<view class="sheetTitle">购买后不能退货哦</view>
 				<button class="yesBtn" @click="buyBtn">确认</button>
-				<button class="noBtn" @click="offBtn">再想想</button>
+				<button class="offBtn" @click="offBtn">再想想</button>
 			</view>
 		</view>
 	</view>
@@ -18,15 +18,15 @@
 			}
 		},
 		methods: {
-			buyBtn(){
+			buyBtn() {
 				this.$emit('buyGoods')
 				this.$emit('closeCenter')
 			},
-			
-			offBtn(){
+
+			offBtn() {
 				this.$emit('closeCenter')
 			},
-			
+
 			moveHandle() { //阻止蒙版底部的滑动
 				return
 			},
@@ -47,7 +47,7 @@
 		height: 100%;
 		top: 0;
 		left: 0;
-		background: rgba(0, 0, 0, 0.3);
+		background: rgba($color: #010101, $alpha: .4);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -63,32 +63,35 @@
 		justify-content: space-between;
 		flex-wrap: wrap;
 		padding: 70rpx 40rpx 50rpx;
-		
-		button{
+
+		button {
 			width: 250rpx;
 			line-height: 80rpx;
 			border-radius: 6rpx;
-			&:after{
+
+			&:after {
 				border: none;
 			}
 		}
 	}
-	
-	.sheetTitle{
+
+	.sheetTitle {
 		width: 100%;
 		font-size: $group-font-befor;
 		line-height: $group-font-befor-line;
-		color: #666666;
-		margin-bottom: 80rpx;
+		color: #333333;
+		margin-bottom: 90rpx;
 	}
-	
-	.yesBtn{
+
+	.yesBtn {
 		color: $group-color-w;
-		background-color: $group-color-curr;
+		background-color: #00C8BE;
 	}
-	
-	.offBtn{
+
+	.offBtn {
 		color: $group-color-befor;
+		background-color: $group-color-w;
 		border: 1rpx solid $group-color-befor;
+		box-sizing: border-box;
 	}
 </style>
