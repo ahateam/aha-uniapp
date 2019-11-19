@@ -205,8 +205,8 @@
 		margin: 20rpx 0 0 30rpx;
 		display: inline-block;
 		padding: 0 20rpx;
-		background-color: rgba($color: $group-color-curr, $alpha: 0.1);
-		color: $group-color-curr;
+		background-color: rgba(255, 157, 10, 0.1);
+		color: #FFA405;
 		font-size: $group-font;
 		line-height: 60rpx;
 		border-radius: 6rpx;
@@ -220,7 +220,7 @@
 		width: 0;
 		height: 0;
 		border: 10rpx solid;
-		border-color: rgba($color: $group-color-curr, $alpha: 0.1) transparent transparent;
+		border-color: rgba(255, 157, 10, 0.1) transparent transparent;
 		box-sizing: border-box;
 	}
 
