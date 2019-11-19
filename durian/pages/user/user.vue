@@ -91,6 +91,12 @@
 					})
 				}
 			}
+		},
+		onShow() {
+			if (uni.getStorageSync('userId')) {
+				this.name = uni.getStorageSync('userName')
+				this.imgSrc = uni.getStorageSync('userHead')
+			}
 		}
 	}
 </script>

@@ -79,6 +79,8 @@
 							uni.setStorageSync('userName', userInfo.userName)
 							uni.setStorageSync('userSex', userInfo.sex)
 							uni.setStorageSync('userTel', this.phoneNumber)
+							uni.setStorageSync('userSchool', userInfo.school)
+							uni.setStorageSync('userBirthday', userInfo.brithday)
 							uni.reLaunch({
 								url: '../index/index'
 							})

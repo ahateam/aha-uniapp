@@ -109,7 +109,7 @@
 				sex: uni.getStorageSync('userSex'),
 				showSex: false,
 
-				birthday: uni.getStorageSync('userBirthday'),
+				birthday: this.getBirthday(uni.getStorageSync('userBirthday')),
 				showBirth: false,
 
 				school: uni.getStorageSync('userSchool'),
@@ -125,6 +125,20 @@
 
 		},
 		methods: {
+			getBirthday(date) {
+				let time = new Date(date)
+				console.log(time)
+				if (time) {
+					let y = time.getFullYear()
+					let m = time.getMonth() * 1 + 1
+					let d = time.getDate()
+					return `${y}-${m}-${d}`
+				} else {
+					return date
+				}
+
+			},
+
 			upLoadImg() {
 				let tiemr = new Date()
 				let address = tiemr.getFullYear() + "" + (tiemr.getMonth() + 1) + "" + tiemr.getDate()
@@ -189,6 +203,16 @@
 						})
 					}
 				})
+			},
+
+			changeName() {
+				this.name = this.newName
+				this.showName = false
+			},
+
+			changeSchool() {
+				this.school = this.newSchool
+				this.showSchool = false
 			},
 
 			choiceSex(e) {
@@ -286,8 +310,29 @@
 					if (this.headSrc) {
 						cnt.userHead = this.headSrc
 					}
-					
-					
+
+					this.$api.updateUser(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							uni.setStorageSync('userName', this.name)
+							if (this.birthday) {
+								uni.setStorageSync('userBirthday', this.birthday)
+							}
+							if (this.sex) {
+								uni.setStorageSync('userSex', this.sex)
+							}
+							if (this.school) {
+								uni.setStorageSync('userSchool', this.school)
+							}
+							if (this.headSrc) {
+								uni.setStorageSync('userHead', this.headSrc)
+							}
+							uni.switchTab({
+								url: '/pages/user/user'
+							})
+						} else {
+							console.log('error')
+						}
+					})
 				}
 
 
