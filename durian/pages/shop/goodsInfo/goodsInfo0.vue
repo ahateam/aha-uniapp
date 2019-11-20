@@ -1,11 +1,10 @@
 <template>
 	<view>
-		<view class="nav-bar">
-			<view class="iconfont icon-fanhui backBtn" @click="navBack"></view>
-			<view class="nav-title">商品详情</view>
-		</view>
+		<navBar :back="false" type="transparent" fontColor="#000">
+			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
+			<view class="title-box">商品详情</view>
+		</navBar>
 		<view style="padding-top: 64px;"></view>
-
 		<view class="bannerBox">
 			<swiper class="swiper-box" @change="change" autoplay>
 				<swiper-item v-for="(item ,index) in imgList" :key="index">
@@ -16,34 +15,19 @@
 				<view class="swiperDot" v-for="(item,index) in imgList" :key="index" :class="current == index?'currDot':''"></view>
 			</view>
 		</view>
-
-		<view class="title-box">
-			{{title}}
-		</view>
-
-		<view class="price-box">
-			{{price}}
-		</view>
-
-		<view class="border-box"></view>
-
 		<view class="titleBox">
-			<image src="/static/image/shop/icon_spms_l.png" mode="aspectFit"></image>
 			商品描述
-			<image src="/static/image/shop/icon_spms_r.png" mode="aspectFit"></image>
 		</view>
-
-		<view class="infoBox">
+		<view class="infoBox" :style="noMoney?'margin-bottom:120rpx':''">
 			{{text}}
+			<view class="errInfo" v-if="noMoney&&type == 1">您的平台币当前不够兑换以上商品，还需加把劲哦！</view>
 		</view>
 
-		<view class="bottom-box">
-			<button class="left-btn">
-				<image class="mes-icon" src="/static/image/icon/icon-mes.png" mode="aspectFit"></image>联系卖家
-			</button>
-			<button class="right-btn" @click="buyStatus = !buyStatus">
-				<image class="mes-icon" src="/static/image/icon/icon_shop.png" mode="aspectFit"></image>立即购买
-			</button>
+		<button class="platformBtn" :style="noMoney?'opacity: 0.5':''" v-if="type == 1" @click="exchange">喜欢，立即兑换</button>
+
+		<view class="stuBtns" v-if="type == 0">
+			<button class="topBtn" @click="buyStatus = !buyStatus">立即购买</button>
+			<button class="bottomBtn">联系卖家</button>
 		</view>
 		<sheet :isShow="buyStatus" @closeCenter="buyStatus =! buyStatus" @buyGoods="navToBuy"></sheet>
 	</view>
@@ -60,8 +44,6 @@
 		},
 		data() {
 			return {
-				title: '我是商品名称字数最多显示两行超过打点虽然很少这样的情况但是也需要显示一下…',
-				price: 'AUD 50',
 				type: -1,
 				imgList: [
 					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg',
@@ -80,12 +62,12 @@
 			this.type = res.type
 		},
 		methods: {
-			navToBuy() {
+			navToBuy(){
 				uni.navigateTo({
-					url: '/pages/shop/goodsInfo/buyGoods/buyGoods'
+					url:'/pages/shop/goodsInfo/buyGoods/buyGoods'
 				})
 			},
-
+			
 			showBuyBox() {
 				this.buyStatus = true
 			},
@@ -116,17 +98,6 @@
 </script>
 
 <style lang="scss">
-	.nav-bar {
-		position: fixed;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		background-color: $group-color-w;
-		height: 64px;
-		text-align: center;
-	}
-
 	.backBtn {
 		position: absolute;
 		left: 29rpx;
@@ -134,7 +105,7 @@
 		color: $group-color;
 	}
 
-	.nav-title {
+	.title-box {
 		font-weight: $group-title-weight;
 		font-size: 36rpx;
 	}
@@ -144,77 +115,42 @@
 	}
 
 	.swiper-box {
+		display: block;
 		width: 670rpx;
-		height: 670rpx;
-		margin: 20rpx auto 0;
+		height: 300rpx;
+		margin: 0 auto;
+		margin-top: 30rpx;
 		border-radius: 4rpx;
-		border: 1rpx solid $group-color-befor;
 		overflow: hidden;
 	}
 
 	.dotBox {
 		position: absolute;
 		width: 100%;
-		bottom: 14rpx;
+		top: 280rpx;
 		display: flex;
 		justify-content: center;
 	}
 
 	.swiperDot {
-		width: 8rpx;
-		height: 8rpx;
-		border-radius: 4rpx;
-		background-color: rgba($color: $group-color-w, $alpha: 0.5);
+		width: 6rpx;
+		height: 6rpx;
+		border-radius: 50%;
+		background-color: rgba($color: #FFFFFF, $alpha: 0.8);
 		transition: all .3s;
-		margin-right: 20rpx;
+		margin-right: 10rpx;
 	}
 
 	.currDot {
-		width: 22rpx;
-		background-color: rgba($color: $group-color-w, $alpha: 1.0);
-	}
-
-	.title-box {
-		width: 670rpx;
-		margin: 30rpx auto 0;
-		color: #333333;
-		font-size: 34rpx;
-		line-height: 48rpx;
-
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-		overflow: hidden;
-	}
-
-	.price-box {
-		color: #FFA405;
-		font-size: 30rpx;
-		width: 670rpx;
-		margin: 20rpx auto 0;
-	}
-
-	.border-box {
-		width: 100%;
-		height: 0;
-		border-bottom: 20rpx solid $group-color-search;
-		margin: 30rpx 0;
+		width: 16rpx;
+		background-color: rgba($color: $group-color-curr, $alpha: 1.0);
 	}
 
 	.titleBox {
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		font-size: $group-font-befor;
 		color: $group-color-article;
 		line-height: $group-font-line;
-		margin: 0rpx 40rpx;
-
-		image {
-			width: 141rpx;
-			height: 18rpx;
-			margin: 0 29rpx;
-		}
+		margin: 40rpx 40rpx 0;
 	}
 
 	.infoBox {
@@ -223,21 +159,35 @@
 		font-size: 28rpx;
 		color: #666666;
 		line-height: 40rpx;
-		margin-bottom: 120rpx;
+		margin-bottom: 100rpx;
 	}
 
-	.bottom-box {
+	.platformBtn {
+		display: block;
+		width: 690rpx;
+		font-size: 36rpx;
+		color: $group-color-w;
+		line-height: 102rpx;
+		margin: 0 auto;
+		background-color: $group-color-curr;
+		border-radius: 6rpx;
+
+		&:after {
+			border: none;
+		}
+	}
+
+	.stuBtns {
 		position: fixed;
 		width: 100%;
-		display: flex;
-		bottom: 0rpx;
+		display: block;
+		bottom: 30rpx;
 
 		button {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border-radius: 0;
-			font-size: $group-font-befor;
+			display: block;
+			width: 690rpx;
+			margin: 0 auto;
+			margin-top: 30rpx;
 
 			&:after {
 				border: none;
@@ -245,25 +195,20 @@
 		}
 	}
 
-	.left-btn {
-		width: 300rpx;
-		background-color: $group-color-w;
-		box-sizing: border-box;
-		border-top: 1rpx solid $group-color-search;
-		color: $group-color;
+	.topBtn {
+		background-color: $group-color-curr;
+		border-radius: 6rpx;
+		font-size: 36rpx;
+		color: $group-color-w;
 		line-height: 102rpx;
 	}
 
-	.mes-icon {
-		width: 36rpx;
-		height: 36rpx;
-		margin-right: 14rpx;
-	}
-
-	.right-btn {
-		width: 450rpx;
-		background-color: #00C8BE;
-		color: $group-color-w;
+	.bottomBtn {
+		background-color: rgba($color: #FFFFFF, $alpha: 1);
+		border: 1rpx solid $group-color-befor;
+		border-radius: 6rpx;
+		font-size: 36rpx;
+		color: $group-color-befor;
 		line-height: 102rpx;
 	}
 

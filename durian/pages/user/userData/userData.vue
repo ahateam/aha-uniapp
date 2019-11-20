@@ -50,7 +50,7 @@
 			<view class="content-box">
 				<view class="left-box">注册手机号</view>
 				<view class="right-box">
-					<text>+{{tel}}</text>
+					<text>{{tel}}</text>
 					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
