@@ -77,13 +77,12 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
-		},{
+		}, {
 			"path": "pages/shop/goodsInfo/studyGoods",
 			"style": {
 				"navigationStyle": "custom"
 			}
-		}
-		, {
+		}, {
 			"path": "pages/shop/goodsInfo/goodsInfo",
 			"style": {
 				"navigationStyle": "custom"
@@ -147,14 +146,18 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
-		}
-	    ,{
-            "path" : "pages/shop/search/search",
-            "style" : {
+		}, {
+			"path": "pages/shop/search/search",
+			"style": {
 				"navigationStyle": "custom"
 			}
-        }
-    ],
+		}, {
+			"path": "pages/user/userApply/userApply",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",

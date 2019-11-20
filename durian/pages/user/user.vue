@@ -52,7 +52,7 @@
 				contentList: [{
 						text: '我的申请',
 						iconSrc: '/static/image/user/icon_wdsq.png',
-						path: ''
+						path: '/pages/user/userApply/userApply'
 					},
 					{
 						text: '我的商品',
