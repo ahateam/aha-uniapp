@@ -6,12 +6,12 @@
 			</view>
 		</view>
 		<view class="content-box">
-			<textarea placeholder-style="color:#F76260" placeholder="请输入您宝贵的意见或建议,我们会及时联系并回复您" class="text" v-model="feedbackContent" />
+			<textarea placeholder-style="color:#F76260" placeholder="请输入您宝贵的意见或建议,我们会及时联系并回复您" class="text" style="width: 100%;"  v-model="feedbackContent" />
 			
 			<input class="uni-input text"  placeholder="您的联系手机号" v-model="phone" />
 			
-			<button type="primary" @click="createBtn" class="text"> 提交</button>
-						<button type="default" @click="toHome" class="text"> 返回首页</button>
+			<button type="primary" @click="createBtn" style="margin-top: 100rpx;"> 提交</button>
+						<button type="default" @click="toHome" > 返回首页</button>
 		</view>
 	
 		
@@ -71,13 +71,7 @@
 </script>
 
 <style lang="scss" scoped>
-	.fb_input{
-		width: 200rpx;
-	}
-	.box{
-		width: 100%;
-		height: 500rpx;
-	}
+	
 	.content-box {
 		width: 94%;
 		margin: 0 auto;
@@ -96,5 +90,8 @@
 	
 	.text{
 		margin-top: 30rpx;
+		font-size: 28rpx;
+		border-bottom: 1px solid #eee;
+		padding: 20rpx 0;
 	}
 </style>

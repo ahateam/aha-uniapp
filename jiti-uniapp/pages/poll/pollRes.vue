@@ -18,6 +18,10 @@
 				</view>
 
 			</view>
+			<view class="info-status">
+				<view class="info-time-box">投票时间：{{getTimeFliter(pollInfo.startTime)}}—{{getTimeFliter(pollInfo.expiryTime)}}</view>
+				
+			</view>
 			<view class="info-text">
 				应到总人数：{{quorum}} 人，已参投有效人数：{{ticketCount}} 人，已投票数：{{opsNum}}票，其中弃权人数：{{waiver}} 人，未参投人数：{{quorum-ticketCount}} 人
 			</view>
@@ -88,6 +92,13 @@
 						this.getStatus()
 					}
 				})
+			},
+			/** 时间转换*/
+			getTimeFliter(timer){
+				console.log(timer)
+				let dataTime = new Date(timer)
+				let tiemString = dataTime.toLocaleDateString()+ ' '+dataTime.toLocaleTimeString('chinese',{hour12:false})
+				return tiemString
 			},
 			/** 计算投票状态*/
 			getStatus() {
@@ -285,5 +296,9 @@
 		width: auto;
 		margin-top: 40rpx;
 		padding: 40rpx;
+	}
+	.info-time-box{
+		font-size: 24rpx;
+		color: #666;
 	}
 </style>

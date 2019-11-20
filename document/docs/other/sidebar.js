@@ -1,6 +1,6 @@
 module.exports = [
     '/other/caishui',
-
+    '/other/zskp-java',
     // {
     //   title:'项目介绍',
     //   collapsable: true,
