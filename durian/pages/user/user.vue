@@ -25,6 +25,22 @@
 		</view>
 
 		<view class="content-List">
+			<view class="content-box" style="flex-wrap: wrap;" @click="navToView('/pages/user/userApply/userApply')">
+				<view class="left-box">
+					<image class="left-icon" src="/static/image/user/icon_wdsq.png" mode="aspectFill"></image>
+					<text>我的申请</text>
+				</view>
+				<image class="right-icon" src="/static/image/user/icon_enter.png" mode="aspectFill"></image>
+				<view class="apply-info">
+					<view class="apply-text">
+						<view></view>
+						<view></view>
+					</view>
+					<view class="apply-progress">
+						<progress-bar progress_txt="20"></progress-bar>
+					</view>
+				</view>
+			</view>
 			<view class="content-box" v-for="(item,index) in contentList" :key="index" @click="navToView(item.path)">
 				<view class="left-box">
 					<image class="left-icon" :src="item.iconSrc" mode="aspectFill"></image>
@@ -38,11 +54,13 @@
 
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
+	import progressBar from '../../components/chocolate-progress-bar/chocolate-progress-bar.vue'
 
 	export default {
 		name: 'user',
 		components: {
-			navBar
+			navBar,
+			progressBar
 		},
 		name: 'user',
 		data() {
@@ -50,14 +68,9 @@
 				imgSrc: uni.getStorageSync('userHead'),
 				name: uni.getStorageSync('userName'),
 				contentList: [{
-						text: '我的申请',
-						iconSrc: '/static/image/user/icon_wdsq.png',
-						path: '/pages/user/userApply/userApply'
-					},
-					{
 						text: '我的商品',
 						iconSrc: '/static/image/user/icon_wdsp.png',
-						path: ''
+						path: '/pages/user/userShop/userShop'
 					},
 					{
 						text: '账户安全',
@@ -229,5 +242,15 @@
 	.right-icon {
 		width: 22rpx;
 		height: 22rpx;
+	}
+
+	.apply-info {
+		display: flex;
+		align-items: center;
+		width: 596rpx;
+		height: 120rpx;
+		margin:30rpx 0 0 74rpx;
+		background-color: $group-color-search;
+		border: 1rpx solid #CFDCE9 inset;
 	}
 </style>

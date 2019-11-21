@@ -107,4 +107,25 @@ api.setUserInterest = function(cnt, callback) {
 api.updateUser = function(cnt, callback) {
 	util.call(baseUrl + '/user/updateUser', cnt, callback)
 }
+
+/* 商城 */
+// 商品列表 
+api.getGoods = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getGoods', cnt, callback)
+}
+
+// 商品id获取商品 
+api.getByGoodId = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getByGoodId', cnt, callback)
+}
+
+// 发布商品 
+api.createGoods = function(cnt, callback) {
+	util.call(baseUrl + '/goods/createGoods', cnt, callback)
+}
+
+// 下订单 
+api.createDurianOrder = function(cnt, callback) {
+	util.call(baseUrl + '/goods/createDurianOrder', cnt, callback)
+}
 export default api

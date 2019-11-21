@@ -5,15 +5,12 @@
 			<view class="title-box">商品详情</view>
 		</navBar>
 
-		<image :src="!buyStatus?'/static/image/shop/bg_card_b.png':'/static/image/shop/bg_card_y.png'" mode="aspectFill"
-		 class="bg-img"></image>
-
-		<view style="padding-top: 64px;"></view>
+		<image :src="buyStatus?'/static/image/shop/bg_card_y.png':'/static/image/shop/bg_card_b.png'" mode="aspectFill" class="bg-img"></image>
 
 		<view class="banner-box">
 			<swiper class="swiper-box" autoplay @change="change">
 				<swiper-item v-for="(dot,index) in dots" :key="index">
-					<image :src="!buyStatus?'/static/image/shop/card_b.png':'/static/image/shop/card_y.png'" class="swiper-img" mode="aspectFill"></image>
+					<image :src="buyStatus?'/static/image/shop/card_y.png':'/static/image/shop/card_b.png'" class="swiper-img" mode="aspectFit"></image>
 				</swiper-item>
 			</swiper>
 			<view class="swiper-dot">
@@ -35,7 +32,7 @@
 			</view>
 
 			<view class="palt-t" v-if="!buyStatus">
-				<text>亲，平台币还不够，看看帮助中心怎么兑换平台币吧</text>
+				<text>亲，平台币还不够，看看帮助中心怎么兑换平台币吧~</text>
 			</view>
 		</view>
 		<!-- 商品描述 -->
@@ -78,7 +75,6 @@
 		},
 		data() {
 			return {
-				type: -1,
 				imgList: [
 					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg',
 					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg'
@@ -100,25 +96,40 @@
 					name: ''
 				}, {
 					name: ''
-				}]
-
+				}],
 			};
 		},
 		onLoad(res) {
-			this.type = res.type
-			//userMony 定义一个用户的钱数
-			this.changeStatus()
+			// this.id = res.id
+			// let cnt = {
+			// 	goodsId: this.id, // Long 商品id
+			// }
+			// this.getByGoodId(cnt)
 		},
 		methods: {
+			getByGoodId(cnt) {
+				this.$api.getByGoodId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let data = this.$util.tryParseJson(res.data.c)
+						this.title = data.goodsName
+						this.price = data.goodsPrice
+						this.imgList = this.$util.tryParseJson(data.goodsData)
+						this.text = data.goodsDescribe
+						console.log(data)
+					} else {
+						console.log('error')
+					}
+				})
+			},
+			
 			changeStatus() {
-				let userMoney = 20
+				let userMoney = 99
 				//判断用户的钱数是否大于平台币100的数量 大于平台币 true
 				if (this.price > userMoney) {
 					this.buyStatus = false
 				} else {
 					this.buyStatus = true
 				}
-				console.log(this.buyStatus)
 			},
 
 			navToHelp() {
@@ -138,7 +149,6 @@
 			},
 
 			changeBox(e) {
-				console.log(111)
 				if (!e.show) {
 					this.showBox = false
 				}
@@ -266,7 +276,7 @@
 
 	.swiper-img {
 		width: 100%;
-		height: calc(100% + 40rpx);
+		height: 100%;
 		display: block;
 	}
 
@@ -409,7 +419,7 @@
 
 	.banner-box {
 		position: relative;
-		margin-top: 19rpx;
+		padding-top: 148rpx;
 	}
 
 	.center-box {

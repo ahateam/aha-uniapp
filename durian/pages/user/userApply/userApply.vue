@@ -58,7 +58,22 @@
 							{{dataSize}}
 						</view>
 					</view>
-					<image src="/static/image/user/icon_docx@2x.png" mode="scaleToFill"></image>
+					<image src="/static/image/user/icon_docx.png" mode="scaleToFill"></image>
+				</view>
+			</view>
+
+			<view class="pay-hsty-box">
+				<view class="left-title">支付历史</view>
+				<view class="pay-list" v-for="(item,index) in payHstyList">
+					<view class="pay-info-box">
+						<view class="left-line"></view>
+						<view class="pay-title">{{item.title}}</view>
+						<view class="pay-money">{{item.money}}</view>
+					</view>
+					<view class="pay-time-box">
+						<view class="iconfont icon-tupianx"></view>
+						<view>{{item.time}}</view>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -98,7 +113,7 @@
 					}
 				],
 
-				succLine: 9,
+				succLine: 15,
 
 				thingTime: '2019-10-01',
 				thingText: '等待支付学费',
@@ -124,12 +139,17 @@
 				dataName: '我的本科成绩单.Docx',
 				dataSize: '216K',
 
+				payHstyList: [{
+					title: 'Monash大学计算机专业',
+					money: 'AUD 1000',
+					time: '2019-10-9'
+				}]
 			}
 		},
 		methods: {
 			// 支付按钮
 			payBtn() {
-				console.log('點擊支付')
+				this.succLine += 5
 			},
 
 			navBack() {
@@ -222,6 +242,7 @@
 		position: relative;
 		background: linear-gradient(90deg, #FAD961, #FFA405);
 		border-radius: 12.5rpx 0 0 12.5rpx;
+		transition: all .3s;
 	}
 
 	.succ-number {
@@ -374,5 +395,59 @@
 		font-size: 24rpx;
 		color: $group-color-befor;
 		line-height: 20rpx;
+	}
+
+	.pay-hsty-box {
+		padding: 30rpx 30rpx 40rpx;
+	}
+
+	.pay-list {
+		margin-top: 30rpx;
+		padding: 40rpx 0;
+		border: 1rpx solid #F2F5F7;
+		box-shadow: 0 0 15rpx 0 rgba($color: #B6C4D2, $alpha: .4)
+	}
+
+	.pay-info-box {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 40rpx 0 0;
+		line-height: 48rpx;
+	}
+
+	.left-line {
+		position: absolute;
+		left: 0;
+		border-radius: 0 4rpx 4rpx 0;
+		background-color: #00C8BE;
+		width: 5rpx;
+		height: 40rpx;
+	}
+
+	.pay-title {
+		color: #333333;
+		font-size: 34rpx;
+		padding-left: 40rpx;
+	}
+
+	.pay-money {
+		color: #FFA405;
+		font-size: 26rpx;
+	}
+
+	.pay-time-box {
+		display: flex;
+		align-items: center;
+		margin: 30rpx 0 0 40rpx;
+		color: #666666;
+		font-size: 28rpx;
+
+		.iconfont {
+			font-size: 26rpx;
+			color: #B6C4D2;
+			margin-right: 20rpx;
+		}
 	}
 </style>

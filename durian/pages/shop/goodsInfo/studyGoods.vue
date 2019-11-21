@@ -22,7 +22,7 @@
 		</view>
 
 		<view class="price-box">
-			{{price}}
+			<text style="margin-right: 0.3em;">AUD</text>{{price}}
 		</view>
 
 		<view class="border-box"></view>
@@ -60,15 +60,14 @@
 		},
 		data() {
 			return {
-				title: '我是商品名称字数最多显示两行超过打点虽然很少这样的情况但是也需要显示一下…',
-				price: 'AUD 50',
-				type: -1,
-				imgList: [
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg',
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg'
-				],
+				id: '',
+				upId: '',
+
+				title: '',
+				price: '',
+				imgList: [],
 				current: 0,
-				text: '此款面值100澳元的Coles购物卡在奥尔本各大coles及商场可以同面值价格购买。',
+				text: '',
 
 				noMoney: false,
 
@@ -77,12 +76,32 @@
 			};
 		},
 		onLoad(res) {
-			this.type = res.type
+			this.id = res.id
+			let cnt = {
+				goodsId: this.id, // Long 商品id
+			}
+			this.getByGoodId(cnt)
 		},
 		methods: {
+			getByGoodId(cnt) {
+				this.$api.getByGoodId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let data = this.$util.tryParseJson(res.data.c)
+						this.title = data.goodsName
+						this.price = data.goodsPrice
+						this.imgList = this.$util.tryParseJson(data.goodsData)
+						this.text = data.goodsDescribe
+						this.upId = data.senderId
+						console.log(data)
+					} else {
+						console.log('error')
+					}
+				})
+			},
+
 			navToBuy() {
 				uni.navigateTo({
-					url: '/pages/shop/goodsInfo/buyGoods/buyGoods'
+					url: `/pages/shop/goodsInfo/buyGoods/buyGoods?id=${this.id}&upId=${this.upId}&price=${this.price}`
 				})
 			},
 

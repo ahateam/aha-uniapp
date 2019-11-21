@@ -37,6 +37,10 @@
 
 		data() {
 			return {
+				id: '', //商品id
+				price: '', //商品价格
+				upUserId: '', //卖家id
+
 				name: '', //收货人姓名
 				address: '', //地址
 				tel: '18772229999', //电话
@@ -52,21 +56,54 @@
 						title: '请输入地址',
 						icon: 'none'
 					})
-				} else {
-					uni.switchTab({
-						url: '/pages/shop/shop'
-					})
+				} else if (this.name == '') {
 					uni.showToast({
-						title: '购买成功'
+						title: '请输入收货人姓名',
+						icon: 'none'
 					})
+				} else if (this.tel == '') {
+					uni.showToast({
+						title: '请输入收货人电话',
+						icon: 'none'
+					})
+				} else {
+					let cnt = {
+						orderType: this.$constData.orderType[0].key, // Byte 订单类型
+						buyerId: uni.getStorageSync('userId'), // Long 买家id
+						goodsId: this.id, // Long 商品id
+						sellerId: this.upUserId, // Long 卖家id
+						goodsNumber: 1, // Integer 商品数量
+						payment: this.price, // Double 支付金额
+					}
+					this.createDurianOrder(cnt)
 				}
 			},
 			navBack() {
 				uni.navigateBack()
 			},
+
+			createDurianOrder(cnt) {
+				this.$api.createDurianOrder(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url: '/pages/shop/shop'
+						})
+						uni.showToast({
+							title: '下单成功'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			}
 		},
 		onLoad(res) {
-			console.log(res)
+			this.id = res.id
+			this.upUserId = res.upId
+			this.price = res.price
 		}
 	}
 </script>

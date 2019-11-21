@@ -153,14 +153,39 @@
 					})
 				}else{
 					// 发布商品 **************************
-					uni.switchTab({
-						url:'/pages/shop/shop'
-					})
-					uni.showToast({
-						title:'发布成功！'
-					})
+					let cnt = {
+						goodsName: this.title, // String 商品标题
+						senderId: uni.getStorageSync('userId'), // Long 发布者编号
+						goodsType: this.$constData.goodsType[0].key, // Byte 商品类型
+						goodsClassifyId: 402755506127634, // Long 商品分类
+						stock: 1, // Integer 库存
+						goodsPrice: this.money, // Double 商品价格
+						goodsDescribe: this.info, // String 商品描述
+						goodsData: JSON.stringify(this.imgList), // String 商品图片数据
+						// keyword: '学生', // String 商品关键字
+						// isOnline: 1, // Byte 商品是否需要发货
+					}
+					this.createGoods(cnt)
 				}
 			},
+			
+			createGoods(cnt){
+				this.$api.createGoods(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						uni.switchTab({
+							url:'/pages/shop/shop'
+						})
+						uni.showToast({
+							title:'发布成功！'
+						})
+					}else{
+						uni.showToast({
+							title:'发布失败',
+							icon:'none'
+						})
+					}
+				})
+			}
 		}
 	}
 </script>

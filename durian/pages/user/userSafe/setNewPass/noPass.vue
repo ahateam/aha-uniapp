@@ -47,14 +47,14 @@
 		},
 		methods: {
 			submitBtn() {
-				if(this.code.length <4){
+				if (this.code.length < 4) {
 					uni.showToast({
-						title:'请输入正确验证码',
-						icon:'none'
+						title: '请输入正确验证码',
+						icon: 'none'
 					})
-				}else{
+				} else {
 					uni.navigateTo({
-						url:`./setPass?code=${this.code}`
+						url: `./setPass?code=${this.code}`
 					})
 				}
 			},
@@ -85,12 +85,7 @@
 		},
 		onLoad() {
 			let tel = uni.getStorageSync('userTel')
-			console.log(tel)
-			if(tel.length == 13){
-				this.phone = tel.substr(2, tel.length - 9) + '****' + tel.substr(tel.length - 3)
-			}else{
-				this.phone = tel.substr(2, tel.length - 10) + '****' + tel.substr(tel.length - 3)
-			}
+			this.phone = tel.substr(2, tel.length - 9) + '****' + tel.substr(tel.length - 3)
 			this.tel = tel
 		}
 	}

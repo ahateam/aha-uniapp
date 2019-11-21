@@ -1,20 +1,28 @@
 <template>
 	<view>
-		<view class="contentList" :style="type == 0?cardBg:''" v-for="(item,index) in list" :key="index" @click="navToInfo(item)">
+		<view class="contentList" :style="item.goodsType == constData.goodsType[0].key?cardBg:''" v-for="(item,index) in list"
+		 :key="index" @touchstart="change(index,item)" @touchend="change(index,item,true)" @click="navToInfo(item)">
 			<!-- 平台商品背景图片    -->
-			<image v-if="type != 0" class="card-img" :src="type == 1?cardImgSrcY:cardImgSrcB" mode=""></image>
-
+			<image v-if="item.goodsType != constData.goodsType[0].key" class="card-img" :src="item.goodsType == constData.goodsType[1].key?cardImgSrcY:cardImgSrcB"
+			 mode="aspectFill"></image>
+			<image v-if="item.goodsType != constData.goodsType[0].key" class="card-img-tag" :src="item.goodsType == constData.goodsType[1].key?cardImgSrcYbg:cardImgSrcBbg"
+			 mode=""></image>
 			<!-- 标题 -->
-			<view class="titleBox" :style="type == 2?'color:#FFFFFF':''">{{item.title}}</view>
+			<view class="titleBox" :style="item.goodsType == constData.goodsType[2].key?'color:#FFFFFF':''">{{item.goodsName}}</view>
 
 			<!-- 价值 -->
-			<view class="priceBox" :class="type == 2?'card-bg-B':''" :style="type == 1?cardInfo:''">{{item.price}}</view>
+			<view class="priceBox" :class="item.goodsType == constData.goodsType[2].key?'card-bg-B':''" :style="item.goodsType == constData.goodsType[1].key?cardInfo:''">
+				<text v-if="item.goodsType == constData.goodsType[0].key" style="margin-right: 0.3em;">AUD</text>
+				{{item.goodsPrice}}
+			</view>
 
 			<!-- 自由商品图片 -->
-			<image class="stuty-img" :src="item.src" mode="aspectFill" v-if="type == 0"></image>
+			<view class="stuty-img" v-if="item.goodsType == constData.goodsType[0].key">
+				<image :src="getImgSrc(item.goodsData)" mode="aspectFill"></image>
+			</view>
 
 			<!-- 平台商品兑换价格 -->
-			<view class="cardPrice" :style="type == 2?'color:#FFFFFF':''" v-else-if="type != 0">
+			<view class="cardPrice" :style="item.goodsType == constData.goodsType[2].key?'color:#FFFFFF':''" v-else-if="item.goodsType != constData.goodsType[0].key">
 				平台币{{item.cardPrice}}
 			</view>
 		</view>
@@ -23,24 +31,40 @@
 
 <script>
 	export default {
-		props: ['list', 'type'],
+		props: ['list'],
 		data() {
 			return {
 				cardInfo: 'color:#333333;opacity: .5;',
 				cardBg: 'box-shadow: 0 0 15rpx 0 rgba(182, 196, 210, 0.4);border:1rpx solid #CFDCE9',
 				cardImgSrcY: '/static/image/shop/bg_gwk_2.png',
-				cardImgSrcB: '/static/image/shop/bg_gwk_1.png'
+				cardImgSrcYbg: '/static/image/shop/btn_y.png',
+				cardImgSrcB: '/static/image/shop/bg_gwk_1.png',
+				cardImgSrcBbg: '/static/image/shop/btn_g.png',
+				constData: this.$constData
 			}
 		},
 		methods: {
+			getImgSrc(arr) {
+				return this.$util.tryParseJson(arr)[0]
+			},
+
+			change(index, item, e) {
+				if (item.goodsType == this.$constData.goodsType[1].key) {
+					this.$emit('change', index, item.goodsType)
+				}
+				if (item.goodsType == this.$constData.goodsType[2].key) {
+					this.$emit('change', index, item.goodsType)
+				}
+			},
+
 			navToInfo(item) {
-				if (this.type == 0) {
+				if (item.goodsType == this.$constData.goodsType[0].key) {
 					uni.navigateTo({
-						url: '/pages/shop/goodsInfo/studyGoods'
+						url: `/pages/shop/goodsInfo/studyGoods?id=${item.goodsId}`
 					})
 				} else {
 					uni.navigateTo({
-						url: `/pages/shop/goodsInfo/goodsInfo`,
+						url: `/pages/shop/goodsInfo/goodsInfo?id=${item.goodsId}`,
 					})
 				}
 
@@ -67,6 +91,11 @@
 		width: 150rpx;
 		height: 150rpx;
 		border-radius: 6rpx;
+
+		image {
+			width: 100%;
+			height: 100%;
+		}
 	}
 
 	.titleBox {
@@ -81,6 +110,7 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		transition: all .3s;
 	}
 
 	.priceBox {
@@ -88,6 +118,7 @@
 		font-size: $group-font-befor;
 		line-height: $group-font-befor-line;
 		color: #FFA405;
+		transition: all .3s;
 	}
 
 	.cardPrice {
@@ -100,15 +131,23 @@
 		margin-top: -25rpx;
 		color: #FFA405;
 		border-radius: 25rpx;
+		transition: all .3s;
 	}
 
 	.card-img {
 		position: absolute;
-		width: 714rpx;
-		height: 223rpx;
-		top: 50%;
-		margin-top: -111.5rpx;
-		left: -22rpx;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.card-img-tag {
+		position: absolute;
+		right: 0;
+		top: 55rpx;
+		width: 170rpx;
+		height: 60rpx;
 	}
 
 	.card-bg-B {

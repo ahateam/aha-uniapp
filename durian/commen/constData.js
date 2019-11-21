@@ -55,6 +55,34 @@ constData.codeType = [
 	}
 ]
 
+constData.goodsType = [
+	{
+		key:0,
+		val:'自由市场'
+	},
+	{
+		key:1,
+		val:'平台兑换'
+	},
+	{
+		key:2,
+		val:'平台卡片选中'
+	}
+]
 
+constData.orderType = [
+	{
+		key:0,
+		val:'商品'
+	},
+	{
+		key:1,
+		val:'打赏'
+	},
+	{
+		key:2,
+		val:'任务'
+	}
+]
 
 export default constData

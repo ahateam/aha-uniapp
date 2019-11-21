@@ -9,7 +9,10 @@
 
 		<view class="help-title">产品重要功能说明</view>
 		<view class="help-list flex-box" v-for="(item,index) in helpList" :key="index" @click="navToHelp(item.src)">
-			<view>{{item.title}}</view>
+			<view class="flex-box">
+				<image class="left-icon" :src="item.img" mode="aspectFit"></image>
+				<text>{{item.title}}</text>
+			</view>
 			<image class="next-icon" src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 		</view>
 	</view>
@@ -26,12 +29,14 @@
 		data() {
 			return {
 				helpList: [{
-						title: '1、如何获取平台币',
-						src: '/pages/user/helpCenter/'
+						title: '如何获取平台币',
+						src: '/pages/user/helpCenter/',
+						img: '/static/image/user/one.png'
 					},
 					{
-						title: '2、如何跟踪自己的申请',
-						src: '/pages/user/helpCenter/'
+						title: '如何跟踪自己的申请',
+						src: '/pages/user/helpCenter/',
+						img: '/static/image/user/two.png'
 					}
 				]
 			}
@@ -65,9 +70,9 @@
 
 	.help-list {
 		margin: 30rpx 40rpx;
+		padding-right: 30rpx;
 		background-color: $group-color-search;
 		line-height: 100rpx;
-		padding: 0 30rpx 0 20rpx;
 		font-size: $group-font-befor;
 		color: $group-color;
 	}
@@ -81,5 +86,11 @@
 	.next-icon {
 		width: 21rpx;
 		height: 21rpx;
+	}
+
+	.left-icon {
+		height: 100rpx;
+		width: 120rpx;
+		margin-right: 13rpx;
 	}
 </style>

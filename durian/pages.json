@@ -13,7 +13,7 @@
 		{
 			"path": "pages/login/code",
 			"style": {
-
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -66,7 +66,10 @@
 			}
 		}, {
 			"path": "pages/shop/shop",
-			"style": {}
+			"style": {
+				"onReachBottomDistance": 5,
+				"enablePullDownRefresh": true
+			}
 		}, {
 			"path": "pages/user/user",
 			"style": {
@@ -153,6 +156,11 @@
 			}
 		}, {
 			"path": "pages/user/userApply/userApply",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/user/userShop/userShop",
 			"style": {
 				"navigationStyle": "custom"
 			}

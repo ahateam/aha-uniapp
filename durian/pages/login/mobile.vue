@@ -51,10 +51,10 @@
 				if (this.phoneNumber == '') {
 					uni.showToast({
 						title: '请输入手机号',
-						icon:'none'
+						icon: 'none'
 					})
 				} else {
-					uni.navigateTo({
+					uni.reLaunch({
 						url: `./code?tell=${this.areaCode}${this.phoneNumber}`
 					})
 				}

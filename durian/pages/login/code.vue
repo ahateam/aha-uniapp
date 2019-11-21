@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<view class="box" :style="boxBg">
+		<view class="box">
+			<image class="bg-img" src="/static/image/login/codeBG.png" mode="aspectFill"></image>
 			<view class="content-box">
 				<view class="title-box">
 					输入验证码
@@ -33,6 +34,7 @@
 
 <script>
 	import ValidCode from '../../components/code/ValidCode.vue'
+
 	export default {
 		name: 'code',
 		data() {
@@ -83,18 +85,18 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let userInfo = this.$util.tryParseJson(res.data.c)
 						console.log(userInfo)
-						uni.setStorageSync('userId',userInfo.userId)
-						uni.setStorageSync('userHead',userInfo.userHead)
-						uni.setStorageSync('userName',userInfo.userName)
-						uni.setStorageSync('userSex',userInfo.sex)
-						uni.setStorageSync('userTel',this.moblie)
+						uni.setStorageSync('userId', userInfo.userId)
+						uni.setStorageSync('userHead', userInfo.userHead)
+						uni.setStorageSync('userName', userInfo.userName)
+						uni.setStorageSync('userSex', userInfo.sex)
+						uni.setStorageSync('userTel', this.moblie)
 						uni.redirectTo({
-							url:'/pages/login/interest/interest'
+							url: '/pages/login/interest/interest'
 						})
 					} else {
 						uni.showToast({
-							title:res.data.rm,
-							icon:'none'
+							title: res.data.rm,
+							icon: 'none'
 						})
 					}
 				})
@@ -112,14 +114,13 @@
 			}
 		},
 		onLoad(option) {
-			this.boxBg = 'background:url(' + this.$constData.oss + '/image/codeBG.png)'
+			// this.boxBg = 'background:url(' + this.$constData.oss + '/image/codeBG.png)'
 
 			let tell = option.tell
 			this.moblie = tell
 			this.tell = tell.substr(0, tell.length - 6) + '****' + tell.substr(tell.length - 2)
 
 			this.sendBtn()
-
 		}
 
 	}
@@ -207,5 +208,11 @@
 		color: #fff;
 		margin-top: 52rpx;
 		opacity: .5;
+	}
+
+	.bg-img {
+		position: absolute;
+		width: 100%;
+		height: 100vh;
 	}
 </style>
