@@ -10,13 +10,15 @@
 			<textarea v-model="text" placeholder="告诉大家你今天的分享…" />
 			</view>
 		<movable-area class="imgBox">
-			<movable-view direction="all" :out-of-bounds="false" v-for="(item,index) in imgList" :key="index" :style="(index+1)%3 == 0?'margin-right:0':''" @change="moveBox">
-				<image :src="item" mode="aspectFill"></image>
+			<movable-view :data-index="index" direction="all" :out-of-bounds="true" v-for="(item,index) in imgList" :key="index"  :style="(index+1)%3 == 0?'margin-right:0':''" @change="moveBox" @touchend="reSet" :hidden="item == ''">
+				<image class="img-list" :src="item" mode="aspectFill"></image>
 			</movable-view>
 			<view class="addImgBtn" @click="openPopup" v-if="imgList.length < 9">
 				<text class="iconfont icon-jia"></text>
 			</view>
 		</movable-area>
+		
+		<view v-if="delImg">即将删除图片！！！！</view>
 		<view class="functionBox" @click="changeStatus">
 			<text class="leftBox">
 				<text class="iconfont icon-suo"></text>
@@ -42,10 +44,11 @@
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 
+
 	export default {
 		components: {
 			navBar,
-			uniPopup
+			uniPopup,
 		},
 		data() {
 			return {
@@ -68,12 +71,38 @@
 						name:'立拍',
 						type:'camera'
 					}
-				]
+				],
+				
+				delImg:false
 			}
 		},
 		methods:{
 			moveBox(res){
 				console.log(res)
+				let index = res.currentTarget.dataset.index
+				if(res.detail.source == 'out-of-bounds'){
+					this.delImg = false
+					this.imgList.splice(index,1)
+					uni.showToast({
+						title:'已删除该图片',
+						icon:'none'
+					})
+				}else if( res.detail.source == 'touch-out-of-bounds'){
+					this.delImg = true
+				}else if(res.detail.source == 'touch'){
+					this.delImg = false
+				}
+			},
+			
+			reSet(){
+				setTimeout(()=>{
+					this.imgList.splice(this.imgList.length,0,'')
+					console.log(this.imgList)
+					setTimeout(()=> {
+						this.imgList.splice(this.imgList.length - 1 , 1)
+					}, 50)
+				},50)
+				
 			},
 			
 			//弹出层显示
@@ -341,5 +370,9 @@
 	
 	.close-btn{
 		color: #999999;
+	}
+	
+	.img-list{
+		display: inline-block;
 	}
 </style>
