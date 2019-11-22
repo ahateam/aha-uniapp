@@ -6,7 +6,8 @@
 			</view>
 		</view>
 		<view class="contentList">
-			<button class="contentBox" v-for="(item,index) in contentList" :key="index" :style="index%2 == 1?'margin-right:0;':''" @click="navToConsult">
+			<button class="contentBox" v-for="(item,index) in contentList" :key="index" :style="index%2 == 1?'margin-right:0;':''"
+			 @click="navToConsult">
 				{{item.name}}
 			</button>
 		</view>
@@ -56,15 +57,15 @@
 			}
 		},
 		methods: {
-			navToConsult(){
+			navToConsult() {
 				uni.navigateTo({
-					url:'/pages/index/consult/consult'
+					url: '/pages/index/consult/consult'
 				})
 			},
-			
-			navTest(){
+
+			navTest() {
 				uni.navigateTo({
-					url:'/pages/login/choicePort/choicePort'
+					url: '/pages/login/choicePort/choicePort'
 				})
 			}
 		}
@@ -92,8 +93,8 @@
 		margin-top: 25rpx;
 		flex-wrap: wrap;
 		align-items: center;
-		
-		.button-hover{
+
+		.button-hover {
 			background-color: #00C8BE;
 			color: #FFFFFF;
 		}

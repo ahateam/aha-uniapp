@@ -16,7 +16,7 @@
 		<view class="btns-box">
 			<view class="money-box">
 				<image src="/static/image/user/icon_zhaq.png" mode="aspectFill"></image>
-				<text>平台币400</text>
+				<text>平台币{{money}}</text>
 			</view>
 			<view class="editor-box" @click="navToUser">
 				<image src="/static/image/user/icon_xggrxx.png" mode="aspectFill"></image>
@@ -33,11 +33,11 @@
 				<image class="right-icon" src="/static/image/user/icon_enter.png" mode="aspectFill"></image>
 				<view class="apply-info">
 					<view class="apply-text">
-						<view></view>
-						<view></view>
+						<view>{{applyTitle}}</view>
+						<view style="margin-top: 16rpx;">最新进展：<text class="apply-hsty">{{applyHsty}}</text></view>
 					</view>
 					<view class="apply-progress">
-						<progress-bar progress_txt="20"></progress-bar>
+						<progress-bar :progress_txt="hstyNumber"></progress-bar>
 					</view>
 				</view>
 			</view>
@@ -67,6 +67,7 @@
 			return {
 				imgSrc: uni.getStorageSync('userHead'),
 				name: uni.getStorageSync('userName'),
+				money: 0,
 				contentList: [{
 						text: '我的商品',
 						iconSrc: '/static/image/user/icon_wdsp.png',
@@ -87,7 +88,11 @@
 						iconSrc: '/static/image/user/icon_scdlr.png',
 						path: ''
 					}
-				]
+				],
+
+				applyTitle: 'Monash大学计算机专业申请',
+				applyHsty: '签字已提交',
+				hstyNumber: '25'
 			}
 		},
 		methods: {
@@ -247,10 +252,22 @@
 	.apply-info {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		width: 596rpx;
 		height: 120rpx;
-		margin:30rpx 0 0 74rpx;
-		background-color: $group-color-search;
-		border: 1rpx solid #CFDCE9 inset;
+		margin: 30rpx 0 0 74rpx;
+		padding: 0 44rpx 0 24rpx;
+		background-color: rgba($color: $group-color-search, $alpha: .36);
+		border: 1rpx solid rgba($color: #CFDCE9, $alpha: .36);
+	}
+
+	.apply-text {
+		font-size: 24rpx;
+		line-height: 33rpx;
+		color: $group-color;
+	}
+
+	.apply-hsty {
+		color: #00C8BE;
 	}
 </style>

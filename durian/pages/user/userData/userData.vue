@@ -127,7 +127,7 @@
 		methods: {
 			getBirthday(date) {
 				let time = new Date(date)
-				console.log(time)
+				// console.log(time)
 				if (time) {
 					let y = time.getFullYear()
 					let m = time.getMonth() * 1 + 1

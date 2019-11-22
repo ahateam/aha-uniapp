@@ -80,7 +80,7 @@
 		 :usingComponents="true" @result="qrR" />
 		<canvas class="hiddenBox canvasBox" canvas-id="firstCanvas"></canvas>
 		<canvas class="hiddenBox upHeadBox" canvas-id="upHeadCanvas"></canvas>
-
+	
 		<view class="bottom">
 			<view class="input-box">
 				<text class="yticon icon-huifu"></text>

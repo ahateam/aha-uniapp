@@ -8,13 +8,11 @@
 		<!-- 商品列表切换导航 -->
 		<view class="trans">
 			<view class="trans-l" @click="change" :style="!buy?'color:#587685;':'color:#FFFFFF;'">
-				<image :class="buy?'curr-img':'pt-img'" :src="!buy?'/static/image/shop/icon_jyl.png':'/static/image/shop/bg_spqd_p.png'"
-				 mode="scaleToFill"></image>
+				<image class="pt-img" :src="buy?'/static/image/shop/bg_spqd_p.png':'/static/image/shop/icon_jyl.png'" mode="scaleToFill"></image>
 				<text>商品清单</text>
 			</view>
 			<view class="trans-l" style="margin-left: 31rpx;" @click="change" :style="!buy?'color:#FFFFFF;':'color:#587685;'">
-				<image :class="!buy?'curr-img':'pt-img'" :src="!buy?'/static/image/shop/bg_spqd_p.png':'/static/image/shop/icon_jyl.png'"
-				 mode="scaleToFill"></image>
+				<image class="pt-img" :src="buy?'/static/image/shop/icon_jyl.png':'/static/image/shop/bg_spqd_p.png'" mode="scaleToFill"></image>
 				<text>交易历史</text>
 			</view>
 		</view>
@@ -148,16 +146,6 @@
 		color: #B6C4D2;
 
 
-	}
-
-	.curr-img {
-		position: absolute;
-		top: 50%;
-		width: 370rpx;
-		height: 185rpx;
-		margin-top: -92.5rpx;
-		left: 50%;
-		margin-left: -185rpx;
 	}
 
 	.pt-img {

@@ -1,5 +1,7 @@
 <template>
 	<view class="body">
+		<view style="padding-top: 64px;"></view>
+
 		<view class="topBox auto-margin">
 			<view class="title_box">
 				发现
@@ -75,7 +77,6 @@
 	import transVideo from '@/components/find/TransVideo.vue'
 	import onlyText from '@/components/find/onlyText.vue'
 
-
 	export default {
 		components: {
 			ImgBox,
@@ -88,8 +89,8 @@
 				count: 10,
 				offset: 0,
 				page: 1,
-				
-				
+
+
 				navList: [{
 						name: '校内向外',
 						imgSrc: '/static/image/find/bg_xnxw.png',
@@ -117,7 +118,13 @@
 				],
 				navCurrtent: 0,
 
-				contentList: []
+				contentList: [],
+
+				/* 分享 */
+				shareBox: false,
+				shareData: {},
+				shareIndex: 0,
+				/* end */
 			}
 		},
 
@@ -139,6 +146,9 @@
 		},
 
 		methods: {
+			/*二维码*/
+
+
 			navToAdd() {
 				uni.navigateTo({
 					url: '/pages/find/createView/createView'
@@ -164,10 +174,10 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.contentList[index].isAppraise = false
 						this.contentList[index].appraiseCount -= 1
-					}else{
+					} else {
 						uni.showToast({
-							title:'网络错误',
-							icon:'none'
+							title: '网络错误',
+							icon: 'none'
 						})
 					}
 				})
@@ -197,6 +207,17 @@
 			},
 
 			shareBtn(item, index) {
+				this.shareData = item
+				this.shareIndex = index
+
+				uni.navigateTo({
+					url: '/pages/shareView/shareView'
+				})
+			},
+
+			wxShare() {
+				let item = this.shareData
+				let index = this.shareIndex
 				let imgSrc = ''
 				if (item.posting.postingType == this.$constData.groupType[1].key) {
 					imgSrc = item.posting.postingDate[0]
@@ -515,5 +536,11 @@
 			height: 30rpx;
 			margin-right: 10rpx;
 		}
+	}
+
+
+	.hiddenBox {
+		position: absolute;
+		top: -10000px;
 	}
 </style>

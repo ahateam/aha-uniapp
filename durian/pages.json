@@ -47,7 +47,8 @@
 		}, {
 			"path": "pages/find/find",
 			"style": {
-				"enablePullDownRefresh": true
+				"enablePullDownRefresh": true,
+				"navigationStyle": "custom"
 			}
 		}, {
 			"path": "pages/find/videoView/videoView",
@@ -161,6 +162,11 @@
 			}
 		}, {
 			"path": "pages/user/userShop/userShop",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/shareView/shareView",
 			"style": {
 				"navigationStyle": "custom"
 			}

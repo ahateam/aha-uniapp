@@ -9,12 +9,14 @@
 		<view class="textBox">
 			<textarea v-model="text" placeholder="告诉大家你今天的分享…" />
 			</view>
-		<view class="imgBox">
-			<image :src="item" mode="aspectFill" v-for="(item,index) in imgList" :key="index" :style="(index+1)%3 == 0?'margin-right:0':''"></image>
+		<movable-area class="imgBox">
+			<movable-view direction="all" :out-of-bounds="false" v-for="(item,index) in imgList" :key="index" :style="(index+1)%3 == 0?'margin-right:0':''" @change="moveBox">
+				<image :src="item" mode="aspectFill"></image>
+			</movable-view>
 			<view class="addImgBtn" @click="openPopup" v-if="imgList.length < 9">
 				<text class="iconfont icon-jia"></text>
 			</view>
-		</view>
+		</movable-area>
 		<view class="functionBox" @click="changeStatus">
 			<text class="leftBox">
 				<text class="iconfont icon-suo"></text>
@@ -48,7 +50,12 @@
 		data() {
 			return {
 				text:'',
-				imgList:[],
+				imgList:[
+					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574433704351&di=4cf91a007e1dd0415600b94836e5eba1&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1310%2F07%2Fc61%2F27063604_27063604_1381150720096_mthumb.jpg',
+					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574433704351&di=4cf91a007e1dd0415600b94836e5eba1&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1310%2F07%2Fc61%2F27063604_27063604_1381150720096_mthumb.jpg',
+					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574433704351&di=4cf91a007e1dd0415600b94836e5eba1&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1310%2F07%2Fc61%2F27063604_27063604_1381150720096_mthumb.jpg',
+					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574433704351&di=4cf91a007e1dd0415600b94836e5eba1&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1310%2F07%2Fc61%2F27063604_27063604_1381150720096_mthumb.jpg',
+				],
 				statusName:'公开',
 				showPopup:false,
 				
@@ -65,6 +72,10 @@
 			}
 		},
 		methods:{
+			moveBox(res){
+				console.log(res)
+			},
+			
 			//弹出层显示
 			change(e){
 				if (!e.show) {
@@ -248,17 +259,25 @@
 	}
 	
 	.imgBox{
+		width: auto;
+		height: auto;
 		padding: 23rpx 60rpx 0;
 		display: flex;
 		flex-wrap: wrap;
 		// justify-content: space-between;
 		margin-bottom: 170rpx;
 		
-		image{
+		movable-view{
+			position: relative;
 			width: 197rpx;
 			height: 197rpx;
 			margin-right: $group-margin-befor;
 			margin-bottom: $group-margin-befor;
+		}
+		
+		image{
+			width: 197rpx;
+			height: 197rpx;
 			border-radius: 4rpx;
 		}
 	}
