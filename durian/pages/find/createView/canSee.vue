@@ -46,12 +46,16 @@
 				uni.navigateBack()
 			},
 			changeStatus() {
-				
+				uni.setStorageSync('createStatus', this.statusCurr)
+				this.navBack()
 			},
 
 			choiceSee(e) {
 				this.statusCurr = e
 			},
+		},
+		onLoad() {
+			this.statusCurr = uni.getStorageSync('createStatus')
 		}
 	}
 </script>
@@ -105,8 +109,9 @@
 			border: none;
 		}
 	}
-	
-	.nav-title{
-		font-weight: normal;font-size: 36rpx
+
+	.nav-title {
+		font-weight: normal;
+		font-size: 36rpx
 	}
 </style>

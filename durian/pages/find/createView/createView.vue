@@ -1,37 +1,51 @@
 <template>
 	<view>
-		<navBar>
-			<view class="title">发帖</view><text @click="addImg">+++++++++</text>
+		<navBar :back="false">
+			<image slot="left" class="back-icon" @click="navBack" src="/static/image/icon/icon_fh.png" mode="aspectFit"></image>
+			<view class="title">发帖</view>
 			<view slot="right" class="rightBtn">
 				<button type="primary" @click="addContent">发表</button>
 			</view>
 		</navBar>
 
-		<view class="textBox">
-			<textarea v-model="text" placeholder="告诉大家你今天的分享…" />
-			</view>
+		<!-- 解决iphone手机添加图片显示问题 -->
+		<view class="hidden-box">{{imgList[imgList.length-1]}}</view>
+		<!-- end -->
+
 		<movable-area class="imgBox">
-			<movable-view :data-index="index" direction="all" :out-of-bounds="true" v-for="(item,index) in imgList" :key="index"  :style="(index+1)%3 == 0?'margin-right:0':''" @change="moveBox" @touchend="reSet" :hidden="item == '0'">
+			<view class="textBox">
+				<textarea v-model="text" placeholder="告诉大家你今天的分享…" />
+				</view>
+				
+			<movable-view 
+			:class="item == ''?'hidden-box':'pt-view'"
+			:style="isLeftImg(index)?'margin-left:60rpx':''"
+			:data-index="index" 
+			direction="all" 
+			:out-of-bounds="true" 
+			v-for="(item,index) in imgList" 
+			:key="index"  
+			@change="moveBox" 
+			@touchend="reSet" 
+			 >
 				<image class="img-list" :src="item" mode="aspectFill" :style="index == currIndex&&delImg?'opacity: 0.5':''"></image>
 			</movable-view>
-			<view class="addImgBtn" @click="openPopup" v-if="imgList.length < 9">
+			
+			<view class="addImgBtn" :style="isLeftBtn()?'margin-left:60rpx':''" @click="openPopup" v-if="imgList.length < 9">
 				<text class="iconfont icon-jia"></text>
 			</view>
-		</movable-area>
-		
-		<view v-if="delImg">即将删除图片！！！！</view>
-		<view class="functionBox" @click="changeStatus">
-			<text class="leftBox">
-				<text class="iconfont icon-suo"></text>
-				<text>仅校友可见</text>
-			</text>
 			
-			<text class="rightBox">
-				{{statusName}}<text class="iconfont icon-xiayibu"></text>
-			</text>
-		</view>
-		
-		
+			<view class="functionBox" @click="changeStatus">
+				<text class="leftBox">
+					<text class="iconfont icon-suo"></text>
+					<text>仅校友可见</text>
+				</text>
+				
+				<text class="rightBox">
+					{{statusName}}<text class="iconfont icon-xiayibu"></text>
+				</text>
+			</view>
+		</movable-area>
 		<uni-popup class="popup-box" :show="showPopup" type="bottom" mask-click @change="change">
 			<button class="chose-btn" v-for="(item,index) in choseImg" :key="index" @click="addImgs(item.type)">
 				{{item.name}}
@@ -39,6 +53,11 @@
 			<view class="border-box"></view>
 			<button class="close-btn" @click="change">取消</button>
 		</uni-popup>
+		
+		<view class="del-img-tip" v-if="delImgHover">
+			<image src="/static/image/icon/icon_del.png" mode="aspectFit"></image>
+			<view>拖到此处删除</view>
+		</view>
 	</view>
 </template>
 
@@ -64,6 +83,22 @@
 				statusName:'公开',
 				showPopup:false,
 				
+				statusList:[
+					{
+						key:0,
+						val:'公开'
+					},
+					{
+						key:1,
+						val:'仅校内可见'
+					},
+					{
+						key:2,
+						val:'仅校外可见'
+					}
+				],
+				statusIndex:0,
+				
 				choseImg:[
 					{
 						name:'从相册选择',
@@ -76,16 +111,39 @@
 				],
 				
 				delImg:false,
+				delImgHover:false,
+				
 				currIndex:-1,
 			}
 		},
 		methods:{
+			isLeftBtn(){
+				let length = this.imgList.length
+				let imgSrc = this.imgList[length - 1]
+				if(length == 0|| length == 3 && imgSrc!= ''||length == 6 && imgSrc != ''){
+					return true
+				}else if(length == 4 && imgSrc == ''||length == 6 && imgSrc == ''){
+					return true
+				}else{
+					return false
+				}
+			},
+			
 			moveBox(res){
 				this.currIndex = res.currentTarget.dataset.index
+				this.delImgHover = true
 				if( res.detail.source == 'touch-out-of-bounds'){
 					this.delImg = true
 				}else if(res.detail.source == 'touch'){
 					this.delImg = false
+				}
+			},
+			
+			isLeftImg(index){
+				if(index == 0 || index == 3||index == 6){
+					return true
+				}else{
+					return false
 				}
 			},
 			
@@ -95,10 +153,8 @@
 			},
 			
 			reSet(e){
-				// console.log(e)
-				// debugger
 				setTimeout(()=>{
-					this.imgList.splice(this.imgList.length ,0,'0')
+					this.imgList.splice(this.imgList.length ,0,'')
 					setTimeout(()=> {
 						if(this.delImg){
 							let index = e.currentTarget.dataset.index
@@ -109,9 +165,10 @@
 								icon:'none'
 							})
 						}
-						if(this.imgList[this.imgList.length - 1] == '0'){
+						if(this.imgList[this.imgList.length - 1] == ''){
 							this.imgList.splice(this.imgList.length - 1 , 1)
 						}
+						this.delImgHover = false
 						console.log(this.imgList)
 					}, 50)
 				},50)
@@ -255,15 +312,38 @@
 						uni.showModal({
 							content: err.errMsg,
 							showCancel: false
-						});
+						})
 					}
-				});
-			}
+				})
+			},
+			
+			navBack() {
+				uni.navigateBack()
+			},
+		},
+		
+		onLoad() {
+			uni.setStorageSync('createStatus',0)
+		},
+		
+		onShow() {
+			setTimeout(()=>{
+				let status = uni.getStorageSync('createStatus')
+				this.statusIndex = status
+				this.statusName = this.statusList[status].val
+			})
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	.back-icon {
+		width: 33rpx;
+		height: 33rpx;
+		position: absolute;
+		left: 29rpx;
+	}
+	
 	.title{
 		font-size: 36rpx;
 		line-height: 50rpx;
@@ -289,27 +369,32 @@
 	}
 	
 	.textBox{
-		padding: 49rpx 20rpx 0 60rpx;
+		width: 100%;
+		height: 232rpx;
 		font-size: $group-font-befor;
 		line-height: $group-font-line;
 		color: $group-color-article;
 		textarea{
 			width: 100%;
 			height: 160rpx;
+			box-sizing: border-box;
+			padding: 49rpx 20rpx 0 60rpx;
 		}
 	}
 	
 	.imgBox{
 		width: auto;
 		height: auto;
-		margin: 23rpx 60rpx 0;
-		display: flex;
-		flex-wrap: wrap;
+		min-height: calc(100vh - 140rpx - 64px);
+		// padding: 0 60rpx;
+		// display: flex;
+		// flex-wrap: wrap;
+		// align-items: flex-start;
 		// justify-content: space-between;
-		margin-bottom: 170rpx;
 		
 		movable-view{
-			position: relative;
+			// position: relative;
+			display: inline-block;
 			width: 197rpx;
 			height: 197rpx;
 			margin-right: $group-margin-befor;
@@ -323,7 +408,12 @@
 		}
 	}
 	
+	.pt-view{
+		position: relative;
+	}
+	
 	.addImgBtn{
+		display: inline-block;
 		width: 197rpx;
 		height: 197rpx;
 		border-radius: 4rpx;
@@ -331,18 +421,25 @@
 		color: $group-color;
 		line-height: 200rpx;
 		text-align: center;
+		vertical-align: top;
+		
 		.iconfont{
 			font-size: $group-font-big;
 		}
 	}
 	
 	.functionBox{
+		width: 100vw;
+		height: 120rpx;
+		margin-top: 30rpx;
 		border: 1rpx solid rgba($color: $group-color-border, $alpha: 0.8);
 		border-left: none;
 		border-right: none;
 		padding: $group-margin-left $group-margin-left;
 		font-size: $group-font-befor;
 		color: $group-color;
+		box-sizing: border-box;
+		
 		.iconfont{
 			margin-right: $group-margin-top;
 			font-size: $group-font-befor;
@@ -385,7 +482,31 @@
 	}
 	
 	.img-list{
-		display: inline-block;
 		transition: all .3s;
+	}
+	
+	.hidden-box{
+		position: fixed;
+		top: -100vh;
+	}
+	
+	.del-img-tip{
+		position: fixed;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		bottom: 0;
+		width: 100%;
+		height: 140rpx;
+		background-color: rgba($color: #EE455A, $alpha: .9);
+		color: $group-color-w;
+		font-size: $group-font-befor;
+		
+		image{
+			width: 40rpx;
+			height: 40rpx;
+			margin-bottom: 14rpx;
+		}
 	}
 </style>
