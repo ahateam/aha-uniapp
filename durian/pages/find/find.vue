@@ -3,7 +3,7 @@
 		<view style="padding-top: 64px;"></view>
 
 		<view class="topBox auto-margin">
-			<view class="title_box">
+			<view class="title_box" @click="navTest">
 				发现
 			</view>
 			<view class="searchBox" @click="navToAdd">
@@ -203,6 +203,12 @@
 							icon: 'none'
 						})
 					}
+				})
+			},
+
+			navTest() {
+				uni.navigateTo({
+					url: '/pages/shareView/shareView'
 				})
 			},
 

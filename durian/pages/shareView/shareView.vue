@@ -25,7 +25,7 @@
 						<view>{{item.name}}</view>
 					</view>
 				</view>
-				<button class="close-btn">
+				<button class="close-btn" @click="navBack">
 					取消
 				</button>
 			</view>
@@ -91,6 +91,10 @@
 			}
 		},
 		methods: {
+			navBack() {
+				uni.navigateBack()
+			},
+
 			qrR(res) {
 				console.log(res)
 				this.src = res

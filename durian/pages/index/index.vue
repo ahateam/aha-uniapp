@@ -50,6 +50,7 @@
 			}
 		},
 		onLoad() {
+			uni.setStorageSync('userId',1234567890)
 			if (!uni.getStorageSync('userId')) {
 				uni.reLaunch({
 					url: '../login/mobile'

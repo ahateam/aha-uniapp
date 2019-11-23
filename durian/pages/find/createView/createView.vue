@@ -1,17 +1,18 @@
 <template>
 	<view>
 		<navBar>
-			<view class="title">发帖</view>
+			<view class="title">发帖</view><text @click="addImg">+++++++++</text>
 			<view slot="right" class="rightBtn">
 				<button type="primary" @click="addContent">发表</button>
 			</view>
 		</navBar>
+
 		<view class="textBox">
 			<textarea v-model="text" placeholder="告诉大家你今天的分享…" />
 			</view>
 		<movable-area class="imgBox">
-			<movable-view :data-index="index" direction="all" :out-of-bounds="true" v-for="(item,index) in imgList" :key="index"  :style="(index+1)%3 == 0?'margin-right:0':''" @change="moveBox" @touchend="reSet" :hidden="item == ''">
-				<image class="img-list" :src="item" mode="aspectFill"></image>
+			<movable-view :data-index="index" direction="all" :out-of-bounds="true" v-for="(item,index) in imgList" :key="index"  :style="(index+1)%3 == 0?'margin-right:0':''" @change="moveBox" @touchend="reSet" :hidden="item == '0'">
+				<image class="img-list" :src="item" mode="aspectFill" :style="index == currIndex&&delImg?'opacity: 0.5':''"></image>
 			</movable-view>
 			<view class="addImgBtn" @click="openPopup" v-if="imgList.length < 9">
 				<text class="iconfont icon-jia"></text>
@@ -29,6 +30,7 @@
 				{{statusName}}<text class="iconfont icon-xiayibu"></text>
 			</text>
 		</view>
+		
 		
 		<uni-popup class="popup-box" :show="showPopup" type="bottom" mask-click @change="change">
 			<button class="chose-btn" v-for="(item,index) in choseImg" :key="index" @click="addImgs(item.type)">
@@ -48,15 +50,15 @@
 	export default {
 		components: {
 			navBar,
-			uniPopup,
+			uniPopup
 		},
 		data() {
 			return {
 				text:'',
 				imgList:[
+					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574481485225&di=de0ef6dad880523f807387db7adc6cf7&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F3%2F5834044414919.jpg',
 					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574433704351&di=4cf91a007e1dd0415600b94836e5eba1&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1310%2F07%2Fc61%2F27063604_27063604_1381150720096_mthumb.jpg',
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574433704351&di=4cf91a007e1dd0415600b94836e5eba1&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1310%2F07%2Fc61%2F27063604_27063604_1381150720096_mthumb.jpg',
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574433704351&di=4cf91a007e1dd0415600b94836e5eba1&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1310%2F07%2Fc61%2F27063604_27063604_1381150720096_mthumb.jpg',
+					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574481485225&di=de0ef6dad880523f807387db7adc6cf7&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F3%2F5834044414919.jpg',
 					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574433704351&di=4cf91a007e1dd0415600b94836e5eba1&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1310%2F07%2Fc61%2F27063604_27063604_1381150720096_mthumb.jpg',
 				],
 				statusName:'公开',
@@ -73,36 +75,46 @@
 					}
 				],
 				
-				delImg:false
+				delImg:false,
+				currIndex:-1,
 			}
 		},
 		methods:{
 			moveBox(res){
-				console.log(res)
-				let index = res.currentTarget.dataset.index
-				if(res.detail.source == 'out-of-bounds'){
-					this.delImg = false
-					this.imgList.splice(index,1)
-					uni.showToast({
-						title:'已删除该图片',
-						icon:'none'
-					})
-				}else if( res.detail.source == 'touch-out-of-bounds'){
+				this.currIndex = res.currentTarget.dataset.index
+				if( res.detail.source == 'touch-out-of-bounds'){
 					this.delImg = true
 				}else if(res.detail.source == 'touch'){
 					this.delImg = false
 				}
 			},
 			
-			reSet(){
+			addImg(){
+				this.imgList.splice(this.imgList.length , 0,this.imgList[0])
+				this.reSet()
+			},
+			
+			reSet(e){
+				// console.log(e)
+				// debugger
 				setTimeout(()=>{
-					this.imgList.splice(this.imgList.length,0,'')
-					console.log(this.imgList)
+					this.imgList.splice(this.imgList.length ,0,'0')
 					setTimeout(()=> {
-						this.imgList.splice(this.imgList.length - 1 , 1)
+						if(this.delImg){
+							let index = e.currentTarget.dataset.index
+							this.delImg = false
+							this.imgList.splice(index,1)
+							uni.showToast({
+								title:'已删除该图片',
+								icon:'none'
+							})
+						}
+						if(this.imgList[this.imgList.length - 1] == '0'){
+							this.imgList.splice(this.imgList.length - 1 , 1)
+						}
+						console.log(this.imgList)
 					}, 50)
 				},50)
-				
 			},
 			
 			//弹出层显示
@@ -290,7 +302,7 @@
 	.imgBox{
 		width: auto;
 		height: auto;
-		padding: 23rpx 60rpx 0;
+		margin: 23rpx 60rpx 0;
 		display: flex;
 		flex-wrap: wrap;
 		// justify-content: space-between;
@@ -374,5 +386,6 @@
 	
 	.img-list{
 		display: inline-block;
+		transition: all .3s;
 	}
 </style>
