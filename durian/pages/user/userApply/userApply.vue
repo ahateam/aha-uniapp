@@ -37,14 +37,19 @@
 			<view class="auto-box history-box">
 				<view class="left-title" style="line-height: 42rpx;">历史进展</view>
 				<view class="hsty-list">
-					<view class="hsty-item" v-for="(item,index) in historyList" :key="index" :class="index + 1 == historyList.length?'border-none':''"
-					 :style="!item.status?'border-left:1rpx dotted #00C8BE':''">
-						<view class="hsty-dot" :class="!item.status?'curr-dot':''"></view>
-						<view class="hsty-text">{{item.time}}</view>
-						<view class="hsty-text hsty-text-right">{{item.text}}</view>
+					<view class="hsty-item" :class="[{'border-none':index + 1 == historyList.length&&moreStatus},{'border-none':index == 2&&!moreStatus},{'left-dot-border':!item.status}]"
+					 v-for="(item,index) in historyList" :key="index" :hidden="!moreStatus&&index > 2">
+						<view>
+							<view class="hsty-dot" :class="!item.status?'curr-dot':''"></view>
+							<view class="hsty-text">{{item.time}}</view>
+							<view class="hsty-text hsty-text-right">{{item.text}}</view>
+						</view>
 					</view>
 				</view>
-				<button class="more-btn" @click="moreBtn">查看更多</button>
+				<view class="more-box">
+					<button class="more-btn" @click="moreBtn" v-if="!moreStatus">查看更多</button>
+					<button class="more-btn" @click="closeBtn" v-if="moreStatus">收起</button>
+				</view>
 			</view>
 
 			<view class="auto-box data-box">
@@ -64,7 +69,7 @@
 
 			<view class="pay-hsty-box">
 				<view class="left-title">支付历史</view>
-				<view class="pay-list" v-for="(item,index) in payHstyList">
+				<view class="pay-list" v-for="(item,index) in payHstyList" :key="index">
 					<view class="pay-info-box">
 						<view class="left-line"></view>
 						<view class="pay-title">{{item.title}}</view>
@@ -133,8 +138,19 @@
 						time: '2019-10-01',
 						text: '上传材料',
 						status: true
+					},
+					{
+						time: '2019-10-01',
+						text: '上传材料',
+						status: true
+					},
+					{
+						time: '2019-10-01',
+						text: '上传材料',
+						status: true
 					}
 				],
+				moreStatus: false,
 
 				dataName: '我的本科成绩单.Docx',
 				dataSize: '216K',
@@ -147,6 +163,14 @@
 			}
 		},
 		methods: {
+			closeBtn() {
+				this.moreStatus = false
+			},
+
+			moreBtn() {
+				this.moreStatus = true
+			},
+
 			// 支付按钮
 			payBtn() {
 				this.succLine += 5
@@ -350,11 +374,17 @@
 		left: -10rpx;
 	}
 
+	.more-box {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
 	.more-btn {
-		display: block;
+		display: inline-block;
+		padding: 6rpx 28rpx;
 		margin: 50rpx auto 0;
-		width: 160rpx;
-		line-height: 50rpx;
+		line-height: 37rpx;
 		color: $group-color;
 		font-size: 26rpx;
 		border-radius: 25rpx;
@@ -449,5 +479,9 @@
 			color: #B6C4D2;
 			margin-right: 20rpx;
 		}
+	}
+
+	.left-dot-border {
+		border-left: 1rpx dotted #00C8BE;
 	}
 </style>

@@ -128,4 +128,10 @@ api.createGoods = function(cnt, callback) {
 api.createDurianOrder = function(cnt, callback) {
 	util.call(baseUrl + '/goods/createDurianOrder', cnt, callback)
 }
+
+// 根据用户id查询交易订单
+api.getOrderByBuyerId = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getOrderByBuyerId', cnt, callback)
+}
+/* 商城end */
 export default api

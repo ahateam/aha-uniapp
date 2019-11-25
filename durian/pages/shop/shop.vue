@@ -1,5 +1,6 @@
 <template>
 	<view class="body">
+		<view style="padding-top: 64px;"></view>
 		<view v-if="netStatus == 0">
 			<view class="topBox">
 				<view class="title_box">
@@ -21,14 +22,14 @@
 				<image src="/static/image/shop/zwdh.png" mode="aspectFill"></image>
 				<view style="margin-top: 30rpx;">暂无兑换</view>
 			</view>
-			<shopList :list="contentList" @change="change"></shopList>
+			<shopList :list="contentList" @change="change" @emitItem="navToInfo"></shopList>
 
 			<view class="title-box">自由市场</view>
 			<view class="noShop" v-if="studyList.length == 0">
 				<image src="/static/image/shop/zwdh.png" mode="aspectFill"></image>
 				<view style="margin-top: 30rpx;">暂无商品</view>
 			</view>
-			<shopList :list="studyList"></shopList>
+			<shopList :list="studyList" @emitItem="navToInfo"></shopList>
 		</view>
 
 		<view v-if="netStatus == 404" class="error-view">
@@ -107,6 +108,18 @@
 					offset: 0, // Integer 
 				}
 				this.getGoods(cnt)
+			},
+
+			navToInfo(item) {
+				if (item.goodsType == this.$constData.goodsType[0].key) {
+					uni.navigateTo({
+						url: `/pages/shop/goodsInfo/studyGoods?id=${item.goodsId}`
+					})
+				} else {
+					uni.navigateTo({
+						url: `/pages/shop/goodsInfo/goodsInfo?id=${item.goodsId}`,
+					})
+				}
 			},
 
 			navToAdd() {

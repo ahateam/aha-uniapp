@@ -1,5 +1,7 @@
 <template>
 	<view class="body">
+		<view style="padding-top: 64px;"></view>
+
 		<view class="topBox">
 			<view class="title_box" :class="{currNav:navCurrIndex == index}" v-for="(item,index) in navTags" :key="index" :style="index == 0?'margin-right:50rpx':''"
 			 @click="changeNav(index)">
@@ -154,8 +156,8 @@
 		align-items: center;
 		width: 520rpx;
 	}
-	
-	.userNameBox{
+
+	.userNameBox {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -176,8 +178,8 @@
 		white-space: nowrap;
 		width: 520rpx;
 	}
-	
-	.tipMesTag{
+
+	.tipMesTag {
 		display: inline-block;
 		position: absolute;
 		font-size: 20rpx;

@@ -6,33 +6,23 @@
 		},
 		{
 			"path": "pages/login/mobile",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		},
 		{
 			"path": "pages/login/code",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		},
 		{
 			"path": "pages/login/mobilePassword",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		},
 		{
 			"path": "pages/login/resetPhone",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		},
 		{
 			"path": "pages/login/resetPassword",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/login/Treaty/Treaty",
 			"style": {
@@ -47,24 +37,17 @@
 		}, {
 			"path": "pages/find/find",
 			"style": {
-				"enablePullDownRefresh": true,
-				"navigationStyle": "custom"
+				"enablePullDownRefresh": true
 			}
 		}, {
 			"path": "pages/find/videoView/videoView",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/find/imgView/imgView",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/find/createView/createView",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/shop/shop",
 			"style": {
@@ -73,116 +56,109 @@
 			}
 		}, {
 			"path": "pages/user/user",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/shop/addGoods/addGoods",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/shop/goodsInfo/studyGoods",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/shop/goodsInfo/goodsInfo",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/shop/goodsInfo/exchange/exchange",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/shop/goodsInfo/buyGoods/buyGoods",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/index/consult/consult",
 			"style": {}
 		}, {
 			"path": "pages/login/choicePort/choicePort",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/user/userData/userData",
-			"style": {
-				"navigationStyle": "custom"
-			}
+			"style": {}
 		}, {
 			"path": "pages/login/interest/interest",
 			"style": {
-				"navigationStyle": "custom"
+
 			}
 		}, {
 			"path": "pages/user/userSafe/userSafe",
 			"style": {
-				"navigationStyle": "custom"
+
 			}
 		}, {
 			"path": "pages/user/userSafe/setNewPass/setNewPass",
 			"style": {
-				"navigationStyle": "custom"
+
 			}
 		}, {
 			"path": "pages/user/userSafe/setNewPass/noPass",
 			"style": {
-				"navigationStyle": "custom"
+
 			}
 		},
 		{
 			"path": "pages/user/userSafe/setNewPass/setPass",
 			"style": {
-				"navigationStyle": "custom"
+
 			}
 		}, {
 			"path": "pages/user/helpCenter/helpCenter",
 			"style": {
-				"navigationStyle": "custom"
+
 			}
 		}, {
 			"path": "pages/find/createView/canSee",
 			"style": {
-				"navigationStyle": "custom"
+
 			}
 		}, {
 			"path": "pages/shop/search/search",
 			"style": {
-				"navigationStyle": "custom"
+
 			}
 		}, {
 			"path": "pages/user/userApply/userApply",
 			"style": {
-				"navigationStyle": "custom"
+
 			}
 		}, {
 			"path": "pages/user/userShop/userShop",
 			"style": {
-				"navigationStyle": "custom"
+
 			}
 		}, {
 			"path": "pages/shareView/shareView",
 			"style": {
-				"navigationStyle": "custom"
+
+			}
+		}, {
+			"path": "pages/shareView/sharePoster",
+			"style": {
+
+			}
+		}, {
+			"path": "pages/user/userShop/myShop/myShop",
+			"style": {
+
 			}
 		}
 	    ,{
-            "path" : "pages/shareView/sharePoster",
-            "style" : {
-				"navigationStyle": "custom"
-			}
+            "path" : "pages/user/userShop/myGoods/myGoods",
+            "style" : {}
         }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",
 		"navigationBarBackgroundColor": "#FFFFFF",
-		"backgroundColor": "#FFFFFF"
+		"backgroundColor": "#FFFFFF",
+		"navigationStyle": "custom"
 	},
 	"tabBar": {
 		"color": "#587685",

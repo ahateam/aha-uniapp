@@ -58,16 +58,7 @@
 			},
 
 			navToInfo(item) {
-				if (item.goodsType == this.$constData.goodsType[0].key) {
-					uni.navigateTo({
-						url: `/pages/shop/goodsInfo/studyGoods?id=${item.goodsId}`
-					})
-				} else {
-					uni.navigateTo({
-						url: `/pages/shop/goodsInfo/goodsInfo?id=${item.goodsId}`,
-					})
-				}
-
+				this.$emit('emitItem',item)
 			},
 		}
 	}
