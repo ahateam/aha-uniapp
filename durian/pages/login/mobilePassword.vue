@@ -74,13 +74,8 @@
 					this.$api.login(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
 							let userInfo = this.$util.tryParseJson(res.data.c)
-							uni.setStorageSync('userId', userInfo.userId)
-							uni.setStorageSync('userHead', userInfo.userHead)
-							uni.setStorageSync('userName', userInfo.userName)
-							uni.setStorageSync('userSex', userInfo.sex)
-							uni.setStorageSync('userTel', this.phoneNumber)
-							uni.setStorageSync('userSchool', userInfo.school)
-							uni.setStorageSync('userBirthday', userInfo.brithday)
+							console.log(userInfo)
+							uni.setStorageSync('userInfo',JSON.stringify(userInfo))
 							uni.reLaunch({
 								url: '../index/index'
 							})

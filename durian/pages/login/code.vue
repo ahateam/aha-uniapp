@@ -60,6 +60,8 @@
 		methods: {
 			sendSms(cnt) {
 				this.$api.sendSms(cnt, (res) => {
+					console.log(res)
+					console.log('111111')
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '验证码已发送'
@@ -84,12 +86,7 @@
 				this.$api.loginByCode(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let userInfo = this.$util.tryParseJson(res.data.c)
-						console.log(userInfo)
-						uni.setStorageSync('userId', userInfo.userId)
-						uni.setStorageSync('userHead', userInfo.userHead)
-						uni.setStorageSync('userName', userInfo.userName)
-						uni.setStorageSync('userSex', userInfo.sex)
-						uni.setStorageSync('userTel', this.moblie)
+						uni.setStorageSync('userInfo',JSON.string(userInfo))
 						uni.redirectTo({
 							url: '/pages/login/interest/interest'
 						})

@@ -1,3 +1,7 @@
+/** 本地存储变量*/
+// userInfo       登录后的用户信息
+
+
 /**  内部使用常量定义文档*/
 
 const constData = {}
@@ -38,19 +42,19 @@ constData.appraise = [
 
 constData.codeType = [
 	{
-		key:0,
+		key:'0',
 		val:'登录'
 	},
 	{
-		key:1,
+		key:'1',
 		val:'注册'
 	},
 	{
-		key:2,
+		key:'2',
 		val:'重置密码'
 	},
 	{
-		key:3,
+		key:'3',
 		val:'身份验证'
 	}
 ]

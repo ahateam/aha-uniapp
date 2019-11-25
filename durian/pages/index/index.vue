@@ -45,13 +45,15 @@
 					},
 					{
 						name: '商务考察'
-					}
+					},
+					{name:'其他'}
 				]
 			}
 		},
 		onLoad() {
-			uni.setStorageSync('userId',1234567890)
-			if (!uni.getStorageSync('userId')) {
+			// uni.setStorageSync('userId', 1234567890)
+			console.log(uni.getStorageSync('userInfo'))
+			if (!uni.getStorageSync('userInfo')) {
 				uni.reLaunch({
 					url: '../login/mobile'
 				});
