@@ -72,6 +72,7 @@
 						pwd: this.passData, // String 密码
 					}
 					this.$api.login(cnt, (res) => {
+						console.log(res)
 						if (res.data.rc == this.$util.RC.SUCCESS) {
 							let userInfo = this.$util.tryParseJson(res.data.c)
 							console.log(userInfo)
