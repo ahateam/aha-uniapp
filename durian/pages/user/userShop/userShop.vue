@@ -29,13 +29,16 @@
 			<image src="/static/image/shop/icon_sx.png" mode="aspectFit"></image>
 		</view>
 
-		<view class="content-img">
+		<view class="content-img" v-if="contentList.length == 0">
 			<image src="/static/image/shop/gmqd.png" mode="aspectFit"></image>
 			<view class="content-no">
 				暂无清单
 			</view>
 		</view>
-
+		
+		<view v-else>
+			
+		</view>
 	</view>
 </template>
 
@@ -47,8 +50,8 @@
 		},
 		data() {
 			return {
-				buy: true //开启
-
+				buy: true, //开启
+				contentList: []
 			}
 		},
 		methods: {
