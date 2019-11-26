@@ -65,6 +65,7 @@
 		name: 'user',
 		data() {
 			return {
+				userInfo: {},
 				imgSrc: uni.getStorageSync('userHead'),
 				name: uni.getStorageSync('userName'),
 				money: 0,
@@ -111,6 +112,8 @@
 			}
 		},
 		onShow() {
+			let userInfo = uni.getStorageSync('userInfo')
+			console.log(this.$util.tryParseJson(userInfo))
 			if (uni.getStorageSync('userId')) {
 				this.name = uni.getStorageSync('userName')
 				this.imgSrc = uni.getStorageSync('userHead')

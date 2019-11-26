@@ -10,4 +10,20 @@ commen.getNewDate = (time) => {
 	return `${y}-${m}-${d}`
 }
 
+commen.showTabIcon = () => {
+	let icon = plus.nativeObj.View.getViewById("icon");
+	if (icon) {
+		setTimeout(function() {
+			icon.show();
+		}, 100)
+	}
+}
+
+commen.hiddenTabIcon = () => {
+	let icon = plus.nativeObj.View.getViewById("icon");
+	setTimeout(function() {
+		icon.hide();
+	}, 100);
+}
+
 export default commen

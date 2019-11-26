@@ -1,0 +1,16 @@
+{
+  "id": "1531244",
+  "name": "medium",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "榴莲中介端",
+  "glyphs": [
+    {
+      "icon_id": "4485029",
+      "name": "生日",
+      "font_class": "shengri",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    }
+  ]
+}

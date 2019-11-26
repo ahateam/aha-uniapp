@@ -74,3 +74,39 @@ $uni-color-subtitle: #555555; // 二级标题颜色
 $uni-font-size-subtitle:36upx;
 $uni-color-paragraph: #3F536E; // 文章段落颜色
 $uni-font-size-paragraph:30upx;
+
+/********************* 社区样式 ***************/
+/* 基础色 */
+$group-color:#587685;//文字主要色
+$group-color-befor:#B6C4D2;//次要文字色
+$group-color-curr:#64BCCC;//文字亮色
+
+$group-color-article:#464042;//文章字体主要色
+
+$group-color-border:#EFF0F4;//分割线颜色
+
+$group-color-search:#F2F5F7;//搜索框背景色
+$group-color-w:#FFFFFF;//背景色
+/* color end */
+
+/* 字体大小行高 */
+$group-font-big:50rpx;//大标题
+$group-font-big-line:70rpx;//大标题行高
+
+$group-font-befor:30rpx;//稍大标题
+$group-font-befor-line:42rpx;//稍大标题行高
+
+$group-font:26rpx;//列表字体大小
+$group-font-line:40rpx;//列表字体行高
+
+$group-font-info:20rpx;//列表信息字体大小
+$group-font-info-line:37rpx;//列表信息字体行高
+
+$group-title-weight:500;
+/* 字体大小行高 end*/
+
+/* 默认边距 */
+$group-margin-left:40rpx;//大间距
+$group-margin-top:30rpx;//普通间距
+$group-margin-befor:20rpx;//稍小间距
+$group-margin-s:10rpx;//小间距

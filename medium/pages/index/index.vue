@@ -15,7 +15,14 @@
 			}
 		},
 		onLoad() {
-
+			uni.showTabBar({
+				success: () => {
+					console.log('ok')
+				},
+				fail: (err) => {
+					console.log(err)
+				}
+			})
 		},
 		methods: {
 

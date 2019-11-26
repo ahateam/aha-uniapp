@@ -4,6 +4,7 @@ import util from 'ahaapi'
 import api from './commen/api.js'
 import constData from './commen/constData.js'
 import commen from './commen/commen.js'
+import './static/icon/iconfont.css'
 
 Vue.config.productionTip = false
 Vue.prototype.$api = api
