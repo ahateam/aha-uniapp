@@ -15,5 +15,8 @@ heml,body{
   margin: 0;
   padding: 0;
 }
+.clear-both{
+  clear:both;
+}
 
 </style>
