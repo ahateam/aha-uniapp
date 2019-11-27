@@ -1,3 +1,5 @@
+import url from './url'
+let ossBaseUrl = url.ossUrl
 const commen = {}
 
 
@@ -19,6 +21,11 @@ commen.tryParseJson = function(data,dataType=[],isCompel=true) {
     }
     return resData
 }
+commen.getOssUrl=function(url){
+	let OssUrl = ossBaseUrl+url
+	return OssUrl
+}
+
 
 
 export default commen

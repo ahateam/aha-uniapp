@@ -32,9 +32,6 @@
 					</view>
 				</view>
 			</view>
-
-
-
 		</view>
 		<view class="footer-box">
 			<button type="default" @click="toHomePage()">

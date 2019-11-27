@@ -2,8 +2,8 @@
     "name" : "集体经济",
     "appid" : "__UNI__5E1C575",
     "description" : "集体经济app",
-    "versionName" : "1.1.4",
-    "versionCode" : 114,
+    "versionName" : "1.1.5",
+    "versionCode" : 115,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -138,7 +138,7 @@
     },
     "h5" : {
         "title" : "集体经济",
-        "domain" : "jiti.online.3ch.org.cn",
+        "domain" : "online.zyyunxun.cn/wap/index.html",
         "router" : {
             "mode" : "hash",
             "base" : "/wap/"

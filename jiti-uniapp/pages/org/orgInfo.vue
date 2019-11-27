@@ -24,13 +24,13 @@
 			<view class="org-item-img">
 				<view class="org-name">集体经济代码证书：</view>
 				<view class="org-iamge-box">
-					<image :src="info.imgOrg" mode="aspectFit"></image>
+					<image :src="getOssFile(info.imgOrg)" mode="aspectFit"></image>
 				</view>
 			</view>
 			<view class="org-item-img">
 				<view class="org-name">集体经济授权证书：</view>
 				<view class="org-iamge-box">
-					<image :src="info.imgAuth" mode="aspectFit"></image>
+					<image :src="getOssFile(info.imgAuth)" mode="aspectFit"></image>
 				</view>
 			</view>
 		</view>
@@ -62,6 +62,9 @@
 			},
 			toBack() {
 				uni.navigateBack()
+			},
+			getOssFile(url){
+				return this.$commen.getOssUrl(url)
 			}
 		},
 		onLoad() {
