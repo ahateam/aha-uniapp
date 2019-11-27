@@ -4,7 +4,7 @@
 			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
 		</navBar>
 
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top':getNavHeight()}"></view>
 
 		<view class="topBox">
 			<view class="title_box">
@@ -54,9 +54,11 @@
 					uni.navigateTo({
 						url: '/pages/login/interest/interest'
 					})
-				}else{
-					
 				}
+			},
+
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 
 			navBack() {

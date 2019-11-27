@@ -4,7 +4,7 @@
 			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
 			<view class="title-box">商品兑换</view>
 		</navBar>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 		<view class="tipBox">
 			<image src="/static/image/shop/icon_l.png" mode="aspectFit"></image>
 			<text>请准确填写收货信息</text>
@@ -98,7 +98,11 @@
 						})
 					}
 				})
-			}
+			},
+
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		},
 		onLoad(res) {
 			this.id = res.id

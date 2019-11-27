@@ -2,33 +2,61 @@
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/task/task",
-			"style": {}
+			"style": {
+				"navigationStyle": "custom"
+			}
 		},
 		{
 			"path": "pages/index/index",
 			"style": {}
 		}, {
 			"path": "pages/myTask/myTask",
-			"style": {}
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}, {
 			"path": "pages/news/news",
 			"style": {}
 		}, {
 			"path": "pages/user/user",
 			"style": {}
+		}, {
+			"path": "pages/task/taskInfo/taskInfo",
+			"style": {}
+		}, {
+			"path": "pages/myTask/taskInfo/taskInfo",
+			"style": {}
+		}, {
+			"path": "pages/task/acceptTask/acceptTask",
+			"style": {}
 		}
 	    ,{
-            "path" : "pages/task/taskInfo/taskInfo",
-            "style" : {
-				"navigationStyle":"custom"
-			}
+            "path" : "pages/index/addTask/form",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/index/addTask/assistant",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/index/addTask/translate",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/index/addTask/document",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/index/addTask/other",
+            "style" : {}
         }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": " ",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#FFFFFF",
+		"navigationStyle": "custom"
 	},
 	"tabBar": {
 		"color": "#587685",

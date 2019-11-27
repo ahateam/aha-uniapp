@@ -4,7 +4,7 @@
 			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
 			<view class="title-box">付款成功</view>
 		</navBar>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 		<image class="imgBox" src="/static/image/shop/dhcg.png" mode="aspectFit"></image>
 		<view class="titleText">兑换成功</view>
 		<view class="tipText">可在我的商品中查看哦</view>
@@ -25,6 +25,9 @@
 		methods:{
 			navBack(){
 				uni.navigateBack()
+			},
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 		}
 	}

@@ -4,7 +4,7 @@
 			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
 			<view slot="right" class="save-Btn" @click="saveData">保存</view>
 		</nav-bar>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="head-box" @click="upLoadImg">
 			<view class="head-change" v-if="headSrc == ''">
@@ -342,7 +342,11 @@
 				// uni.showToast({
 				// 	title: '保存成功！'
 				// })
-			}
+			},
+			
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		}
 	}
 </script>

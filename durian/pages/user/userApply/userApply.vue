@@ -4,7 +4,7 @@
 			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
 		</navBar>
 		<image class="bg-img" src="/static/image/user/bg_wdsq.png" mode="widthFix"></image>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 		<view style="position: relative;">
 			<view class="title-text">我的申请</view>
 			<view class="title-info">{{school}}大学{{major}}专业申请</view>
@@ -178,7 +178,11 @@
 
 			navBack() {
 				uni.navigateBack()
-			}
+			},
+
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		},
 		onLoad() {
 			this.datas[0].value = this.time

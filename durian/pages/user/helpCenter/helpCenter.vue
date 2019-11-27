@@ -5,7 +5,7 @@
 			<image slot="left" class="back-icon" @click="navBack" src="/static/image/icon/icon_fh.png" mode="aspectFit"></image>
 			<view>帮助中心</view>
 		</navBar>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="help-title">产品重要功能说明</view>
 		<view class="help-list flex-box" v-for="(item,index) in helpList" :key="index" @click="navToHelp(item.src)">
@@ -49,7 +49,11 @@
 			},
 			navBack() {
 				uni.navigateBack()
-			}
+			},
+			
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		}
 	}
 </script>

@@ -1,59 +1,121 @@
 <template>
-	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
+	<view>
+		<view class="nav-bar" :style="{'height':navHeight}"></view>
+		<view :style="{'padding-top':navHeight}"></view>
+		<view class="view-title">发布任务</view>
+
+		<view class="content-list">
+			<view class="list-box" :class="{'curr-box':currIndex == index}" v-for="(item,index) in list" :key="index"
+			 @touchstart="changeCurr(index)" @touchend="resetStyle()" @click="navToAdd(item)">
+				<image :src="item.img" mode="aspectFit"></image>
+				<view>{{item.name}}</view>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
 	export default {
+		name: 'index',
 		data() {
 			return {
-				title: 'Hello'
+				navHeight: this.getNavHeight(),
+				list: [{
+					name: '全案助理',
+					img: '/static/image/icon/addTask/icon_qazl.png',
+					src: './addTask/assistant'
+				}, {
+					name: '翻译',
+					img: '/static/image/icon/addTask/icon_fy.png',
+					src: './addTask/translate'
+				}, {
+					name: '表格填写',
+					img: '/static/image/icon/addTask/icon_bgtx.png',
+					src: './addTask/form'
+				}, {
+					name: '撰写文书',
+					img: '/static/image/icon/addTask/icon_zxws.png',
+					src: './addTask/document'
+				}, {
+					name: '其他',
+					img: '/static/image/icon/addTask/icon_qt.png',
+					src: './addTask/other'
+				}],
+				currIndex: -1,
+
 			}
 		},
 		onLoad() {
-			uni.showTabBar({
-				success: () => {
-					console.log('ok')
-				},
-				fail: (err) => {
-					console.log(err)
-				}
-			})
+
 		},
 		methods: {
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 
+			changeCurr(index) {
+				this.currIndex = index
+			},
+
+			resetStyle() {
+				this.currIndex = -1
+			},
+
+			navToAdd(item) {
+				if (item.src) {
+					uni.navigateTo({
+						url: item.src
+					})
+				}
+			}
 		}
 	}
 </script>
 
-<style>
-	.content {
+<style lang="scss" scoped>
+	.view-title {
+		color: #333333;
+		font-size: 50rpx;
+		margin-left: 30rpx;
+	}
+
+	.nav-bar {
+		position: fixed;
+		z-index: 1;
+		width: 100%;
+		background-color: #FFFFFF;
+	}
+
+	.list-box {
 		display: flex;
 		flex-direction: column;
+		justify-content: center;
 		align-items: center;
-		justify-content: center;
+		transition: all .3s;
+		width: 330rpx;
+		height: 250rpx;
+		margin: 0 30rpx 30rpx 0;
+		background-color: $group-color-search;
+		border-radius: 4rpx;
+		font-size: $group-font-befor;
+		color: $group-color;
+		line-height: 42rpx;
+
+		image {
+			width: 40rpx;
+			height: 40rpx;
+			margin-bottom: 18rpx;
+		}
 	}
 
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
-
-	.text-area {
+	.content-list {
 		display: flex;
-		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+		padding: 40rpx 0 0 30rpx;
 	}
 
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
+	.curr-box {
+		background-color: rgba($color: #182F45, $alpha: .2);
 	}
 </style>

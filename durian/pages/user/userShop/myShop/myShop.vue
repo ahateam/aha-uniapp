@@ -5,7 +5,7 @@
 			<view class="title-nav">购买商品</view>
 			<view slot="right" class="save-btn" @click="saveBtn">保存</view>
 		</nav-bar>
-		<view style="padding: 64rpx;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="tip-box">
 			收货信息
@@ -58,7 +58,11 @@
 
 			saveBtn() {
 				console.log('save')
-			}
+			},
+			
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		}
 	}
 </script>

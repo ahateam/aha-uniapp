@@ -1,5 +1,5 @@
 <template>
-	<view style="padding-bottom: 30rpx;">
+	<view style="padding-bottom: 102rpx;">
 		<view class="top-box">
 			<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
 			<view class="top-content">
@@ -40,27 +40,38 @@
 					<view class="right-info bottom-font">{{task.userName}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">发布时间</view>
-					<view class="right-info bottom-font">{{task.taskTime}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">价格</view>
-					<view class="right-info bottom-font" style="color: #FFA405;">{{task.taskPrice}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">完成时间</view>
 					<view class="right-info bottom-font">{{task.taskTime}}</view>
 				</view>
-
-				<view class="auto-box-gray space-box" style="border: none;">
-					<view class="left-title bottom-font">接受者所需证书</view>
+				<view class="auto-box-gray space-box">
+					<view class="left-title bottom-font">最新状态</view>
+					<view class="right-info bottom-font" style="color: #24D4D0;">{{task.taskStatus}}</view>
+				</view>
+				<view class="auto-box-gray space-box">
+					<view class="left-title bottom-font">共享文件</view>
 					<view class="right-info bottom-font">{{task.taskData.name}}</view>
+					<view class="data-box space-box">
+						<view>
+							<view class="data-title">{{task.taskData.dataName}}</view>
+							<view class="data-size">{{task.taskData.dataSize}}</view>
+						</view>
+						<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
+					</view>
+				</view>
+
+				<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;">
+					<view class="left-title bottom-font">提交完成文件</view>
+					<view class="data-img-list">
+						<view class="data-img-box" v-for="(item,index) in task.taskList" :key="index" :class="{'no-margin':getIndex(index)}">
+							<image src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
+						</view>
+					</view>
 				</view>
 			</view>
 		</view>
 
 		<view class="bottom-btn">
-			<button @click="acceptTask">接任务</button>
+			<button>确定</button>
 		</view>
 	</view>
 </template>
@@ -77,21 +88,26 @@
 					taskTitle: '500签证全案助理',
 					taskText: '请帮忙填写签证相关内容，我是第一次申请，需要准备的资料还很多，听朋友说你们是专业的，拜托你们啦！',
 					taskTime: '2019-10-08',
-					taskPrice: 'AUD 300',
+					taskStatus: '学校申请已经递交',
 					taskData: {
 						name: '翻译证书',
 						dataName: '我的成绩单.docx',
 						dataSize: '216K'
-					}
+					},
+					taskList: [
+						'',
+						'',
+						'',
+						''
+					]
 				}
 			}
 		},
 		methods: {
-			// 接收任务
-			acceptTask() {
-				uni.navigateTo({
-					url: '../acceptTask/acceptTask'
-				})
+			getIndex(index) {
+				if ((index + 1) % 3 == 0 && index != 0) {
+					return true
+				}
 			},
 
 			navBack() {
@@ -317,14 +333,14 @@
 	}
 
 	.bottom-btn {
-		margin-top: -20rpx;
+		position: fixed;
+		bottom: 0;
 		width: 100%;
 
 		button {
-			margin: 0 auto;
-			background-color: #EE455A;
+			background-color: #182F45;
 			line-height: 102rpx;
-			width: 690rpx;
+			width: 100%;
 			font-size: 36rpx;
 			color: $group-color-w;
 			border-radius: 0;

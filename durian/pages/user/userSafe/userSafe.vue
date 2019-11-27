@@ -3,7 +3,7 @@
 		<navBar :back="false" type="transparent" fontColor="#587685" title="帐户安全">
 			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
 		</navBar>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="auto-margin flex-box border-bottom">
 			<view class="title-info">你已使用({{loginMethods}})登录</view>
@@ -82,7 +82,11 @@
 				uni.reLaunch({
 					url: '/pages/login/mobilePassword'
 				})
-			}
+			},
+			
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		},
 		onLoad() {
 			this.telData = uni.getStorageSync('userTel')

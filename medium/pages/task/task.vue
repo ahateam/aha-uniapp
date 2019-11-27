@@ -1,5 +1,9 @@
 <template>
 	<view class="page">
+		<nav-bar class="nav-top-box" type="transparent" :back="false" :style="{height: getStatusHeight()}">
+			<view class="view-title">所有任务</view>
+		</nav-bar>
+		<view :style="{'padding-top': getStatusHeight()}"></view>
 		<!-- 顶部选项卡 -->
 		<view class="nav-box">
 			<scroll-view class="top-option" scroll-x="true" scroll-left="0" scroll-with-animation :scroll-into-view="'nav' + currIndex">
@@ -18,11 +22,14 @@
 
 <script>
 	import TaskList from '@/components/task/TaskList.vue'
+	import navBar from '@/components/zhouWei-navBar/index.vue'
+
 	let bitmap = null
 
 	export default {
 		components: {
-			TaskList
+			TaskList,
+			navBar
 		},
 		data() {
 			return {
@@ -81,6 +88,11 @@
 			}
 		},
 		methods: {
+			getStatusHeight() {
+				let height = uni.getSystemInfoSync()['statusBarHeight']
+				return 44 + height + 'px'
+			},
+
 			navToInfo(item) {
 				console.log(item)
 				uni.navigateTo({
@@ -140,6 +152,20 @@
 	.page {
 		background-color: #F2F5F7;
 		padding-bottom: 1rpx;
+	}
+
+	.nav-top-box {
+		position: fixed;
+		width: 100vw;
+		background-color: $group-color-w;
+		z-index: 1;
+	}
+
+	.view-title {
+		color: $group-color-article;
+		font-size: 36rpx;
+		line-height: 50rpx;
+		font-weight: $group-title-weight;
 	}
 
 	.nav-box {

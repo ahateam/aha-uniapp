@@ -5,7 +5,7 @@
 			<image slot="left" class="back-icon" @click="navBack" src="/static/image/icon/icon_fh.png" mode="aspectFit"></image>
 			<view slot="right" class="next-btn" @click="navHome">跳过</view>
 		</navBar>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top':getNavHeight()}"></view>
 
 		<view class="title-box">
 			告诉我们你的兴趣吧
@@ -44,13 +44,19 @@
 			navBack() {
 				uni.navigateBack()
 			},
-			navHome(){
+
+			navHome() {
 				uni.switchTab({
-					url:'/pages/index/index'
+					url: '/pages/index/index'
 				})
 			},
-			choiceInter(e){
-				
+
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
+
+			choiceInter(e) {
+
 			}
 		}
 	}
@@ -97,8 +103,8 @@
 		text-align: right;
 		margin-right: 80rpx;
 	}
-	
-	.next-btn{
+
+	.next-btn {
 		font-size: 30rpx;
 	}
 </style>

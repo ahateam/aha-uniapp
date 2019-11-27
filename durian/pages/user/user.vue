@@ -1,7 +1,6 @@
 <template>
 	<view>
-		<navBar :back="false" type="transparent"></navBar>
-		<view class="padding-top-box"></view>
+		<view :style="{'padding-top':`calc(${getNavHeight()} - 20rpx)` }"></view>
 		<view class="left-radius"></view>
 		<view class="right-radius"></view>
 		<view class="user-box">
@@ -53,13 +52,11 @@
 </template>
 
 <script>
-	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import progressBar from '../../components/chocolate-progress-bar/chocolate-progress-bar.vue'
 
 	export default {
 		name: 'user',
 		components: {
-			navBar,
 			progressBar
 		},
 		name: 'user',
@@ -109,7 +106,11 @@
 						url: url
 					})
 				}
-			}
+			},
+
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		},
 		onShow() {
 			let userInfo = uni.getStorageSync('userInfo')

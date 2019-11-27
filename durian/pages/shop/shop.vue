@@ -1,6 +1,6 @@
 <template>
 	<view class="body">
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 		<view v-if="netStatus == 0">
 			<view class="topBox">
 				<view class="title_box">
@@ -76,6 +76,10 @@
 			}
 		},
 		methods: {
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
+
 			change(index, type) {
 				if (type == 1) {
 					this.contentList[index].goodsType = 2

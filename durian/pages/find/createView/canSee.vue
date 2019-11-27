@@ -6,7 +6,7 @@
 			<view class="nav-title">谁可以看</view>
 			<button slot="right" class="next-btn" @click="changeStatus">完成</button>
 		</navBar>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="status-list">
 			<view class="flex-box" v-for="(item,index) in statusList" :key="index" @click="choiceSee(index)">
@@ -52,6 +52,10 @@
 
 			choiceSee(e) {
 				this.statusCurr = e
+			},
+
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 		},
 		onLoad() {

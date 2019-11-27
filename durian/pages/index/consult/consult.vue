@@ -1,6 +1,6 @@
 <template>
 	<view class="body">
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="topBox">
 			<view class="title_box" :class="{currNav:navCurrIndex == index}" v-for="(item,index) in navTags" :key="index" :style="index == 0?'margin-right:50rpx':''"
@@ -62,7 +62,11 @@
 		methods: {
 			changeNav(index) {
 				this.navCurrIndex = index
-			}
+			},
+
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		}
 	}
 </script>

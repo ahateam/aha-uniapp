@@ -1,6 +1,6 @@
 <template>
 	<view class="body">
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="topBox auto-margin">
 			<view class="title_box" @click="navTest">
@@ -305,7 +305,11 @@
 						console.log('error')
 					}
 				})
-			}
+			},
+			
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		},
 		onPullDownRefresh() {
 			let cnt = {

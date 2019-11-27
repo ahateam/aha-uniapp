@@ -3,7 +3,7 @@
 		<navBar :back="false" type="transparent" fontColor="#587685" title="设置新密码">
 			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
 		</navBar>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="auto-input auto-margin flex-box">
 			<view class="left-title">手机号</view>
@@ -81,7 +81,11 @@
 						})
 					}
 				})
-			}
+			},
+
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		},
 		onLoad() {
 			let tel = uni.getStorageSync('userTel')

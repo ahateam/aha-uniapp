@@ -4,7 +4,7 @@
 			<view class="iconfont icon-fanhui backBtn" @click="navBack"></view>
 			<view class="nav-title">商品详情</view>
 		</view>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="bannerBox">
 			<swiper class="swiper-box" @change="change" autoplay>
@@ -129,6 +129,10 @@
 			// 轮播图改变触发
 			change(e) {
 				this.current = e.detail.current;
+			},
+			
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 		}
 	}

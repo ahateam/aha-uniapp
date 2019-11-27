@@ -4,7 +4,7 @@
 			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
 			<view class="title-nav">买家信息</view>
 		</nav-bar>
-		<view style="padding: 64rpx;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="tip-box">
 			买家信息
@@ -74,7 +74,11 @@
 
 			saveBtn() {
 				console.log('save')
-			}
+			},
+			
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
 		}
 	}
 </script>

@@ -4,8 +4,8 @@
 			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
 			<view class="title-box">我的商品</view>
 		</navBar>
-		<view style="padding: 64rpx;"></view>
 
+		<view :style="{'padding-top': getNavHeight()}"></view>
 		<!-- 商品列表切换导航 -->
 		<view class="trans">
 			<view class="trans-l" @click="change" :style="!buy?'color:#587685;':'color:#FFFFFF;'">
@@ -229,6 +229,10 @@
 				} else {
 					this.buy = false
 				}
+			},
+
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 		},
 	}

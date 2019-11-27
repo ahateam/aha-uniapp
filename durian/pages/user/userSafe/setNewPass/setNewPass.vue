@@ -3,7 +3,7 @@
 		<navBar :back="false" type="transparent" fontColor="#587685" title="设置新密码">
 			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
 		</navBar>
-		<view style="padding-top: 64px;"></view>
+		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view v-for="(item,index) in passArr" :key="index">
 			<view class="auto-input auto-margin flex-box">
@@ -94,6 +94,10 @@
 						})
 					}
 				})
+			},
+			
+			getNavHeight() {
+				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 		},
 		onLoad() {
