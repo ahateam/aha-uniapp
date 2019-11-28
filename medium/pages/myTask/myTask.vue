@@ -85,7 +85,13 @@
 			navToInfo(item) {
 				console.log(item)
 				uni.navigateTo({
-					url: '/pages/myTask/taskInfo/taskInfo'
+					url: '/pages/myTask/taskInfo/taskInfo',
+					success: () => {
+						let icon = plus.nativeObj.View.getViewById("icon");
+						setTimeout(function() {
+							icon.hide();
+						}, 100);
+					}
 				})
 			},
 

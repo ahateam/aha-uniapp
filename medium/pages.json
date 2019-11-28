@@ -58,6 +58,10 @@
             "path" : "pages/user/task/task",
             "style" : {}
         }
+        ,{
+            "path" : "pages/index/summary/summary",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

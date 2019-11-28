@@ -2,33 +2,27 @@
 	<view>
 		<nav-bar :back="false">
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
-			<view class="view-title">填写表格</view>
+			<view class="view-title">发布任务</view>
 		</nav-bar>
 		<view style="margin-top: 10rpx;"></view>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="taskType" :hiddenIcon="true" placeholder="填写表格" title="任务分类"></data-input>
-
 		<data-input :inputHidden="aptitudesStatus" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="formType" :hiddenIcon="true" title="表格类别"></data-input>
+		<data-input :inputHidden="aptitudes" v-model="title" :hiddenIcon="true" title="任务接受者所需证书"></data-input>
 
-		<choice-input :value="aptitudes" title="任务接收者所需资质" :hiddenIcon="true" @click="openAts"></choice-input>
+		<data-textarea :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" title="和接收者共享的文件"></data-textarea>
 
-		<data-textarea :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" title="任务描述"></data-textarea>
+		<view>
+			<view class="uploding-img" v-if="imgList.length == 0">
+				<image src="/static/image/icon/icon_pzsc.png" mode="aspectFit"></image>
+			</view>
+		</view>
 
 		<data-input :inputHidden="aptitudesStatus" v-model="remark" :hiddenIcon="true" title="特别提醒"></data-input>
 
 		<view class="bottom-btn">
 			<next-btn @click="nextBtn"></next-btn>
 		</view>
-
-		<uni-popup :show="aptitudesStatus" type="bottom" @change="changePopup">
-			<view class="aptitudes-list">
-				<view class="aptitudes-border" :class="[{'no-border':index == 2},{'bottom-popup-box':index == 3},{'curr-box':index == aptitudesCurr}]"
-				 @click="choiceAptitudes(item)" v-for="(item,index) in aptitudesList" :key="index" @touchstart="changeAts(index)"
-				 @touchend="aptitudesCurr = -1">{{item.name}}</view>
-			</view>
-		</uni-popup>
 	</view>
 </template>
 
@@ -42,7 +36,7 @@
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 
 	export default {
-		name: 'form',
+		name: 'summary',
 		components: {
 			navBar,
 			DataInput,
@@ -53,33 +47,20 @@
 		},
 		data() {
 			return {
-				taskType: '',
 				title: '',
 				formType: '',
-				aptitudes: 'MARN号',
+				aptitudes: '翻译证书',
 				aptitudesCurr: -1,
 				aptitudesStatus: false,
-				aptitudesList: [{
-						name: 'MARN号'
-					},
-					{
-						name: 'PIEP号'
-					},
-					{
-						name: '翻译证书'
-					}, {
-						name: '不需要'
-					}
-				],
 
 				remark: '',
+
+				imgList: [],
 			}
 		},
 		methods: {
 			nextBtn() {
-				uni.navigateTo({
-					url: '../summary/summary'
-				})
+				console.log('下一步')
 			},
 
 			changeAts(index) {
@@ -153,5 +134,16 @@
 
 	.bottom-btn {
 		margin-top: 80rpx;
+	}
+
+	.uploding-img {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 220rpx;
+		width: 690rpx;
+		background-color: $group-color-search;
+		border-radius: 4rpx;
 	}
 </style>

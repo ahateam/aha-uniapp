@@ -45,9 +45,6 @@
 
 			}
 		},
-		onLoad() {
-
-		},
 		methods: {
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
@@ -64,11 +61,23 @@
 			navToAdd(item) {
 				if (item.src) {
 					uni.navigateTo({
-						url: item.src
+						url: item.src,
+						success: () => {
+							let icon = plus.nativeObj.View.getViewById("icon");
+							setTimeout(function() {
+								icon.hide();
+							}, 100);
+						}
 					})
 				}
 			}
-		}
+		},
+		onShow() {
+			this.$commen.showTabIcon()
+		},
+		onLoad() {
+
+		},
 	}
 </script>
 

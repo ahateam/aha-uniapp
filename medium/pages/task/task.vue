@@ -96,7 +96,13 @@
 			navToInfo(item) {
 				console.log(item)
 				uni.navigateTo({
-					url: '/pages/task/taskInfo/taskInfo'
+					url: '/pages/task/taskInfo/taskInfo',
+					success: () => {
+						let icon = plus.nativeObj.View.getViewById("icon");
+						setTimeout(function() {
+							icon.hide();
+						}, 100);
+					}
 				})
 			},
 
@@ -137,6 +143,7 @@
 			this.$commen.showTabIcon()
 		},
 		onLoad() {
+			// #ifdef APP-PLUS
 			bitmap = new plus.nativeObj.Bitmap('bmp1');
 			console.log('123')
 			bitmap.loadBase64Data(
@@ -144,6 +151,7 @@
 				function() {},
 				function(e) {});
 			this.createtab();
+			// #endif
 		}
 	}
 </script>

@@ -4,23 +4,103 @@
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="view-title">撰写文书</view>
 		</nav-bar>
+		<view style="margin-top: 10rpx;"></view>
+
+		<data-input :inputHidden="aptitudesStatus" v-model="taskType" :hiddenIcon="true" placeholder="撰写文书" title="任务分类"></data-input>
+
+		<data-input :inputHidden="aptitudesStatus" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
+
+		<data-input :inputHidden="aptitudesStatus" v-model="formType" :hiddenIcon="true" title="文书类别"></data-input>
+
+		<choice-input :value="aptitudes" title="任务接收者所需资质" :hiddenIcon="true" @click="openAts"></choice-input>
+
+		<data-textarea :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" placeholder="请输入任务描述" title="任务描述"></data-textarea>
+
+		<data-input :inputHidden="aptitudesStatus" v-model="remark" :hiddenIcon="true" title="特别提醒"></data-input>
+
+		<view class="bottom-btn">
+			<next-btn @click="nextBtn"></next-btn>
+		</view>
+
+		<uni-popup :show="aptitudesStatus" type="bottom" @change="changePopup">
+			<view class="aptitudes-list">
+				<view class="aptitudes-border" :class="[{'no-border':index == 2},{'bottom-popup-box':index == 3},{'curr-box':index == aptitudesCurr}]"
+				 @click="choiceAptitudes(item)" v-for="(item,index) in aptitudesList" :key="index" @touchstart="changeAts(index)"
+				 @touchend="aptitudesCurr = -1">{{item.name}}</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
+	import DataInput from '@/components/dataInput/DataInput.vue'
+	import ChoiceInput from '@/components/dataInput/ChoiceInput.vue'
+	import DataTextarea from '@/components/dataInput/DataTextarea.vue'
+	import NextBtn from '@/components/NextBtn/NextBtn.vue'
+
+	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 
 	export default {
 		name: 'document',
 		components: {
-			navBar
+			navBar,
+			DataInput,
+			ChoiceInput,
+			uniPopup,
+			DataTextarea,
+			NextBtn
 		},
 		data() {
 			return {
+				taskType: '',
+				title: '',
+				formType: '',
+				aptitudes: 'MARN号',
+				aptitudesCurr: -1,
+				aptitudesStatus: false,
+				aptitudesList: [{
+						name: 'MARN号'
+					},
+					{
+						name: 'PIEP号'
+					},
+					{
+						name: '翻译证书'
+					}, {
+						name: '不需要'
+					}
+				],
 
+				remark: '',
 			}
 		},
 		methods: {
+			nextBtn() {
+				uni.navigateTo({
+					url: '../summary/summary'
+				})
+			},
+
+			changeAts(index) {
+				this.aptitudesCurr = index
+			},
+
+			choiceAptitudes(item) {
+				this.aptitudes = item.name
+				this.aptitudesStatus = false
+			},
+
+			changePopup(e) {
+				if (!e.show) {
+					this.aptitudesStatus = false
+				}
+			},
+
+			openAts() {
+				this.aptitudesStatus = true
+			},
+
 			navBack() {
 				uni.navigateBack()
 			}
@@ -41,5 +121,37 @@
 		color: #333333;
 		font-size: 36rpx;
 		font-weight: normal;
+	}
+
+	.aptitudes-list {
+		border-radius: 40rpx 40rpx 0 0;
+		overflow: hidden;
+		background-color: #FFF;
+		color: #333333;
+		font-size: 36rpx;
+		text-align: center;
+		line-height: 120rpx;
+	}
+
+	.aptitudes-border {
+		border-bottom: 1rpx solid $group-color-border;
+	}
+
+	.no-border {
+		border: none;
+	}
+
+	.curr-box {
+		background-color: #F2F5F7;
+	}
+
+	.bottom-popup-box {
+		color: #999999;
+		border-top: 20rpx solid $group-color-search;
+		border-bottom: none;
+	}
+
+	.bottom-btn {
+		margin-top: 80rpx;
 	}
 </style>

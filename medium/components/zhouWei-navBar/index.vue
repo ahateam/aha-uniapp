@@ -273,7 +273,7 @@
 		&.line {
 			//需要显示线条的在这打开
 			// border-bottom: 2upx solid #f5f5f5;
-			box-shadow: 0 0 6upx 0 #ddd;
+			box-shadow: 0 0 2upx 0 #EFF0F4;
 		}
 
 		&.transparentFixed {
