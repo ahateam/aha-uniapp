@@ -50,6 +50,14 @@
             "path" : "pages/index/addTask/other",
             "style" : {}
         }
+        ,{
+            "path" : "pages/user/bill/bill",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/task/task",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

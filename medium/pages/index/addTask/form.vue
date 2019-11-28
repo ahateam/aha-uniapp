@@ -5,9 +5,11 @@
 			<view class="view-title">填写表格</view>
 		</nav-bar>
 		<view style="margin-top: 10rpx;"></view>
-		<data-input v-model="typeName" :hiddenIcon="true" placeholder="填写表格" title="任务分类"></data-input>
-		<data-input v-model="typeName" :hiddenIcon="true" placeholder="填写表格" title="任务分类"></data-input>
-		<data-input v-model="typeName" :hiddenIcon="true" placeholder="填写表格" title="任务分类"></data-input>
+		<data-input v-model="taskType" :hiddenIcon="true" placeholder="填写表格" title="任务分类"></data-input>
+		<data-input v-model="title" :hiddenIcon="true" placeholder=" " title="任务名称"></data-input>
+		<data-input v-model="formType" :hiddenIcon="true" placeholder="填写表格" title="表格类别"></data-input>
+
+		<data-input v-model="remark" :hiddenIcon="true" placeholder=" " title="特别提醒"></data-input>
 	</view>
 </template>
 
@@ -23,8 +25,11 @@
 		},
 		data() {
 			return {
-				typeName: '',
+				taskType: '',
+				title: '',
+				formType: '',
 
+				remark: '',
 			}
 		},
 		methods: {
