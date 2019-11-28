@@ -13,7 +13,8 @@ export default new Vuex.Store({
   state: {
     current: Date.now(), // 当前时间
     intervalID: 0,
-    message: undefined
+    message: undefined,
+    isPageActive:0,
   },
   mutations: {
     startComputeCurrent(state) {

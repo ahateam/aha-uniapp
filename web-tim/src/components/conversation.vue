@@ -1,23 +1,23 @@
 <template>
   <div>
-     <div class="nav-box">
-        <div
-          @click="navActive =0"
-          :class="navActive=='0'?'nav-item-box nav-item-active':'nav-item-box'"
-          style="margin-left:0"
-        >聊天记录</div>
-        <div
-          class="nav-item-box"
-          @click="navActive =1"
-          :class="navActive=='1'?'nav-item-box nav-item-active':'nav-item-box'"
-        >通讯录</div>
-        <div
-          class="nav-item-box"
-          @click="navActive =2"
-          :class="navActive=='2'?'nav-item-box nav-item-active':'nav-item-box'"
-        >其他</div>
-        <div class="clear-both"></div>
-      </div>
+    <div class="nav-box">
+      <div
+        @click="navActive =0"
+        :class="navActive=='0'?'nav-item-box nav-item-active':'nav-item-box'"
+        style="margin-left:0"
+      >聊天记录</div>
+      <div
+        class="nav-item-box"
+        @click="navActive =1"
+        :class="navActive=='1'?'nav-item-box nav-item-active':'nav-item-box'"
+      >通讯录</div>
+      <div
+        class="nav-item-box"
+        @click="navActive =2"
+        :class="navActive=='2'?'nav-item-box nav-item-active':'nav-item-box'"
+      >其他</div>
+      <div class="clear-both"></div>
+    </div>
     <div class="content-box">
       <div class="list-box">
         <div class="msg">
@@ -28,183 +28,131 @@
             <div class="clear-both"></div>
           </div>
         </div>
-        <div class="list-item-box">
-          <div class="list-item">
+        <div class="list-item-box" v-if="sationList.length>0">
+          <div class="list-item" v-for="(item,index) in sationList" :key="index" @click="checkConversation(item)">
             <div class="list-item-img">
               <img
-                src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2262632647,543198910&fm=26&gp=0.jpg"
+                :src="item.user.img"
                 alt
               />
             </div>
             <div class="list-item-info">
               <div class="list-item-title">
-                <div class="list-item-name">asdasd奥术大师大所大阿萨德</div>
-                <div class="list-item-time">2019-11-26</div>
+                <div class="list-item-name">{{item.user.name}}</div>
+                <div class="list-item-time">{{timeFilter(item.conversation.lastMessage.lastTime)}}</div>
                 <div class="clear-both"></div>
               </div>
               <div class="list-item-text">
-                <div class="item-text">你好啊我说你在干啥么啊现在，赶紧回复我消息撒</div>
-                <div class="item-msg-num">9</div>
+                <div class="item-text-active" v-if="item.conversation.unreadCount ==0">{{item.conversation.lastMessage.messageForShow}}</div>
+                  <div class="item-text" v-else>{{item.conversation.lastMessage.messageForShow}}</div>
+                <div class="item-msg-num" v-if="item.conversation.unreadCount >0 && item.conversation.unreadCount <100"> {{item.conversation.unreadCount}}</div>
+                 <div class="item-msg-num" v-if="item.conversation.unreadCount >=100">...</div>
+   
               </div>
             </div>
           </div>
         </div>
-
-        <div class="list-item-box">
-          <div class="list-item">
-            <div class="list-item-img">
-              <img
-                src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2262632647,543198910&fm=26&gp=0.jpg"
-                alt
-              />
-            </div>
-            <div class="list-item-info">
-              <div class="list-item-title">
-                <div class="list-item-name">asdasd奥术大师大所大阿萨德</div>
-                <div class="list-item-time">2019-11-26</div>
-                <div class="clear-both"></div>
-              </div>
-              <div class="list-item-text">
-                <div class="item-text">你好啊我说你在干啥么啊现在，赶紧回复我消息撒</div>
-                <div class="item-msg-num">9</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="list-item-box">
-          <div class="list-item">
-            <div class="list-item-img">
-              <img
-                src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2262632647,543198910&fm=26&gp=0.jpg"
-                alt
-              />
-            </div>
-            <div class="list-item-info">
-              <div class="list-item-title">
-                <div class="list-item-name">asdasd奥术大师大所大阿萨德</div>
-                <div class="list-item-time">2019-11-26</div>
-                <div class="clear-both"></div>
-              </div>
-              <div class="list-item-text">
-                <div class="item-text">你好啊我说你在干啥么啊现在，赶紧回复我消息撒</div>
-                <div class="item-msg-num">9</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="list-item-box">
-          <div class="list-item">
-            <div class="list-item-img">
-              <img
-                src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2262632647,543198910&fm=26&gp=0.jpg"
-                alt
-              />
-            </div>
-            <div class="list-item-info">
-              <div class="list-item-title">
-                <div class="list-item-name">asdasd奥术大师大所大阿萨德</div>
-                <div class="list-item-time">2019-11-26</div>
-                <div class="clear-both"></div>
-              </div>
-              <div class="list-item-text">
-                <div class="item-text">你好啊我说你在干啥么啊现在，赶紧回复我消息撒</div>
-                <div class="item-msg-num">9</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="list-item-box">
-          <div class="list-item">
-            <div class="list-item-img">
-              <img
-                src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2262632647,543198910&fm=26&gp=0.jpg"
-                alt
-              />
-            </div>
-            <div class="list-item-info">
-              <div class="list-item-title">
-                <div class="list-item-name">asdasd奥术大师大所大阿萨德</div>
-                <div class="list-item-time">2019-11-26</div>
-                <div class="clear-both"></div>
-              </div>
-              <div class="list-item-text">
-                <div class="item-text">你好啊我说你在干啥么啊现在，赶紧回复我消息撒</div>
-                <div class="item-msg-num">9</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="list-item-box">
-          <div class="list-item">
-            <div class="list-item-img">
-              <img
-                src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2262632647,543198910&fm=26&gp=0.jpg"
-                alt
-              />
-            </div>
-            <div class="list-item-info">
-              <div class="list-item-title">
-                <div class="list-item-name">asdasd奥术大师大所大阿萨德</div>
-                <div class="list-item-time">2019-11-26</div>
-                <div class="clear-both"></div>
-              </div>
-              <div class="list-item-text">
-                <div class="item-text">你好啊我说你在干啥么啊现在，赶紧回复我消息撒</div>
-                <div class="item-msg-num">9</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="list-item-box">
-          <div class="list-item">
-            <div class="list-item-img">
-              <img
-                src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2262632647,543198910&fm=26&gp=0.jpg"
-                alt
-              />
-            </div>
-            <div class="list-item-info">
-              <div class="list-item-title">
-                <div class="list-item-name">asdasd奥术大师大所大阿萨德</div>
-                <div class="list-item-time">2019-11-26</div>
-                <div class="clear-both"></div>
-              </div>
-              <div class="list-item-text">
-                <div class="item-text">你好啊我说你在干啥么啊现在，赶紧回复我消息撒</div>
-                <div class="item-msg-num">91</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
+
     <div class="footer-box">
-        <div class="footer-btn-box">
-            + 发起新的咨询
-        </div>
+      <div class="footer-btn-box">+ 发起新的咨询</div>
     </div>
+
   </div>
 </template>
 
 <script>
+import userList from '../commen/tim/user'
+import { mapGetters,mapState } from "vuex";
 export default {
   name: "conversation",
   data() {
     return {
       userInfo: "",
       toUserInfo: "",
-      navActive: 0
+      navActive: 0,
+      sationList: [],
+
     };
   },
-  mounted() {
-    if (this.$route.query.userInfo) {
-      this.userInfo = JSON.parse(this.$route.query.userInfo);
+  watch: {
+    conversationList(newList) {
+      this.getSationList(newList);
+    },
+    currentConversation(val){
+      console.log(val)
+    },
+    currentMessageList(val){
+      console.log(val)
     }
+  },
+  computed: {
+    ...mapState({
+      conversationList: state => state.conversation.conversationList,
+      currentConversation: state => state.conversation.currentConversation,
+      currentMessageList: state => state.conversation.currentMessageList,
+      isCompleted: state => state.conversation.isCompleted
+    }),
+    ...mapGetters(['toAccount']),
+  },
+  methods: {
+    /**拉取历史会话列表 */
+    getConversationList() {
+      let promise = this.tim.getConversationList();
+      promise
+        .then(res => {
+          this.$store.commit(
+            "updateConversationList",
+            res.data.conversationList    
+          );
+        })
+        .catch(() => {
+          this.getConversationList();
+        });
+    },
+    /**根据会话列表获取聊天对象的用户相信信息 */
+    getSationList(conversationList) {
+      let arr = [];
+      conversationList.forEach(item => {
+        userList.forEach(item1 => {
+          if (item.toAccount == item1.userId) {
+            let obj = {};
+            obj.conversation = item;
+            obj.user = item1;
+            arr.push(JSON.parse(JSON.stringify(obj)));
+          }
+        });
+      });
+      this.sationList = [];
+      this.sationList = arr;
+    },
+    /**过滤时间 */
+    timeFilter(timeData){
+        let timer = new Date(timeData*1000)
+        return this.$commen.dateTimeFliter(timer,1)
+    },
+    /**获取用户详细信息 */
+    getUserInfo(userId){
+        userList.forEach(item=>{
+          if(item.userId == userId){
+            return item
+          }
+        })
+    },
+    /** 创建且更换聊天室 */
+    checkConversation(item){
+        let id = 'C2C' + item.user.userId
+          let toUserInfo = this.getUserInfo(item.user.userId)
+          localStorage.setItem('toUserInfo',JSON.stringify(toUserInfo))
+          this.$store.dispatch('checkoutConversation',id)
+        this.$store.state.isPageActive = 2
+        console.log(this.$store.state.isPageActive)
+			
+    }
+  },
+  mounted() {
+    this.getConversationList();
   }
 };
 </script>
@@ -239,7 +187,7 @@ export default {
   font-size: 25px;
 }
 .list-box {
-
+  padding-bottom: 80px;
   width: 100%;
 }
 
@@ -355,6 +303,17 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.item-text-active {
+  float: left;
+  width: 265px;
+  height: 20px;
+  font-size: 13px;
+  line-height: 20px;
+  color: #999999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .item-msg-num {
   float: right;
   margin-top: 1px;
@@ -367,23 +326,23 @@ export default {
   color: #ffffff;
   font-size: 10px;
 }
-.footer-box{
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 50px;
-    padding: 15px;
-    background: #fff;
-    z-index: 100;
+.footer-box {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  padding: 15px;
+  background: #fff;
+  z-index: 100;
 }
-.footer-btn-box{
-    width: 345px;
-    height: 50px;
-    line-height: 50px;
-    background: #00C8BE;
-    color: #FFFFFF;
-    font-size: 15px;
-    text-align: center;
-    border-radius: 3px;
+.footer-btn-box {
+  width: 345px;
+  height: 50px;
+  line-height: 50px;
+  background: #00c8be;
+  color: #ffffff;
+  font-size: 15px;
+  text-align: center;
+  border-radius: 3px;
 }
 </style>

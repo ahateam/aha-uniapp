@@ -5,20 +5,24 @@ import store from './store'
 import tim from './commen/tim/tim'
 import TIM from 'tim-js-sdk'
 import api from './commen/api'
-import axios from 'axios'
-axios.defaults.headers = {
-  "Content-Type": "text/plain"
-}
+import constData from './commen/constData'
+import commen from './commen/commen'
+
 window.tim = tim
 window.TIM = TIM
+window.store = store
 Vue.config.productionTip = false
 Vue.prototype.tim = tim
 Vue.prototype.TIM = TIM
+Vue.prototype.$store = store
 Vue.prototype.$api = api
-Vue.prototype.$axios = axios
+Vue.prototype.$constData = constData
+Vue.prototype.$commen = commen
+
+
+
 
 new Vue({
   router,
-  store,
   render: h => h(App)
 }).$mount('#app')
