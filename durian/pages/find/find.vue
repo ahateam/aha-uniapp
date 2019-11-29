@@ -125,30 +125,11 @@
 				shareData: {},
 				shareIndex: 0,
 				/* end */
+
+				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			}
 		},
-
-		onLoad() {
-			let cnt = {
-				moduleId: this.$constData.module, // String 模块
-				sort: true, // boolean 是否倒序
-				// type: type, // Byte <选填> 类型
-				// status: status, // Byte <选填> 状态编号
-				// power: power, // Byte <选填> 权力
-				// upUserId: upUserId, // Long <选填> 上传用户编号
-				// upChannelId: upChannelId, // Long <选填> 上传专栏编号
-				// tags: tags, // JSONObject <选填> 标签
-				userId: uni.getStorageSync('userId'), // Long <选填> 当前用户编号
-				count: this.count, // int 
-				offset: this.offset, // int
-			}
-			this.getPostingList(cnt)
-		},
-
 		methods: {
-			/*二维码*/
-
-
 			navToAdd() {
 				uni.navigateTo({
 					url: '/pages/find/createView/createView'
@@ -168,7 +149,7 @@
 			delAppraise(id, index) {
 				let cnt = {
 					ownerId: id,
-					userId: uni.getStorageSync('userId')
+					userId: this.userInfo.userId
 				}
 				this.$api.delAppraise(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -186,15 +167,11 @@
 			createUpvote(index, id) {
 				let cnt = {
 					ownerId: id, // Long 内容编号/评论编号
-					userId: uni.getStorageSync('userId'), // Long 用户编号
+					userId: this.userInfo.userId, // Long 用户编号
 					value: this.$constData.appraise[0].key //Byte 状态
 				}
 				this.$api.createAppraise(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.showToast({
-							title: '点赞成功',
-							duration: 1000
-						})
 						this.contentList[index].upvoteStatus = true
 						this.contentList[index].appraiseCount += 1
 					} else {
@@ -245,7 +222,7 @@
 							title: '分享成功！'
 						})
 						let cnt1 = {
-							userId: uni.getStorageSync('userId'), // Long 用户id
+							userId: this.userInfo.userId, // Long 用户id
 							ownerId: item.posting.postingId, // Long 内容id
 						}
 						this.createUserShare(cnt1, index)
@@ -306,11 +283,29 @@
 					}
 				})
 			},
-			
+
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 		},
+
+		onLoad() {
+			let cnt = {
+				moduleId: this.$constData.module, // String 模块
+				sort: true, // boolean 是否倒序
+				userId: this.userInfo.userId, // long <选填> 用户id
+				// type: type, // Byte <选填> 类型
+				// status: status, // Byte <选填> 状态编号
+				// power: power, // Byte <选填> 权力
+				// upUserId: upUserId, // Long <选填> 上传用户编号
+				// upChannelId: upChannelId, // Long <选填> 上传专栏编号
+				// tags: tags, // JSONObject <选填> 标签
+				count: this.count, // int 
+				offset: this.offset, // int
+			}
+			this.getPostingList(cnt)
+		},
+
 		onPullDownRefresh() {
 			let cnt = {
 				moduleId: this.$constData.module, // String 模块
@@ -321,7 +316,7 @@
 				// upUserId: upUserId, // Long <选填> 上传用户编号
 				// upChannelId: upChannelId, // Long <选填> 上传专栏编号
 				// tags: tags, // JSONObject <选填> 标签
-				userId: uni.getStorageSync('userId'), // Long <选填> 当前用户编号
+				userId: this.userInfo.userId, // Long <选填> 当前用户编号
 				count: this.count, // int 
 				offset: this.offset, // int
 			}

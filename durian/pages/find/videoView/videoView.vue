@@ -77,6 +77,7 @@
 		data() {
 			return {
 				opacity: 'opacity: 0',
+				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo')),
 
 				// 评论分页
 				commentApi: false, //是否返回数据
@@ -104,9 +105,9 @@
 
 				sheetStatus: false,
 				money: 5, //打赏价格
-				
+
 				//收藏
-				isfavorite:false,//是否收藏
+				isfavorite: false, //是否收藏
 			}
 		},
 
@@ -114,7 +115,7 @@
 			this.id = res.id
 			let cnt = {
 				id: this.id, // Long 帖子id
-				userId: uni.getStorageSync('userId'), // Long 当前用户id
+				userId: this.userInfo.userId, // Long 当前用户id
 				sort: true, // boolean 是否倒序
 				count: this.count, // int 
 				offset: this.offset, // int 
@@ -122,7 +123,7 @@
 			this.getPosting(cnt)
 			let cnt1 = {
 				ownerId: this.id, // Long 帖子id
-				userId: uni.getStorageSync('userId'), // Long 当前用户id
+				userId: this.userInfo.userId, // Long 当前用户id
 				orderDesc: true, // Boolean 是否排序
 				count: this.count, // int 
 				offset: this.offset, // int 
@@ -132,24 +133,53 @@
 
 		methods: {
 			// 收藏按钮
-			createCollect(){
-				if(this.isfavorite){
+			createCollect() {
+				if (this.isfavorite) {
 					this.delUserFavorite()
-				}else{
+				} else {
 					this.createUserFavorite()
 				}
 			},
-			
+
 			// 删除收藏
-			delUserFavorite(){
-				
+			delUserFavorite() {
+				let cnt = {
+					postingId: this.id, // Long 被关注帖子id
+					userId: this.userInfo.userId, // Long 用户id
+				}
+				this.$api.delUserFavorite(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.isfavorite = false
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			},
-			
+
 			// 创建收藏
-			createUserFavorite(){
-				
+			createUserFavorite() {
+				let cnt = {
+					postingId: this.id, // Long 被关注帖子id
+					userId: this.userInfo.userId, // Long 用户id
+				}
+				this.$api.createUserFavorite(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.isfavorite = true
+						uni.showToast({
+							title: '已收藏'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			},
-			
+
 			createAppraise() {
 				if (this.isAppraise) {
 					this.delAppraise(this.id)
@@ -162,7 +192,7 @@
 			delAppraise(id, index) {
 				let cnt = {
 					ownerId: id,
-					userId: uni.getStorageSync('userId')
+					userId: this.userInfo.userId
 				}
 				this.$api.delAppraise(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -180,7 +210,7 @@
 			createUpvote(id, index) {
 				let cnt = {
 					ownerId: id, // Long 内容编号/评论编号
-					userId: uni.getStorageSync('userId'), // Long 用户编号
+					userId: this.userInfo.userId, // Long 用户编号
 					value: this.$constData.appraise[0].key //Byte 状态
 				}
 				this.$api.createAppraise(cnt, (res) => {
@@ -216,18 +246,18 @@
 
 			submit() {
 
-				let userId = uni.getStorageSync('userId')
-				if (userId == '' || userId == '1234567890') {
-					uni.showToast({
-						title: '登录后可评论',
-						icon: 'none'
-					})
-					return
-				}
+				// let userId = uni.getStorageSync('userId')
+				// if (userId == '' || userId == '1234567890') {
+				// 	uni.showToast({
+				// 		title: '登录后可评论',
+				// 		icon: 'none'
+				// 	})
+				// 	return
+				// }
 				let cnt = {
 					// module: this.$constData.module, // String 隶属
 					ownerId: this.id, // Long 内容编号
-					upUserId: userId, // Long 用户编号
+					upUserId: this.userInfo.userId, // Long 用户编号
 					text: this.replayText, // String 评论内容
 					// data: [], // String 其他数据
 					atUserId: 0, // Long <选填> @对象编号
@@ -248,14 +278,14 @@
 						let d = time.getDate()
 
 						let userHead = {
-							userHead: uni.getStorageSync('userHead')
+							userHead: this.userInfo.userHead
 						}
 
 						userHead = JSON.stringify(userHead)
 
 						let data = {
 							user: {
-								name: uni.getStorageSync('userName'),
+								name: this.userInfo.userName,
 								ext: userHead
 							},
 							reply: {
@@ -498,11 +528,11 @@
 	.rightNav {
 		margin-right: 50rpx;
 	}
-	
+
 	.icon-box {
 		display: flex;
 		align-items: center;
-		
+
 		image {
 			width: 30rpx;
 			height: 30rpx;

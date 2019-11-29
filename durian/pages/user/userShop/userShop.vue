@@ -50,7 +50,7 @@
 			</view>
 
 			<!-- 购买列表 -->
-			<shop-list :list="contentList" @change="changeShop" @emitItem="navToInfo"></shop-list>
+			<shop-list :list="contentList" @change="changeShop" @changeEnd="changeShopEnd" @emitItem="navToInfo"></shop-list>
 			<view class="buy" style="margin-top: 40rpx;">我的商品</view>
 
 			<view class="nullList" v-if="myGoods.length == 0" style="padding-bottom: 40rpx;">
@@ -61,7 +61,7 @@
 			</view>
 
 			<!-- 我的商品列表 -->
-			<shop-list :list="myGoods" @change="changeGoods" @emitItem="navToOrder"></shop-list>
+			<shop-list :list="myGoods" @change="changeGoods" @changeEnd="changeGoodsEnd" @emitItem="navToOrder"></shop-list>
 			<view class="more-text" v-if="myGoods.length > 0">
 				<text>查看更多</text>
 				<text class="iconfont icon-xiayibu"></text>
@@ -123,8 +123,9 @@
 				contentList: [{
 						goodsName: 'Coles购物卡',
 						goodsPrice: '(面值233澳元)',
+						goodsData: '["https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/image/20191121/1574328267400.jpg"]',
 						cardPrice: '100',
-						goodsType: 1
+						goodsType: 0
 					},
 					{
 						goodsName: 'Coles购物卡',
@@ -136,8 +137,9 @@
 				myGoods: [{
 						goodsName: 'Coles购物卡',
 						goodsPrice: '(面值233澳元)',
+						goodsData: '["https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/image/20191121/1574328267400.jpg"]',
 						cardPrice: '100',
-						goodsType: 1
+						goodsType: 0
 					},
 					{
 						goodsName: 'Coles购物卡',
@@ -194,26 +196,42 @@
 			},
 
 			changeShop(index, type) {
-				this.changeCard(index, type, 0)
+				if (type != 0) {
+					this.changeCard(index, 0)
+				}
+			},
+
+			changeShopEnd(index, type) {
+				if (type != 0) {
+					this.changeCardEnd(index, 0)
+				}
 			},
 
 			changeGoods(index, type) {
-				this.changeCard(index, type, 1)
+				if (type != 0) {
+					this.changeCard(index, 1)
+				}
 			},
 
-			changeCard(index, type, e) {
-				if (type == 1) {
-					if (e == 0) {
-						this.contentList[index].goodsType = 2
-					} else {
-						this.myGoods[index].goodsType = 2
-					}
+			changeGoodsEnd(index, type) {
+				if (type != 0) {
+					this.changeCardEnd(index, 1)
+				}
+			},
+
+			changeCard(index, e) {
+				if (e == 0) {
+					this.contentList[index].goodsType = 2
 				} else {
-					if (e == 0) {
-						this.contentList[index].goodsType = 1
-					} else {
-						this.myGoods[index].goodsType = 1
-					}
+					this.myGoods[index].goodsType = 2
+				}
+			},
+
+			changeCardEnd(index, e) {
+				if (e == 0) {
+					this.contentList[index].goodsType = 1
+				} else {
+					this.myGoods[index].goodsType = 1
 				}
 			},
 

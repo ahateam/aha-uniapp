@@ -22,7 +22,7 @@
 				<image src="/static/image/shop/zwdh.png" mode="aspectFill"></image>
 				<view style="margin-top: 30rpx;">暂无兑换</view>
 			</view>
-			<shopList :list="contentList" @change="change" @emitItem="navToInfo"></shopList>
+			<shopList :list="contentList" @change="change" @changeEnd="changeEnd" @emitItem="navToInfo"></shopList>
 
 			<view class="title-box">自由市场</view>
 			<view class="noShop" v-if="studyList.length == 0">
@@ -80,12 +80,12 @@
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 
-			change(index, type) {
-				if (type == 1) {
-					this.contentList[index].goodsType = 2
-				} else {
-					this.contentList[index].goodsType = 1
-				}
+			change(index) {
+				this.contentList[index].goodsType = 2
+			},
+
+			changeEnd(index) {
+				this.contentList[index].goodsType = 1
 			},
 
 			getGoods(cnt) {

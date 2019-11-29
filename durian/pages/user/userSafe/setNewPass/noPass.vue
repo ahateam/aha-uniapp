@@ -88,7 +88,8 @@
 			},
 		},
 		onLoad() {
-			let tel = uni.getStorageSync('userTel')
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			let tel = userInfo.phone
 			this.phone = tel.substr(2, tel.length - 9) + '****' + tel.substr(tel.length - 3)
 			this.tel = tel
 		}

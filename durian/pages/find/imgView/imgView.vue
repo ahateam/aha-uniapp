@@ -113,6 +113,8 @@
 
 				//收藏
 				isfavorite: false, //是否收藏
+
+				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			}
 		},
 
@@ -120,7 +122,7 @@
 			this.id = res.id
 			let cnt = {
 				id: this.id, // Long 帖子id
-				userId: uni.getStorageSync('userId'), // Long 当前用户id
+				userId: this.userInfo.userId, // Long 当前用户id
 				sort: true, // boolean 是否倒序
 				count: this.count, // int 
 				offset: this.offset, // int 
@@ -128,7 +130,7 @@
 			this.getPosting(cnt)
 			let cnt1 = {
 				ownerId: this.id, // Long 帖子id
-				userId: uni.getStorageSync('userId'), // Long 当前用户id
+				userId: this.userInfo.userId, // Long 当前用户id
 				orderDesc: true, // Boolean 是否排序
 				count: this.count, // int 
 				offset: this.offset, // int 
@@ -150,15 +152,15 @@
 			delUserFavorite() {
 				let cnt = {
 					postingId: this.id, // Long 被关注帖子id
-					userId: uni.getStorageSync('userId'), // Long 用户id
+					userId: this.userInfo.userId, // Long 用户id
 				}
 				this.$api.delUserFavorite(cnt, (res) => {
-					if(res.data.rc == this.$util.RC.SUCCESS){
+					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.isfavorite = false
-					}else{
+					} else {
 						uni.showToast({
-							title:res.data.rm,
-							icon:'none'
+							title: res.data.rm,
+							icon: 'none'
 						})
 					}
 				})
@@ -168,23 +170,23 @@
 			createUserFavorite() {
 				let cnt = {
 					postingId: this.id, // Long 被关注帖子id
-					userId: uni.getStorageSync('userId'), // Long 用户id
+					userId: this.userInfo.userId, // Long 用户id
 				}
 				this.$api.createUserFavorite(cnt, (res) => {
-					if(res.data.rc == this.$util.RC.SUCCESS){
+					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.isfavorite = true
 						uni.showToast({
-							title:'已收藏'
+							title: '已收藏'
 						})
-					}else{
+					} else {
 						uni.showToast({
-							title:res.data.rm,
-							icon:'none'
+							title: res.data.rm,
+							icon: 'none'
 						})
 					}
 				})
 			},
-			
+
 			createAppraise() {
 				if (this.isAppraise) {
 					this.delAppraise(this.id)
@@ -196,7 +198,7 @@
 			delAppraise(id, index) {
 				let cnt = {
 					ownerId: id,
-					userId: uni.getStorageSync('userId')
+					userId: this.userInfo.userId
 				}
 				this.$api.delAppraise(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -214,7 +216,7 @@
 			createUpvote(id, index) {
 				let cnt = {
 					ownerId: id, // Long 内容编号/评论编号
-					userId: uni.getStorageSync('userId'), // Long 用户编号
+					userId: this.userInfo.userId, // Long 用户编号
 					value: this.$constData.appraise[0].key //Byte 状态
 				}
 				this.$api.createAppraise(cnt, (res) => {
@@ -286,18 +288,18 @@
 			},
 
 			submit() {
-				let userId = uni.getStorageSync('userId')
-				if (userId == '' || userId == '1234567890') {
-					uni.showToast({
-						title: '登录后可评论',
-						icon: 'none'
-					})
-					return
-				}
+				// let userId = uni.getStorageSync('userId')
+				// if (userId == '' || userId == '1234567890') {
+				// 	uni.showToast({
+				// 		title: '登录后可评论',
+				// 		icon: 'none'
+				// 	})
+				// 	return
+				// }
 				let cnt = {
 					// module: this.$constData.module, // String 隶属
 					ownerId: this.id, // Long 内容编号
-					upUserId: userId, // Long 用户编号
+					upUserId: this.userInfo.userId, // Long 用户编号
 					text: this.replayText, // String 评论内容
 					// data: [], // String 其他数据
 					atUserId: 0, // Long <选填> @对象编号
@@ -318,14 +320,14 @@
 						let d = time.getDate()
 
 						let userHead = {
-							userHead: uni.getStorageSync('userHead')
+							userHead: this.userInfo.userHead
 						}
 
 						userHead = JSON.stringify(userHead)
 
 						let data = {
 							user: {
-								name: uni.getStorageSync('userName'),
+								name: this.userInfo.userName,
 								ext: userHead
 							},
 							reply: {

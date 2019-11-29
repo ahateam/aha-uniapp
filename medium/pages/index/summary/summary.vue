@@ -12,9 +12,10 @@
 
 		<data-textarea :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" title="和接收者共享的文件"></data-textarea>
 
-		<view>
+		<view style="margin-top: 20rpx;">
 			<view class="uploding-img" v-if="imgList.length == 0">
 				<image src="/static/image/icon/icon_pzsc.png" mode="aspectFit"></image>
+				<view>上传照片</view>
 			</view>
 		</view>
 
@@ -138,6 +139,7 @@
 
 	.uploding-img {
 		display: flex;
+		margin: 0 auto;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
@@ -145,5 +147,12 @@
 		width: 690rpx;
 		background-color: $group-color-search;
 		border-radius: 4rpx;
+		color: $group-color;
+		font-size: $group-font-befor;
+
+		image {
+			width: 39rpx;
+			height: 31rpx;
+		}
 	}
 </style>

@@ -40,7 +40,8 @@
 					</view>
 				</view>
 			</view>
-			<view class="content-box" v-for="(item,index) in contentList" :key="index" @click="navToView(item.path)">
+			<view class="content-box" :class="{'curr-box':listIndex==index}" v-for="(item,index) in contentList" :key="index"
+			 @touchstart="currIndex(index)" @touchend="listIndex = -1" @click="navToView(item.path)">
 				<view class="left-box">
 					<image class="left-icon" :src="item.iconSrc" mode="aspectFill"></image>
 					<text>{{item.text}}</text>
@@ -52,7 +53,7 @@
 </template>
 
 <script>
-	import progressBar from '../../components/chocolate-progress-bar/chocolate-progress-bar.vue'
+	import progressBar from '@/components/chocolate-progress-bar/chocolate-progress-bar.vue'
 
 	export default {
 		name: 'user',
@@ -63,8 +64,8 @@
 		data() {
 			return {
 				userInfo: {},
-				imgSrc: uni.getStorageSync('userHead'),
-				name: uni.getStorageSync('userName'),
+				imgSrc: '',
+				name: '',
 				money: 0,
 				contentList: [{
 						text: '我的商品',
@@ -88,12 +89,18 @@
 					}
 				],
 
+				listIndex: -1,
+
 				applyTitle: 'Monash大学计算机专业申请',
 				applyHsty: '签字已提交',
 				hstyNumber: '25'
 			}
 		},
 		methods: {
+			currIndex(index) {
+				this.listIndex = index
+			},
+
 			navToUser() {
 				uni.navigateTo({
 					url: '/pages/user/userData/userData'
@@ -113,11 +120,11 @@
 			},
 		},
 		onShow() {
-			let userInfo = uni.getStorageSync('userInfo')
-			console.log(this.$util.tryParseJson(userInfo))
-			if (uni.getStorageSync('userId')) {
-				this.name = uni.getStorageSync('userName')
-				this.imgSrc = uni.getStorageSync('userHead')
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			console.log(userInfo)
+			if (userInfo) {
+				this.name = userInfo.userName
+				this.imgSrc = userInfo.userHead
 			}
 		}
 	}
@@ -273,5 +280,9 @@
 
 	.apply-hsty {
 		color: #00C8BE;
+	}
+
+	.curr-box {
+		background-color: rgba($color: #999999, $alpha: .1);
 	}
 </style>

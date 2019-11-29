@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="contentList" :style="item.goodsType == constData.goodsType[0].key?cardBg:''" v-for="(item,index) in list"
-		 :key="index" @touchstart="change(index,item)" @touchend="change(index,item,true)" @click="navToInfo(item)">
+		 :key="index" @touchstart="change(index,item)" @touchend="changeEnd(index,item,true)" @click="navToInfo(item)">
 			<!-- 平台商品背景图片    -->
 			<image v-if="item.goodsType != constData.goodsType[0].key" class="card-img" :src="item.goodsType == constData.goodsType[1].key?cardImgSrcY:cardImgSrcB"
 			 mode="aspectFill"></image>
@@ -48,17 +48,16 @@
 				return this.$util.tryParseJson(arr)[0]
 			},
 
-			change(index, item, e) {
-				if (item.goodsType == this.$constData.goodsType[1].key) {
-					this.$emit('change', index, item.goodsType)
-				}
-				if (item.goodsType == this.$constData.goodsType[2].key) {
-					this.$emit('change', index, item.goodsType)
-				}
+			change(index,item) {
+				this.$emit('change', index,item.goodsType)
+			},
+
+			changeEnd(index,item) {
+				this.$emit('changeEnd', index,item.goodsType)
 			},
 
 			navToInfo(item) {
-				this.$emit('emitItem',item)
+				this.$emit('emitItem', item)
 			},
 		}
 	}

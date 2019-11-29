@@ -73,6 +73,8 @@
 		},
 		data() {
 			return {
+				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo')),
+				
 				text:'',
 				imgList:[
 					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574481485225&di=de0ef6dad880523f807387db7adc6cf7&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F3%2F5834044414919.jpg',
@@ -197,7 +199,7 @@
 				let cnt = {
 					moduleId: this.$constData.module, // String 模块编号
 					// ownerId: ownerId, // Long 持有者内容编号
-					upUserId: uni.getStorageSync('userId'), // Long 创建者用户编号
+					upUserId: this.userInfo.userId, // Long 创建者用户编号
 					text: this.text, // String <选填> 文本
 					data: data, // String <选填> 其他图片视频数据
 					// ext: ext, // String <选填> 扩展数据
@@ -410,6 +412,7 @@
 	
 	.pt-view{
 		position: relative;
+		z-index: 2;
 	}
 	
 	.addImgBtn{
@@ -448,6 +451,7 @@
 	
 	.rightBox{
 		position: absolute;
+		z-index: 0;
 		right: 0;
 		color: $group-color-befor;
 	}
@@ -493,6 +497,7 @@
 	.del-img-tip{
 		position: fixed;
 		display: flex;
+		z-index: 3;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;

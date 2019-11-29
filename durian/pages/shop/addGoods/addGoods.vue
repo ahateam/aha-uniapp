@@ -155,7 +155,7 @@
 					// 发布商品 **************************
 					let cnt = {
 						goodsName: this.title, // String 商品标题
-						senderId: uni.getStorageSync('userId'), // Long 发布者编号
+						senderId: this.$util.tryParseJson(uni.getStorageSync('userInfo')).userId, // Long 发布者编号
 						goodsType: this.$constData.goodsType[0].key, // Byte 商品类型
 						goodsClassifyId: 402755506127634, // Long 商品分类
 						stock: 1, // Integer 库存

@@ -18,7 +18,7 @@
 			<view class="content-box" @click="showName = true">
 				<view class="left-box">昵称</view>
 				<view class="right-box">
-					<text>{{name}}</text>
+					<text>{{userInfo.userName}}</text>
 					<image :hidden="showName" src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
@@ -26,7 +26,7 @@
 			<view class="content-box" @click="showSex = true">
 				<view class="left-box">性别</view>
 				<view class="right-box">
-					<text>{{sex}}</text>
+					<text>{{userInfo.sex}}</text>
 					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
@@ -34,7 +34,7 @@
 			<view class="content-box" @click="timeChange">
 				<view class="left-box">生日</view>
 				<view class="right-box">
-					<text>{{birthday}}</text>
+					<text>{{userInfo.brithday}}</text>
 					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
@@ -42,7 +42,7 @@
 			<view class="content-box" @click="showSchoolBox">
 				<view class="left-box">所在学校</view>
 				<view class="right-box">
-					<text>{{school}}</text>
+					<text>{{userInfo.school}}</text>
 					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
@@ -50,7 +50,7 @@
 			<view class="content-box">
 				<view class="left-box">注册手机号</view>
 				<view class="right-box">
-					<text>{{tel}}</text>
+					<text>{{userInfo.phone}}</text>
 					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
@@ -101,26 +101,16 @@
 			})
 			return {
 				headSrc: '',
-
-				name: uni.getStorageSync('userName'),
 				showName: false,
 				newName: '',
-
-				sex: uni.getStorageSync('userSex'),
 				showSex: false,
-
-				birthday: this.getBirthday(uni.getStorageSync('userBirthday')),
 				showBirth: false,
-
-				school: uni.getStorageSync('userSchool'),
 				showSchool: false,
 				newSchool: '',
-
-				tel: uni.getStorageSync('userTel'),
 				showTel: false,
-
 				inputValue: currentDate,
-				shixian: false
+				shixian: false,
+				userInfo: {},
 			}
 
 		},
@@ -206,20 +196,20 @@
 			},
 
 			changeName() {
-				this.name = this.newName
+				this.userInfo.userName = this.newName
 				this.showName = false
 			},
 
 			changeSchool() {
-				this.school = this.newSchool
+				this.userInfo.school = this.newSchool
 				this.showSchool = false
 			},
 
 			choiceSex(e) {
 				if (e == 0) {
-					this.sex = '女'
+					this.userInfo.sex = '女'
 				} else {
-					this.sex = '男'
+					this.userInfo.sex = '男'
 				}
 				this.showSex = false
 			},
@@ -243,17 +233,17 @@
 				uni.navigateBack()
 			},
 
-			timeChange: function() {
+			timeChange() {
 				this.$refs.setpicker.confirm(this.inputValue)
 				this.shixian = true;
 			},
-			quxiaobutton: function() {
+			quxiaobutton() {
 				this.shixian = false
 			},
-			quedingbutton: function(bangdingyear, bangdingmonth, bangdingday) {
+			quedingbutton(bangdingyear, bangdingmonth, bangdingday) {
 				this.shixian = false
 				this.inputValue = bangdingyear + "-" + bangdingmonth + "-" + bangdingday
-				this.birthday = this.inputValue
+				this.userInfo.brithday = this.inputValue
 			},
 			getDate(type) {
 				const date = new Date()
@@ -275,15 +265,15 @@
 			},
 
 			saveData() {
-				if (this.name == '') {
+				if (this.userInfo.userName == '') {
 					uni.showToast({
 						title: '请填写你的昵称',
 						icon: 'none'
 					})
 				} else {
 					let cnt = {
-						userId: uni.getStorageSync('userId'), // Long 用户编号
-						userName: this.name, // String 用户名
+						userId: this.userInfo.userId, // Long 用户编号
+						userName: this.userInfo.userName, // String 用户名
 						// sex: this.sex, // String 性别
 						// brithday: brithday, // Date 出生年月
 						// school: this.school, // String 学校
@@ -295,16 +285,16 @@
 						// fierNumber: fierNumber, // String FIER号
 						// naatiNumber: naatiNumber, // String NAATI号
 					}
-					if (this.birthday) {
-						cnt.brithday = `${this.birthday} 00:00:00`
+					if (this.userInfo.brithday) {
+						cnt.brithday = `${this.userInfo.brithday} 00:00:00`
 					}
 
-					if (this.sex) {
-						cnt.sex = this.sex
+					if (this.userInfo.sex) {
+						cnt.sex = this.userInfo.sex
 					}
 
-					if (this.school) {
-						cnt.school = this.school
+					if (this.userInfo.school) {
+						cnt.school = this.userInfo.school
 					}
 
 					if (this.headSrc) {
@@ -313,19 +303,10 @@
 
 					this.$api.updateUser(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
-							uni.setStorageSync('userName', this.name)
-							if (this.birthday) {
-								uni.setStorageSync('userBirthday', this.birthday)
-							}
-							if (this.sex) {
-								uni.setStorageSync('userSex', this.sex)
-							}
-							if (this.school) {
-								uni.setStorageSync('userSchool', this.school)
-							}
-							if (this.headSrc) {
-								uni.setStorageSync('userHead', this.headSrc)
-							}
+							this.userInfo.userHead = this.headSrc
+							let userInfo = JSON.stringify(this.userInfo)
+							uni.setStorageSync('userInfo', userInfo)
+
 							uni.switchTab({
 								url: '/pages/user/user'
 							})
@@ -343,10 +324,14 @@
 				// 	title: '保存成功！'
 				// })
 			},
-			
+
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
+		},
+		onLoad() {
+			this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			this.userInfo.brithday = this.getBirthday(this.userInfo.brithday)
 		}
 	}
 </script>

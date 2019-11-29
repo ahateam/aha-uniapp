@@ -89,7 +89,8 @@
 			},
 		},
 		onLoad() {
-			this.telData = uni.getStorageSync('userTel')
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			this.telData = userInfo.phone
 			this.newTel()
 		}
 	}

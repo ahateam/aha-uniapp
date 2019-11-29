@@ -43,9 +43,10 @@
 
 				name: '', //收货人姓名
 				address: '', //地址
-				tel: '18772229999', //电话
+				tel: '', //电话
 				remark: '', //备注
 				phone: '',
+				userInfo: ''
 			}
 		},
 
@@ -69,7 +70,7 @@
 				} else {
 					let cnt = {
 						orderType: this.$constData.orderType[0].key, // Byte 订单类型
-						buyerId: uni.getStorageSync('userId'), // Long 买家id
+						buyerId: this.userInfo.userId, // Long 买家id
 						goodsId: this.id, // Long 商品id
 						sellerId: this.upUserId, // Long 卖家id
 						goodsNumber: 1, // Integer 商品数量
@@ -108,6 +109,8 @@
 			this.id = res.id
 			this.upUserId = res.upId
 			this.price = res.price
+			this.userInfo = uni.getStorageSync('userInfo')
+			this.phone = this.userInfo.phone
 		}
 	}
 </script>
