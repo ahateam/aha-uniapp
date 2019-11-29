@@ -1,6 +1,9 @@
 <template>
-	<view class="body">
-		<view :style="{'padding-top': getNavHeight()}"></view>
+	<view style="background-color: #FFFFFF;">
+		<view class="fixed-status" :style="{'height': getNavHeight() + 'px'}">
+			<cover-view></cover-view>
+		</view>
+		<view :style="{'height': getNavHeight() + 44 + 'px'}"></view>
 
 		<view class="topBox auto-margin">
 			<view class="title_box" @click="navTest">
@@ -285,7 +288,7 @@
 			},
 
 			getNavHeight() {
-				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+				return uni.getSystemInfoSync()['statusBarHeight']
 			},
 		},
 
@@ -547,5 +550,18 @@
 	.hiddenBox {
 		position: absolute;
 		top: -10000px;
+	}
+
+	.fixed-status {
+		position: fixed;
+		z-index: 3;
+		top: 0;
+		width: 100%;
+
+		cover-view {
+			background-color: $group-color-w;
+			width: 100%;
+			height: 100%;
+		}
 	}
 </style>

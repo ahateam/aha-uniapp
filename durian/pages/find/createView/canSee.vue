@@ -108,6 +108,7 @@
 		border-radius: 4rpx;
 		background-color: #24D4D0;
 		padding: 0 20rpx;
+		margin-right: 30rpx;
 
 		&:after {
 			border: none;

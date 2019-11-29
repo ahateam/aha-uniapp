@@ -176,6 +176,7 @@
 <style lang="scss" scoped>
 	.body {
 		padding: 0 $group-margin-left 20rpx;
+		background-color: $group-color-w;
 		// font-family: 'appleFont';
 	}
 

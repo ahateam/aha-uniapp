@@ -174,11 +174,11 @@
 	.right-radius {
 		position: absolute;
 		top: calc(64px - 39rpx);
-		right: -70rpx;
+		right: 0;
 		opacity: .1;
-		width: 140rpx;
+		width: 70rpx;
 		height: 140rpx;
-		border-radius: 50%;
+		border-radius: 70rpx 0 0 70rpx;
 		background: linear-gradient(90deg, #FFD5D5, #FFABAB);
 	}
 
