@@ -4,8 +4,9 @@
 			<text :hidden="hiddenIcon">*</text>
 			<view class="right-title">{{title}}</view>
 		</view>
-		<view class="auto-input" :style="hiddenTitle?'margin-top:0;':''">
-			<input :hidden="inputHidden" :value="value" :placeholder="placeholder" @input="onInput" :type="type" />
+		<view class="auto-input" :style="hiddenTitle?'margin-top:0;':''" @click="emit">
+			<input :hidden="inputHidden" :value="value" :placeholder="placeholder" @input="onInput" :type="type" :disabled="disabled" />
+			<view v-if="price">{{price}}</view>
 			<view v-if="inputHidden">{{value}}</view>
 		</view>
 	</view>
@@ -16,6 +17,10 @@
 		props: {
 			value: String,
 			title: String,
+			price: {
+				type: String,
+				default: ''
+			},
 			type: {
 				type: String,
 				default: 'text',
@@ -40,6 +45,10 @@
 				//是否隐藏 '星号'
 				type: Boolean,
 				default: false
+			},
+			disabled: {
+				type: Boolean,
+				default: false
 			}
 		},
 		model: {
@@ -56,6 +65,10 @@
 				//传出值
 				this.$emit('input', e.target.value)
 			},
+			
+			emit(){
+				this.$emit('click')
+			}
 		}
 	}
 </script>

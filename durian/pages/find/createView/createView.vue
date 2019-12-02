@@ -237,7 +237,7 @@
 					sourceType: [e],
 					success: (res) => {
 						this.showPopup = false
-						var imageSrc = res.tempFilePaths[0]
+						let imageSrc = res.tempFilePaths[0]
 						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
 						let nameStr =address+ tiemr.getTime()+str
 						// nameStr =  res.tempFilePaths[0]

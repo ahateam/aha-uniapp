@@ -6,6 +6,20 @@
   "description": "榴莲中介端",
   "glyphs": [
     {
+      "icon_id": "1517637",
+      "name": "关闭",
+      "font_class": "guanbi",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "3926267",
+      "name": "加",
+      "font_class": "jia",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
       "icon_id": "4485029",
       "name": "生日",
       "font_class": "shengri",

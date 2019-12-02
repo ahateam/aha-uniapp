@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<view class="test" :style="{height:getStatusHeight()}"></view>
+		<view class="status-nav" :style="{height:getStatusHeight()}"></view>
 		<!-- 顶部选项卡 -->
 		<view class="nav-box">
 			<view class="view-title">我的任务</view>
@@ -110,7 +110,7 @@
 </script>
 
 <style lang="scss" scoped>
-	.test {
+	.status-nav {
 		position: fixed;
 		z-index: 999;
 		top: 0;

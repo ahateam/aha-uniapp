@@ -13,10 +13,29 @@
 		<data-textarea :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" title="和接收者共享的文件"></data-textarea>
 
 		<view style="margin-top: 20rpx;">
-			<view class="uploding-img" v-if="imgList.length == 0">
+			<button class="uploding-img" @click="upImgStar" v-if="imgList.length == 0">
 				<image src="/static/image/icon/icon_pzsc.png" mode="aspectFit"></image>
 				<view>上传照片</view>
+			</button>
+			<view class="img-list" v-else>
+				<view class="img-list-box" v-for="(item,index) in imgList" :key="index">
+					<image :src="item" mode="aspectFill"></image>
+					<view class="iconfont iconguanbi" @click.stop="delImg(index)"></view>
+				</view>
+				<view class="iconfont iconjia img-list-box" @click="upImgStar"></view>
 			</view>
+		</view>
+
+		<view class="up-file">
+			<view class="auto-title">其他文件</view>
+			<view class="up-file-btn file-list" v-for="(item,index) in fileList" :key="index">
+				<view class="">
+					<view>{{item.name}}</view>
+					<view class="file-size">{{item.size}}</view>
+				</view>
+				<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
+			</view>
+			<button class="up-file-btn" @click="upFile">点击上传</button>
 		</view>
 
 		<data-input :inputHidden="aptitudesStatus" v-model="remark" :hiddenIcon="true" title="特别提醒"></data-input>
@@ -24,6 +43,8 @@
 		<view class="bottom-btn">
 			<next-btn @click="nextBtn"></next-btn>
 		</view>
+
+		<l-file ref="lFile" @up-success="onSuccess"></l-file>
 	</view>
 </template>
 
@@ -33,7 +54,7 @@
 	import ChoiceInput from '@/components/dataInput/ChoiceInput.vue'
 	import DataTextarea from '@/components/dataInput/DataTextarea.vue'
 	import NextBtn from '@/components/NextBtn/NextBtn.vue'
-
+	import lFile from '@/components/l-file/l-file.vue'
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 
 	export default {
@@ -44,7 +65,8 @@
 			ChoiceInput,
 			uniPopup,
 			DataTextarea,
-			NextBtn
+			NextBtn,
+			lFile
 		},
 		data() {
 			return {
@@ -57,11 +79,109 @@
 				remark: '',
 
 				imgList: [],
+				fileList: [{
+					name: '我的成绩单.docx',
+					size: '216K'
+				}],
+
 			}
 		},
 		methods: {
+			upFile() {
+				let tiemr = new Date()
+				let address = tiemr.getFullYear() + "" + (tiemr.getMonth() + 1) + "" + tiemr.getDate();
+				address = 'file/' + address + '/'
+				this.$refs.lFile.upload({
+					// #ifdef APP-PLUS
+					currentWebview: this.$mp.page.$getAppWebview(),
+					// #endif
+					url: 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + address,
+					name: 'file',
+					//header: {'Content-Type':'类型','Authorization':'token'},
+					//...其他参数
+					formData: {
+						name: nameStr,
+						'key': nameStr,
+						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMi0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+						'OSSAccessKeyId': 'LTAIJ9mYIjuW54Cj',
+						'success_action_status': '200',
+						//让服务端返回200,不然，默认会返回204
+						'signature': 'kgQ5n4s0oKpFHp35EI12CuTFvVM=',
+					},
+				});
+			},
+
+			onSuccess(res) {
+				console.log('上传成功回调', JSON.stringify(res));
+			},
+
+			delImg(index) {
+				this.imgList.splice(index, 1)
+			},
+
+			upImgStar() {
+				let tiemr = new Date()
+				let address = tiemr.getFullYear() + "" + (tiemr.getMonth() + 1) + "" + tiemr.getDate();
+				address = 'image/' + address + '/'
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['compressed'],
+					success: (res) => {
+						let imageSrc = res.tempFilePaths[0]
+						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
+						let nameStr = address + tiemr.getTime() + str
+						// nameStr =  res.tempFilePaths[0]
+						console.log(nameStr)
+						uni.showLoading({
+							title: '上传中'
+						})
+						this.upLoadImg(imageSrc, nameStr)
+					}
+				})
+			},
+
+			// 上传至服务器
+			upLoadImg(imageSrc, nameStr) {
+				uni.uploadFile({
+					url: 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com',
+					filePath: imageSrc,
+					fileType: 'image',
+					name: 'file',
+					formData: {
+						name: nameStr,
+						'key': nameStr,
+						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMi0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+						'OSSAccessKeyId': 'LTAIJ9mYIjuW54Cj',
+						'success_action_status': '200',
+						//让服务端返回200,不然，默认会返回204
+						'signature': 'kgQ5n4s0oKpFHp35EI12CuTFvVM=',
+					},
+					success: (res) => {
+						console.log(res)
+						uni.hideLoading()
+						uni.showToast({
+							title: '上传成功',
+							icon: 'success',
+							duration: 1000
+						})
+						//只管这个变量
+						this.imgList.push('https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr)
+						console.log(this.imgList)
+					},
+					fail: (err) => {
+						console.log('uploadImage fail', err);
+						uni.showModal({
+							content: err.errMsg,
+							showCancel: false
+						})
+					}
+				})
+			},
+
 			nextBtn() {
-				console.log('下一步')
+				uni.navigateTo({
+					url:`./createTask`
+				})
 			},
 
 			changeAts(index) {
@@ -91,6 +211,16 @@
 </script>
 
 <style lang="scss" scoped>
+	button {
+		&:after {
+			border: none;
+		}
+	}
+
+	.button-hover {
+		opacity: .7;
+	}
+
 	.back-icon {
 		position: absolute;
 		left: 0;
@@ -153,6 +283,101 @@
 		image {
 			width: 39rpx;
 			height: 31rpx;
+			margin-bottom: 20rpx;
+		}
+	}
+
+	.up-file {
+		padding: 30rpx 30rpx 10rpx;
+		font-size: $group-font-befor;
+	}
+
+	.auto-title {
+		margin-left: 10rpx;
+		color: #666666;
+	}
+
+	.up-file-btn {
+		margin-top: 30rpx;
+		width: 690rpx;
+		height: 88rpx;
+		line-height: 88rpx;
+		font-size: $group-font-befor;
+		text-align: center;
+		background-color: $group-color-search;
+		color: $group-color;
+		border-radius: 4rpx;
+		box-sizing: border-box;
+	}
+
+	.file-list {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		height: 120rpx;
+		padding: 20rpx;
+		margin-top: 20rpx;
+		font-size: 28rpx;
+		line-height: 30rpx;
+
+		image {
+			width: 79rpx;
+			height: 79rpx;
+		}
+	}
+
+	.file-size {
+		margin-top: 12rpx;
+		font-size: 24rpx;
+		color: $group-color-befor;
+		line-height: 20rpx;
+		text-align: left;
+	}
+
+	.img-list {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		padding-left: 30rpx;
+		width: 100%;
+		box-sizing: border-box;
+
+		.iconjia {
+			color: $group-color;
+			font-size: 50rpx;
+			line-height: 220rpx;
+			text-align: center;
+		}
+	}
+
+	.img-list-box {
+		position: relative;
+		width: 220rpx;
+		height: 220rpx;
+		border-radius: 6rpx;
+		border: 1rpx solid $group-color-befor;
+		margin: 0 15rpx 15rpx 0;
+		box-sizing: border-box;
+
+		image {
+			width: 220rpx;
+			height: 220rpx;
+			border-radius: 6rpx;
+			display: block;
+		}
+
+		.iconguanbi {
+			position: absolute;
+			right: 10rpx;
+			top: 10rpx;
+			width: 38rpx;
+			height: 38rpx;
+			border-radius: 50%;
+			background-color: #EE455A;
+			color: $group-color-w;
+			font-size: 17rpx;
+			line-height: 38rpx;
+			text-align: center;
 		}
 	}
 </style>

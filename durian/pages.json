@@ -147,12 +147,11 @@
 			"style": {
 
 			}
+		}, {
+			"path": "pages/user/userShop/myGoods/myGoods",
+			"style": {}
 		}
-	    ,{
-            "path" : "pages/user/userShop/myGoods/myGoods",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",
@@ -165,28 +164,29 @@
 		"selectedColor": "#64BCCC",
 		"borderStyle": "white",
 		"backgroundColor": "#ffffff",
+		"iconWidth": "20px",
 		"list": [{
 				"pagePath": "pages/index/index",
-				"iconPath": "static/tabIcon/tab-home.png",
-				"selectedIconPath": "static/tabIcon/tab-home-curr.png",
+				"iconPath": "static/tabIcon/icon_tab_zx.png",
+				"selectedIconPath": "static/tabIcon/icon_tab_zx_p.png",
 				"text": "资询"
 			},
 			{
 				"pagePath": "pages/find/find",
-				"iconPath": "static/tabIcon/tab-home.png",
-				"selectedIconPath": "static/tabIcon/tab-home-curr.png",
+				"iconPath": "static/tabIcon/icon_tab_fx.png",
+				"selectedIconPath": "static/tabIcon/icon_tab_p.png",
 				"text": "发现"
 			},
 			{
 				"pagePath": "pages/shop/shop",
-				"iconPath": "static/tabIcon/tab-home.png",
-				"selectedIconPath": "static/tabIcon/tab-home-curr.png",
+				"iconPath": "static/tabIcon/tab_sc.png",
+				"selectedIconPath": "static/tabIcon/tab_sc_p.png",
 				"text": "商城"
 			},
 			{
 				"pagePath": "pages/user/user",
-				"iconPath": "static/tabIcon/tab-home.png",
-				"selectedIconPath": "static/tabIcon/tab-home-curr.png",
+				"iconPath": "static/tabIcon/tab_wd.png",
+				"selectedIconPath": "static/tabIcon/tab_wd%20copy.png",
 				"text": "我的"
 			}
 		]

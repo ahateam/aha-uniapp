@@ -256,8 +256,8 @@
 	}
 
 	.right-icon {
-		width: 22rpx;
-		height: 22rpx;
+		width: 12rpx;
+		height: 21rpx;
 	}
 
 	.apply-info {

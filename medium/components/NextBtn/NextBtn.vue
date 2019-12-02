@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<button class="auto-btn" @click="click">{{title}}</button>
+		<button :class="[{'auto-btn':type == 'primary'},{'wihte-btn':type == 'default'}]" :style="{'border-radius':radius}"
+		 @click="click">{{title}}</button>
 	</view>
 </template>
 
@@ -10,6 +11,14 @@
 			title: {
 				type: String,
 				default: '下一步'
+			},
+			type: {
+				type: String,
+				default: 'primary'
+			},
+			radius: {
+				type: String,
+				default: '0'
 			}
 		},
 		data() {
@@ -26,17 +35,29 @@
 </script>
 
 <style lang="scss" scoped>
-	.auto-btn {
-		display: block;
-		width: 100%;
-		line-height: 102rpx;
-		border-radius: 0;
-		color: $group-color-w;
-		font-size: 36rpx;
-		background-color: #182F45;
-
+	button {
 		&:after {
 			border: none;
+			display: block;
+			width: 100%;
+			line-height: 102rpx;
+			font-size: 36rpx;
+			box-sizing: border-box;
 		}
+	}
+
+	.button-hover {
+		opacity: .7;
+	}
+
+	.auto-btn {
+		color: $group-color-w;
+		background-color: #182F45;
+	}
+
+	.wihte-btn {
+		color: $group-color;
+		background-color: rgba($color: #FFFFFF, $alpha: 0);
+		border: 1rpx solid $group-color;
 	}
 </style>
