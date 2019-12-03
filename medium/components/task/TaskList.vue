@@ -75,7 +75,7 @@
 		position: absolute;
 		top: 45rpx;
 		left: 0;
-		border: 0 4rpx 4rpx 0;
+		border-radius: 0 4rpx 4rpx 0;
 		background-color: #24D4D0;
 	}
 

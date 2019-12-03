@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view :style="{'padding-top':`calc(${getNavHeight()} - 20rpx)` }"></view>
-		<view class="user-box">
+		<view class="user-box" :style="dataChangeStatus?'':'padding-bottom: 37rpx;'">
 			<view class="flex-box">
 				<image class="user-head" :src="imgSrc" mode="aspectFill"></image>
 				<view class="btns-box">
@@ -12,12 +12,22 @@
 					</view>
 				</view>
 			</view>
-			<view class="right-box">
+			<view class="flex-box right-box">
 				<view class="editor-box btns-box" @click="navToUser">
 					<image src="/static/image/icon/user/edior.png" mode="aspectFill"></image>
 					<text>修改个人资料</text>
 				</view>
-				
+				<view class="tip-box flex-box right-box" :hidden="dataChangeStatus">
+					<view class="tip-radius flex-box">
+						<view class="radius-content"></view>
+						<view class="radius-samll"></view>
+					</view>
+					<view class="tip-line"></view>
+					<view class="tip-card-box">
+						<image class="tip-card" src="/static/image/icon/user/tips.png" mode="aspectFit"></image>
+						<view class="tip-text">完善个人信息，可以获得更多的任务哦</view>
+					</view>
+				</view>
 			</view>
 		</view>
 
@@ -36,9 +46,7 @@
 <script>
 	export default {
 		name: 'user',
-		components: {
-
-		},
+		components: {},
 		data() {
 			return {
 				userInfo: {},
@@ -65,24 +73,26 @@
 					{
 						text: '账户安全',
 						iconSrc: '/static/image/icon/user/icon_zhaq.png',
-						path: ''
+						path: './userSafe/userSafe'
 					},
 					{
 						text: '帮助中心',
 						iconSrc: '/static/image/icon/user/icon_bzzx.png',
-						path: ''
+						path: '/pages/user/helpcenter/helpcenter'
 					}
 				],
 
 				applyTitle: 'Monash大学计算机专业申请',
 				applyHsty: '签字已提交',
-				hstyNumber: '25'
+				hstyNumber: '25',
+				dataChangeStatus: false,
+
 			}
 		},
 		methods: {
 			navToUser() {
 				uni.navigateTo({
-					url: '/pages/user/userData/userData'
+					url: '/pages/user/perdata/perdata'
 				})
 			},
 
@@ -131,7 +141,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0 40rpx;
+		padding: 3rpx 40rpx 0;
 	}
 
 	.user-name {
@@ -169,7 +179,7 @@
 		justify-content: center;
 		width: 180rpx;
 		font-size: 20rpx;
-		line-height: 50rpx;
+		height: 50rpx;
 		box-sizing: border-box;
 		border-radius: 25rpx;
 		border: 1rpx solid #00C8BE;
@@ -233,8 +243,74 @@
 		display: flex;
 		align-items: center;
 	}
-	
-	.right-box{
-		
+
+	.right-box {
+		position: relative;
+		width: 180rpx;
+		justify-content: center;
+		align-items: flex-end;
+		flex-direction: column;
+	}
+
+	.tip-radius {
+		position: relative;
+		justify-content: center;
+		z-index: 1;
+		width: 30rpx;
+		height: 30rpx;
+		border-radius: 50%;
+		background-color: rgba($color: #00C8BE, $alpha: .1);
+		margin-right: 77rpx;
+	}
+
+	.radius-content {
+		width: 22rpx;
+		height: 22rpx;
+		border-radius: 50%;
+		background-color: rgba($color: #00C8BE, $alpha: .2);
+	}
+
+	.radius-samll {
+		position: absolute;
+		width: 14rpx;
+		height: 14rpx;
+		border-radius: 50%;
+		background-color: #00C8BE;
+	}
+
+	.tip-box {
+		position: absolute;
+		bottom: -15rpx;
+	}
+
+	.tip-line {
+		position: absolute;
+		top: 15rpx;
+		width: 0;
+		height: 73rpx;
+		border-left: 2rpx solid #D3F6F6;
+		right: 90rpx;
+	}
+
+	.tip-card-box {
+		position: absolute;
+		bottom: -125rpx;
+	}
+
+	.tip-card {
+		display: block;
+		width: 482rpx;
+		height: 71rpx;
+	}
+
+
+
+	.tip-text {
+		position: absolute;
+		top: 23rpx;
+		left: 20rpx;
+		color: #00C8BE;
+		font-size: 26rpx;
+		line-height: 37rpx;
 	}
 </style>

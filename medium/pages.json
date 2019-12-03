@@ -62,6 +62,34 @@
             "path" : "pages/index/summary/complete",
             "style" : {}
         }
+        ,{
+            "path" : "pages/user/helpcenter/helpcenter",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/perdata/perdata",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/userSafe/userSafe",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/userSafe/setNewPass/setNewPass",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/userSafe/setNewPass/noPass",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/userSafe/setNewPass/setPass",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/newUserInfo/newUserInfo",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

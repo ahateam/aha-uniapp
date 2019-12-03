@@ -4,68 +4,99 @@
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="view-title">收支明细</view>
 		</nav-bar>
-		<view class="top-box white">
+		<view class="flex-box white">
 			<!--top-public 公用宽高 边距等-->
-			<view class="top-public" v-for="(item,index) in list" :key="index" :class="cut == index?'top-left ':'top-right'"
-			 @click="cut">
+			<view class="flex-box top-public" v-for="(item,index) in list" :key="index" :class="{'curr-box':currIndex == index}"
+			 @click="currNav(index)">
 				{{item.name}}
 			</view>
-			<!-- <view class="top-right top-public">
-				我的支付
-			</view> -->
 		</view>
 		<!-- 内容区域 -->
-		<view class="content-box ">
-			<view class="content white">
-				<view class="content-left">500全案助理</view>
-				<view class="content-right">AUD 300</view>
-			</view>
-			<view class="content white">
-				<view class="content-left-color">客户</view>
-				<view class="content-right-color">AUD 300</view>
-			</view>
-			<view class="content white">
-				<view class="content-left-color">收款时间</view>
-				<view class="content-right-color">2019-1-2</view>
-			</view>
-			<view class="content white">
-				<view class="content-left-color">已收款项</view>
-				<view class="content-right concolor content-right-color">
-					<image class="instruc" src="/static/image/task/icon_yskx_g.png" mode=""></image>AUD 250
+		<view v-if="currIndex == 0">
+			<view class="content-box white" v-for="(item,index) in incomeList" :key="index">
+				<view class="content">
+					<view class="content-left">{{item.title}}</view>
+					<view class="content-right">{{item.price}}</view>
 				</view>
-			</view>
-			<view class="content white">
-				<view class="content-left-color">应收款项</view>
-				<view class="content-right-color ">AUD 300</view>
-			</view>
-			<view class="content white task-text">
-				<view class="content-left-color">任务发布人</view>
-				<view class="content-right-color">
-					<image class="headx" src="/static/image/icon/icon_docx.png" mode="widthFix"></image>
-					<text>阿盼</text>
+				<view v-if="item.openStatus">
+					<view class="content">
+						<view class="content-left-color">客户</view>
+						<view class="content-right-color">{{item.acceptUser.name}}</view>
+					</view>
+					<view class="content">
+						<view class="content-left-color">收款时间</view>
+						<view class="content-right-color">{{item.payTime}}</view>
+					</view>
+					<view class="content">
+						<view class="content-left-color">已收款项</view>
+						<view class="content-right concolor content-right-color">
+							<image class="instruc" src="/static/image/task/icon_yskx_g.png" mode="aspectFit"></image>{{item.payMoney}}
+						</view>
+					</view>
+					<view class="content">
+						<view class="content-left-color">应收款项</view>
+						<view class="content-right-color ">{{item.price}}</view>
+					</view>
+					<view class="content task-text">
+						<view class="content-left-color">任务发布人</view>
+						<view class="content-right-color">
+							<image class="headx" :src="item.upUser.head" mode="widthFix"></image>
+							<text>{{item.upUser.name}}</text>
+						</view>
+					</view>
 				</view>
-			</view>
-		</view>
-		<view class="content-box ">
-			<view class="content white">
-				<view class="content-left">500全案助理</view>
-				<view class="content-right">AUD 300</view>
-			</view>
-			<view class="content white" style="padding-left: 0;">
-				<view class="content-cen"> 查看完整任务图</view>
-			</view>
-		</view>
-		<view class="content-box ">
-			<view class="content white">
-				<view class="content-left-color">任务总数</view>
-				<view class="content-right-color">2</view>
-			</view>
-			<view class="content white">
-				<view class="content-left-color">收入总计</view>
-				<view class="content-right">AUD 600 <text class="content-b"> (含GST)</text></view>
+				<!-- 隐藏box -->
+				<view class="content" style="padding-left: 0;" v-if="!item.openStatus" @click="changeTaskShow(index,0)">
+					<view class="content-cen"> 查看完整任务图</view>
+				</view>
 			</view>
 		</view>
 
+		<view v-else>
+			<view class="content-box white" v-for="(item,index) in payList" :key="index">
+				<view class="content">
+					<view class="content-left">{{item.title}}</view>
+					<view class="content-right">{{item.price}}</view>
+				</view>
+				<view v-if="item.openStatus">
+					<view class="content">
+						<view class="content-left-color pay-content-left-text">客户</view>
+						<view class="content-left-color">{{item.upUser.name}}</view>
+					</view>
+					<view class="content">
+						<view class="content-left-color pay-content-left-text">付款时间</view>
+						<view class="content-left-color">{{item.payTime}}</view>
+					</view>
+					<view class="content">
+						<view class="content-left-color pay-content-left-text">金额</view>
+						<view class="content-left-color">{{item.payMoney}}</view>
+					</view>
+					<view class="content task-text">
+						<view class="content-left-color pay-content-left-text">任务接收人</view>
+						<view class="content-left-color" style="position: relative;">
+							<image class="headx" :src="item.acceptUser.head" mode="widthFix"></image>
+							<text>{{item.acceptUser.name}}</text>
+						</view>
+					</view>
+				</view>
+				<!-- 隐藏box -->
+				<view class="content" style="padding-left: 0;" v-if="!item.openStatus">
+					<view class="content-cen" @click="changeTaskShow(index,1)"> 查看完整任务图</view>
+				</view>
+			</view>
+		</view>
+
+		<view class="content-box white">
+			<view class="content">
+				<view class="content-left-color" :class="{'pay-content-left-text':currIndex == 1}">任务总数</view>
+				<view class="content-right-color">{{currIndex == 0?incomeList.length:payList.length}}</view>
+			</view>
+			<view class="content">
+				<view class="content-left-color" v-if="currIndex == 0">收入总计</view>
+				<view class="content-left-color pay-content-left-text" v-else>支出总计</view>
+				<view class="content-right">AUD 600 <text class="content-b"> (含GST)</text></view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -79,22 +110,75 @@
 		},
 		data() {
 			return {
-				cuts: true,
+				currIndex: 0,
 				list: [{
-						name: '我的收入',
+						name: '我的收入'
 					},
 					{
-						name: '我的支出',
+						name: '我的支出'
 					}
-				]
+				],
+
+				incomeList: [{
+						title: '500全案助理',
+						upUser: {
+							name: '小铭'
+						},
+						payTime: '2019-10-10',
+						payMoney: 'AUD 250',
+						price: 'AUD 300',
+						acceptUser: {
+							name: '阿芬',
+							head: '/static/image/icon/icon_docx.png',
+						},
+						openStatus: true
+					},
+					{
+						title: '500全案助理',
+						upUser: {
+							name: '小铭'
+						},
+						payTime: '2019-10-10',
+						payMoney: 'AUD 250',
+						price: 'AUD 300',
+						acceptUser: {
+							name: '阿芬',
+							head: '/static/image/icon/icon_docx.png',
+						},
+						openStatus: false
+					}
+				],
+
+				payList: [{
+					title: '500全案助理',
+					upUser: {
+						name: '小铭'
+					},
+					payTime: '2019-10-10',
+					payMoney: 'AUD 250',
+					price: 'AUD 300',
+					acceptUser: {
+						name: '阿芬',
+						head: '/static/image/icon/icon_docx.png',
+					},
+					openStatus: true
+				}, ]
 			}
 		},
 		methods: {
 			navBack() {
 				uni.navigateBack()
 			},
-			cut() {
-				this.cut = index
+			currNav(index) {
+				this.currIndex = index
+			},
+
+			changeTaskShow(index, e) {
+				if (e) {
+					this.payList[index].openStatus = true
+				} else {
+					this.incomeList[index].openStatus = true
+				}
 			}
 		}
 	}
@@ -113,14 +197,12 @@
 		line-height: 37rpx;
 		color: #B6C4D2;
 		padding-bottom: 30rpx;
+		margin-left: 10rpx;
 	}
-
-	// .bottom {
-	// 	margin-bottom: 78rpx;
-	// }
 
 	.page {
 		background-color: #F2F5F7;
+		min-height: 100vh;
 	}
 
 	.white {
@@ -141,7 +223,7 @@
 		font-weight: normal;
 	}
 
-	.top-box {
+	.flex-box {
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -150,21 +232,17 @@
 	.top-public {
 		width: 330rpx;
 		height: 88rpx;
-		padding: 23rpx;
-		text-align: center;
 		margin: 30rpx;
-		line-height: 88rpx;
 		font-size: 30rpx;
-	}
-
-	.top-left {
-		color: #FFFFFF;
-		background-color: #182F45;
-	}
-
-	.top-right {
+		box-sizing: border-box;
+		border-radius: 4rpx;
 		background-color: #F2F5F7;
 		color: #587685;
+	}
+
+	.curr-box {
+		color: #FFFFFF;
+		background-color: #182F45;
 	}
 
 	// 内容区域
@@ -181,7 +259,8 @@
 	.content {
 		display: flex;
 		justify-content: space-between;
-		padding: 30rpx 0 30rpx 40rpx;
+		padding: 30rpx 10rpx;
+		margin: 0 30rpx;
 		border-bottom: 1rpx solid rgba($color: #587685, $alpha: .1);
 	}
 
@@ -198,20 +277,12 @@
 		line-height: 42rpx;
 		color: #FFA405;
 		font-size: 30rpx;
-		padding-right: 30rpx;
-	}
-
-	.content-size {
-		display: inline;
-		font-size: 26rpx;
-		color: #666666;
 	}
 
 	.content-right>.instruc {
 		width: 27rpx;
 		height: 15rpx;
 		margin-right: 15rpx;
-
 	}
 
 	.concolor {
@@ -228,11 +299,15 @@
 	.content-right-color {
 		color: #333333;
 		font-size: 26rpx;
-		padding-right: 30rpx;
 		height: 42rpx;
 		line-height: 42rpx;
 		position: relative;
 	}
+
+	.pay-content-left-text {
+		color: #999999;
+	}
+
 
 	.headx {
 		width: 50rpx;
@@ -240,6 +315,6 @@
 		border-radius: 50%;
 		position: absolute;
 		top: -3rpx;
-		left: -66rpx;
+		left: -60rpx;
 	}
 </style>

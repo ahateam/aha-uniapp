@@ -1,9 +1,12 @@
 <template>
 	<view>
-		<navBar :back="false" type="transparent" fontColor="#587685" title="设置新密码">
-			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
-		</navBar>
-		<view :style="{'padding-top': getNavHeight()}"></view>
+		<nav-bar :back="false">
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
+			<view class="view-title">设置新密码</view>
+		</nav-bar>
+
+		<view class="top-text">为保证账户安全，需要验证已绑定手机</view>
+
 
 		<view class="auto-input auto-margin flex-box">
 			<view class="left-title">手机号</view>
@@ -11,9 +14,13 @@
 		</view>
 
 		<view class="auto-input auto-margin flex-box">
-			<input class="left-title code-input" type="text" v-model="code" /><button class="code-btn" v-if="codeTime < 1"
-			 @click="getCode">验证码</button><button class="code-time" v-else>{{codeTime}}s</button>
+			<view class="left-title">验证码</view>
+			<!-- <view class="tell-text"></view> -->
+			<input class="left-title code-input input-right" type="text" v-model="code" />
 		</view>
+
+		<view class="code-btn" v-if="codeTime < 1" @click="getCode">获取验证码</view>
+		<view class="code-time" v-else>{{codeTime}}s后重新发送</view>
 
 		<view class="auto-margin">
 			<button class="submit-btn" @click="submitBtn">提交</button>
@@ -81,11 +88,7 @@
 						})
 					}
 				})
-			},
-
-			getNavHeight() {
-				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
-			},
+			}
 		},
 		onLoad() {
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
@@ -101,11 +104,24 @@
 </script>
 
 <style lang="scss">
-	.icon-fanhui {
-		font-size: 33rpx;
-		color: $group-color;
+	.back-icon {
 		position: absolute;
-		left: 29rpx;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
+	}
+
+	.view-title {
+		color: #333333;
+		font-size: 36rpx;
+		font-weight: normal;
+	}
+
+	.top-text {
+		margin: 50rpx 51rpx 50rpx 155rpx;
+		color: #999999;
+		font-size: 28rpx;
 	}
 
 	.auto-margin {
@@ -133,7 +149,7 @@
 
 	.submit-btn {
 		width: 670rpx;
-		background-color: #00C8BE;
+		background-color: #182F45;
 		line-height: 100rpx;
 		color: $group-color-w;
 		font-size: 36rpx;
@@ -147,13 +163,11 @@
 	}
 
 	.code-btn {
-		margin: 0;
-		line-height: 66rpx;
-		width: 150rpx;
-		background-color: #00C8BE;
-		color: $group-color-w;
-		border-radius: 6rpx;
-		font-size: $group-font-befor;
+		margin: 60rpx 304rpx 100rpx;
+		color: #24D4D0;
+		font-size: 30rpx;
+
+
 
 		&:after {
 			border: none;
@@ -164,11 +178,14 @@
 		font-size: $group-font-befor;
 	}
 
+	.input-right {
+		width: 110rpx;
+	}
+
 	.code-time {
-		margin: 0;
-		width: 150rpx;
-		line-height: 66rpx;
-		background-color: $group-color-search;
+		margin: 60rpx 281rpx 100rpx;
+		width: 244rpx;
+		line-height: 42rpx;
 		border-radius: 6rpx;
 		color: $group-color-befor;
 

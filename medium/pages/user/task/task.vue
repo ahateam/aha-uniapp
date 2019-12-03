@@ -8,22 +8,22 @@
 			<view class="title white">我发布的</view>
 			<view class=" list-box white">
 				<view class="list">
-					<image src="/static/image/user/1574922875(1).png" mode=""></image>
+					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
 					<view class="">已付款</view>
 					<view class="list-red">1</view>
 				</view>
 				<view class="list">
-					<image src="/static/image/user/1574922875(1).png" mode=""></image>
+					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
 					<view class="">已付款</view>
 					<view class="list-red">1</view>
 				</view>
 				<view class="list">
-					<image src="/static/image/user/1574922875(1).png" mode=""></image>
+					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
 					<view class="">已付款</view>
 					<view class="list-red">1</view>
 				</view>
 				<view class="list">
-					<image src="/static/image/user/1574922875(1).png" mode=""></image>
+					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
 					<view class="">已付款</view>
 					<view class="list-red">1</view>
 				</view>
@@ -34,17 +34,17 @@
 			<view class="title white">我接收的</view>
 			<view class=" list-box white uni-flex-just">
 				<view class="list">
-					<image src="/static/image/user/1574922875(1).png" mode=""></image>
+					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
 					<view class="">已付款</view>
 					<view class="list-red">1</view>
 				</view>
 				<view class="list">
-					<image src="/static/image/user/1574922875(1).png" mode=""></image>
+					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
 					<view class="">已付款</view>
 					<view class="list-red">1</view>
 				</view>
 				<view class="list">
-					<image src="/static/image/user/1574922875(1).png" mode=""></image>
+					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
 					<view class="">已付款</view>
 					<view class="list-red">1</view>
 				</view>
@@ -52,30 +52,41 @@
 		</view>
 		<view class="title white">游览历史</view>
 		<view class="history">
-			<view class="">
-				<image class="history-img" src="/static/image/icon/icon_l.png" mode="aspectFit"></image>
-			</view>
+			<image class="history-img" src="/static/image/icon/icon_l.png" mode="aspectFit"></image>
 			<view>2019-10-01</view>
-			<view class="">
-				<image class="history-img" src="/static/image/icon/icon_r.png" mode="aspectFit"></image>
-			</view>
+			<image class="history-img" src="/static/image/icon/icon_r.png" mode="aspectFit"></image>
 		</view>
-		
-		
+
+		<other-task-list :tasks="taskList"></other-task-list>
+
 	</view>
 </template>
 
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
+	import OtherTaskList from '@/components/task/OtherTaskList.vue'
 
 	export default {
 		name: 'assistant',
 		components: {
-			navBar
+			navBar,
+			OtherTaskList
 		},
 		data() {
 			return {
-
+				taskList: [{
+						name: '全案助理',
+						money: 100,
+						infor: '500签证全案',
+						time: '2019-10-10'
+					},
+					{
+						name: '翻译',
+						money: 300,
+						infor: '学生成绩单翻译',
+						time: '2019-10-10'
+					}
+				]
 			}
 		},
 		methods: {
@@ -87,23 +98,23 @@
 </script>
 
 <style lang="scss" scoped>
-	.history{
+	.history {
 		display: flex;
 		justify-content: center;
-	
+		align-items: center;
 	}
-	.history >view{
-		margin: 20rpx 25rpx;
+
+	.history>view {
+		margin: 20rpx 23rpx;
 		color: #999999;
 		font-size: 26rpx;
-		
 	}
-	.history-img{
-		width: 140.35rpx;
-		height: 1rpx;
-		color: #B6C4D2;
-		
+
+	.history-img {
+		width: 141rpx;
+		height: 16rpx;
 	}
+
 	.box {
 		margin-bottom: 20rpx;
 	}
@@ -113,10 +124,11 @@
 		flex-direction: row;
 	}
 
-.uni-flex-just{
-	display: flex;
-	justify-content: space-between;
-}
+	.uni-flex-just {
+		display: flex;
+		justify-content: space-between;
+	}
+
 	.list {
 		width: 136rpx;
 		margin-left: 52rpx;
@@ -154,6 +166,7 @@
 
 	.page {
 		background-color: #F2F5F7;
+		min-height: 100vh;
 	}
 
 	.white {
