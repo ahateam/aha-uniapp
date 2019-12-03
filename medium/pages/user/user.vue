@@ -68,7 +68,7 @@
 					{
 						text: '收款账户',
 						iconSrc: '/static/image/icon/user/icon_skzh.png',
-						path: ''
+						path: './newUserInfo/setUserInfo'
 					},
 					{
 						text: '账户安全',

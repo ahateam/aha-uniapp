@@ -2,8 +2,7 @@
 	<view>
 		<nav-bar :back="false">
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
-			<view class="view-title">填写个人信息</view>
-			<view slot="right" class="next-text" @click="navBack">跳过</view>
+			<view class="view-title">收款账户信息</view>
 		</nav-bar>
 		<view class="tip-box">
 			<image src="/static/image/icon/icon_l.png" mode="aspectFit"></image>
@@ -15,11 +14,10 @@
 		<data-input title="BSB" hiddenIcon v-model="BSB"></data-input>
 		<data-input title="账号" hiddenIcon placeholder="Account Number" v-model="accountNumber"></data-input>
 		<data-input title="电子邮件地址" hiddenIcon placeholder="用于接收电子账单" v-model="email"></data-input>
-		<data-input title="MARN号" hiddenIcon v-model="MARN"></data-input>
-		<data-input title="FIER号" hiddenIcon v-model="FIER"></data-input>
-		<data-input title="NAATI号" hiddenIcon v-model="NAATI"></data-input>
-		<view style="margin-top: 70rpx;"></view>
-		<next-btn title="确认"></next-btn>
+		<view class="fixed-box">
+			<next-btn title="保存"></next-btn>
+		</view>
+
 	</view>
 </template>
 
@@ -40,9 +38,6 @@
 				BSB: '',
 				accountNumber: '',
 				email: '',
-				MARN: '',
-				FIER: '',
-				NAATI: ''
 			};
 		},
 		methods: {
@@ -68,12 +63,6 @@
 		font-weight: normal;
 	}
 
-	.next-text {
-		color: $group-color;
-		font-size: 34rpx;
-		margin-right: 30rpx;
-	}
-
 	.tip-box {
 		display: flex;
 		align-items: center;
@@ -84,5 +73,11 @@
 			width: 140rpx;
 			height: 14rpx;
 		}
+	}
+
+	.fixed-box {
+		position: fixed;
+		width: 100%;
+		bottom: 0;
 	}
 </style>
