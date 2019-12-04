@@ -57,7 +57,7 @@
 					<view class="left-title bottom-font">接收者所需证书</view>
 					<view class="right-info bottom-font">{{task.certificate}}</view>
 				</view>
-				<view class="auto-box-gray space-box">
+				<view class="auto-box-gray space-box" style="border: none;">
 					<view class="left-title bottom-font">共享文件</view>
 					<view class="right-info bottom-font">{{task.taskData.name}}</view>
 					<view class="data-box space-box">
@@ -111,7 +111,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="auto-box-gray space-box" v-else>
+				<view class="auto-box-gray space-box" style="border: none;" v-else>
 					<view class="left-title bottom-font">支付信息</view>
 					<view class="right-info bottom-font">{{task.payTime}}</view>
 					<view class="pay-money-text">-{{task.payMoney}}</view>
@@ -142,7 +142,7 @@
 					taskTitle: '500签证全案助理',
 					taskText: '请帮忙填写签证相关内容，我是第一次申请，需要准备的资料还很多，听朋友说你们是专业的，拜托你们啦！',
 					taskTime: '2019-10-08',
-					taskStatus: 2,
+					taskStatus: 3,
 					certificate: '翻译证书',
 					taskData: {
 						dataName: '我的成绩单.docx',
@@ -344,14 +344,14 @@
 		display: block;
 		margin: 20rpx auto 0;
 		width: 690rpx;
-		padding: 0 15rpx;
+		padding: 0 30rpx;
 		background-color: #F8FAFB;
 	}
 
 	.auto-box-gray {
 		position: relative;
-		padding: 30rpx 15rpx;
-		width: 660rpx;
+		padding: 30rpx 0rpx;
+		width: 630rpx;
 		font-size: $group-font-befor;
 		border-bottom: 1rpx dotted rgba($color: #CFDCE9, $alpha: .5);
 		flex-wrap: wrap;
