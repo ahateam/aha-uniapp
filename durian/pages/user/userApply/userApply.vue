@@ -41,8 +41,8 @@
 					 v-for="(item,index) in historyList" :key="index" :hidden="!moreStatus&&index > 2">
 						<view>
 							<view class="hsty-dot" :class="!item.status?'curr-dot':''"></view>
-							<view class="hsty-text">{{item.time}}</view>
-							<view class="hsty-text hsty-text-right">{{item.text}}</view>
+							<view class="hsty-text" :class="{'curr-text-color':!item.status}">{{item.time}}</view>
+							<view class="hsty-text hsty-text-right" :class="{'curr-text-color':!item.status}">{{item.text}}</view>
 						</view>
 					</view>
 				</view>
@@ -377,6 +377,14 @@
 		top: -10rpx;
 		left: -10rpx;
 	}
+	
+	.curr-text-color{
+		color: #00C8BE;
+	}
+	
+	.left-dot-border {
+		border-left: 1rpx dotted #00C8BE;
+	}
 
 	.more-box {
 		display: flex;
@@ -485,7 +493,5 @@
 		}
 	}
 
-	.left-dot-border {
-		border-left: 1rpx dotted #00C8BE;
-	}
+	
 </style>

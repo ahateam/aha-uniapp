@@ -23,20 +23,22 @@
 		components: {
 			navBar
 		},
-		data: {
-			list: [{
-					src: '/static/image/user/1.png',
-					text: '如何保证自己的费用按时收取'
-				},
-				{
-					src: '/static/image/user/2.png',
-					text: '什么人可以发布任务'
-				},
-				{
-					src: '/static/image/user/3.png',
-					text: '对中介的各种要求等等'
-				}
-			]
+		data() {
+			return {
+				list: [{
+						src: '/static/image/user/1.png',
+						text: '如何保证自己的费用按时收取'
+					},
+					{
+						src: '/static/image/user/2.png',
+						text: '什么人可以发布任务'
+					},
+					{
+						src: '/static/image/user/3.png',
+						text: '对中介的各种要求等等'
+					}
+				]
+			}
 		},
 		methods: {
 			navBack() {

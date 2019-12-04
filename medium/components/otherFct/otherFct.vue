@@ -5,10 +5,10 @@
 		</view>
 		<view class="loginIcon">
 			<view class="otherLogin" @click="loginWx">
-				<view class="iconfont icon-wechat"></view>
+				<view class="iconfont iconwechat"></view>
 			</view>
 			<view class="otherLogin" @click="loginQQ">
-				<view class="iconfont icon-qq"></view>
+				<view class="iconfont iconqq"></view>
 			</view>
 		</view>
 		<view class="tipBox">

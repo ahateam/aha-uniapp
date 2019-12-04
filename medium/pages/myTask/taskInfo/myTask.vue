@@ -1,5 +1,5 @@
 <template>
-	<view style="padding-bottom: 102rpx;">
+	<view>
 		<view class="top-box">
 			<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
 			<view class="top-content">
@@ -17,7 +17,7 @@
 
 		<view class="content-box">
 			<view class="content-title">
-				<view class="content-title-text">任务明细</view>
+				<view class="content-title-text">我的任务</view>
 				<image class="content-title-bg" src="/static/image/task/icon_bg_y.png" mode="aspectFit"></image>
 			</view>
 
@@ -36,7 +36,11 @@
 				<view class="right-info" style="margin-top: 29rpx;">{{task.taskText}}</view>
 			</view>
 
-			<view class="block-box">
+			<view class="block-box" v-if="task.taskStatus == 0">
+				<view class="auto-box-gray space-box">
+					<view class="left-title bottom-font">任务发布时间</view>
+					<view class="right-info bottom-font">{{task.createTime}}</view>
+				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">任务发布者</view>
 					<view class="right-info bottom-font">{{task.userName}}</view>
@@ -46,8 +50,12 @@
 					<view class="right-info bottom-font">{{task.taskTime}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">最新状态</view>
-					<view class="right-info bottom-font" style="color: #24D4D0;">{{task.taskStatus}}</view>
+					<view class="left-title bottom-font">价格</view>
+					<view class="right-info bottom-font" style="color: #FFA405;">{{task.price}}</view>
+				</view>
+				<view class="auto-box-gray space-box">
+					<view class="left-title bottom-font">接收者所需证书</view>
+					<view class="right-info bottom-font">{{task.certificate}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">共享文件</view>
@@ -60,53 +68,114 @@
 						<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
 					</view>
 				</view>
+			</view>
 
-				<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;">
-					<view class="left-title bottom-font">提交完成文件</view>
+			<view class="block-box" v-else>
+				<view class="auto-box-gray space-box">
+					<view class="left-title bottom-font">接收人</view>
+					<view class="right-info bottom-font">{{task.accUser.name}}</view>
+				</view>
+				<view class="auto-box-gray space-box">
+					<view class="left-title bottom-font">完成时间</view>
+					<view class="right-info bottom-font">{{task.taskTime}}</view>
+				</view>
+				<view class="auto-box-gray space-box">
+					<view class="left-title bottom-font">完成状态</view>
+					<view class="hsty-list">
+						<view class="hsty-item" :class="[{'border-none':index == 0},{'left-dot-border':!item.status}]" v-for="(item,index) in task.historyList"
+						 :key="index">
+							<view>
+								<view class="hsty-dot" :class="!item.status?'curr-dot':''"></view>
+								<view class="hsty-text" :class="{'curr-text-color':!item.status}">{{item.time}}</view>
+								<view class="hsty-text hsty-text-right" :class="{'curr-text-color':!item.status}">{{item.text}}</view>
+							</view>
+						</view>
+					</view>
+				</view>
+				<view class="auto-box-gray space-box" v-if="task.taskStatus < 3">
+					<view class="left-title bottom-font">共享文件</view>
+					<view class="right-info bottom-font">{{task.taskData.name}}</view>
+					<view class="data-box space-box">
+						<view>
+							<view class="data-title">{{task.taskData.dataName}}</view>
+							<view class="data-size">{{task.taskData.dataSize}}</view>
+						</view>
+						<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
+					</view>
+				</view>
+				<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < 3">
+					<view class="left-title bottom-font">收回材料</view>
 					<view class="data-img-list">
 						<view class="data-img-box" v-for="(item,index) in task.taskList" :key="index" :class="{'no-margin':getIndex(index)}">
 							<image src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
 						</view>
 					</view>
 				</view>
+				<view class="auto-box-gray space-box" v-else>
+					<view class="left-title bottom-font">支付信息</view>
+					<view class="right-info bottom-font">{{task.payTime}}</view>
+					<view class="pay-money-text">-{{task.payMoney}}</view>
+				</view>
 			</view>
 		</view>
-		<view class="fixed-btn">
-			<next-btn title="确定" @click="navBack"></next-btn>
+
+		<view v-if="task.taskStatus < 3" class="bottom-btn" :class="task.taskStatus == 0?'':'pay-btn'">
+			<button @click="navBack">{{btnName}}</button>
 		</view>
 	</view>
 </template>
 
 <script>
-	import NextBtn from '@/components/NextBtn/NextBtn.vue'
-
 	export default {
-		components: {
-			NextBtn
-		},
 		data() {
 			return {
 				task: {
 					userName: '张曦',
+					accUser: {
+						name: '小飞'
+					},
 					userTime: '2019-10-08',
+					createTime: '2019-10-08',
 					userHead: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574775543939&di=34f1f8a709ce6958adff33a33c218451&imgtype=0&src=http%3A%2F%2Fi2.hdslb.com%2Fbfs%2Fface%2F97ea0b38bc4afa00e0b00b9035eb31368fa94f11.jpg',
+					price: 'AUD 300',
 					taskType: '全案助理',
 					taskTitle: '500签证全案助理',
 					taskText: '请帮忙填写签证相关内容，我是第一次申请，需要准备的资料还很多，听朋友说你们是专业的，拜托你们啦！',
 					taskTime: '2019-10-08',
-					taskStatus: '学校申请已经递交',
+					taskStatus: 2,
+					certificate: '翻译证书',
 					taskData: {
-						name: '翻译证书',
 						dataName: '我的成绩单.docx',
 						dataSize: '216K'
 					},
+					historyList: [{
+							time: '2019-10-05',
+							text: '提交签证申请',
+							status: true
+						},
+						{
+							time: '2019-10-03',
+							text: '收到offer',
+							status: true
+						},
+						{
+							time: '2019-10-01',
+							text: '上传材料',
+							status: false
+						}
+					],
 					taskList: [
 						'',
 						'',
 						'',
 						''
-					]
-				}
+					],
+					payTime: '2019-10-1 10:01',
+					payMoney: '300澳元'
+				},
+
+				btnName: '',
+
 			}
 		},
 		methods: {
@@ -118,6 +187,13 @@
 
 			navBack() {
 				uni.navigateBack()
+			}
+		},
+		onLoad() {
+			if (this.task.taskStatus == 0) {
+				this.btnName = '撤回'
+			} else {
+				this.btnName = '付款'
 			}
 		}
 	}
@@ -338,9 +414,95 @@
 		margin-right: 0;
 	}
 
-	.fixed-btn {
-		position: fixed;
-		bottom: 0;
+	.bottom-btn {
 		width: 100%;
+		margin-top: -20rpx;
+		padding: 0 30rpx 30rpx;
+		box-sizing: border-box;
+
+		button {
+			background-color: #182F45;
+			line-height: 102rpx;
+			width: 100%;
+			font-size: 36rpx;
+			color: $group-color-w;
+			border-radius: 0;
+
+			&:after {
+				border: none;
+			}
+		}
+	}
+
+	.pay-btn {
+		button {
+			background-color: #EE455A;
+		}
+	}
+
+	.hsty-list {
+		margin: 50rpx 0 20rpx 10rpx;
+		width: 662rpx;
+	}
+
+	.hsty-item {
+		position: relative;
+		width: 100%;
+		height: 80rpx;
+		box-sizing: border-box;
+		font-size: 28rpx;
+		color: #999999;
+		line-height: 40rpx;
+		border-left: 1rpx solid $group-color-befor;
+		padding-left: 30rpx;
+		z-index: 1;
+	}
+
+	.hsty-dot {
+		position: absolute;
+		bottom: -6rpx;
+		left: -6rpx;
+		width: 12rpx;
+		height: 12rpx;
+		background-color: #B6C4D2;
+		border-radius: 50%;
+	}
+
+	.hsty-text {
+		position: absolute;
+		bottom: -20rpx;
+	}
+
+	.hsty-text-right {
+		right: 0;
+	}
+
+	.border-none {
+		height: 1rpx;
+	}
+
+	.curr-dot {
+		background: #00C8BE;
+		border: 4rpx solid #D3F6F6;
+		bottom: -10rpx;
+		left: -10rpx;
+		box-sizing: content-box;
+	}
+
+	.curr-text-color {
+		color: #00C8BE;
+	}
+
+	.left-dot-border {
+		border-left: 1rpx dotted #00C8BE;
+		z-index: 0;
+	}
+
+	.pay-money-text {
+		width: 100%;
+		color: #EE455A;
+		text-align: right;
+		font-size: 26rpx;
+		margin: 30rpx 0 0;
 	}
 </style>

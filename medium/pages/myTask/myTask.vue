@@ -84,15 +84,24 @@
 
 			navToInfo(item) {
 				console.log(item)
+				let taskType = ''
+				if (this.currIndex == 1) {
+					taskType = 'taskInfo'
+				} else {
+					taskType = 'myTask'
+				}
 				uni.navigateTo({
-					url: '/pages/myTask/taskInfo/taskInfo',
+					url: '/pages/myTask/taskInfo/' + taskType,
 					success: () => {
+						// #ifdef APP-PLUS
 						let icon = plus.nativeObj.View.getViewById("icon");
 						setTimeout(function() {
 							icon.hide();
 						}, 100);
+						// #endif
 					}
 				})
+
 			},
 
 			topoption(index) {

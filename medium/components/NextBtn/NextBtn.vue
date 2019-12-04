@@ -36,13 +36,14 @@
 
 <style lang="scss" scoped>
 	button {
+		display: block;
+		width: 100%;
+		line-height: 102rpx;
+		font-size: 36rpx;
+		box-sizing: border-box;
+
 		&:after {
 			border: none;
-			display: block;
-			width: 100%;
-			line-height: 102rpx;
-			font-size: 36rpx;
-			box-sizing: border-box;
 		}
 	}
 

@@ -104,6 +104,9 @@
 		}, {
 			"path": "pages/login/Treaty/Treaty",
 			"style": {}
+		}, {
+			"path": "pages/myTask/taskInfo/myTask",
+			"style": {}
 		}
 	],
 	"globalStyle": {

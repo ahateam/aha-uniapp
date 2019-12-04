@@ -143,11 +143,16 @@
 			this.$commen.showTabIcon()
 		},
 		onLoad() {
-			if (true) {
-				uni.navigateTo({
-					url: '/pages/user/newUserInfo/newUserInfo'
-				})
-			}
+			// let userInfo = uni.getStorageSync('userInfo')
+			// if (!userInfo) {
+			// 	uni.reLaunch({
+			// 		url: '/pages/login/mobilePassword'
+			// 	})
+			// } else if (true) {
+			// 	uni.navigateTo({
+			// 		url: '/pages/user/newUserInfo/newUserInfo'
+			// 	})
+			// }
 
 			// #ifdef APP-PLUS
 			bitmap = new plus.nativeObj.Bitmap('bmp1');
