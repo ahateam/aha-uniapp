@@ -10,7 +10,8 @@
 				<view class="left-title">
 					{{item.name}}
 				</view>
-				<input type="text" v-model="item.value" :placeholder="item.text" placeholder-style="text-align: right;" :focus="index == 0" />
+				<input type="text" v-model="item.value" :placeholder="item.text" password placeholder-style="text-align: right;"
+				 :focus="index == 0" />
 			</view>
 		</view>
 		<view class="auto-margin">

@@ -506,6 +506,7 @@
 		background-color: #fff;
 
 		.nav-item {
+			position: relative;
 			display: inline-block;
 			width: 150upx;
 			height: 90upx;
@@ -513,16 +514,15 @@
 			line-height: 90upx;
 			font-size: 30upx;
 			color: #303133;
-			position: relative;
 
 			&:after {
 				content: '';
-				width: 0;
-				height: 0;
-				border-bottom: 4upx solid #007aff;
 				position: absolute;
 				left: 50%;
 				bottom: 0;
+				width: 0;
+				height: 0;
+				border-bottom: 4upx solid #007aff;
 				transform: translateX(-50%);
 				transition: .3s;
 			}

@@ -143,13 +143,14 @@
 			this.$commen.showTabIcon()
 		},
 		onLoad() {
-			console.log(this.$store.state)
-			// let userInfo = uni.getStorageSync('userInfo')
-			// if (!userInfo) {
-			// 	uni.reLaunch({
-			// 		url: '/pages/login/mobilePassword'
-			// 	})
-			// } else if (true) {
+			// console.log(this.$store.state)
+			let userInfo = uni.getStorageSync('userInfo')
+			if (!userInfo) {
+				uni.reLaunch({
+					url: '/pages/login/mobilePassword'
+				})
+			} 
+			// else if (true) {
 			// 	uni.navigateTo({
 			// 		url: '/pages/user/newUserInfo/newUserInfo'
 			// 	})

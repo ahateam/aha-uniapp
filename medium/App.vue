@@ -20,6 +20,13 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	/*每个页面公共css */
+	.auto-placeholder {
+		color: $group-color-befor;
+	}
+
+	input {
+		caret-color: #00C8BE;
+	}
 </style>

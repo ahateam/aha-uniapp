@@ -9,15 +9,15 @@
 					<view class="task-top-r">AUD {{item.money}}</view>
 				</view>
 				<view class="task-center flex-box">
-					<image class="left-icon" src="/static/image/icon/addTask/icon_bgtx.png" mode="aspectFit"></image>
+					<image class="left-icon" src="/static/image/icon/user/task/icon_rw.png" mode="aspectFit"></image>
 					<view>{{item.infor}}</view>
 				</view>
 				<view class="task-center flex-box" style="justify-content: space-between;">
 					<view class="flex-box">
-						<image class="left-icon" src="/static/image/icon/addTask/icon_bgtx.png" mode="aspectFit"></image>
+						<image class="left-icon" src="/static/image/icon/user/task/icon_timet.png" mode="aspectFit"></image>
 						<view>{{item.time}}</view>
 					</view>
-					<image class="right-icon" src="/static/image/icon/icon_enter.png" mode="aspectFit"></image>
+					<image class="right-icon" src="/static/image/icon/user/task/icon_ckgd.png" mode="aspectFit"></image>
 				</view>
 			</view>
 		</view>
@@ -92,8 +92,8 @@
 		margin: 0rpx 0 30rpx 40rpx;
 
 		.left-icon {
-			width: 26rpx;
-			height: 26rpx;
+			width: 30rpx;
+			height: 30rpx;
 			margin-right: 20rpx;
 		}
 	}
@@ -104,8 +104,8 @@
 	}
 
 	.right-icon {
-		width: 20rpx;
-		height: 20rpx;
-		padding-right: 47rpx;
+		width: 40rpx;
+		height: 40rpx;
+		padding-right: 40rpx;
 	}
 </style>

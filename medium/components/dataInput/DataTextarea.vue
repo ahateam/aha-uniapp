@@ -9,8 +9,8 @@
 			</view>
 		</view>
 		<view class="auto-input" :style="hiddenTitle?'margin-top:0;':''">
-			<textarea class="textarea" :hidden="inputHidden" type="text" :value="value" :placeholder="placeholder" @input="onInput"
-			 maxlength="500" />
+			<textarea class="textarea" :hidden="inputHidden" type="text" :value="value" :placeholder="placeholder"
+			 placeholder-style="color:#B6C4D2;" @input="onInput" maxlength="500" />
 			<view class="textarea" v-if="inputHidden">{{value}}</view>
 			<view class="text-tip">(<text>{{textLength}}</text>/500)</view>
 		</view>

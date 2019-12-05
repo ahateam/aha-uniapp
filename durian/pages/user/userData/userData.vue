@@ -332,6 +332,7 @@
 		onLoad() {
 			this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			this.userInfo.brithday = this.getBirthday(this.userInfo.brithday)
+			this.userInfo.phone = this.userInfo.phone.substr(2)
 		}
 	}
 </script>

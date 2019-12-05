@@ -10,12 +10,12 @@
 
 		<view class="auto-input auto-margin flex-box">
 			<view class="left-title">密码</view>
-			<input class="input-box" type="text" v-model="passData" />
+			<input class="input-box" type="text" v-model="passData" placeholder="不少于6位" placeholder-class="auto-placeholder" />
 		</view>
 
 		<view class="auto-input auto-margin flex-box">
 			<view class="left-title">再次输入密码</view>
-			<input class="input-box" type="text" v-model="passAgin" />
+			<input class="input-box" type="text" v-model="passAgin" placeholder="请再次输入密码" placeholder-class="auto-placeholder"/>
 		</view>
 
 		<view class="auto-margin">
@@ -168,5 +168,6 @@
 
 	.input-box {
 		text-align: right;
+		color: #333333;
 	}
 </style>

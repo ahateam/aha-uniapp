@@ -6,7 +6,7 @@
 		</nav-bar>
 
 		<view class="content-box">
-			<image src="/static/image/bg-ly.png" mode="aspectFit"></image>
+			<image src="/static/image/task/fbcg.png" mode="aspectFit"></image>
 			<view class="data-title">发布成功</view>
 			<view class="data-info">您可在我的任务里查看</view>
 		</view>
@@ -58,13 +58,13 @@
 		padding-top: 161rpx;
 
 		image {
-			width: 200rpx;
-			height: 226rpx;
+			width: 202rpx;
+			height: 246rpx;
 		}
 	}
 
 	.data-title {
-		margin-top: 101rpx;
+		margin-top: 100rpx;
 		font-size: 40rpx;
 		color: #333333;
 		line-height: 56rpx;

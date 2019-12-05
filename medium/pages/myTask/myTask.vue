@@ -27,17 +27,33 @@
 		},
 		data() {
 			return {
+				count: 10,
+				offset: 0,
+				page: 1,
+				pageStatus: 'loading',
+				pageOver: false,
 				clickTab: true,
+
+				userInfo: {},
+
 				currIndex: 0,
 				navList: [{
 						text: '我发布的',
 						img: '/static/image/icon/task/icon_wfbd.png',
-						currImg: '/static/image/icon/task/icon_wfbd_p.png'
+						currImg: '/static/image/icon/task/icon_wfbd_p.png',
+						child: null,
+						pageStatus: 'loading',
+						page: 1,
+						pageOver: false
 					},
 					{
 						text: '我接收的',
 						img: '/static/image/icon/task/icon_wjsd.png',
-						currImg: '/static/image/icon/task/icon_wjsd_p.png'
+						currImg: '/static/image/icon/task/icon_wjsd_p.png',
+						child: null,
+						pageStatus: 'loading',
+						page: 1,
+						pageOver: false
 					}
 				],
 				// 我的任务信息列表
@@ -108,12 +124,40 @@
 				this.currIndex = index
 			},
 
+			getTaskListByPublishUserId(cnt) {
+				this.$api.getTaskListByPublishUserId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let list = this.$util.tryParseJson(res.data.c)
+						if (list.length < this.count) {
+							this.pageOver = true
+							this.pageStatus = 'nomore'
+						} else {
+							this.pageOver = false
+							this.pageStatus = 'more'
+						}
+						this.navList[this.currIndex].pageOver = this.pageOver
+						this.navList[this.currIndex].pageStatus = this.pageStatus
+
+						this.tasks = this.tasks.concat(list)
+						this.navList[this.currIndex].child = this.tasks
+					} else {
+						console.log('error')
+					}
+				})
+			}
 		},
 		onShow() {
 			this.$commen.showTabIcon()
 		},
 		onLoad() {
-
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			this.userInfo = userInfo
+			let cnt = {
+				publishUserId: userInfo.userId, // Long 发布者id
+				count: this.count, // Integer 
+				offset: this.offset, // Integer 
+			}
+			this.getTaskListByPublishUserId(cnt)
 		}
 	}
 </script>

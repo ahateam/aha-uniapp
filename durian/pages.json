@@ -186,7 +186,7 @@
 			{
 				"pagePath": "pages/user/user",
 				"iconPath": "static/tabIcon/tab_wd.png",
-				"selectedIconPath": "static/tabIcon/tab_wd%20copy.png",
+				"selectedIconPath": "static/tabIcon/tab_wd_p.png",
 				"text": "我的"
 			}
 		]

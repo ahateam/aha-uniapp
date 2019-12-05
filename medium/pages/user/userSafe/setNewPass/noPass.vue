@@ -16,7 +16,7 @@
 		<view class="auto-input auto-margin flex-box">
 			<view class="left-title">验证码</view>
 			<!-- <view class="tell-text"></view> -->
-			<input class="left-title code-input input-right" type="text" v-model="code" />
+			<input class="left-title code-input input-right" type="text" v-model="code" maxlength="6" />
 		</view>
 
 		<view class="code-btn" v-if="codeTime < 1" @click="getCode">获取验证码</view>
@@ -163,7 +163,8 @@
 	}
 
 	.code-btn {
-		margin: 60rpx 304rpx 100rpx;
+		text-align: center;
+		margin: 60rpx 0 100rpx;
 		color: #24D4D0;
 		font-size: 30rpx;
 
@@ -179,7 +180,9 @@
 	}
 
 	.input-right {
-		width: 110rpx;
+		flex: 1;
+		text-align: right;
+		margin-left: 30rpx;
 	}
 
 	.code-time {

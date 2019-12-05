@@ -55,7 +55,7 @@
 				let ctx = uni.createCanvasContext('cpbar', this);
 				let lineWidth = this.width / 750 * 6
 				// 进度条的渐变(中心x坐标-半径-边宽，中心Y坐标，中心x坐标+半径+边宽，中心Y坐标)
-				let gradient = ctx.createCircularGradient(this.width / 750 * 45, this.width / 750 * 45,this.width / 750 * 10 );
+				let gradient = ctx.createCircularGradient(-lineWidth, canvasWidth, canvasWidth * 2 + lineWidth);
 				gradient.addColorStop('0', '#FAD961');
 				gradient.addColorStop('1.0', '#FFA405');
 				ctx.setLineWidth(lineWidth);

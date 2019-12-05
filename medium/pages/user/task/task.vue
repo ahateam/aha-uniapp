@@ -8,24 +8,33 @@
 			<view class="title white">我发布的</view>
 			<view class=" list-box white">
 				<view class="list">
-					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
-					<view class="">已付款</view>
-					<view class="list-red">1</view>
+					<view class="top-img-box">
+						<image class="status-icon" src="/static/image/icon/user/task/icon_yfk.png" mode="aspectFit"></image>
+						<view class="list-red white">1</view>
+					</view>
+					<view>已付款</view>
 				</view>
 				<view class="list">
-					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
-					<view class="">已付款</view>
-					<view class="list-red">1</view>
+					<view class="top-img-box">
+						<image class="status-icon" src="/static/image/icon/user/task/icon_yfp.png" mode="aspectFit"></image>
+						<view class="list-red white">1</view>
+					</view>
+					<view>已分配</view>
 				</view>
 				<view class="list">
-					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
-					<view class="">已付款</view>
-					<view class="list-red">1</view>
+					<view class="top-img-box">
+						<image class="status-icon" src="/static/image/icon/user/task/icon_cg.png" mode="aspectFit"></image>
+						<view class="list-red white">1</view>
+					</view>
+					<view>草稿</view>
+
 				</view>
 				<view class="list">
-					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
-					<view class="">已付款</view>
-					<view class="list-red">1</view>
+					<view class="top-img-box">
+						<image class="status-icon" src="/static/image/icon/user/task/icon_ddfp.png" mode="aspectFit"></image>
+						<view class="list-red white">1</view>
+					</view>
+					<view>等待分配</view>
 				</view>
 			</view>
 		</view>
@@ -34,19 +43,27 @@
 			<view class="title white">我接收的</view>
 			<view class=" list-box white uni-flex-just">
 				<view class="list">
-					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
-					<view class="">已付款</view>
-					<view class="list-red">1</view>
+					<view class="top-img-box">
+						<image class="status-icon" src="/static/image/icon/user/task/icon_jxz.png" mode="aspectFit"></image>
+						<view class="list-red white">1</view>
+					</view>
+					<view>进行中</view>
+
 				</view>
 				<view class="list">
-					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
-					<view class="">已付款</view>
-					<view class="list-red">1</view>
+					<view class="top-img-box">
+						<view class="list-red white">1</view>
+						<image class="status-icon" src="/static/image/icon/user/task/icon_wcwsk.png" mode="aspectFit"></image>
+					</view>
+					<view>完成未收款</view>
 				</view>
 				<view class="list">
-					<image src="/static/image/icon/user/icon_bzzx.png" mode=""></image>
-					<view class="">已付款</view>
-					<view class="list-red">1</view>
+					<view class="top-img-box">
+						<image class="status-icon" src="/static/image/icon/user/task/icon_ysk.png" mode="aspectFit"></image>
+						<view class="list-red white">1</view>
+					</view>
+					<view>已收款</view>
+
 				</view>
 			</view>
 		</view>
@@ -115,33 +132,36 @@
 		height: 16rpx;
 	}
 
+	.top-img-box {
+		position: relative;
+		width: 60rpx;
+		margin: 0 auto;
+	}
+
 	.box {
 		margin-bottom: 20rpx;
 	}
 
 	.list-box {
 		display: flex;
-		flex-direction: row;
 	}
 
 	.uni-flex-just {
-		display: flex;
-		justify-content: space-between;
+		justify-content: center;
 	}
 
 	.list {
-		width: 136rpx;
-		margin-left: 52rpx;
+		flex: 1;
 		position: relative;
 		margin-bottom: 30rpx;
+		text-align: center;
 	}
 
-	.list>image {
+	.status-icon {
 		width: 60rpx;
 		height: 60rpx;
 		margin-bottom: 20rpx;
-		margin-top: 29rpx;
-		margin-left: 25rpx;
+		margin-top: 19rpx;
 	}
 
 	.list>text {
@@ -152,15 +172,17 @@
 	}
 
 	.list-red {
+		position: absolute;
+		top: 0;
+		right: -18rpx;
 		width: 36rpx;
 		height: 36rpx;
 		border-radius: 50%;
 		border: 3rpx solid #EE455A;
-		position: absolute;
-		top: 0;
-		left: 70rpx;
+		box-shadow: 0 0 0 3rpx $group-color-w;
 		color: #EE455A;
 		font-size: 22rpx;
+		line-height: 36rpx;
 		text-align: center;
 	}
 

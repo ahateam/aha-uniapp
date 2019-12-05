@@ -7,7 +7,7 @@
 				<view class="btns-box">
 					<view class="user-name">{{name}}</view>
 					<view class="money-box">
-						<image src="/static/image/icon/user/icon_zhaq.png" mode="aspectFill"></image>
+						<image src="/static/image/icon/user/icon_ptb.png" mode="aspectFill"></image>
 						<text>平台币{{money}}</text>
 					</view>
 				</view>
@@ -19,7 +19,6 @@
 				</view>
 				<view class="tip-box flex-box right-box" :hidden="dataChangeStatus">
 					<view class="tip-radius flex-box">
-						<view class="radius-content"></view>
 						<view class="radius-samll"></view>
 					</view>
 					<view class="tip-line"></view>
@@ -32,6 +31,16 @@
 		</view>
 
 		<view class="content-List">
+			<view class="content-box" @click="navToView('./bill/bill')">
+				<view class="left-box">
+					<image class="left-icon" src="/static/image/icon/user/icon_gzqaud.png" mode="aspectFill"></image>
+					<view>共赚取1000澳元</view>
+					<view class="pay-info">支出200澳元</view>
+					<view class="pay-info pay-btn">明细</view>
+				</view>
+				<image class="right-icon" src="/static/image/icon/icon_enter.png" mode="aspectFill"></image>
+			</view>
+
 			<view class="content-box" v-for="(item,index) in contentList" :key="index" @click="navToView(item.path)">
 				<view class="left-box">
 					<image class="left-icon" :src="item.iconSrc" mode="aspectFill"></image>
@@ -56,14 +65,9 @@
 				name: '印第安老斑鸠',
 				money: 0,
 				contentList: [{
-						text: '共赚取1000澳元',
-						iconSrc: '/static/image/icon/user/icon_gzqaud.png',
-						path: '/pages/user/bill/bill'
-					},
-					{
 						text: '任务总览及浏览历史',
 						iconSrc: '/static/image/icon/user/icon_rwzljllls.png',
-						path: '/pages/user/task/task'
+						path: './task/task'
 					},
 					{
 						text: '收款账户',
@@ -78,7 +82,7 @@
 					{
 						text: '帮助中心',
 						iconSrc: '/static/image/icon/user/icon_bzzx.png',
-						path: '/pages/user/helpcenter/helpcenter'
+						path: './helpcenter/helpcenter'
 					}
 				],
 
@@ -92,29 +96,32 @@
 		methods: {
 			navToUser() {
 				uni.navigateTo({
-					url: '/pages/user/perdata/perdata'
+					url: './perdata/perdata',
+					success: () => {
+						this.$commen.hiddenTabIcon
+					}
 				})
 			},
 
 			navToView(url) {
 				if (url) {
 					uni.navigateTo({
-						url: url
+						url: url,
+						success: () => {
+							this.$commen.hiddenTabIcon
+						}
 					})
 				}
 			},
-
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 		},
 		onShow() {
-			let userInfo = uni.getStorageSync('userInfo')
-			console.log(this.$util.tryParseJson(userInfo))
-			if (uni.getStorageSync('userId')) {
-				this.name = uni.getStorageSync('userName')
-				this.imgSrc = uni.getStorageSync('userHead')
-			}
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			console.log(userInfo)
+			this.name = userInfo.userName
+			this.imgSrc = userInfo.userHead
 		}
 	}
 </script>
@@ -145,7 +152,6 @@
 	}
 
 	.user-name {
-		text-align: center;
 		font-size: 34rpx;
 		color: $group-color;
 		line-height: 48rpx;
@@ -171,6 +177,11 @@
 		color: #FFA405;
 		margin-top: 22rpx;
 		font-size: 24rpx;
+
+		image {
+			width: 26rpx;
+			height: 26rpx;
+		}
 	}
 
 	.editor-box {
@@ -207,9 +218,9 @@
 	}
 
 	.left-icon {
-		width: 35rpx;
-		height: 35rpx;
-		margin-right: 40rpx;
+		width: 40rpx;
+		height: 40rpx;
+		margin-right: 37rpx;
 	}
 
 	.right-icon {
@@ -259,7 +270,7 @@
 		width: 30rpx;
 		height: 30rpx;
 		border-radius: 50%;
-		background-color: rgba($color: #00C8BE, $alpha: .1);
+		// background-color: rgba($color: #00C8BE, $alpha: .1);
 		margin-right: 77rpx;
 	}
 
@@ -267,7 +278,7 @@
 		width: 22rpx;
 		height: 22rpx;
 		border-radius: 50%;
-		background-color: rgba($color: #00C8BE, $alpha: .2);
+		// background-color: rgba($color: #00C8BE, $alpha: .2);
 	}
 
 	.radius-samll {
@@ -276,6 +287,8 @@
 		height: 14rpx;
 		border-radius: 50%;
 		background-color: #00C8BE;
+		box-shadow:
+			0 0 0 4rpx rgba($color: #00C8BE, $alpha: .2), 0 0 0 8rpx rgba($color: #00C8BE, $alpha: .1);
 	}
 
 	.tip-box {
@@ -312,5 +325,19 @@
 		color: #00C8BE;
 		font-size: 26rpx;
 		line-height: 37rpx;
+	}
+
+	.pay-info {
+		color: $group-color-befor;
+		font-size: 26rpx;
+		margin-left: 30rpx;
+	}
+
+	.pay-btn {
+		background-color: $group-color-search;
+		width: 92rpx;
+		line-height: 48rpx;
+		border-radius: 6rpx;
+		text-align: center;
 	}
 </style>

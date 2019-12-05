@@ -46,8 +46,9 @@
 					</view>
 				</view>
 				<!-- 隐藏box -->
-				<view class="content" style="padding-left: 0;" v-if="!item.openStatus" @click="changeTaskShow(index,0)">
-					<view class="content-cen"> 查看完整任务图</view>
+				<view class="content more-box" style="padding-left: 0;" v-if="!item.openStatus" @click="changeTaskShow(index,0)">
+					<view class="content-cen"> 查看完整任务</view>
+					<image class="more-btn" src="/static/image/icon/user/task/icon_ckwzrw.png" mode="aspectFit"></image>
 				</view>
 			</view>
 		</view>
@@ -80,8 +81,9 @@
 					</view>
 				</view>
 				<!-- 隐藏box -->
-				<view class="content" style="padding-left: 0;" v-if="!item.openStatus">
-					<view class="content-cen" @click="changeTaskShow(index,1)"> 查看完整任务图</view>
+				<view class="content more-box" style="padding-left: 0;" v-if="!item.openStatus">
+					<view class="content-cen" @click="changeTaskShow(index,1)"> 查看完整任务</view>
+					<image class="more-btn" src="/static/image/icon/user/task/icon_ckwzrw.png" mode="aspectFit"></image>
 				</view>
 			</view>
 		</view>
@@ -188,8 +190,6 @@
 	.content-cen {
 		font-size: 26rpx;
 		color: #587685;
-		width: 100%;
-		text-align: center;
 	}
 
 	.content-b {
@@ -316,5 +316,16 @@
 		position: absolute;
 		top: -3rpx;
 		left: -60rpx;
+	}
+
+	.more-btn {
+		width: 18.5rpx;
+		height: 30rpx;
+		margin-left: 19rpx;
+	}
+
+	.more-box {
+		justify-content: center;
+		align-items: center;
 	}
 </style>

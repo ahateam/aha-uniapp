@@ -14,11 +14,11 @@
 
 		<view class="btns-box">
 			<view class="money-box">
-				<image src="/static/image/user/icon_zhaq.png" mode="aspectFill"></image>
+				<image src="/static/image/icon/icon_ptb.png" mode="aspectFit"></image>
 				<text>平台币{{money}}</text>
 			</view>
 			<view class="editor-box" @click="navToUser">
-				<image src="/static/image/user/icon_xggrxx.png" mode="aspectFill"></image>
+				<image src="/static/image/user/icon_xggrxx.png" mode="aspectFit"></image>
 				<text>修改个人资料</text>
 			</view>
 		</view>
@@ -26,10 +26,10 @@
 		<view class="content-List">
 			<view class="content-box" style="flex-wrap: wrap;" @click="navToView('/pages/user/userApply/userApply')">
 				<view class="left-box">
-					<image class="left-icon" src="/static/image/user/icon_wdsq.png" mode="aspectFill"></image>
+					<image class="left-icon" src="/static/image/user/icon_wdsq.png" mode="aspectFit"></image>
 					<text>我的申请</text>
 				</view>
-				<image class="right-icon" src="/static/image/user/icon_enter.png" mode="aspectFill"></image>
+				<image class="right-icon" src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				<view class="apply-info">
 					<view class="apply-text">
 						<view>{{applyTitle}}</view>
@@ -43,10 +43,10 @@
 			<view class="content-box" :class="{'curr-box':listIndex==index}" v-for="(item,index) in contentList" :key="index"
 			 @touchstart="currIndex(index)" @touchend="listIndex = -1" @click="navToView(item.path)">
 				<view class="left-box">
-					<image class="left-icon" :src="item.iconSrc" mode="aspectFill"></image>
+					<image class="left-icon" :src="item.iconSrc" mode="aspectFit"></image>
 					<text>{{item.text}}</text>
 				</view>
-				<image class="right-icon" src="/static/image/user/icon_enter.png" mode="aspectFill"></image>
+				<image class="right-icon" src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 			</view>
 		</view>
 	</view>
@@ -93,7 +93,7 @@
 
 				applyTitle: 'Monash大学计算机专业申请',
 				applyHsty: '签字已提交',
-				hstyNumber: '25'
+				hstyNumber: '100'
 			}
 		},
 		methods: {
@@ -227,6 +227,11 @@
 		border-radius: 25rpx;
 		border: 1rpx solid #00C8BE;
 		color: #00C8BE;
+
+		image {
+			width: 17rpx;
+			height: 20rpx;
+		}
 	}
 
 	.content-List {

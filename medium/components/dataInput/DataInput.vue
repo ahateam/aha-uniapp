@@ -5,7 +5,8 @@
 			<view class="right-title">{{title}}</view>
 		</view>
 		<view class="auto-input" :style="hiddenTitle?'margin-top:0;':''" @click="emit">
-			<input :hidden="inputHidden" :value="value" :placeholder="placeholder" @input="onInput" :type="type" :disabled="disabled" />
+			<input :hidden="inputHidden" :value="value" :placeholder="placeholder" placeholder-style="color:#B6C4D2;" @input="onInput"
+			 :type="type" :disabled="disabled" />
 			<view v-if="price">{{price}}</view>
 			<view v-if="inputHidden">{{value}}</view>
 		</view>
@@ -65,8 +66,8 @@
 				//传出值
 				this.$emit('input', e.target.value)
 			},
-			
-			emit(){
+
+			emit() {
 				this.$emit('click')
 			}
 		}
@@ -97,7 +98,6 @@
 
 		input {
 			flex: 1;
-			caret-color: #00C8BE;
 		}
 	}
 
