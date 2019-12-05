@@ -7,6 +7,11 @@ import TIM from 'tim-js-sdk'
 import api from './commen/api'
 import constData from './commen/constData'
 import commen from './commen/commen'
+import './assets/icon/iconfont.css'
+import Vant from 'vant';
+import 'vant/lib/index.css'
+Vue.use(Vant);
+
 
 window.tim = tim
 window.TIM = TIM
