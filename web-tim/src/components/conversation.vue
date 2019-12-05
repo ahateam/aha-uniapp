@@ -134,20 +134,23 @@ export default {
     },
     /**获取用户详细信息 */
     getUserInfo(userId){
+      let obj = null
         userList.forEach(item=>{
           if(item.userId == userId){
-            return item
+            obj =  item
           }
         })
+        return obj
     },
     /** 创建且更换聊天室 */
     checkConversation(item){
         let id = 'C2C' + item.user.userId
           let toUserInfo = this.getUserInfo(item.user.userId)
+          console.log(toUserInfo)
           localStorage.setItem('toUserInfo',JSON.stringify(toUserInfo))
           this.$store.dispatch('checkoutConversation',id)
         this.$store.state.isPageActive = 2
-        console.log(this.$store.state.isPageActive)
+        
 			
     }
   },
