@@ -151,7 +151,11 @@
 			"path": "pages/user/userShop/myGoods/myGoods",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/upload/upload",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",
