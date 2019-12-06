@@ -5,7 +5,7 @@
 		<view class="view-title">发布任务</view>
 
 		<view class="content-list">
-			<view class="list-box" :class="{'curr-box':currIndex == index}" v-for="(item,index) in list" :key="index"
+			<view class="list-box" :class="{'curr-box':currIndex == index}" v-for="(item,index) in taskList" :key="index"
 			 @touchstart="changeCurr(index)" @touchend="resetStyle()" @click="navToAdd(item)">
 				<image :src="item.img" mode="aspectFit"></image>
 				<view>{{item.name}}</view>
@@ -20,27 +20,7 @@
 		data() {
 			return {
 				navHeight: this.getNavHeight(),
-				list: [{
-					name: '全案助理',
-					img: '/static/image/icon/addTask/icon_qazl.png',
-					src: './addTask/assistant'
-				}, {
-					name: '翻译',
-					img: '/static/image/icon/addTask/icon_fy.png',
-					src: './addTask/translate'
-				}, {
-					name: '表格填写',
-					img: '/static/image/icon/addTask/icon_bgtx.png',
-					src: './addTask/form'
-				}, {
-					name: '撰写文书',
-					img: '/static/image/icon/addTask/icon_zxws.png',
-					src: './addTask/document'
-				}, {
-					name: '其他',
-					img: '/static/image/icon/addTask/icon_qt.png',
-					src: './addTask/other'
-				}],
+				taskList: this.$constData.taskType,
 				currIndex: -1,
 
 			}
@@ -48,6 +28,7 @@
 		methods: {
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+				uni.getStorageSync('userInfo')
 			},
 
 			changeCurr(index) {
@@ -70,6 +51,7 @@
 						}
 					})
 				}
+				this.$store.commit('updataType',item.key)
 			}
 		},
 		onShow() {

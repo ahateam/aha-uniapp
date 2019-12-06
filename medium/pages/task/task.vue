@@ -5,6 +5,7 @@
 		</nav-bar>
 		<view :style="{'padding-top': getStatusHeight()}"></view>
 		<!-- 顶部选项卡 -->
+
 		<view class="nav-box">
 			<scroll-view class="top-option" scroll-x="true" scroll-left="0" scroll-with-animation :scroll-into-view="'nav' + currIndex">
 				<view class="top-options" :id="'nav' + index" :class="currIndex== index?'active':''" :style="index == 0?'margin-left:0;':''"
@@ -14,6 +15,7 @@
 			</scroll-view>
 			<view class="nav-shadow"></view>
 		</view>
+
 		<!-- 顶部选项卡 end -->
 		<task-list :tasks="tasks" @getItem="navToInfo"></task-list>
 		<!-- 任务栏  task==任务栏-->
@@ -87,6 +89,7 @@
 				],
 			}
 		},
+
 		methods: {
 			getStatusHeight() {
 				let height = uni.getSystemInfoSync()['statusBarHeight']
@@ -149,7 +152,7 @@
 				uni.reLaunch({
 					url: '/pages/login/mobilePassword'
 				})
-			} 
+			}
 			// else if (true) {
 			// 	uni.navigateTo({
 			// 		url: '/pages/user/newUserInfo/newUserInfo'

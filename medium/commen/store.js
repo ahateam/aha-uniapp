@@ -6,19 +6,78 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	state: {
 		taskInfo: {
-			name: 'test',
-			text: 'test',
+			taskStatus: 0,
+			fileData: [],
+			imgData: [],
 		},
 	},
-	// mutations:{
-	// 	setName:function(state,newName){
-	// 		state.name = newName
-	// 		console.log(state.name)
-	// 	},
-	// 	setText:function(state,newText){
-	// 		state.text = newText
-	// 		console.log(state.text)
-	// 	}
-	// },
+	mutations: {
+		// 任务标题
+		updateTitle(state, taskName) {
+			state.taskInfo.taskName = taskName
+		},
+		// 任务类型
+		updataType(state, taskType) {
+			state.taskInfo.taskType = taskType
+			console.log(state)
+		},
+		// 任务所需资质
+		updataQualifications(state, qualifications) {
+			state.taskInfo.qualifications = qualifications
+		},
+		// 申请人数
+		updataApplyNumber(state, applyNumber) {
+			state.taskInfo.applyNumber = applyNumber
+		},
+		// 主申请人国籍
+		updataApplicantNationality(state, applicantNationality) {
+			state.taskInfo.applicantNationality = applicantNationality
+		},
+		// 主申请人年龄
+		updataApplicantAge(state, applicantAge) {
+			state.taskInfo.applicantAge = applicantAge
+		},
+		// 任务描述
+		updataTaskDescribe(state, taskDescribe) {
+			state.taskInfo.taskDescribe = taskDescribe
+		},
+		// 其他说明 
+		updataOtherDescribe(state, otherDescribe) {
+			state.taskInfo.otherDescribe = otherDescribe
+		},
+		//   低于18岁副申请人年龄
+		updataViceApplicantAge(state, viceApplicantAge) {
+			state.taskInfo.viceApplicantAge = viceApplicantAge
+		},
+		// (翻译)页数 
+		updataPageNumber(state, pageNumber) {
+			state.taskInfo.pageNumber = pageNumber
+		},
+		// 内容 
+		updataTaskcontent(state, Taskcontent) {
+			state.taskInfo.Taskcontent = Taskcontent
+		},
+		// 上传文件
+		updataFileData(state, file) {
+			state.taskInfo.fileData.push(file)
+		},
+
+		//删除文件
+		delFileData(state, index) {
+			state.taskInfo.fileData.splice(index, 1)
+		},
+
+		// 上传图片
+		updataImgData(state, img) {
+			state.taskInfo.imgData.push(img)
+		},
+
+		//删除图片
+		delImgData(state, index) {
+			state.taskInfo.fileData.splice(index, 1)
+		},
+		
+		
+	},
 
 })

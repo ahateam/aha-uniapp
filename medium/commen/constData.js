@@ -6,6 +6,38 @@ constData.oss = 'http://durian-oss.oss-cn-hangzhou.aliyuncs.com'
 
 constData.module = 1190
 
+constData.taskType = [{
+		name: '全案助理',
+		key: 0,
+		img: '/static/image/icon/addTask/icon_qazl.png',
+		src: './addTask/assistant'
+	},
+	{
+		name: '翻译',
+		key: 1,
+		img: '/static/image/icon/addTask/icon_fy.png',
+		src: './addTask/translate'
+	},
+	{
+		name: '表格填写',
+		key: 2,
+		img: '/static/image/icon/addTask/icon_bgtx.png',
+		src: './addTask/form'
+	},
+	{
+		name: '撰写文书',
+		key: 3,
+		img: '/static/image/icon/addTask/icon_zxws.png',
+		src: './addTask/document'
+	},
+	{
+		name: '其他',
+		key: 4,
+		img: '/static/image/icon/addTask/icon_qt.png',
+		src: './addTask/other'
+	}
+]
+
 constData.codeType = [{
 		key: 0,
 		val: '登录'

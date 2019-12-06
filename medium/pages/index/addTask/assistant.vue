@@ -6,7 +6,7 @@
 		</nav-bar>
 		<view style="margin-top: 10rpx;"></view>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="taskType" :hiddenIcon="true" placeholder="全案助理" title="任务分类"></data-input>
+		<data-input :inputHidden="aptitudesStatus" disabled :hiddenIcon="true" placeholder="全案助理" title="任务分类"></data-input>
 
 		<data-input :inputHidden="aptitudesStatus" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
 
@@ -57,10 +57,19 @@
 			DataTextarea,
 			NextBtn
 		},
+		computed: {
+			title: {
+				get() {
+					return this.$store.state.taskInfo.title
+				},
+				set(value) {
+					this.$store.commit('updateTitle', value)
+				}
+			}
+		},
 		data() {
 			return {
 				taskType: '',
-				title: '',
 				people: '', //人数
 				country: '',
 				howOld: '',
