@@ -1,11 +1,11 @@
 /** 后端接口对接文档*/
 
 import util from 'ahaapi'
-import baseUrl from './url'
+import url from './url'
 
 // let appId = process.env.appID;//应用编号
 // let appId ='';
-
+let baseUrl = url.baseUrl
 let api = {};
 console.log('开始调用ctrl');
 
@@ -134,4 +134,11 @@ api.getOrderByBuyerId = function(cnt, callback) {
 	util.call(baseUrl + '/goods/getOrderByBuyerId', cnt, callback)
 }
 /* 商城end */
+
+/*tim 聊天*/
+//获取用户tim聊天的userSig	
+api.getUserSig = function(cnt, callback) {
+	util.call(baseUrl + '/user/getUserSig', cnt, callback)
+}
+
 export default api

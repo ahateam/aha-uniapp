@@ -56,6 +56,7 @@
 			},
 
 			login() {
+				
 				if (this.phoneNumber == '') {
 					uni.showToast({
 						title: '请输入手机号',
@@ -71,8 +72,11 @@
 						phone: this.areaCode + this.phoneNumber, // String 手机号
 						pwd: this.passData, // String 密码
 					}
+					console.log('--------res-------')
+					console.log(this.$api.login)
 					this.$api.login(cnt, (res) => {
-						console.log(res)
+							console.log(res)
+							console.log('1111')
 						if (res.data.rc == this.$util.RC.SUCCESS) {
 							let userInfo = this.$util.tryParseJson(res.data.c)
 							console.log(userInfo)
@@ -82,7 +86,7 @@
 							})
 						} else {
 							uni.showToast({
-								title: res.data.rm,
+								title: '登录失败，用户名或密码错误',
 								icon: 'none'
 							})
 						}

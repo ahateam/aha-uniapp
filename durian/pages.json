@@ -5,6 +5,18 @@
 			"style": {}
 		},
 		{
+			"path": "pages/index/message",
+			"style": {}
+		},
+		{
+			"path": "pages/index/conversation",
+			"style": {}
+		},
+		{
+			"path": "pages/index/choose",
+			"style": {}
+		},
+		{
 			"path": "pages/login/mobile",
 			"style": {}
 		},
