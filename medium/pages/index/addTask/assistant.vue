@@ -6,7 +6,7 @@
 		</nav-bar>
 		<view style="margin-top: 10rpx;"></view>
 
-		<data-input :inputHidden="aptitudesStatus" disabled :hiddenIcon="true" placeholder="全案助理" title="任务分类"></data-input>
+		<data-input :inputHidden="aptitudesStatus" disabled :hiddenIcon="true" value="全案助理" title="任务分类"></data-input>
 
 		<data-input :inputHidden="aptitudesStatus" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
 
@@ -60,22 +60,71 @@
 		computed: {
 			title: {
 				get() {
-					return this.$store.state.taskInfo.title
+					return this.$store.state.taskInfo.taskName
 				},
 				set(value) {
 					this.$store.commit('updateTitle', value)
 				}
-			}
+			},
+			people: {
+				get() {
+					return this.$store.state.taskInfo.applyNumber
+				},
+				set(value) {
+					this.$store.commit('updataApplyNumber', value)
+				}
+			},
+			country: {
+				get() {
+					return this.$store.state.taskInfo.applicantNationality
+				},
+				set(value) {
+					this.$store.commit('updataApplicantNationality', value)
+				}
+			},
+			howOld: {
+				get() {
+					return this.$store.state.taskInfo.applicantAge
+				},
+				set(value) {
+					this.$store.commit('updataApplicantAge', value)
+				}
+			},
+			lowPeople: {
+				get() {
+					return this.$store.state.taskInfo.viceApplicantAge
+				},
+				set(value) {
+					this.$store.commit('updataViceApplicantAge', value)
+				}
+			},
+
+			aptitudes() {
+				return this.$store.state.taskInfo.qualifications
+			},
+
+			taskInfo: {
+				get() {
+					return this.$store.state.taskInfo.taskDescribe
+				},
+				set(value) {
+					this.$store.commit('updataTaskDescribe', value)
+				}
+			},
+
+			remark: {
+				get() {
+					return this.$store.state.taskInfo.otherDescribe
+				},
+				set(value) {
+					this.$store.commit('updataOtherDescribe', value)
+				}
+			},
+
 		},
 		data() {
 			return {
-				taskType: '',
-				people: '', //人数
-				country: '',
-				howOld: '',
-				lowPeople: '',
 				formType: '',
-				aptitudes: 'MARN号',
 				aptitudesCurr: -1,
 				aptitudesStatus: false,
 				aptitudesList: [{
@@ -90,8 +139,6 @@
 						name: '不需要'
 					}
 				],
-
-				remark: '',
 			}
 		},
 		methods: {
@@ -106,7 +153,7 @@
 			},
 
 			choiceAptitudes(item) {
-				this.aptitudes = item.name
+				this.$store.commit('updataQualifications', item.name)
 				this.aptitudesStatus = false
 			},
 

@@ -8,9 +8,9 @@
 
 		<data-input :inputHidden="aptitudesStatus" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
 
-		<data-input :inputHidden="aptitudes" v-model="title" :hiddenIcon="true" title="任务接受者所需证书"></data-input>
+		<choice-input :value="aptitudes" title="任务接收者所需资质" :hiddenIcon="true" @click="openAts"></choice-input>
 
-		<data-textarea :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" title="和接收者共享的文件"></data-textarea>
+		<data-input :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" title="和接收者共享的文件"></data-input>
 
 		<view style="margin-top: 20rpx;">
 			<button class="uploding-img" @click="upImgStar" v-if="imgList.length == 0">
@@ -45,6 +45,14 @@
 		</view>
 
 		<l-file ref="lFile" @up-success="onSuccess"></l-file>
+
+		<uni-popup :show="aptitudesStatus" type="bottom" @change="changePopup">
+			<view class="aptitudes-list">
+				<view class="aptitudes-border" :class="[{'no-border':index == 2},{'bottom-popup-box':index == 3},{'curr-box':index == aptitudesCurr}]"
+				 @click="choiceAptitudes(item)" v-for="(item,index) in aptitudesList" :key="index" @touchstart="changeAts(index)"
+				 @touchend="aptitudesCurr = -1">{{item.name}}</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -68,25 +76,72 @@
 			NextBtn,
 			lFile
 		},
+
+		computed: {
+			title: {
+				get() {
+					return this.$store.state.taskInfo.taskName
+				},
+				set(value) {
+					this.$store.commit('updateTitle', value)
+				}
+			},
+
+			aptitudes() {
+				return this.$store.state.taskInfo.qualifications
+			},
+
+			imgList() {
+				return this.$store.state.taskInfo.imgData
+			},
+
+			fileList() {
+				return this.$store.state.taskInfo.fileData
+			},
+
+			remark: {
+				get() {
+					return this.$store.state.taskInfo.otherDescribe
+				},
+				set(value) {
+					this.$store.commit('updataOtherDescribe', value)
+				}
+			},
+		},
 		data() {
 			return {
-				title: '',
+
 				formType: '',
-				aptitudes: '翻译证书',
 				aptitudesCurr: -1,
 				aptitudesStatus: false,
-
-				remark: '',
-
-				imgList: [],
-				fileList: [{
-					name: '我的成绩单.docx',
-					size: '216K'
-				}],
-
+				aptitudesList: [{
+						name: 'MARN号'
+					},
+					{
+						name: 'PIEP号'
+					},
+					{
+						name: '翻译证书'
+					}, {
+						name: '不需要'
+					}
+				],
 			}
 		},
 		methods: {
+			changeAts(index) {
+				this.aptitudesCurr = index
+			},
+
+			choiceAptitudes(item) {
+				this.$store.commit('updataQualifications', item.name)
+				this.aptitudesStatus = false
+			},
+
+			openAts() {
+				this.aptitudesStatus = true
+			},
+
 			upFile() {
 				let tiemr = new Date()
 				let address = tiemr.getFullYear() + "" + (tiemr.getMonth() + 1) + "" + tiemr.getDate();
@@ -165,8 +220,7 @@
 							duration: 1000
 						})
 						//只管这个变量
-						this.imgList.push('https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr)
-						console.log(this.imgList)
+						this.$store.commit('updataImgData', 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr)
 					},
 					fail: (err) => {
 						console.log('uploadImage fail', err);
@@ -180,27 +234,14 @@
 
 			nextBtn() {
 				uni.navigateTo({
-					url:`./createTask`
+					url: `./createTask`
 				})
-			},
-
-			changeAts(index) {
-				this.aptitudesCurr = index
-			},
-
-			choiceAptitudes(item) {
-				this.aptitudes = item.name
-				this.aptitudesStatus = false
 			},
 
 			changePopup(e) {
 				if (!e.show) {
 					this.aptitudesStatus = false
 				}
-			},
-
-			openAts() {
-				this.aptitudesStatus = true
 			},
 
 			navBack() {

@@ -10,9 +10,12 @@
 		<view class="bottom-box">
 			<next-btn title="发布任务" radius="6rpx" @click="createTask"></next-btn>
 			<view style="margin-top: 30rpx;">
-				<next-btn title="保存为草稿" type="default" radius="6rpx"></next-btn>
+				<next-btn title="保存为草稿" type="default" radius="6rpx" @click="createDrafts"></next-btn>
 			</view>
 		</view>
+
+		<w-picker mode="dateTime" startYear="2019" endYear="2030" :defaultVal="defaultVal" :current="true" @confirm="onConfirm"
+		 ref="picker" themeColor="#f00"></w-picker>
 	</view>
 </template>
 
@@ -20,29 +23,55 @@
 	import DataInput from '@/components/dataInput/DataInput.vue'
 	import NextBtn from '@/components/NextBtn/NextBtn.vue'
 	import navBar from '@/components/zhouWei-navBar/index.vue'
+	import wPicker from "@/components/w-picker/w-picker.vue";
 
 	export default {
 		components: {
 			navBar,
 			DataInput,
-			NextBtn
+			NextBtn,
+			wPicker
 		},
+
+		computed: {
+			price: {
+				get() {
+					return this.$store.state.taskInfo.payPrice
+				},
+				set(value) {
+					this.$store.commit('updataPayPrice', value)
+				}
+			},
+
+			time() {
+				return this.$store.state.taskInfo.finishDate
+			}
+		},
+
 		data() {
 			return {
 				title: '发布任务',
-				price: '', //多少钱
-				time: '', //完成时间
+				defaultVal: "['2018','12','31']"
 			};
 		},
 		methods: {
+			onConfirm(res) {
+				this.$store.commit('updataFinishDate', res.result)
+				this.$refs.picker.hide()
+			},
+
 			showTimeBox() {
-				this.time = '666666'
+				this.$refs.picker.show()
 			},
 
 			createTask() {
 				uni.reLaunch({
-					url:'./complete'
+					url: './complete'
 				})
+			},
+
+			navBack() {
+				uni.navigateBack()
 			}
 		},
 		onLoad(res) {
@@ -59,7 +88,7 @@
 		width: 33rpx;
 		height: 33rpx;
 	}
-	
+
 	.view-title {
 		color: #333333;
 		font-size: 36rpx;

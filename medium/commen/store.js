@@ -9,6 +9,7 @@ export default new Vuex.Store({
 			taskStatus: 0,
 			fileData: [],
 			imgData: [],
+			qualifications: 'MARN号'
 		},
 	},
 	mutations: {
@@ -45,7 +46,7 @@ export default new Vuex.Store({
 		updataOtherDescribe(state, otherDescribe) {
 			state.taskInfo.otherDescribe = otherDescribe
 		},
-		//   低于18岁副申请人年龄
+		//   低于18岁副申请人人数
 		updataViceApplicantAge(state, viceApplicantAge) {
 			state.taskInfo.viceApplicantAge = viceApplicantAge
 		},
@@ -76,8 +77,16 @@ export default new Vuex.Store({
 		delImgData(state, index) {
 			state.taskInfo.fileData.splice(index, 1)
 		},
+
+		// 任务金额
+		updataPayPrice(state, payPrice) {
+			state.taskInfo.payPrice = payPrice
+		},
 		
-		
+		// 任务完成时间 
+		updataFinishDate(state, finishDate) {
+			state.taskInfo.finishDate = finishDate
+		}
 	},
 
 })

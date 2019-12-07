@@ -105,7 +105,7 @@ document.addEventListener('UniAppJSBridgeReady', () => {
 		let str = file.name.substr(file.name.lastIndexOf('.'))
 		let nameStr = address + tiemr.getTime() + str
 		formData = {
-			name: nameStr,
+			'name': nameStr,
 			'key': nameStr,
 			'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMi0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
 			'OSSAccessKeyId': 'LTAIJ9mYIjuW54Cj',
