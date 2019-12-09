@@ -13,7 +13,6 @@
 	export default {
 		data() {
 			return {
-				userId: "",
 				loading: true,
 				userInfo: '',
 			}
@@ -23,8 +22,9 @@
 				console.log(val)
 			},
 			conversationList(val){
+								console.log('-----conversationList--------')
 				console.log(val)
-				console.log('-----conversationList--------')
+
 			}
 		},
 		computed: {
@@ -45,13 +45,10 @@
 		},
 		
 		onLoad() {
+			this.initListener()
 			console.log('--userInfo--')
-			if(uni.getStorageSync('userInfo')){
-				console.log()
-				this.userId = "3";
-				this.isActive = 0;
-				this.userInfo = this.$commen.getUserInfo(this.userId)
-				
+			if(uni.getStorageSync('userInfo')){		
+				this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
 				this.loginTim();
 			}else{
 				uni.reLaunch({
@@ -145,6 +142,7 @@
 			//获取默认的会话列表
 			/**拉取历史会话列表 */
 			getConversationList() {
+				console.log('11111')
 				let promise = this.tim.getConversationList();
 				promise
 					.then(res => {
@@ -152,6 +150,18 @@
 							"updateConversationList",
 							res.data.conversationList
 						);
+						console.log(res.data.conversationList.length)
+						if(res.data.conversationList.length){
+							
+							uni.reLaunch({
+							    url: './conversation'
+							});
+							
+						}else{
+							uni.reLaunch({
+							    url: './choose'
+							});
+						}
 					})
 					.catch(() => {
 						this.getConversationList();
@@ -160,10 +170,11 @@
 			
 			//登录tim
 			loginTim() {
+					console.log(this.userInfo)
 				if (this.userInfo) {
 					this.tim
 						.login({
-							userID: this.userInfo.userId,
+							userID: String(this.userInfo.userId),
 							userSig: this.userInfo.userSig
 						})
 						.then(res => {
@@ -171,10 +182,10 @@
 							this.$store.commit("toggleIsLogin", true);
 							this.$store.commit("startComputeCurrent");
 							uni.setStorageSync('userInfo', JSON.stringify(this.userInfo))
-							this.initListener();
 							this.getConversationList();
 						})
 						.catch(error => {
+							console.error(error)
 							uni.showToast({
 								icon:'none',
 								title:'用户身份失效，请重新登录'

@@ -4,7 +4,7 @@
       <div @click="navActive =0" class="nav-item-box nav-item-active" style="margin-left:0">咨询</div>
     </div>
     <div class="content-box">
-      <div v-for="(item,index) in typeList" :key="index" @click="activeItme = item.id">
+      <div v-for="(item,index) in typeList" :key="index" @click="chooseBtn(item)">
         <div :class="activeItme==item.id?'list-item list-item-active':'list-item'" >{{item.title}}</div>
       </div>
     </div>
@@ -20,7 +20,36 @@ export default {
       activeItme:1
     };
   },
-  methods: {},
+  methods: {
+		chooseBtn(item){
+			this.activeItme = item.id 
+			let cnt = {}
+			this.$api.getUserInter(cnt,(res)=>{
+				if(res.data.rc== this.$util.RC.SUCCESS){
+					console.log(res.data.c)
+					console.log(JSON.parse(res.data.c))
+					let toUser = this.$util.tryParseJson(res.data.c)
+					if(toUser.userId){
+						uni.setStorageSync('toUserId',String(toUser.userId))
+						uni.setStorageSync('toUserInfo',res.data.c)
+						uni.navigateTo({
+							url:'./message'
+						})
+					}else{
+						uni.showToast({
+							icon:'none',
+							title:'暂无中介在线...'
+						})
+					}
+				}else{
+					uni.showToast({
+						icon:'none',
+						title:'暂无中介在线...'
+					})
+				}
+			})
+		}
+  },
   mounted() {}
 };
 </script>

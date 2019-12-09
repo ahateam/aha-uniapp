@@ -90,7 +90,7 @@
 			<swiper class="emoji-swiper" :class="{hidden:hideEmoji}" indicator-dots="true" duration="150">
 				<swiper-item v-for="(page,pid) in emojiList" :key="pid">
 					<view v-for="(em,eid) in page" :key="eid" @tap="addEmoji(em)">
-						<image mode="widthFix" :src="'../../../../static/tim/img/emoji/'+em.url"></image>
+						<image mode="widthFix" :src="'../../../static/tim/img/emoji/'+em.url"></image>
 					</view>
 				</swiper-item>
 			</swiper>
