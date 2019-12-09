@@ -15,16 +15,25 @@
 </template>
 
 <script>
+	import {
+		mapState
+	} from 'vuex'
+	
 	export default {
 		name: 'index',
+		
 		data() {
 			return {
 				navHeight: this.getNavHeight(),
 				taskList: this.$constData.taskType,
 				currIndex: -1,
-
+				userInfo:''
 			}
 		},
+		...mapState({
+			isLogin: state => state.user.isLogin,
+			isSDKReady: state => state.user.isSDKReady,
+		}),
 		methods: {
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
@@ -53,13 +62,83 @@
 					})
 				}
 				this.$store.commit('updataType', item.key)
-			}
+			},
+			//获取tim个人信息--并初次更新用户信息
+			getUserProfile(){
+				let promise = this.tim.getMyProfile();
+				promise.then((res)=> {
+					if(res.data.nick == ''){
+						let promise = this.tim.updateMyProfile({
+						  nick: this.userInfo.userName,
+						  avatar: this.userInfo.userHead,
+						  gender: this.TIM.TYPES.GENDER_MALE,
+						  selfSignature: '这个人很懒...',
+						  allowType: this.TIM.TYPES.ALLOW_TYPE_ALLOW_ANY,
+						  role:this.userInfo.userType
+						});
+						promise.then((res1)=> {
+							this.$store.commit("updateCurrentUserProfile", res1.data);
+						}).catch((err1)=> {
+						  console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
+						});
+					}else{
+						this.$store.commit("updateCurrentUserProfile", res.data);
+					}
+				}).catch((err)=> {
+				  console.warn('getMyProfile error:', err); // 获取个人资料失败的相关信息
+				});
+			},
+			//登录tim
+			loginTim() {
+		
+					this.tim
+						.login({
+							userID: String(this.userInfo.userId),
+							userSig: this.userInfo.userSig
+						})
+						.then(res => {
+							this.$store.commit("toggleIsLogin", true);
+							this.$store.commit("startComputeCurrent");
+							this.getUserProfile()
+						})
+						.catch(error => {
+							console.error(error)
+							uni.showToast({
+								icon:'none',
+								title:'用户身份失效，请重新登录'
+							})
+							setTimeout(()=>{
+								uni.reLaunch({
+								    url: '../login/mobilePassword'
+								});
+							},500)
+						});
+			},
+					
+			
 		},
 		onShow() {
 			this.$commen.showTabIcon()
 		},
 		onLoad() {
-
+			console.log('--userInfo--')
+			console.log(this.isLogin)
+			if(uni.getStorageSync('userInfo')){		
+				this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
+				if(!this.isLogin){
+					this.loginTim();
+				}else{
+					this.getConversationList();
+				}
+			}else{
+				uni.showToast({
+					icon:'none',
+					title:'用户身份失效，请重新登录'
+				})
+				uni.reLaunch({
+				    url: '../login/mobilePassword'
+				});
+			}
 		},
 	}
 </script>

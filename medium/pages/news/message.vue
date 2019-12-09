@@ -2,27 +2,31 @@
 	<view >
 		<view v-if="toUserInfo">
 			<view class="nav-box">
-				<titleItem :name="toUserInfo.name"></titleItem>
+				<div class="nav-box">
+				  <div class="back-btn" @click="backBtn()">
+				    <i class="iconfont icon-fanhui"></i>
+				  </div>
+				  <div class="title-box" >{{toUserInfo.userName}}</div>
+				</div>
 			</view>
 			<view class="message-list">
-				<list></list>
+				<list :TIM="TIMDATA"></list>
 			</view>
 		</view>
 	</view>
 	
 </template>
 <script>
-	import titleItem from './tim/titleItem'
 	import list from './tim/list'
 	export default{
 		name:'msssage',
 		data(){
 			return {
 				toUserInfo:'',
+				TIMDATA:null
 			}
 		},
 		components:{
-			titleItem,
 			list
 		},
 		methods:{
@@ -31,9 +35,11 @@
 					userId:id
 				}
 				this.$api.getUserInfo(cnt,(res)=>{
+					console.log(res)
 					if(res.data.rc == this.$util.RC.SUCCESS){
 						this.toUserInfo = this.$util.tryParseJson(res.data.c)
 						uni.setStorageSync('toUserInfo',res.data.c)
+						
 					}else{
 						uni.showToast({
 							icon:'该用户不在线，请重新选择...'
@@ -42,9 +48,19 @@
 					}
 				})
 				
+			},
+			
+			backBtn(){
+				uni.removeStorageSync('toUserId');
+				uni.removeStorageSync('toUserInfo');
+				uni.reLaunch({
+					url:'./conversation'
+				})
+						
 			}
 		},
 		mounted() {
+			this.TIMDATA = this.TIM
 			let toUserId = uni.getStorageSync('toUserId')
 			
 			this.getUserInfo(toUserId)
@@ -54,6 +70,37 @@
 	}
 </script>
 <style scoped lang="scss">
+	.nav-box {
+	  width: 100%;
+	  height: 88rpx;
+	  background: #fff;
+	}
+	.back-btn {
+	  float: left;
+	  width: 50rpx;
+	  height: 50rpx;
+	  padding: 19rpx 20rpx;
+	}
+	.back-btn i {
+	  width: 50rpx;
+	  height: 50rpx;
+	  font-size: 32rpx;
+	  line-height: 50rpx;
+	  text-align: center;
+	  color: #587685;
+	}
+	.title-box {
+	  float: left;
+	  width: 560rpx;
+	  height: 88rpx;
+	  line-height: 88rpx;
+	  text-align: center;
+	  font-size: 36rpx;
+	  color: #333333;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	  white-space: nowrap;
+	}
 	.nav-box{
 		position: fixed;
 		top: 40rpx;

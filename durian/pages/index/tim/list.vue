@@ -1,5 +1,6 @@
 <template>
 	<view>
+		
 		<view class="content" @touchstart="hideDrawer">
 			<scroll-view class="msg-list" scroll-y="true" :scroll-with-animation="scrollAnimation" :scroll-top="scrollTop"
 			 :scroll-into-view="scrollToView" @scrolltoupper="loadHistory" upper-threshold="50">
@@ -48,14 +49,14 @@
 							</view>
 							<!-- 右-头像 -->
 							<view class="right">
-								<image :src="userInfo.img"></image>
+								<image :src="userInfo.userHead"></image>
 							</view>
 						</view>
 						<!-- 别人发出的消息 -->
 						<view class="other" v-else>
 							<!-- 左-头像 -->
 							<view class="left">
-								<image :src="toUserInfo.img"></image>
+								<image :src="toUserInfo.userHead"></image>
 							</view>
 							<!-- 右-用户名称-时间-消息 -->
 							<view class="right">
@@ -217,9 +218,14 @@
 				}
 			};
 		},
+		props:{
+			TIM:Object
+		},
 		watch:{
 			currentMessageList(newVal,oldVal){
 				this.msgList = newVal
+				console.log('-------msgList---------')
+				console.log(this.msgList)
 				this.screenMsg(newVal,oldVal)
 			},
 			isCompleted(val){
@@ -244,19 +250,20 @@
 							return state.user.currentUserProfile
 						},
 						currentMessageList: state => {
+							
 							console.log(state.conversation.currentMessageList)
 							
 							return state.conversation.currentMessageList
 						},
 			})
 		},
-		created() {
-			this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
-			this.toUserInfo = JSON.parse(uni.getStorageSync('toUserInfo'))
-			this.createConcersation()
-		},
 		mounted() {
-		
+		this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
+		this.toUserInfo = JSON.parse(uni.getStorageSync('toUserInfo'))
+		console.log('*****userInfo**********')
+		console.log(this.userInfo)
+		console.log(this.toUserInfo)
+		this.createConcersation()
 			//语音自然播放结束
 			this.AUDIO.onEnded((res)=>{
 				this.playMsgid=null;
@@ -574,15 +581,16 @@
 			// 发送消息
 			sendMsg(content){
 				let	currentConversationType = 'C2C'
-				if(this.currentConversationType){
-					let	currentConversationType = this.currentConversationType
-				}
+				
 				const message = this.tim.createTextMessage({
-					  to: this.toUserInfo.userId,
+					  to: String(this.toUserInfo.userId),
 					  conversationType: currentConversationType,
 					  payload: content
 				})
+				
+				console.log('-------sendMessage-------------')
 				this.$store.commit('pushCurrentMessageList', message)
+				
 				let pomise = this.tim.sendMessage(message)
 				pomise.then(res=>{
 					this.$nextTick(()=> {

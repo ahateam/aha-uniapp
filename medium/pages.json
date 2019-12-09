@@ -17,7 +17,16 @@
 		}, {
 			"path": "pages/news/news",
 			"style": {}
-		}, {
+		},
+		{
+			"path": "pages/news/message",
+			"style": {}
+		},
+		{
+			"path": "pages/news/conversation",
+			"style": {}
+		},
+		{
 			"path": "pages/user/user",
 			"style": {}
 		}, {

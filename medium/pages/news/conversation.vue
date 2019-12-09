@@ -16,27 +16,27 @@
 						<view class="clear-both"></view>
 					</view>
 				</view>
-				<view class="list-item-box" v-if="sationList.length>0">
-					<view class="list-item" v-for="(item,index) in sationList" :key="index" @click="checkConversation(item)">
+				<view class="list-item-box" v-if="conversationList.length>0">
+					<view class="list-item" v-for="(item,index) in conversationList" :key="index" @click="checkConversation(item)">
 						<view class="list-item-img">
-							<img :src="item.user.img" alt />
+							<img :src="item.userProfile.avatar" alt />
 						</view>
 						<view class="list-item-info">
 							<view class="list-item-title">
-								<view class="list-item-name">{{item.user.name}}</view>
-								<view class="list-item-time">{{timeFilter(item.conversation.lastMessage.lastTime)}}</view>
+								<view class="list-item-name">{{item.userProfile.nick}}</view>
+								<view class="list-item-time">{{timeFilter(item.lastMessage.lastTime)}}</view>
 								<view class="clear-both"></view>
 							</view>
 							<view class="list-item-text">
-								<view class="item-text-active" v-if="item.conversation.unreadCount ==0">
-									<rich-text :nodes="item.conversation.lastMessage.messageForShow"></rich-text>
+								<view class="item-text-active" v-if="item.unreadCount ==0">
+									<rich-text :nodes="item.lastMessage.messageForShow"></rich-text>
 								</view>
 								<view class="item-text" v-else>
-									<rich-text :nodes="item.conversation.lastMessage.messageForShow"></rich-text>
+									<rich-text :nodes="item.lastMessage.messageForShow"></rich-text>
 								</view>
-								<view class="item-msg-num" v-if="item.conversation.unreadCount >0 && item.conversation.unreadCount <100">
-									{{item.conversation.unreadCount}}</view>
-								<view class="item-msg-num" v-if="item.conversation.unreadCount >=100">...</view>
+								<view class="item-msg-num" v-if="item.unreadCount>0 && item.unreadCount <100">
+									{{item.unreadCount}}</view>
+								<view class="item-msg-num" v-if="item.unreadCount>=100">...</view>
 
 							</view>
 						</view>
@@ -71,7 +71,8 @@
 		},
 		watch: {
 			conversationList(newList) {
-				this.getSationList(newList);
+				console.log(newList)
+
 			},
 			currentConversation(val) {
 				console.log(val)
@@ -115,26 +116,11 @@
 							"updateConversationList",
 							res.data.conversationList
 						);
+						
 					})
 					.catch(() => {
 						this.getConversationList();
 					});
-			},
-			/**根据会话列表获取聊天对象的用户相信信息 */
-			getSationList(conversationList) {
-				let arr = [];
-				conversationList.forEach(item => {
-					userList.forEach(item1 => {
-						if (item.toAccount == item1.userId) {
-							let obj = {};
-							obj.conversation = item;
-							obj.user = item1;
-							arr.push(JSON.parse(JSON.stringify(obj)));
-						}
-					});
-				});
-				this.sationList = [];
-				this.sationList = arr;
 			},
 			/**过滤时间 */
 			timeFilter(timeData) {
@@ -153,17 +139,21 @@
 			},
 			/** 创建且更换聊天室 */
 			checkConversation(item) {
-				let toUserId = item.user.userId
+				console.log(item)
+				let toUserId = item.userProfile.userID
 				let id = 'C2C' + toUserId
 				uni.setStorageSync('toUserId', toUserId)
 				this.$store.dispatch('checkoutConversation', id)
-				this.$store.state.isPageActive = 2
+				uni.navigateTo({
+					url:'./message'
+				})
 			}
 		},
 		mounted() {
 			console.log('1111')
 			uni.removeStorageSync('toUserInfo');
 			console.log('aaaa')
+			console.log(uni.getStorageSync('userInfo'))
 			this.getConversationList();
 		}
 	};

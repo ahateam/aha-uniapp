@@ -17,11 +17,12 @@ export default {
   },
   methods:{
       backBtn(){
-          console.log('1111')
 		  uni.removeStorageSync('toUserId');
 		  uni.removeStorageSync('toUserInfo');
-		  
-          this.$store.state.isPageActive = 1
+		  uni.navigateBack()
+		
+		
+		  console.log('1111111111111111')
       }
   }
 };

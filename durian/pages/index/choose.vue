@@ -26,8 +26,8 @@ export default {
 			let cnt = {}
 			this.$api.getUserInter(cnt,(res)=>{
 				if(res.data.rc== this.$util.RC.SUCCESS){
-					console.log(res.data.c)
-					console.log(JSON.parse(res.data.c))
+					console.log('---------toUser----------')
+					console.log((res.data.c))
 					let toUser = this.$util.tryParseJson(res.data.c)
 					if(toUser.userId){
 						uni.setStorageSync('toUserId',String(toUser.userId))
@@ -58,37 +58,37 @@ export default {
 .nav-box {
   position: fixed;
   top:40rpx;
-  padding: 44px 0 0 15px;
-  height: 35px;
+  padding: 88rpx 0 0 30rpx;
+  height: 70rpx;
   width: 100%;
   background: #fff;
   z-index: 100;
 }
 .nav-item-box {
-  margin-left: 25px;
+  margin-left: 50rpx;
   width: auto;
-  height: 35px;
-  line-height: 35px;
-  font-size: 25px;
+  height: 70rpx;
+  line-height: 70rpx;
+  font-size: 50rpx;
   color: #333;
 }
 .content-box {
-  margin-top: 120px;
+  margin-top: 240rpx;
   width: auto;
-  padding: 5px 15px 15px 0;
+  padding: 10rpx 30rpx 30rpx 0;
 }
 .list-item {
   float: left;
-  margin-left: 15px;
-  margin-top: 15px;
-  width: 165px;
-  height: 65px;
+  margin-left: 30rpx;
+  margin-top: 30rpx;
+  width: 330rpx;
+  height: 130rpx;
   background: #f2f5f7;
   color: #869ca7;
-  font-size: 17px;
-  line-height: 65px;
+  font-size: 34rpx;
+  line-height:130rpx;
   text-align: center;
-  border-radius: 2px;
+  border-radius: 4rpx;
 }
 .list-item-active{
     background: #00C8BE;

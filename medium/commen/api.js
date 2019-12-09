@@ -1,11 +1,9 @@
 /** 后端接口对接文档*/
 
 import util from 'ahaapi'
-import baseUrl from './url'
+import url from './url'
 
-// let appId = process.env.appID;//应用编号
-// let appId ='';
-
+let baseUrl = url.baseUrl
 let api = {};
 console.log('开始调用ctrl');
 
@@ -55,5 +53,19 @@ api.getTaskListByPublishUserId = function(cnt, callback) {
 // 发布任务
 api.createTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/createTask', cnt, callback)
+}
+
+/*tim 聊天*/
+//获取用户tim聊天的userSig	
+api.getUserSig = function(cnt, callback) {
+	util.call(baseUrl + '/user/getUserSig', cnt, callback)
+}
+//随机获取一个中介用户信息
+api.getUserInter = function(cnt, callback) {
+	util.call(baseUrl + '/user/getUserInter', cnt, callback)
+}
+//根据用户id获取用户详细信息
+api.getUserInfo = function(cnt, callback) {
+	util.call(baseUrl + '/user/getUserInfo', cnt, callback)
 }
 export default api
