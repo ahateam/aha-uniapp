@@ -31,7 +31,6 @@
 		},
 		data() {
 			return {
-				tel: uni.getStorageSync('userTel'),
 				code: '',
 				passData: '',
 				passAgin: ''
@@ -51,7 +50,7 @@
 					})
 				} else {
 					let cnt = {
-						phone: this.tel, // String 手机号
+						phone: this.$util.tryParseJson(uni.getStorageSync('userInfo')).phone, // String 手机号
 						pwd: this.passData, // String 密码
 						code: this.code, // String 验证码
 					}
@@ -80,7 +79,7 @@
 			getCode() {
 				this.codeTime = 60
 				let cnt = {
-					phone: this.tel, // String 手机号
+					phone: this.$util.tryParseJson(uni.getStorageSync('userInfo')).phone, // String 手机号
 					type: this.$constData.codeType[2].key, // String <选填> 类型
 				}
 				this.$api.sendSms(cnt, (res) => {
@@ -97,7 +96,7 @@
 					}
 				})
 			},
-			
+
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},

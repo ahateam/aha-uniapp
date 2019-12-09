@@ -75,7 +75,6 @@
 			DataTextarea,
 			NextBtn
 		},
-
 		computed: {
 			title: {
 				get() {
@@ -107,11 +106,19 @@
 					this.$store.commit('updataOtherDescribe', value)
 				}
 			},
+
+			much: {
+				get() {
+					return this.$store.state.taskInfo.pageNumber
+				},
+				set(val) {
+					this.$store.commit('updataPageNumber', val)
+				}
+			}
 		},
 		data() {
 			return {
 				taskType: '翻译',
-				much: '',
 				aptitudesCurr: -1,
 				aptitudesStatus: false, //input是否隐藏
 				aptitudesList: [{

@@ -86,7 +86,7 @@
 				this.$api.loginByCode(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let userInfo = this.$util.tryParseJson(res.data.c)
-						uni.setStorageSync('userInfo',JSON.string(userInfo))
+						uni.setStorageSync('userInfo', JSON.stringify(userInfo))
 						uni.redirectTo({
 							url: '/pages/login/interest/interest'
 						})

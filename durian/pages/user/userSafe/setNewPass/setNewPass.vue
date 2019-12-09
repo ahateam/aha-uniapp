@@ -66,7 +66,7 @@
 					})
 				} else {
 					let cnt = {
-						userId: uni.getStorageSync('userId'), // Long 用户编号
+						userId: this.$util.tryParseJson(uni.getStorageSync('userInfo')).userId, // Long 用户编号
 						pwd: this.passArr[1].value, // String 密码
 						oldPwd: this.passArr[0].value, // String 原密码
 					}

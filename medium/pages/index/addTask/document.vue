@@ -6,7 +6,7 @@
 		</nav-bar>
 		<view style="margin-top: 10rpx;"></view>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="taskType" hiddenIcon disabled value="撰写文书" title="任务分类"></data-input>
+		<data-input :inputHidden="aptitudesStatus" hiddenIcon disabled value="撰写文书" title="任务分类"></data-input>
 
 		<data-input :inputHidden="aptitudesStatus" v-model="title" hiddenIcon title="任务名称"></data-input>
 
@@ -85,7 +85,6 @@
 		},
 		data() {
 			return {
-				taskType: '',
 				formType: '',
 				aptitudesCurr: -1,
 				aptitudesStatus: false,

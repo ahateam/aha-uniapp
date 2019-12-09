@@ -50,6 +50,11 @@ api.getTaskListByPublishUserId = function(cnt, callback) {
 	util.call(baseUrl + '/task/getTaskListByPublishUserId', cnt, callback)
 }
 
+// 根据接收者id查询任务 
+api.getTaskListByPickUpUserId = function(cnt, callback) {
+	util.call(baseUrl + '/task/getTaskListByPickUpUserId', cnt, callback)
+}
+
 // 发布任务
 api.createTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/createTask', cnt, callback)

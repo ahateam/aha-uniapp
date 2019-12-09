@@ -146,7 +146,6 @@
 			this.$commen.showTabIcon()
 		},
 		onLoad() {
-			// console.log(this.$store.state)
 			let userInfo = uni.getStorageSync('userInfo')
 			if (!userInfo) {
 				uni.reLaunch({

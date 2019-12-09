@@ -91,7 +91,8 @@
 		},
 		data() {
 			return {
-				taskList: [{
+				taskList: [
+					{
 						name: '全案助理',
 						money: 100,
 						infor: '500签证全案',

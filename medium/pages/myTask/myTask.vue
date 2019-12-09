@@ -122,28 +122,54 @@
 
 			topoption(index) {
 				this.currIndex = index
+				if (this.navList[index].child) {
+					this.tasks = this.navList[index].child
+				} else {
+					this.tasks = []
+					let cnt = {
+						pickUpUserId: this.userInfo.userId, // Long 发布者id
+						count: this.count, // Integer 
+						offset: this.offset, // Integer 
+					}
+					this.getTaskListByPickUpUserId(cnt)
+				}
+			},
+
+			getTaskListByPickUpUserId(cnt) {
+				this.$api.getTaskListByPickUpUserId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let list = this.$util.tryParseJson(res.data.c)
+						this.tryData(list)
+					} else {
+						console.log('error')
+					}
+				})
 			},
 
 			getTaskListByPublishUserId(cnt) {
 				this.$api.getTaskListByPublishUserId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let list = this.$util.tryParseJson(res.data.c)
-						if (list.length < this.count) {
-							this.pageOver = true
-							this.pageStatus = 'nomore'
-						} else {
-							this.pageOver = false
-							this.pageStatus = 'more'
-						}
-						this.navList[this.currIndex].pageOver = this.pageOver
-						this.navList[this.currIndex].pageStatus = this.pageStatus
-
-						this.tasks = this.tasks.concat(list)
-						this.navList[this.currIndex].child = this.tasks
+						this.tryData(list)
 					} else {
 						console.log('error')
 					}
 				})
+			},
+
+			tryData(list) {
+				if (list.length < this.count) {
+					this.pageOver = true
+					this.pageStatus = 'nomore'
+				} else {
+					this.pageOver = false
+					this.pageStatus = 'more'
+				}
+				this.navList[this.currIndex].pageOver = this.pageOver
+				this.navList[this.currIndex].pageStatus = this.pageStatus
+
+				this.tasks = this.tasks.concat(list)
+				this.navList[this.currIndex].child = this.tasks
 			}
 		},
 		onShow() {
@@ -178,6 +204,7 @@
 	.page {
 		background-color: #F2F5F7;
 		padding-bottom: 1rpx;
+		min-height: 100vh;
 	}
 
 	.view-title {
