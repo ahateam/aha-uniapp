@@ -140,5 +140,13 @@ api.getOrderByBuyerId = function(cnt, callback) {
 api.getUserSig = function(cnt, callback) {
 	util.call(baseUrl + '/user/getUserSig', cnt, callback)
 }
+//随机获取一个中介用户信息
+api.getUserInter = function(cnt, callback) {
+	util.call(baseUrl + '/user/getUserInter', cnt, callback)
+}
+//根据用户id获取用户详细信息
+api.getUserInfo = function(cnt, callback) {
+	util.call(baseUrl + '/user/getUserInfo', cnt, callback)
+}
 
 export default api

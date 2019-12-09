@@ -1,4 +1,5 @@
 /**  公共方法抽离文档*/
+import api from './api';
 
 const commen = {}
 
@@ -9,5 +10,8 @@ commen.getNewDate = (time) => {
 	let d = newData.getDate()
 	return `${y}-${m}-${d}`
 }
+
+/*获取用户相信信息*/
+
 
 export default commen
