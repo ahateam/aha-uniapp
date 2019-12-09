@@ -84,6 +84,7 @@
 				},
 				set(value) {
 					this.$store.commit('updateTitle', value)
+					this.$store.commit('resSetTaskInfo')
 				}
 			},
 
@@ -105,6 +106,7 @@
 				},
 				set(value) {
 					this.$store.commit('updataOtherDescribe', value)
+					this.$store.commit('resSetTaskInfo')
 				}
 			},
 		},

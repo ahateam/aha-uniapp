@@ -6,17 +6,17 @@
 		</nav-bar>
 		<view style="margin-top: 10rpx;"></view>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="taskType" :hiddenIcon="true" placeholder="填写表格" title="任务分类"></data-input>
+		<data-input :inputHidden="aptitudesStatus" v-model="taskType" hiddenIcon disabled value="填写表格" title="任务分类"></data-input>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
+		<data-input :inputHidden="aptitudesStatus" v-model="title" hiddenIcon title="任务名称"></data-input>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="formType" :hiddenIcon="true" title="表格类别"></data-input>
+		<data-input :inputHidden="aptitudesStatus" v-model="formType" hiddenIcon title="表格类别"></data-input>
 
-		<choice-input :value="aptitudes" title="任务接收者所需资质" :hiddenIcon="true" @click="openAts"></choice-input>
+		<choice-input :value="aptitudes" title="任务接收者所需资质" hiddenIcon @click="openAts"></choice-input>
 
-		<data-textarea :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" title="任务描述"></data-textarea>
+		<data-textarea :inputHidden="aptitudesStatus" v-model="taskInfo" hiddenIcon title="任务描述"></data-textarea>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="remark" :hiddenIcon="true" title="特别提醒"></data-input>
+		<data-input :inputHidden="aptitudesStatus" v-model="remark" hiddenIcon title="特别提醒"></data-input>
 
 		<view class="bottom-btn">
 			<next-btn @click="nextBtn"></next-btn>
@@ -51,12 +51,44 @@
 			DataTextarea,
 			NextBtn
 		},
+
+		computed: {
+			title: {
+				get() {
+					return this.$store.state.taskInfo.taskName
+				},
+				set(value) {
+					this.$store.commit('updateTitle', value)
+				}
+			},
+			
+			aptitudes() {
+				return this.$store.state.taskInfo.qualifications
+			},
+			
+			taskInfo: {
+				get() {
+					return this.$store.state.taskInfo.taskDescribe
+				},
+				set(value) {
+					this.$store.commit('updataTaskDescribe', value)
+				}
+			},
+			
+			remark: {
+				get() {
+					return this.$store.state.taskInfo.otherDescribe
+				},
+				set(value) {
+					this.$store.commit('updataOtherDescribe', value)
+				}
+			},
+		},
+
 		data() {
 			return {
 				taskType: '',
-				title: '',
 				formType: '',
-				aptitudes: 'MARN号',
 				aptitudesCurr: -1,
 				aptitudesStatus: false,
 				aptitudesList: [{
@@ -71,8 +103,6 @@
 						name: '不需要'
 					}
 				],
-
-				remark: '',
 			}
 		},
 		methods: {

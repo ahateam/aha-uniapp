@@ -6,11 +6,11 @@
 		</nav-bar>
 		<view style="margin-top: 10rpx;"></view>
 
-		<data-input :inputHidden="inputHidden" v-model="taskType" :hiddenIcon="true" title="任务分类"></data-input>
+		<data-input :inputHidden="inputHidden" v-model="taskType" hiddenIcon title="任务分类"></data-input>
 
-		<data-input :inputHidden="inputHidden" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
+		<data-input :inputHidden="inputHidden" v-model="title" hiddenIcon title="任务名称"></data-input>
 
-		<data-input :inputHidden="inputHidden" v-model="much" :hiddenIcon="true" title="页数" type="number"></data-input>
+		<data-input :inputHidden="inputHidden" v-model="much" hiddenIcon title="页数" type="number"></data-input>
 
 		<view class="flex-box language-box">
 			<view class="flex-box text-box" @click="chioceLanguage(0)">
@@ -26,11 +26,11 @@
 			</view>
 		</view>
 
-		<choice-input :value="aptitudes" title="任务接收者所需资质" :hiddenIcon="true" @click="openAts"></choice-input>
+		<choice-input :value="aptitudes" title="任务接收者所需资质" hiddenIcon @click="openAts"></choice-input>
 
-		<data-textarea :inputHidden="inputHidden" v-model="taskInfo" :hiddenIcon="true" title="任务描述"></data-textarea>
+		<data-textarea :inputHidden="inputHidden" v-model="taskInfo" hiddenIcon title="任务描述"></data-textarea>
 
-		<data-input :inputHidden="inputHidden" v-model="remark" :hiddenIcon="true" title="特别提醒"></data-input>
+		<data-input :inputHidden="inputHidden" v-model="remark" hiddenIcon title="特别提醒"></data-input>
 
 		<view class="bottom-btn">
 			<next-btn @click="nextBtn"></next-btn>
@@ -75,12 +75,43 @@
 			DataTextarea,
 			NextBtn
 		},
+
+		computed: {
+			title: {
+				get() {
+					return this.$store.state.taskInfo.taskName
+				},
+				set(value) {
+					this.$store.commit('updateTitle', value)
+				}
+			},
+
+			aptitudes() {
+				return this.$store.state.taskInfo.qualifications
+			},
+
+			taskInfo: {
+				get() {
+					return this.$store.state.taskInfo.taskDescribe
+				},
+				set(value) {
+					this.$store.commit('updataTaskDescribe', value)
+				}
+			},
+
+			remark: {
+				get() {
+					return this.$store.state.taskInfo.otherDescribe
+				},
+				set(value) {
+					this.$store.commit('updataOtherDescribe', value)
+				}
+			},
+		},
 		data() {
 			return {
 				taskType: '翻译',
-				title: '',
 				much: '',
-				aptitudes: 'MARN号',
 				aptitudesCurr: -1,
 				aptitudesStatus: false, //input是否隐藏
 				aptitudesList: [{
@@ -98,8 +129,6 @@
 
 				fromLanguage: '英文',
 				toLanguage: '韩文',
-
-				remark: '',
 
 				translateShow: false,
 				transChioce: 0,
@@ -123,7 +152,7 @@
 					}
 				],
 				inputHidden: false,
-				indicatorStyle: `height: ${Math.round(uni.getSystemInfoSync().screenWidth/(750/120))}px;`,
+				indicatorStyle: `height: ${uni.upx2px(120)}px;`,
 
 				value: [0],
 				leftValue: [3],

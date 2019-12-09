@@ -8,7 +8,6 @@
 			<input :hidden="inputHidden" :value="value" :placeholder="placeholder" placeholder-style="color:#B6C4D2;" @input="onInput"
 			 :type="type" :disabled="disabled" />
 			<view v-if="price">{{price}}</view>
-			<view v-if="inputHidden">{{value}}</view>
 		</view>
 	</view>
 </template>

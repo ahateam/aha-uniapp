@@ -88,6 +88,14 @@ export default new Vuex.Store({
 			state.taskInfo.finishDate = finishDate
 		},
 
+		// 计算属性get()不同步时,强制刷新页面
+		resSetTaskInfo(state) {
+			let newTaskInfo = { ...state.taskInfo
+			};
+			state.taskInfo = null
+			state.taskInfo = newTaskInfo
+		},
+
 		// 初始化store的数据
 		reSetStore(state) {
 			state.taskInfo = {
