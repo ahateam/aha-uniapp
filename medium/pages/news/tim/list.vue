@@ -90,7 +90,7 @@
 			<swiper class="emoji-swiper" :class="{hidden:hideEmoji}" indicator-dots="true" duration="150">
 				<swiper-item v-for="(page,pid) in emojiList" :key="pid">
 					<view v-for="(em,eid) in page" :key="eid" @tap="addEmoji(em)">
-						<image mode="widthFix" :src="'../../static/tim/img/emoji/'+em.url"></image>
+						<image mode="widthFix" :src="'../../../static/tim/img/emoji/'+em.url"></image>
 					</view>
 				</swiper-item>
 			</swiper>
@@ -635,7 +635,7 @@
 						this.redenvelopeData={
 							rid:0,	//红包ID
 							from:"大黑哥",
-							face:"../../static/tim/img/im/face/face.jpg",
+							face:"../../../../static/tim/img/im/face/face.jpg",
 							blessing:"恭喜发财，大吉大利",
 							money:"已领完"
 						}
@@ -643,7 +643,7 @@
 						this.redenvelopeData={
 							rid:1,	//红包ID
 							from:"售后客服008",
-							face:"../../static/tim/img/im/face/face_2.jpg",
+							face:"../../../../static/tim/img/im/face/face_2.jpg",
 							blessing:"恭喜发财",
 							money:"0.01"
 						}

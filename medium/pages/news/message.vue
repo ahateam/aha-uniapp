@@ -12,8 +12,8 @@
 	
 </template>
 <script>
-	import titleItem from './message/titleItem'
-	import list from './message/list'
+	import titleItem from './tim/titleItem'
+	import list from './tim/list'
 	export default{
 		name:'msssage',
 		data(){
@@ -25,13 +25,29 @@
 			titleItem,
 			list
 		},
+		methods:{
+			getUserInfo(id){
+				let cnt = {
+					userId:id
+				}
+				this.$api.getUserInfo(cnt,(res)=>{
+					if(res.data.rc == this.$util.RC.SUCCESS){
+						this.toUserInfo = this.$util.tryParseJson(res.data.c)
+						uni.setStorageSync('toUserInfo',res.data.c)
+					}else{
+						uni.showToast({
+							icon:'该用户不在线，请重新选择...'
+						})
+						uni.navigateBack()
+					}
+				})
+				
+			}
+		},
 		mounted() {
 			let toUserId = uni.getStorageSync('toUserId')
-			let toUserInfo = this.$commen.getUserInfo(toUserId)
-			uni.setStorageSync('toUserInfo',JSON.stringify(toUserInfo))
-			this.toUserInfo = toUserInfo
-			console.log('----toUserInfo--')
-			console.log(this.toUserInfo)
+			
+			this.getUserInfo(toUserId)
 		
 	
 		}

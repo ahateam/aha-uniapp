@@ -53,7 +53,7 @@
 </template>
 
 <script>
-	import userList from '../../commen/tim/user'
+	import userList from '../../commen/tim/user.js'
 	import {
 		mapGetters,
 		mapState
