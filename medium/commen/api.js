@@ -51,4 +51,9 @@ api.updateUser = function(cnt, callback) {
 api.getTaskListByPublishUserId = function(cnt, callback) {
 	util.call(baseUrl + '/task/getTaskListByPublishUserId', cnt, callback)
 }
+
+// 发布任务
+api.createTask = function(cnt, callback) {
+	util.call(baseUrl + '/task/createTask', cnt, callback)
+}
 export default api

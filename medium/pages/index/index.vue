@@ -44,6 +44,7 @@
 					uni.navigateTo({
 						url: item.src,
 						success: () => {
+							this.$store.commit('reSetStore')
 							let icon = plus.nativeObj.View.getViewById("icon");
 							setTimeout(function() {
 								icon.hide();
@@ -51,7 +52,7 @@
 						}
 					})
 				}
-				this.$store.commit('updataType',item.key)
+				this.$store.commit('updataType', item.key)
 			}
 		},
 		onShow() {

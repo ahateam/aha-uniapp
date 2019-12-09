@@ -5,7 +5,7 @@ import util from 'ahaapi'
 import api from './commen/api.js'
 import constData from './commen/constData.js'
 import commen from './commen/commen.js'
-import store from './commen/store.js'
+import store from './store/index.js'
 import './static/icon/iconfont.css'
 
 

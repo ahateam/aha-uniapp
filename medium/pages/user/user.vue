@@ -98,7 +98,7 @@
 				uni.navigateTo({
 					url: './perdata/perdata',
 					success: () => {
-						this.$commen.hiddenTabIcon
+						this.$commen.hiddenTabIcon()
 					}
 				})
 			},
@@ -108,7 +108,7 @@
 					uni.navigateTo({
 						url: url,
 						success: () => {
-							this.$commen.hiddenTabIcon
+							this.$commen.hiddenTabIcon()
 						}
 					})
 				}
@@ -118,6 +118,7 @@
 			},
 		},
 		onShow() {
+			this.$commen.showTabIcon()
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			console.log(userInfo)
 			this.name = userInfo.userName

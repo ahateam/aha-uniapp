@@ -18,8 +18,8 @@ export default new Vuex.Store({
 			state.taskInfo.taskName = taskName
 		},
 		// 任务类型
-		updataType(state, taskType) {
-			state.taskInfo.taskType = taskType
+		updataType(state, taskTypeId) {
+			state.taskInfo.taskTypeId = taskTypeId
 			console.log(state)
 		},
 		// 任务所需资质
@@ -82,10 +82,20 @@ export default new Vuex.Store({
 		updataPayPrice(state, payPrice) {
 			state.taskInfo.payPrice = payPrice
 		},
-		
+
 		// 任务完成时间 
 		updataFinishDate(state, finishDate) {
 			state.taskInfo.finishDate = finishDate
+		},
+
+		// 初始化store的数据
+		reSetStore(state) {
+			state.taskInfo = {
+				taskStatus: 0,
+				fileData: [],
+				imgData: [],
+				qualifications: 'MARN号'
+			}
 		}
 	},
 
