@@ -30,6 +30,13 @@
 				userInfo: ''
 			}
 		},
+		watch:{
+			isSDKReady(newVal){
+				if(newVal){
+					this.getUserProfile()
+				}
+			}
+		},
 		...mapState({
 			isLogin: state => state.user.isLogin,
 			isSDKReady: state => state.user.isSDKReady,
@@ -77,8 +84,10 @@
 							role: this.userInfo.userType
 						});
 						promise.then((res1) => {
+							console.log('11111111')
 							this.$store.commit("updateCurrentUserProfile", res1.data);
 						}).catch((err1) => {
+						
 							console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
 						});
 					} else {
@@ -123,6 +132,8 @@
 			if (this.userInfo.userSig && (timeNow < timeOut)) {
 				if (!this.$store.state.user.isLogin) {
 					this.loginTim();
+				}else{
+					
 				}
 			} else {
 				uni.showToast({
