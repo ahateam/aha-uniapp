@@ -1,14 +1,14 @@
 <template>
-  <div>
-    <div class="nav-box">
-      <div @click="navActive =0" class="nav-item-box nav-item-active" style="margin-left:0">咨询</div>
-    </div>
-    <div class="content-box">
-      <div v-for="(item,index) in typeList" :key="index" @click="chooseBtn(item)">
-        <div :class="activeItme==item.id?'list-item list-item-active':'list-item'" >{{item.title}}</div>
-      </div>
-    </div>
-  </div>
+  <view>
+    <view class="nav-box">
+      <view @click="navActive =0" class="nav-item-box nav-item-active" style="margin-left:0">咨询</view>
+    </view>
+    <view class="content-box">
+      <view v-for="(item,index) in typeList" :key="index" @click="chooseBtn(item)">
+        <view :class="activeItme==item.id?'list-item list-item-active':'list-item'" >{{item.title}}</view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -26,12 +26,9 @@ export default {
 			let cnt = {}
 			this.$api.getUserInter(cnt,(res)=>{
 				if(res.data.rc== this.$util.RC.SUCCESS){
-					console.log('---------toUser----------')
-					console.log((res.data.c))
 					let toUser = this.$util.tryParseJson(res.data.c)
 					if(toUser.userId){
 						uni.setStorageSync('toUserId',String(toUser.userId))
-						uni.setStorageSync('toUserInfo',res.data.c)
 						uni.navigateTo({
 							url:'./message'
 						})
@@ -50,7 +47,9 @@ export default {
 			})
 		}
   },
-  mounted() {}
+  mounted() {
+	  
+  }
 };
 </script>
 

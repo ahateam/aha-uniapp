@@ -132,8 +132,6 @@
 			if (this.userInfo.userSig && (timeNow < timeOut)) {
 				if (!this.$store.state.user.isLogin) {
 					this.loginTim();
-				}else{
-					
 				}
 			} else {
 				uni.showToast({

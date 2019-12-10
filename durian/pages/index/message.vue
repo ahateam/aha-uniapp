@@ -53,10 +53,9 @@
 			backBtn(){
 				uni.removeStorageSync('toUserId');
 				uni.removeStorageSync('toUserInfo');
-				uni.reLaunch({
-					url:'./conversation'
-				})
-						
+				uni.switchTab({
+					url:'./index'
+				})		
 			}
 		},
 		mounted() {

@@ -46,7 +46,7 @@
 		</view>
 
 		<view class="footer-box">
-			<view class="footer-btn-box">+ 发起新的咨询</view>
+			<view class="footer-btn-box" @click="addBtn">+ 发起新的咨询</view>
 		</view>
 
 	</view>
@@ -93,11 +93,15 @@
 				isCompleted: state => state.conversation.isCompleted
 			}),
 			...mapGetters(['toAccount']),
-			isPageActive() {
-				return this.$store.state.isPageActive
-			}
 		},
 		methods: {
+			/*新增聊天*/
+			addBtn(){
+				uni.setStorageSync('page','add')
+				uni.reLaunch({
+					url:'./index' 
+				})
+			},
 			/** 聊天详情返回*/
 			resetConversation() {
 				if (this.isActive == 1) {
@@ -121,29 +125,6 @@
 					.catch(() => {
 						this.getConversationList();
 					});
-			},
-			/**根据会话列表获取聊天对象的用户相信信息 */
-			getSationList(conversationList) {
-				
-				let arr = [];
-				conversationList.forEach((item)=>{
-					
-				})
-				
-				
-				
-				conversationList.forEach(item => {
-					userList.forEach(item1 => {
-						if (item.toAccount == item1.userId) {
-							let obj = {};
-							obj.conversation = item;
-							obj.user = item1;
-							arr.push(JSON.parse(JSON.stringify(obj)));
-						}
-					});
-				});
-				this.sationList = [];
-				this.sationList = arr;
 			},
 			/**过滤时间 */
 			timeFilter(timeData) {
@@ -172,8 +153,8 @@
 				})
 			}
 		},
-		mounted() {
-			console.log('1111')
+		onLoad() {
+			uni.removeStorageSync('page')
 			uni.removeStorageSync('toUserInfo');
 			console.log('aaaa')
 			console.log(uni.getStorageSync('userInfo'))

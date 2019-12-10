@@ -71,29 +71,7 @@
 				userInfo: "",
 				toUserInfo: "",
 				navActive: 0,
-				sationList: [{
-						userProfile: {
-							avatar: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1575952333934&di=3d279263eb025b78cd21553821ed8b26&imgtype=0&src=http%3A%2F%2Fimg.mp.sohu.com%2Fupload%2F20170830%2Fc8e9eb8b5c2a4252bb1b1c5496f89f2d_th.png',
-							nick: '自行车'
-						},
-						lastMessage: {
-							lastTime: 1575942377,
-							messageForShow: '辣是真的牛批'
-						},
-						unreadCount: 0
-					},
-					{
-						userProfile: {
-							avatar: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1575952333934&di=3d279263eb025b78cd21553821ed8b26&imgtype=0&src=http%3A%2F%2Fimg.mp.sohu.com%2Fupload%2F20170830%2Fc8e9eb8b5c2a4252bb1b1c5496f89f2d_th.png',
-							nick: '自行车'
-						},
-						lastMessage: {
-							lastTime: 1575942377,
-							messageForShow: '辣是真的牛批'
-						},
-						unreadCount: 0
-					}
-				],
+				
 
 				options: [{
 					text: '删除',

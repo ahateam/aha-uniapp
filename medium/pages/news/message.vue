@@ -4,7 +4,7 @@
 			<view class="nav-box">
 				<div class="nav-box">
 				  <div class="back-btn" @click="backBtn()">
-				    <i class="iconfont icon-fanhui"></i>
+				    <i class="iconfont iconfanhui"></i>
 				  </div>
 				  <div class="title-box" >{{toUserInfo.userName}}</div>
 				</div>
@@ -54,7 +54,7 @@
 				uni.removeStorageSync('toUserId');
 				uni.removeStorageSync('toUserInfo');
 				uni.reLaunch({
-					url:'./conversation'
+					url:'./news'
 				})
 						
 			}
