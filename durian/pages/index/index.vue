@@ -149,10 +149,14 @@
 			},
 			/*登录tim-->等待sdk状态为true后执行跳转*/
 			timLogin() {
+				
 				let timeOut = Number(this.userInfo.userSigCreateTime) + 604800000
 				let timeNow = new Date();
 				let timeNow1 = timeNow.getTime()
-
+				console.log('1111111111111')
+				console.log(timeNow1 < timeOut)
+				console.log(this.userInfo)
+				
 				if (this.userInfo.userSig && timeNow1 < timeOut) {
 					this.loginTim();
 				} else {
@@ -216,10 +220,13 @@
 				});
 			},
 		},
-		onLoad() {
+		mounted() {
+			console.log(uni.getStorageSync('userInfo'))
 			if(uni.getStorageSync('userInfo')){
+				
 				uni.removeStorageSync('toUserId')
-				this.userInfo == JSON.parse(uni.getStorageSync('userInfo'))
+				this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
+				console.log(this.userInfo.userSig)
 				
 				if(this.$store.state.user.isLogin){
 					this.getUserProfile()
