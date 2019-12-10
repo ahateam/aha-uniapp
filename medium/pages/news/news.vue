@@ -71,7 +71,7 @@
 				userInfo: "",
 				toUserInfo: "",
 				navActive: 0,
-				
+
 
 				options: [{
 					text: '删除',
@@ -163,7 +163,10 @@
 				uni.setStorageSync('toUserId', toUserId)
 				this.$store.dispatch('checkoutConversation', id)
 				uni.navigateTo({
-					url: './message'
+					url: './message',
+					success: () => {
+						this.$commen.hiddenTabIcon()
+					}
 				})
 			},
 			//获取tim个人信息--并初次更新用户信息
@@ -213,6 +216,9 @@
 						}, 500)
 					});
 			},
+		},
+		onShow() {
+			this.$commen.showTabIcon()
 		},
 		onLoad() {
 			uni.removeStorageSync('toUserInfo');

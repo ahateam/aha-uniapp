@@ -36,14 +36,14 @@
 			TaskList,
 			navBar
 		},
-		watch:{
-			isSDKReady(newVal){
-				if(newVal){
+		watch: {
+			isSDKReady(newVal) {
+				if (newVal) {
 					this.getUserProfile()
 				}
 			}
 		},
-		computed:{
+		computed: {
 			...mapState({
 				isLogin: state => state.user.isLogin,
 				isSDKReady: state => state.user.isSDKReady,
@@ -51,7 +51,7 @@
 		},
 		data() {
 			return {
-					userInfo: '',
+				userInfo: '',
 				clickTab: true,
 				currIndex: 0,
 				topOption: [{
@@ -158,13 +158,13 @@
 				}, false);
 				view.show();
 			},
-			
+
 			/*登录tim-->等待sdk状态为true后执行跳转*/
 			timLogin() {
 				let timeOut = Number(this.userInfo.userSigCreateTime) + 604800000
 				let timeNow = new Date();
 				let timeNow1 = timeNow.getTime()
-			
+
 				if (this.userInfo.userSig && timeNow1 < timeOut) {
 					this.loginTim();
 				} else {
@@ -172,11 +172,11 @@
 						icon: 'none',
 						title: '用户身份失效，请重新登录'
 					})
-					setTimeout(()=>{
+					setTimeout(() => {
 						uni.reLaunch({
-							url:'../login/mobilePassword'
+							url: '../login/mobilePassword'
 						})
-					},300)
+					}, 300)
 				}
 			},
 			//登录tim
@@ -194,9 +194,9 @@
 						}
 					})
 					.catch(error => {
-						 setTimeout(()=>{
-							this.loginTim() 
-						 },200)
+						setTimeout(() => {
+							this.loginTim()
+						}, 200)
 					});
 			},
 			//获取tim个人信息--并初次更新用户信息
@@ -216,7 +216,7 @@
 							console.log('11111111')
 							this.$store.commit("updateCurrentUserProfile", res1.data);
 						}).catch((err1) => {
-						
+
 							console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
 						});
 					} else {
@@ -226,33 +226,34 @@
 					console.warn('getMyProfile error:', err); // 获取个人资料失败的相关信息
 				});
 			},
-			
+
 		},
 		onShow() {
 			this.$commen.showTabIcon()
 		},
 		onLoad() {
-		if(uni.getStorageSync('userInfo')){
-			uni.removeStorageSync('toUserId')
-			this.userInfo == JSON.parse(uni.getStorageSync('userInfo'))
-			console.log(this.userInfo)
-			// if(this.$store.state.user.isLogin){
-			// 	this.getUserProfile()
-			// }else{
-			// 	this.timLogin()
-			// }
-		}else{
-			uni.showToast({
-				icon: 'none',
-				title: '用户身份失效，请重新登录!'
-			})
-			setTimeout(()=>{
-				uni.reLaunch({
-					url:'../login/mobilePassword'
+			if (uni.getStorageSync('userInfo')) {
+				uni.removeStorageSync('toUserId')
+				this.userInfo == JSON.parse(uni.getStorageSync('userInfo'))
+				console.log(this.userInfo)
+				// if(this.$store.state.user.isLogin){
+				// 	this.getUserProfile()
+				// }else{
+				// 	this.timLogin()
+				// }
+			} else {
+				uni.showToast({
+					icon: 'none',
+					title: '用户身份失效，请重新登录!'
 				})
-			},300)
-		}
-			
+				setTimeout(() => {
+					this.$commen.hiddenTabIcon()
+					uni.reLaunch({
+						url: '../login/mobilePassword'
+					})
+				}, 300)
+			}
+
 
 			// #ifdef APP-PLUS
 			if (!plus.nativeObj.Bitmap('bmp1')) {
