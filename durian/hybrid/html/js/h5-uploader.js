@@ -50,7 +50,7 @@ function upload(file) {
 		console.log(url.substr(0, length))
 		console.log('-----asdasdas--------')
 		progress.innerText = '上传成功';
-		title.innerText = `${file.name}:${imgUrl}`;
+		title.innerText = fileName
 		setTimeout(() => {
 			tis.style.display = 'none';
 			plus.webview.currentWebview().close();
@@ -85,7 +85,7 @@ let createUpload = (file, url, key = 'file', header = {}, data = {}) => {
 	let formData = new FormData();
 	formData.append(key, file);
 
-	upload(file)
+	 upload(file)
 	console.log(formData)
 
 	// let xhr = new XMLHttpRequest();
@@ -163,9 +163,8 @@ document.addEventListener('UniAppJSBridgeReady', () => {
 			plus.nativeUI.toast('单个文件不能超过10M,请重新上传');
 			return;
 		}
-		console.log('sadasdasd')
-		console.log(front)
-		console.log(file.name);
+		
+		
 
 		createUpload(file, url, front, key, header, formData);
 	}, false);
