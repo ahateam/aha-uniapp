@@ -37,10 +37,12 @@
 				}
 			}
 		},
-		...mapState({
-			isLogin: state => state.user.isLogin,
-			isSDKReady: state => state.user.isSDKReady,
-		}),
+		computed:{
+			...mapState({
+				isLogin: state => state.user.isLogin,
+				isSDKReady: state => state.user.isSDKReady,
+			}),
+		},
 		methods: {
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'

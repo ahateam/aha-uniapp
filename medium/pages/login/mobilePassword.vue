@@ -30,12 +30,31 @@
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import otherFct from '@/components/otherFct/otherFct.vue'
 	import phoneInput from '@/components/phoneInput/phoneInput.vue'
-
+	//tim 
+	import {
+		mapState
+	} from 'vuex'
 	export default {
 		components: {
 			navBar,
 			otherFct,
 			phoneInput
+		},
+		computed: {
+			...mapState({
+				isLogin: state => state.user.isLogin,
+				isSDKReady: state => state.user.isSDKReady,
+			}),
+		},
+		watch: {
+			isSDKReady(newVal) {
+				if (newVal) {
+					uni.setStorageSync('page', 'normal')
+					uni.reLaunch({
+						url: '../index/index'
+					})
+				}
+			}
 		},
 		data() {
 			return {
@@ -47,15 +66,57 @@
 
 				eyeIcon: '/static/image/login/icon_close_eyes.png',
 				eyeStatus: true,
+				userInfo: '',
 
 			}
 		},
 		methods: {
+			/*登录tim-->等待sdk状态为true后执行跳转*/
+			timLogin() {
+				let timeOut = Number(this.userInfo.userSigCreateTime) + 604800000
+				let timeNow = new Date();
+				timeNow = timeNow.getTime()
+				if (this.userInfo.userSig && (timeNow < timeOut)) {
+					if (!this.$store.state.user.isLogin) {
+						this.loginTim();
+					}
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '用户身份失效'
+					})
+				}
+			},
+			//登录tim
+			loginTim() {
+				this.tim
+					.login({
+						userID: String(this.userInfo.userId),
+						userSig: this.userInfo.userSig
+					})
+					.then(res => {
+						this.$store.commit("toggleIsLogin", true);
+						this.$store.commit("startComputeCurrent");
+						if (this.$store.state.user.isSDKReady) {
+							uni.reLaunch({
+								url: '../task/task'
+							})
+						}
+					})
+					.catch(err => {
+						console.log('--------err------------')
+						console.log(err)
+						setTimeout(() => {
+							this.loginTim()
+						}, 200)
+					});
+			},
 			codeFct(res) {
 				this.areaCode = res
 			},
 
 			login() {
+
 				if (this.phoneNumber == '') {
 					uni.showToast({
 						title: '请输入手机号',
@@ -72,17 +133,16 @@
 						pwd: this.passData, // String 密码
 					}
 					this.$api.login(cnt, (res) => {
-						console.log(res)
 						if (res.data.rc == this.$util.RC.SUCCESS) {
-							let userInfo = this.$util.tryParseJson(res.data.c)
-							console.log(userInfo)
-							uni.setStorageSync('userInfo',JSON.stringify(userInfo))
-							uni.reLaunch({
-								url: '../index/index'
-							})
+							this.userInfo = this.$util.tryParseJson(res.data.c)
+							uni.setStorageSync('userInfo', JSON.stringify(this.userInfo))
+							this.timLogin()
+							// uni.reLaunch({
+							// 	url: '../index/index?type='+false
+							// })
 						} else {
 							uni.showToast({
-								title: res.data.rm,
+								title: '登录失败，用户名或密码错误',
 								icon: 'none'
 							})
 						}

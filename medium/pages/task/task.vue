@@ -27,14 +27,31 @@
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 
 	let bitmap = null
+	import {
+		mapState
+	} from 'vuex'
 
 	export default {
 		components: {
 			TaskList,
 			navBar
 		},
+		watch:{
+			isSDKReady(newVal){
+				if(newVal){
+					this.getUserProfile()
+				}
+			}
+		},
+		computed:{
+			...mapState({
+				isLogin: state => state.user.isLogin,
+				isSDKReady: state => state.user.isSDKReady,
+			}),
+		},
 		data() {
 			return {
+					userInfo: '',
 				clickTab: true,
 				currIndex: 0,
 				topOption: [{
@@ -140,24 +157,102 @@
 					})
 				}, false);
 				view.show();
-			}
+			},
+			
+			/*登录tim-->等待sdk状态为true后执行跳转*/
+			timLogin() {
+				let timeOut = Number(this.userInfo.userSigCreateTime) + 604800000
+				let timeNow = new Date();
+				let timeNow1 = timeNow.getTime()
+			
+				if (this.userInfo.userSig && timeNow1 < timeOut) {
+					this.loginTim();
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '用户身份失效，请重新登录'
+					})
+					setTimeout(()=>{
+						uni.reLaunch({
+							url:'../login/mobilePassword'
+						})
+					},300)
+				}
+			},
+			//登录tim
+			loginTim() {
+				this.tim
+					.login({
+						userID: String(this.userInfo.userId),
+						userSig: this.userInfo.userSig
+					})
+					.then(res => {
+						this.$store.commit("toggleIsLogin", true);
+						this.$store.commit("startComputeCurrent");
+						if (this.$store.state.user.isSDKReady) {
+							this.getUserProfile()
+						}
+					})
+					.catch(error => {
+						 setTimeout(()=>{
+							this.loginTim() 
+						 },200)
+					});
+			},
+			//获取tim个人信息--并初次更新用户信息
+			getUserProfile() {
+				let promise = this.tim.getMyProfile();
+				promise.then((res) => {
+					if (res.data.nick == '') {
+						let promise = this.tim.updateMyProfile({
+							nick: this.userInfo.userName,
+							avatar: this.userInfo.userHead,
+							gender: this.TIM.TYPES.GENDER_MALE,
+							selfSignature: '这个人很懒...',
+							allowType: this.TIM.TYPES.ALLOW_TYPE_ALLOW_ANY,
+							role: this.userInfo.userType
+						});
+						promise.then((res1) => {
+							console.log('11111111')
+							this.$store.commit("updateCurrentUserProfile", res1.data);
+						}).catch((err1) => {
+						
+							console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
+						});
+					} else {
+						this.$store.commit("updateCurrentUserProfile", res.data);
+					}
+				}).catch((err) => {
+					console.warn('getMyProfile error:', err); // 获取个人资料失败的相关信息
+				});
+			},
+			
 		},
 		onShow() {
 			this.$commen.showTabIcon()
 		},
 		onLoad() {
-			let userInfo = uni.getStorageSync('userInfo')
-			if (!userInfo) {
-				uni.reLaunch({
-					url: '/pages/login/mobilePassword'
-				})
-				this.$commen.hideTabIcon()
-			}
-			// else if (true) {
-			// 	uni.navigateTo({
-			// 		url: '/pages/user/newUserInfo/newUserInfo'
-			// 	})
+		if(uni.getStorageSync('userInfo')){
+			uni.removeStorageSync('toUserId')
+			this.userInfo == JSON.parse(uni.getStorageSync('userInfo'))
+			console.log(this.userInfo)
+			// if(this.$store.state.user.isLogin){
+			// 	this.getUserProfile()
+			// }else{
+			// 	this.timLogin()
 			// }
+		}else{
+			uni.showToast({
+				icon: 'none',
+				title: '用户身份失效，请重新登录!'
+			})
+			setTimeout(()=>{
+				uni.reLaunch({
+					url:'../login/mobilePassword'
+				})
+			},300)
+		}
+			
 
 			// #ifdef APP-PLUS
 			if (!plus.nativeObj.Bitmap('bmp1')) {
