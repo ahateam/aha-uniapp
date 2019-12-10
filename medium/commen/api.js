@@ -60,6 +60,11 @@ api.getLanguage = function(cnt, callback) {
 	util.call(baseUrl + '/task/getLanguage', cnt, callback)
 }
 
+// 查询资质 
+api.getByQualId = function(cnt, callback) {
+	util.call(baseUrl + '/task/getByQualId', cnt, callback)
+}
+
 /*tim 聊天*/
 //获取用户tim聊天的userSig	
 api.getUserSig = function(cnt, callback) {

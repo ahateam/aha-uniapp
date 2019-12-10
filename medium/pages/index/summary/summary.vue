@@ -48,9 +48,9 @@
 
 		<uni-popup :show="aptitudesStatus" type="bottom" @change="changePopup">
 			<view class="aptitudes-list">
-				<view class="aptitudes-border" :class="[{'no-border':index == 2},{'bottom-popup-box':index == 3},{'curr-box':index == aptitudesCurr}]"
+				<view class="aptitudes-border" :class="[{'no-border':index == aptitudesList.length - 2},{'bottom-popup-box':index == aptitudesList.length - 1},{'curr-box':index == aptitudesCurr}]"
 				 @click="choiceAptitudes(item)" v-for="(item,index) in aptitudesList" :key="index" @touchstart="changeAts(index)"
-				 @touchend="aptitudesCurr = -1">{{item.name}}</view>
+				 @touchend="aptitudesCurr = -1">{{item.qualName}}</view>
 			</view>
 		</uni-popup>
 	</view>
@@ -89,7 +89,7 @@
 			},
 
 			aptitudes() {
-				return this.$store.state.taskInfo.qualifications
+				return this.$store.state.taskInfo.qualName
 			},
 
 			imgList() {
@@ -109,25 +109,17 @@
 					this.$store.commit('resSetTaskInfo')
 				}
 			},
+
+			aptitudesList() {
+				return this.$store.state.qualiList
+			}
 		},
 		data() {
 			return {
 
 				formType: '',
 				aptitudesCurr: -1,
-				aptitudesStatus: false,
-				aptitudesList: [{
-						name: 'MARN号'
-					},
-					{
-						name: 'PIEP号'
-					},
-					{
-						name: '翻译证书'
-					}, {
-						name: '不需要'
-					}
-				],
+				aptitudesStatus: false
 			}
 		},
 		methods: {
@@ -136,7 +128,7 @@
 			},
 
 			choiceAptitudes(item) {
-				this.$store.commit('updataQualifications', item.name)
+				this.$store.commit('updataQualifications', item)
 				this.aptitudesStatus = false
 			},
 
@@ -149,8 +141,8 @@
 					// #ifdef APP-PLUS
 					currentWebview: this.$mp.page.$getAppWebview(),
 					// #endif
-					url:'1',
-					front:'1111',
+					url: '1',
+					front: '1111',
 				});
 			},
 
@@ -160,7 +152,7 @@
 				console.log(res.frontFileName)
 				console.log('文件上传的完整地址，包含url')
 				console.log(res.fileUrl)
-				
+
 			},
 
 			delImg(index) {
