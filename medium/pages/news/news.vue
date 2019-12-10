@@ -3,7 +3,7 @@
 		<view class="nav-box">
 			<view @click="navActive =0" :class="navActive=='0'?'nav-item-box nav-item-active':'nav-item-box'" style="margin-left:0">聊天记录</view>
 			<view class="nav-item-box" @click="navActive =1" :class="navActive=='1'?'nav-item-box nav-item-active':'nav-item-box'">通讯录</view>
-			<view class="nav-item-box" @click="navActive =2" :class="navActive=='2'?'nav-item-box nav-item-active':'nav-item-box'">其他</view>
+			<!-- <view class="nav-item-box" @click="navActive =2" :class="navActive=='2'?'nav-item-box nav-item-active':'nav-item-box'">其他</view> -->
 			<view class="clear-both"></view>
 		</view>
 		<view class="content-box">
@@ -16,9 +16,9 @@
 						<view class="clear-both"></view>
 					</view>
 				</view>
-				<view class="list-item-box" v-if="sationList.length>0">
+				<view class="list-item-box" v-if="conversationList.length>0">
 					<uni-swipe-action>
-						<uni-swipe-action-item :options="options" v-for="(item,index) in sationList" :key="index" @click="delItem(index)">
+						<uni-swipe-action-item :options="options" v-for="(item,index) in conversationList" :key="index" @click="delItem(index)">
 							<view class="list-item" @click.stop="checkConversation(item)">
 								<view class="list-item-img">
 									<img :src="item.userProfile.avatar" alt />
@@ -46,10 +46,6 @@
 					</uni-swipe-action>
 				</view>
 			</view>
-		</view>
-
-		<view class="footer-box">
-			<view class="footer-btn-box">+ 发起新的咨询</view>
 		</view>
 
 	</view>
@@ -456,26 +452,5 @@
 		background: #ee455a;
 		color: #ffffff;
 		font-size: 20rpx;
-	}
-
-	.footer-box {
-		position: fixed;
-		bottom: 0;
-		width: 100%;
-		height: 100rpx;
-		padding: 30rpx;
-		background: #fff;
-		z-index: 100;
-	}
-
-	.footer-btn-box {
-		width: 690rpx;
-		height: 100rpx;
-		line-height: 100rpx;
-		background: #00c8be;
-		color: #ffffff;
-		font-size: 30rpx;
-		text-align: center;
-		border-radius: 6rpx;
 	}
 </style>
