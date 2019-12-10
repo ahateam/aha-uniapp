@@ -91,7 +91,7 @@
 				currentConversation: state => state.conversation.currentConversation,
 				currentMessageList: state => state.conversation.currentMessageList,
 				isCompleted: state => state.conversation.isCompleted,
-				isLogin:state=>state.user.isLogin
+				isLogin: state => state.user.isLogin
 			}),
 			...mapGetters(['toAccount']),
 		},
@@ -114,7 +114,7 @@
 							"updateConversationList",
 							res.data.conversationList
 						);
-						
+
 					})
 					.catch(() => {
 						this.getConversationList();
@@ -143,67 +143,82 @@
 				uni.setStorageSync('toUserId', toUserId)
 				this.$store.dispatch('checkoutConversation', id)
 				uni.navigateTo({
-					url:'./message'
+					url: './message'
 				})
 			},
 			//获取tim个人信息--并初次更新用户信息
-			getUserProfile(){
+			getUserProfile() {
 				let promise = this.tim.getMyProfile();
-				promise.then((res)=> {
-					if(res.data.nick == ''){
+				promise.then((res) => {
+					if (res.data.nick == '') {
 						let promise = this.tim.updateMyProfile({
-						  nick: this.userInfo.userName,
-						  avatar: this.userInfo.userHead,
-						  gender: this.TIM.TYPES.GENDER_MALE,
-						  selfSignature: '这个人很懒...',
-						  allowType: this.TIM.TYPES.ALLOW_TYPE_ALLOW_ANY,
-						  role:this.userInfo.userType
+							nick: this.userInfo.userName,
+							avatar: this.userInfo.userHead,
+							gender: this.TIM.TYPES.GENDER_MALE,
+							selfSignature: '这个人很懒...',
+							allowType: this.TIM.TYPES.ALLOW_TYPE_ALLOW_ANY,
+							role: this.userInfo.userType
 						});
-						promise.then((res1)=> {
+						promise.then((res1) => {
 							this.$store.commit("updateCurrentUserProfile", res1.data);
-							
-						}).catch((err1)=> {
-						  console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
+
+						}).catch((err1) => {
+							console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
 						});
-					}else{
+					} else {
 						this.$store.commit("updateCurrentUserProfile", res.data);
 					}
-				}).catch((err)=> {
-				  console.warn('getMyProfile error:', err); // 获取个人资料失败的相关信息
+				}).catch((err) => {
+					console.warn('getMyProfile error:', err); // 获取个人资料失败的相关信息
 				});
 			},
 			//登录tim
 			loginTim() {
-					this.tim
-						.login({
-							userID: String(this.userInfo.userId),
-							userSig: this.userInfo.userSig
-						})
-						.then(res => {
-							this.$store.commit("toggleIsLogin", true);
-							this.$store.commit("startComputeCurrent");
-							this.getUserProfile()
-							this.getConversationList();
-						})
-						.catch(error => {
-							setTimeout(()=>{
-								if(!this.$store.state.user.isLogin){
-									this.loginTim()
-								}
-							},500)
-						});
+				this.tim
+					.login({
+						userID: String(this.userInfo.userId),
+						userSig: this.userInfo.userSig
+					})
+					.then(res => {
+						this.$store.commit("toggleIsLogin", true);
+						this.$store.commit("startComputeCurrent");
+						this.getUserProfile()
+						this.getConversationList();
+					})
+					.catch(error => {
+						setTimeout(() => {
+							if (!this.$store.state.user.isLogin) {
+								this.loginTim()
+							}
+						}, 500)
+					});
 			},
 		},
 		onLoad() {
 			uni.removeStorageSync('toUserInfo');
-			console.log(this.userInfo.userId)
-			if(!this.$store.state.user.isLogin){
-				this.loginTim()
-			}else{
-				this.getConversationList();
+			uni.removeStorageSync('toUserId');
+			this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
+			let timeOut = Number(this.userInfo.userSigCreateTime) + 604800000
+			let timeNow = new Date();
+			timeNow = timeNow.getTime()
+			console.log(timeNow)
+			if (this.userInfo.userSig && (timeNow < timeOut)) {
+				if (!this.$store.state.user.isLogin) {
+					this.loginTim();
+				}else{
+					this.getConversationList();
+				}
+			} else {
+				uni.showToast({
+					icon: 'none',
+					title: '用户身份失效，请重新登录'
+				})
+				uni.reLaunch({
+					url: '../login/mobilePassword'
+				});
 			}
-			
-			
+
+
 		}
 	};
 </script>
