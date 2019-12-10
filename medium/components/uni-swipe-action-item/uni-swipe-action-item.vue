@@ -13,7 +13,8 @@
 		          backgroundColor: item.style && item.style.backgroundColor ? item.style.backgroundColor : '#C7C6CD',
 		          fontSize: item.style && item.style.fontSize ? item.style.fontSize : '16px'
 		        }"
-					 class="uni-swipe_button button-hock" @click.stop="onClick(index,item)"><text class="uni-swipe_button-text" :style="{color: item.style && item.style.color ? item.style.color : '#FFFFFF',}">{{ item.text }}</text></view>
+					 class="uni-swipe_button button-hock radius-btn" @click.stop="onClick(index,item)"><text class="uni-swipe_button-text"
+						 :style="{color: item.style && item.style.color ? item.style.color : '#FFFFFF',}">{{ item.text }}</text></view>
 				</view>
 			</view>
 		</view>
@@ -49,7 +50,7 @@
 			</view>
 			<view ref='selector-content-hock' class="selector-query-hock" @touchstart="touchstart" @touchmove="touchmove"
 			 @touchend="touchend" :class="{'ani':uniShow}" :style="{transform:moveLeft}">
-				<view class="uni-swipe_move-box"  >
+				<view class="uni-swipe_move-box">
 					<view class="uni-swipe_box">
 						<slot />
 					</view>
@@ -232,7 +233,7 @@
 		transition-duration: 0.3s;
 		transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
 	}
-	
+
 	/* #ifdef MP-ALIPAY */
 	.movable-area {
 		width: 300px;
@@ -246,6 +247,7 @@
 		height: 45px;
 		z-index: 2;
 	}
+
 	.transition {
 		transition: all 0.3s;
 	}
@@ -255,5 +257,11 @@
 		height: 100%;
 		background-color: #fff;
 	}
+
 	/* #endif */
+
+	.radius-btn {
+		border-radius: 4rpx 0 0 4rpx;
+		margin: 29rpx 0;
+	}
 </style>

@@ -16,7 +16,11 @@
 			}
 		}, {
 			"path": "pages/news/news",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		},
 		{
 			"path": "pages/news/message",

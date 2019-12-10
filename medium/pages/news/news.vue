@@ -16,31 +16,34 @@
 						<view class="clear-both"></view>
 					</view>
 				</view>
-				<view class="list-item-box" v-if="conversationList.length>0">
-					<view class="list-item" v-for="(item,index) in conversationList" :key="index" @click="checkConversation(item)">
-						<view class="list-item-img">
-							<img :src="item.userProfile.avatar" alt />
-						</view>
-						<view class="list-item-info">
-							<view class="list-item-title">
-								<view class="list-item-name">{{item.userProfile.nick}}</view>
-								<view class="list-item-time">{{timeFilter(item.lastMessage.lastTime)}}</view>
-								<view class="clear-both"></view>
-							</view>
-							<view class="list-item-text">
-								<view class="item-text-active" v-if="item.unreadCount ==0">
-									<rich-text :nodes="item.lastMessage.messageForShow"></rich-text>
+				<view class="list-item-box" v-if="sationList.length>0">
+					<uni-swipe-action>
+						<uni-swipe-action-item :options="options" v-for="(item,index) in sationList" :key="index" @click="delItem(index)">
+							<view class="list-item" @click.stop="checkConversation(item)">
+								<view class="list-item-img">
+									<img :src="item.userProfile.avatar" alt />
 								</view>
-								<view class="item-text" v-else>
-									<rich-text :nodes="item.lastMessage.messageForShow"></rich-text>
+								<view class="list-item-info">
+									<view class="list-item-title">
+										<view class="list-item-name">{{item.userProfile.nick}}</view>
+										<view class="list-item-time">{{timeFilter(item.lastMessage.lastTime)}}</view>
+										<view class="clear-both"></view>
+									</view>
+									<view class="list-item-text">
+										<view class="item-text-active" v-if="item.unreadCount ==0">
+											<rich-text :nodes="item.lastMessage.messageForShow"></rich-text>
+										</view>
+										<view class="item-text" v-else>
+											<rich-text :nodes="item.lastMessage.messageForShow"></rich-text>
+										</view>
+										<view class="item-msg-num" v-if="item.unreadCount>0 && item.unreadCount <100">
+											{{item.unreadCount}}</view>
+										<view class="item-msg-num" v-if="item.unreadCount>=100">...</view>
+									</view>
 								</view>
-								<view class="item-msg-num" v-if="item.unreadCount>0 && item.unreadCount <100">
-									{{item.unreadCount}}</view>
-								<view class="item-msg-num" v-if="item.unreadCount>=100">...</view>
-
 							</view>
-						</view>
-					</view>
+						</uni-swipe-action-item>
+					</uni-swipe-action>
 				</view>
 			</view>
 		</view>
@@ -58,15 +61,51 @@
 		mapGetters,
 		mapState
 	} from "vuex";
+	import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue'
+	import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue'
+
 	export default {
 		name: "conversation",
+		components: {
+			uniSwipeAction,
+			uniSwipeActionItem
+		},
 		data() {
 			return {
 				userInfo: "",
 				toUserInfo: "",
 				navActive: 0,
-				sationList: [],
+				sationList: [{
+						userProfile: {
+							avatar: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1575952333934&di=3d279263eb025b78cd21553821ed8b26&imgtype=0&src=http%3A%2F%2Fimg.mp.sohu.com%2Fupload%2F20170830%2Fc8e9eb8b5c2a4252bb1b1c5496f89f2d_th.png',
+							nick: '自行车'
+						},
+						lastMessage: {
+							lastTime: 1575942377,
+							messageForShow: '辣是真的牛批'
+						},
+						unreadCount: 0
+					},
+					{
+						userProfile: {
+							avatar: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1575952333934&di=3d279263eb025b78cd21553821ed8b26&imgtype=0&src=http%3A%2F%2Fimg.mp.sohu.com%2Fupload%2F20170830%2Fc8e9eb8b5c2a4252bb1b1c5496f89f2d_th.png',
+							nick: '自行车'
+						},
+						lastMessage: {
+							lastTime: 1575942377,
+							messageForShow: '辣是真的牛批'
+						},
+						unreadCount: 0
+					}
+				],
 
+				options: [{
+					text: '删除',
+					style: {
+						backgroundColor: '#EE455A',
+						fontSize: '26rpx'
+					}
+				}]
 			};
 		},
 		watch: {
@@ -96,6 +135,13 @@
 			...mapGetters(['toAccount']),
 		},
 		methods: {
+			delItem(index) {
+				uni.showToast({
+					title: '点击刪除',
+					icon: 'none'
+				})
+			},
+
 			/** 聊天详情返回*/
 			resetConversation() {
 				if (this.isActive == 1) {
@@ -205,7 +251,7 @@
 			if (this.userInfo.userSig && (timeNow < timeOut)) {
 				if (!this.$store.state.user.isLogin) {
 					this.loginTim();
-				}else{
+				} else {
 					this.getConversationList();
 				}
 			} else {
