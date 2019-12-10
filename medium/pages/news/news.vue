@@ -217,8 +217,6 @@
 					url: '../login/mobilePassword'
 				});
 			}
-
-
 		}
 	};
 </script>
