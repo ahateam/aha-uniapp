@@ -49,6 +49,7 @@
 		watch: {
 			isSDKReady(newVal) {
 				if (newVal) {
+					
 					uni.reLaunch({
 						url: '../task/task'
 					})

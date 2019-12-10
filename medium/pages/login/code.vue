@@ -68,7 +68,6 @@
 			},
 			isSDKReady(newVal) {
 				if (newVal) {
-					uni.setStorageSync('page', 'normal')
 					uni.reLaunch({
 						url: '../index/index'
 					})

@@ -191,6 +191,7 @@
 						this.$store.commit("startComputeCurrent");
 						if (this.$store.state.user.isSDKReady) {
 							this.getUserProfile()
+							this.getUserProfile()
 						}
 					})
 					.catch(error => {
@@ -224,6 +225,24 @@
 					console.warn('getMyProfile error:', err); // 获取个人资料失败的相关信息
 				});
 			},
+			
+			/**拉取历史会话列表 */
+			getConversationList() {
+				let promise = this.tim.getConversationList();
+				promise
+					.then(res => {
+						console.log('----conversation------')
+						console.log(res.data.conversationList)
+						this.$store.commit(
+							"updateConversationList",
+							res.data.conversationList
+						);
+			
+					})
+					.catch(() => {
+						this.getConversationList();
+					});
+			},
 
 		},
 		onShow() {
@@ -231,10 +250,8 @@
 		},
 		onLoad() {
 			if (uni.getStorageSync('userInfo')) {
-				uni.removeStorageSync('toUserId')
-				this.userInfo == JSON.parse(uni.getStorageSync('userInfo'))
-
-				if (this.$store.state.user.isLogin) {
+				this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
+				if (this.$store.state.user.isLogin && this.$store.state.user.isSDKReady) {
 					this.getUserProfile()
 					this.getConversationList()
 				} else {

@@ -145,16 +145,7 @@
 				let timer = new Date(timeData * 1000)
 				return this.$commen.dateTimeFliter(timer, 1)
 			},
-			/**获取用户详细信息 */
-			getUserInfo(userId) {
-				let obj = null
-				userList.forEach(item => {
-					if (item.userId == userId) {
-						obj = item
-					}
-				})
-				return obj
-			},
+		
 			/** 创建且更换聊天室 */
 			checkConversation(item) {
 				console.log(item)
