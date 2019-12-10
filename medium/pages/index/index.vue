@@ -90,7 +90,6 @@
 			},
 			//登录tim
 			loginTim() {
-		
 					this.tim
 						.login({
 							userID: String(this.userInfo.userId),
@@ -102,16 +101,11 @@
 							this.getUserProfile()
 						})
 						.catch(error => {
-							console.error(error)
-							uni.showToast({
-								icon:'none',
-								title:'用户身份失效，请重新登录'
-							})
-							setTimeout(()=>{
-								uni.reLaunch({
-								    url: '../login/mobilePassword'
-								});
-							},500)
+							if(!this.$store.state.user.isLogin){
+								setTimeout(()=>{
+									this.loginTim()
+								},500)
+							}
 						});
 			},
 					
@@ -123,12 +117,14 @@
 		onLoad() {
 			console.log('--userInfo--')
 			console.log(this.isLogin)
-			if(uni.getStorageSync('userInfo')){		
+			console.log(this.userInfo)
 				this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
-				if(!this.isLogin){
+			let timeOut = Number(this.userInfo.userSigCreateTime)+604800000
+			let timeNow = (new Date()).time()
+			console.log(timeNow)
+			if(this.userInfo.userSig && (timeOut<timeNow)){		
+				if(!this.$store.state.user.isLogin){
 					this.loginTim();
-				}else{
-					this.getConversationList();
 				}
 			}else{
 				uni.showToast({

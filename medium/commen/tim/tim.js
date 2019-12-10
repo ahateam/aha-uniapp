@@ -4,7 +4,7 @@ import TIM from 'tim-js-sdk'
 
 // 初始化 SDK 实例
 const tim = TIM.create({
-  SDKAppID: 1400277699
+  SDKAppID: 1400294741
 })
 
 // window.setLogLevel = tim.setLogLevel
