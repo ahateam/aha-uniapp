@@ -37,8 +37,8 @@
 			navBar
 		},
 		watch: {
-			isSDKReady(newVal) {
-				if (newVal) {
+			isSDKReady(val) {
+				if(val){
 					this.getUserProfile()
 				}
 			}
@@ -213,10 +213,8 @@
 							role: this.userInfo.userType
 						});
 						promise.then((res1) => {
-							console.log('11111111')
 							this.$store.commit("updateCurrentUserProfile", res1.data);
 						}).catch((err1) => {
-
 							console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
 						});
 					} else {
@@ -235,19 +233,19 @@
 			if (uni.getStorageSync('userInfo')) {
 				uni.removeStorageSync('toUserId')
 				this.userInfo == JSON.parse(uni.getStorageSync('userInfo'))
-				console.log(this.userInfo)
-				// if(this.$store.state.user.isLogin){
-				// 	this.getUserProfile()
-				// }else{
-				// 	this.timLogin()
-				// }
+
+				if (this.$store.state.user.isLogin) {
+					this.getUserProfile()
+					this.getConversationList()
+				} else {
+					this.timLogin()
+				}
 			} else {
 				uni.showToast({
 					icon: 'none',
 					title: '用户身份失效，请重新登录!'
 				})
 				setTimeout(() => {
-					this.$commen.hiddenTabIcon()
 					uni.reLaunch({
 						url: '../login/mobilePassword'
 					})

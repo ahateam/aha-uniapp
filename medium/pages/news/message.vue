@@ -35,9 +35,11 @@
 					userId:id
 				}
 				this.$api.getUserInfo(cnt,(res)=>{
-					console.log(res)
+					console.log('------阿斯顿撒多---------')
+				
 					if(res.data.rc == this.$util.RC.SUCCESS){
 						this.toUserInfo = this.$util.tryParseJson(res.data.c)
+							console.log(this.toUserInfo )
 						uni.setStorageSync('toUserInfo',res.data.c)
 						
 					}else{
@@ -59,7 +61,7 @@
 						
 			}
 		},
-		mounted() {
+		onLoad() {
 			this.TIMDATA = this.TIM
 			let toUserId = uni.getStorageSync('toUserId')
 			

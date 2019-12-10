@@ -1,6 +1,6 @@
 <template>
 	<view>
-		
+
 		<view class="content" @touchstart="hideDrawer">
 			<scroll-view class="msg-list" scroll-y="true" :scroll-with-animation="scrollAnimation" :scroll-top="scrollTop"
 			 :scroll-into-view="scrollToView" @scrolltoupper="loadHistory" upper-threshold="50">
@@ -98,7 +98,9 @@
 			<!-- 更多功能 相册-拍照-红包 -->
 			<view class="more-layer" :class="{hidden:hideMore}">
 				<view class="list">
-					<view class="box" @tap="chooseImage"><view class="icon tupian2"></view></view>
+					<view class="box" @tap="chooseImage">
+						<view class="icon tupian2"></view>
+					</view>
 					<view class="box" @tap="camera">
 						<view class="icon paizhao"></view>
 					</view>
@@ -111,16 +113,16 @@
 		<!-- 底部输入栏 -->
 		<view class="input-box" :class="popupLayerClass" @touchmove.stop.prevent="discard">
 			<!-- H5下不能录音，输入栏布局改动一下 -->
-			
+
 			<view class="voice">
 				<view class="icon" :class="isVoice?'jianpan':'yuyin'" @tap="switchVoice"></view>
 			</view>
-		
-		
+
+
 			<!-- <view class="more" @tap="showMore">
 				<view class="icon add"></view>
 			</view> -->
-		
+
 			<view class="textbox">
 				<view class="voice-mode" :class="[isVoice?'':'hidden',recording?'recording':'']" @touchstart="voiceBegin"
 				 @touchmove.stop.prevent="voiceIng" @touchend="voiceEnd" @touchcancel="voiceCancel">{{voiceTis}}</view>
@@ -224,7 +226,6 @@
 		watch:{
 			currentMessageList(newVal,oldVal){
 				this.msgList = newVal
-				console.log('-------msgList---------')
 				console.log(this.msgList)
 				this.screenMsg(newVal,oldVal)
 			},
@@ -258,12 +259,11 @@
 			})
 		},
 		mounted() {
-		this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
-		this.toUserInfo = JSON.parse(uni.getStorageSync('toUserInfo'))
-		console.log('*****userInfo**********')
-		console.log(this.userInfo)
-		console.log(this.toUserInfo)
-		this.createConcersation()
+			this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
+			this.toUserInfo = JSON.parse(uni.getStorageSync('toUserInfo'))
+			this.createConcersation()
+			this.getMsgList();
+			
 			//语音自然播放结束
 			this.AUDIO.onEnded((res)=>{
 				this.playMsgid=null;
@@ -279,7 +279,7 @@
 			})
 			// #endif
 			
-			this.getMsgList();
+		
 		},
 		methods:{
 			//没有聊天室 初始化创建
@@ -290,7 +290,7 @@
 					  .dispatch('checkoutConversation', conversationId)
 					  .then(() => {
 					    // this.showDialog = false
-						list =  this.currentMessageList
+						this.msgList =  this.$store.state.conversation.currentMessageList
 						console.log('创建聊天室成功')
 					  }).catch(() => {
 						console.log('没有找到该用户')

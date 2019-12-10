@@ -139,8 +139,12 @@
 			},
 			/** 创建且更换聊天室 */
 			checkConversation(item) {
+				console.log('-------item----------')
 				console.log(item)
+				
 				let toUserId = item.userProfile.userID
+				console.log(toUserId)
+				
 				let id = 'C2C' + toUserId
 				uni.setStorageSync('toUserId', toUserId)
 				this.$store.dispatch('checkoutConversation', id)

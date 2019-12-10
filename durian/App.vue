@@ -1,8 +1,6 @@
 <script>
 	export default {
-		onLaunch: function() {
-			
-			console.log('App Launch')
+		mounted() {
 			// 登录成功后会触发 SDK_READY 事件，该事件触发后，可正常使用 SDK 接口
 			this.tim.on(this.TIM.EVENT.SDK_READY, this.onReadyStateUpdate, this);
 			// SDK NOT READT
@@ -48,6 +46,11 @@
 				//   }
 				// })
 			});
+		},
+		onLaunch: function() {
+			
+			console.log('App Launch')
+			
 			uni.onTabBarMidButtonTap((res) => {
 				let data = getCurrentPages()
 				if (data[0].route != 'pages/index/index') {
@@ -67,7 +70,7 @@
 			onReceiveMessage({
 				data: messageList
 			}) {
-				this.handleAt(messageList);
+				// this.handleAt(messageList);
 				this.$store.commit("pushCurrentMessageList", messageList);
 			},
 			onError({

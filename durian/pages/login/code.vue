@@ -102,7 +102,6 @@
 						this.$store.commit("toggleIsLogin", true);
 						this.$store.commit("startComputeCurrent");
 						if (this.$store.state.user.isSDKReady) {
-							uni.setStorageSync('page','normal')
 							uni.reLaunch({
 								url: '../index/index' 
 							})

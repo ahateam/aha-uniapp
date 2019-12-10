@@ -49,9 +49,8 @@
 		watch: {
 			isSDKReady(newVal) {
 				if (newVal) {
-					uni.setStorageSync('page', 'normal')
 					uni.reLaunch({
-						url: '../index/index'
+						url: '../task/task'
 					})
 				}
 			}
@@ -104,8 +103,6 @@
 						}
 					})
 					.catch(err => {
-						console.log('--------err------------')
-						console.log(err)
 						setTimeout(() => {
 							this.loginTim()
 						}, 200)
@@ -137,9 +134,7 @@
 							this.userInfo = this.$util.tryParseJson(res.data.c)
 							uni.setStorageSync('userInfo', JSON.stringify(this.userInfo))
 							this.timLogin()
-							// uni.reLaunch({
-							// 	url: '../index/index?type='+false
-							// })
+							
 						} else {
 							uni.showToast({
 								title: '登录失败，用户名或密码错误',
