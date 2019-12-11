@@ -5,14 +5,14 @@ module.exports = [
       title: '前端文档',
       collapsable: true,
       children: [
-        '/aha/front/index.md',
+        '/aha/front/index',
       ]
     },
     {
       title: '后端文档',
       collapsable: true,
       children: [
-        '/aha/back/index.md',
+        '/aha/back/index',
       ]
     },
    
