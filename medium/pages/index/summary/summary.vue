@@ -151,12 +151,15 @@
 			},
 
 			upFile() {
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let time = new Date()
+
 				this.$refs.lFile.upload({
 					// #ifdef APP-PLUS
 					currentWebview: this.$mp.page.$getAppWebview(),
 					// #endif
 					url: '1',
-					front: '1111',
+					front: `${userInfo.userId}/${time.getFullYear()}${time.getMonth() * 1 + 1}${time.getDate()}`,
 				});
 			},
 

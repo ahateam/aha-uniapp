@@ -9,7 +9,7 @@
 		<view class="nav-box">
 			<scroll-view class="top-option" scroll-x="true" scroll-left="0" scroll-with-animation :scroll-into-view="'nav' + currIndex">
 				<view class="top-options" :id="'nav' + index" :class="currIndex== index?'active':''" :style="index == 0?'margin-left:0;':''"
-				 v-for="(item,index) in topOption" :key="index" @click="topoption(index)">
+				 v-for="(item,index) in tagList" :key="index" @click="currTag(index)">
 					<view>{{item.text}}</view>
 				</view>
 			</scroll-view>
@@ -51,10 +51,17 @@
 		},
 		data() {
 			return {
+				count: 10,
+				offset: 0,
+				page: 1,
+				pageOver: false,
+				pageStatus: 'loading',
+
+
 				userInfo: '',
 				clickTab: true,
 				currIndex: 0,
-				topOption: [{
+				tagList: [{
 						text: '全部'
 					},
 					{
@@ -75,35 +82,7 @@
 				],
 				// 我的任务信息列表
 
-				tasks: [{
-						name: '全案助理',
-						money: 100,
-						infor: '500签证全案',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09'
-					},
-					{
-						name: '翻译',
-						money: 300,
-						infor: '学生成绩单翻译',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09'
-					},
-					{
-						name: '拽写文书',
-						money: 300,
-						infor: '学生个人陈述验证',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09'
-					},
-					{
-						name: '其他',
-						money: 300,
-						infor: '学生个人陈述验证',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09'
-					}
-				],
+				tasks: [],
 			}
 		},
 
@@ -117,15 +96,31 @@
 				uni.navigateTo({
 					url: '/pages/task/taskInfo/taskInfo',
 					success: () => {
-						setTimeout( () => {
+						setTimeout(() => {
 							this.$commen.hiddenTabIcon()
 						}, 100);
 					}
 				})
 			},
 
-			topoption(index) {
-				this.currIndex = index
+			currTag(index) {
+				if (!(this.pageStatus == 'loading')) {
+					this.currIndex = index
+					if (this.tagList[index].child) {
+						this.tasks = this.tagList[index].child
+						this.pageOver = this.tagList[index].pageOver
+						this.pageStatus = this.tagList[index].pageStatus
+					} else {
+						this.tasks = []
+						let cnt = {
+							// taskStatus: taskStatus, // Byte <选填> 任务状态
+							// status: status, // Byte <选填> 状态（是否删除）
+							count: this.count, // Integer 
+							offset: this.offset, // Integer 
+						}
+						this.getTaskList(cnt)
+					}
+				}
 			},
 
 			createtab() {
@@ -242,6 +237,33 @@
 					});
 			},
 
+			tryParseData(list) {
+				if (list.length < this.count) {
+					this.pageOver = true
+					this.pageStatus = 'nomore'
+				} else {
+					this.pageOver = false
+					this.pageStatus = 'more'
+				}
+				this.tagList[this.currIndex].pageStatus = this.pageStatus
+				this.tagList[this.currIndex].pageOver = this.pageOver
+
+				this.tasks = this.tasks.concat(list)
+				this.tagList[this.currIndex].child = this.tasks
+			},
+
+			getTaskList(cnt) {
+				this.$api.getTaskList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('-----------------list-------------------')
+						console.log(this.$util.tryParseJson(res.data.c))
+						let list = this.$util.tryParseJson(res.data.c)
+						this.tryParseData(list)
+					} else {
+						this.pageStatus = 'error'
+					}
+				})
+			},
 		},
 		onShow() {
 			this.$commen.showTabIcon()
@@ -260,6 +282,14 @@
 			// #endif
 
 			if (uni.getStorageSync('userInfo')) {
+				let cnt = {
+					// taskStatus: taskStatus, // Byte <选填> 任务状态
+					// status: status, // Byte <选填> 状态（是否删除）
+					count: this.count, // Integer 
+					offset: this.offset, // Integer 
+				}
+				this.getTaskList(cnt)
+				// tim登录
 				this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
 				if (this.$store.state.user.isLogin && this.$store.state.user.isSDKReady) {
 					this.getUserProfile()
@@ -287,6 +317,7 @@
 	.page {
 		background-color: #F2F5F7;
 		padding-bottom: 1rpx;
+		min-height: 100vh;
 	}
 
 	.nav-top-box {

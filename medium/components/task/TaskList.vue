@@ -4,18 +4,18 @@
 		<view class="task-box" :class="{'my-task':showStatus()}" v-for="(item,index) in tasks" :key="index" @click="getItem(item)">
 			<view class="task-top">
 				<view class="task-l-img"></view>
-				<view class="task-top-l">{{item.name}}</view>
-				<view class="task-top-r">AUD {{item.money}}</view>
+				<view class="task-top-l">{{taskType[item.taskType].name}}</view>
+				<view class="task-top-r">AUD {{item.taskBudget}}</view>
 			</view>
-			<view class="task-center">{{item.infor}}</view>
+			<view class="task-center">{{item.taskDescribe}}</view>
 			<view class="task-bottom">
-				<view class="task-bottom-r">
-					<text class="task-rec">接收</text>
-					<text class="data">{{item.olddata}}</text>
+				<view class="task-bottom-box" :style="item.olddata?'opacity: 1':'opacity: 0'">
+					<view class="task-rec">接收</view>
+					<view class="data">{{item.olddata}}</view>
 				</view>
-				<view class="task-bottom-l">
-					<text class="task-recc">完成</text>
-					<text class="data">{{item.newsdata}}</text>
+				<view class="task-bottom-box">
+					<view class="task-recc">完成</view>
+					<view class="data">{{getTime(item.finishDate)}}</view>
 				</view>
 			</view>
 			<view class="status-box" v-if="showStatus()">
@@ -31,10 +31,15 @@
 		props: ['tasks', 'type'],
 		data() {
 			return {
-				taskStatus: this.$constData.taskStatus
+				taskStatus: this.$constData.taskStatus,
+				taskType: this.$constData.taskType
 			}
 		},
 		methods: {
+			getTime(time) {
+				return this.$commen.getNewDate(time)
+			},
+
 			getItem(item) {
 				this.$emit('getItem', item)
 			},
@@ -108,13 +113,17 @@
 	.task-bottom {
 		display: flex;
 		justify-content: flex-start;
-		flex-wrap: wrap;
-		margin-left: 40rpx;
+		justify-content: space-between;
+		padding: 0 66rpx 0 40rpx;
+	}
+
+	.task-bottom-box {
+		display: flex;
+		align-items: center;
 	}
 
 	.task-rec {
 		border-radius: 18rpx;
-		height: 38rpx;
 		background-color: rgba(255, 164, 5, .2);
 		font-size: 20rpx;
 		line-height: 28rpx;
@@ -124,16 +133,11 @@
 
 	.task-recc {
 		border-radius: 18rpx;
-		height: 38rpx;
 		background-color: rgba(0, 200, 190, .2);
 		font-size: 20rpx;
 		line-height: 28rpx;
 		color: #00C8BE;
 		padding: 5rpx 10rpx;
-	}
-
-	.task-bottom-l {
-		margin-left: 114rpx;
 	}
 
 	.data {

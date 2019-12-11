@@ -24,7 +24,11 @@
 		},
 		{
 			"path": "pages/news/message",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"softinputMode": "adjustResize"
+				}
+			}
 		},
 		{
 			"path": "pages/news/conversation",
