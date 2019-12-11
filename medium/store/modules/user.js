@@ -44,6 +44,7 @@ const user = {
     //     })
     // },
     logout(context) {
+		console.log('loginout ---tim')
       // 若有当前会话，在退出登录时已读上报
       if (context.rootState.conversation.currentConversation.conversationID) {
         tim.setMessageRead({ conversationID: context.rootState.conversation.currentConversation.conversationID })

@@ -28,13 +28,17 @@
 
 		<view class="up-file">
 			<view class="auto-title">其他文件</view>
-			<view class="up-file-btn file-list" v-for="(item,index) in fileList" :key="index">
-				<view class="">
-					<view>{{item.name}}</view>
-					<view class="file-size">{{item.size}}</view>
-				</view>
-				<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
-			</view>
+			<uni-swipe-action>
+				<uni-swipe-action-item :options="options" v-for="(item,index) in fileList" :key="index">
+					<view class="up-file-btn file-list">
+						<view class="">
+							<view>{{item.name}}</view>
+							<view class="file-size">{{item.size}}</view>
+						</view>
+						<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
+					</view>
+				</uni-swipe-action-item>
+			</uni-swipe-action>
 			<button class="up-file-btn" @click="upFile">点击上传</button>
 		</view>
 
@@ -64,6 +68,8 @@
 	import NextBtn from '@/components/NextBtn/NextBtn.vue'
 	import lFile from '@/components/l-file/l-file.vue'
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue'
+	import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue'
 
 	export default {
 		name: 'summary',
@@ -74,7 +80,9 @@
 			uniPopup,
 			DataTextarea,
 			NextBtn,
-			lFile
+			lFile,
+			uniSwipeAction,
+			uniSwipeActionItem
 		},
 
 		computed: {
@@ -116,7 +124,13 @@
 		},
 		data() {
 			return {
-
+				options: [{
+					text: '删除',
+					style: {
+						backgroundColor: '#EE455A',
+						fontSize: '26rpx'
+					}
+				}],
 				formType: '',
 				aptitudesCurr: -1,
 				aptitudesStatus: false
