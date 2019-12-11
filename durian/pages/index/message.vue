@@ -18,6 +18,7 @@
 </template>
 <script>
 	import list from './tim/list'
+	import client from '../../commen/tim/ossTim.js'
 	export default {
 		name: 'msssage',
 		data() {
@@ -59,6 +60,7 @@
 			}
 		},
 		mounted() {
+			console.log(client)
 			this.TIMDATA = this.TIM
 			let toUserId = uni.getStorageSync('toUserId')
 
