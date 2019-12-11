@@ -1,5 +1,5 @@
 ---
-title: 前端文档示例
+title: 前端技术文档示例
 author: cometang   
 date: 2019-12-11
 
