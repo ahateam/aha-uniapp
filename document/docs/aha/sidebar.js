@@ -6,6 +6,7 @@ module.exports = [
       collapsable: true,
       children: [
         '/aha/front/example',
+		'/aha/front/prize',
       ]
     },
     {
