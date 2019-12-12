@@ -3,7 +3,8 @@
 		{
 			"path": "pages/task/task",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
 			}
 		},
 		{

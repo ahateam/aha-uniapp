@@ -9,8 +9,8 @@
 		<view class="nav-box">
 			<scroll-view class="top-option" scroll-x="true" scroll-left="0" scroll-with-animation :scroll-into-view="'nav' + currIndex">
 				<view class="top-options" :id="'nav' + index" :class="currIndex== index?'active':''" :style="index == 0?'margin-left:0;':''"
-				 v-for="(item,index) in tagList" :key="index" @click="currTag(index)">
-					<view>{{item.text}}</view>
+				 v-for="(item,index) in tagList" :key="index" @click="currTag(index,item)">
+					<view>{{item.name}}</view>
 				</view>
 			</scroll-view>
 			<view class="nav-shadow"></view>
@@ -61,25 +61,7 @@
 				userInfo: '',
 				clickTab: true,
 				currIndex: 0,
-				tagList: [{
-						text: '全部'
-					},
-					{
-						text: '翻译'
-					},
-					{
-						text: '全案助理'
-					},
-					{
-						text: '全案'
-					},
-					{
-						text: '全案助理'
-					},
-					{
-						text: '全案'
-					}
-				],
+				tagList: [],
 				// 我的任务信息列表
 
 				tasks: [],
@@ -103,7 +85,7 @@
 				})
 			},
 
-			currTag(index) {
+			currTag(index, item) {
 				if (!(this.pageStatus == 'loading')) {
 					this.currIndex = index
 					if (this.tagList[index].child) {
@@ -115,6 +97,7 @@
 						let cnt = {
 							// taskStatus: taskStatus, // Byte <选填> 任务状态
 							// status: status, // Byte <选填> 状态（是否删除）
+							taskType: item.key, // Byte <选填> 任务类型
 							count: this.count, // Integer 
 							offset: this.offset, // Integer 
 						}
@@ -269,6 +252,25 @@
 			this.$commen.showTabIcon()
 		},
 		onLoad() {
+			let list = [...this.$constData.taskType]
+			let array = []
+			list.map((item, index) => {
+				array.push(
+					Object.assign({}, item, {
+						pageStatus: 'loading',
+						pageOver: false,
+						page: 1
+					})
+				)
+			});
+
+			let obj = {
+				name: '全部',
+				key: -1
+			}
+			array.splice(0, 0, obj)
+			this.tagList = array
+
 			// #ifdef APP-PLUS
 			if (!plus.nativeObj.Bitmap('bmp1')) {
 				bitmap = new plus.nativeObj.Bitmap('bmp1');
@@ -309,6 +311,42 @@
 					this.$commen.hiddenTabIcon()
 				}, 300)
 			}
+		},
+		onPullDownRefresh() {
+			this.tasks = []
+			this.pageStatus = 'loading'
+			this.pageOver = false
+			this.page = 1
+			this.tagList[this.currIndex].page = 1
+
+			let cnt = {
+				// taskStatus: taskStatus, // Byte <选填> 任务状态
+				// status: status, // Byte <选填> 状态（是否删除）
+				count: this.count, // Integer 
+				offset: this.offset, // Integer 
+			}
+			if (this.currIndex != 0) {
+				cnt.taskType = this.tagList[this.currIndex].key // Byte <选填> 任务类型
+			}
+			this.getTaskList(cnt)
+		},
+		onReachBottom() {
+			if (!this.pageOver) {
+				this.page += 1
+				this.tagList[this.currIndex].page += 1
+
+				let cnt = {
+					// taskStatus: taskStatus, // Byte <选填> 任务状态
+					// status: status, // Byte <选填> 状态（是否删除）
+					count: this.count, // Integer 
+					offset: this.offset, // Integer 
+				}
+				if (this.currIndex != 0) {
+					cnt.taskType = this.tagList[this.currIndex].key // Byte <选填> 任务类型
+				}
+				this.getTaskList(cnt)
+			}
+
 		}
 	}
 </script>
@@ -317,7 +355,7 @@
 	.page {
 		background-color: #F2F5F7;
 		padding-bottom: 1rpx;
-		min-height: 100vh;
+		min-height: calc(100vh - 1rpx);
 	}
 
 	.nav-top-box {
