@@ -14,6 +14,7 @@ module.exports = [
       collapsable: true,
       children: [
         '/aha/back/example',
+		'/aha/back/contentModule',
       ]
     },
    
