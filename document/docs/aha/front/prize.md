@@ -1,7 +1,7 @@
 ---
 title: 抽奖小程序总结
 author: huqian
-data: 2019-12-11
+date: 2019-12-11
 
 ---
 
