@@ -44,7 +44,7 @@ date: 2019-12-11
 
 * 调用 onPullDownRefresh() 生命周期方法。该方法执行时，需要先将原数据进行初始化再调用查询接口，否则会出现数据重复现象，查询接口调用结束后需要调用 uni.stopPullDownRefresh() 方法停止刷新
 
-```uni-app
+```js
     //下拉刷新
     onPullDownRefresh() {
         this.pageOver = false
@@ -65,7 +65,7 @@ date: 2019-12-11
 
 * 调用 onReachBottom() 生命周期方法。将页码+1，修改传入查询接口中的参数，再次调用查询接口
 
-```uni-app
+```js
 		onReachBottom() {
 			console.log(this.pageOver)
 			if (!this.pageOver) {
@@ -83,7 +83,7 @@ date: 2019-12-11
 
 * 调用 onShareAppMessage() 生命周期方法
 
-```uni-app
+```js
 		onShareAppMessage(res) {
 			let pages = getCurrentPages() //获取加载的页面
 			let currentPage = pages[pages.length - 1] //获取当前页面的对象
@@ -110,7 +110,7 @@ date: 2019-12-11
 
 * 先调用 uni.chooseImage() 方法，从本地相册中选择图片，再调用 uni.uploadFile() 方法，将选择的图片上传至服务器
 
-```uni-app
+```js
 			//相册添加图片
 			addImgs(e){
 				let tiemr = new Date()
@@ -203,7 +203,7 @@ date: 2019-12-11
 1. 参考微信小程序过审注意事项1-5
 2. 登录状态下进入小程序，弹出获取用户头像、昵称等信息的弹窗，选择允许，能够正常拿到头像和名字，小程序中的头像和名字显示正常，授权弹窗只能出现一次，多次出现时bug；当用户选择不允许时，能够再次掉起授权弹窗。目前解决方案如下：用户拒绝授权后，再次点击登录将调起设置，让用户手动开启权限，开启成功后重新调用登录方法，登录小程序
 
-```uni-app
+```js
             uni.hideLoading()
                 uni.showModal({
                     title: '开启权限',
@@ -226,3 +226,5 @@ date: 2019-12-11
                     }
                 })
 ```
+
+![20191212112504](/aha/front/20191212112504.png)
