@@ -1,8 +1,8 @@
 ---
 
-title: 前端技术文档示例
+title: uni-app与vue
 author: 李金泉   
-date: 2019-12-11
+date: 2019-12-12
 
 ---
 
@@ -35,7 +35,7 @@ date: 2019-12-11
 
 
 
-- 包含了所有配置的pages.json，查看更详细的配置[请点击]([https://uniapp.dcloud.io/collocation/pages?id=%E9%85%8D%E7%BD%AE%E9%A1%B9%E5%88%97%E8%A1%A8](https://uniapp.dcloud.io/collocation/pages?id=配置项列表))
+- 包含了所有配置的pages.json，查看更详细的配置[请点击](https://uniapp.dcloud.io/collocation/pages?id=配置项列表)
 
 ```json
 {
