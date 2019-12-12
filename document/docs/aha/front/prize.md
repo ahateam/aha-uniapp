@@ -227,4 +227,4 @@ date: 2019-12-11
                 })
 ```
 
-![20191212112504](/aha/front/20191212112504.png)
+![20191212112504](https://ahateam.github.io/document/aha/front/20191212112504.png)
