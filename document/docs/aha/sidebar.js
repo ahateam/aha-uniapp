@@ -7,6 +7,7 @@ module.exports = [
       children: [
         '/aha/front/example',
 		'/aha/front/prize',
+		'/aha/front/test',
       ]
     },
     {
