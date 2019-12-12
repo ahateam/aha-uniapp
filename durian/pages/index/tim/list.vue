@@ -1,7 +1,7 @@
 <template>
 	<view>
-		
-		<view class="content" @touchstart="hideDrawer">
+
+		<view class="content" @touchstart="hideDrawer" >
 			<scroll-view class="msg-list" scroll-y="true" :scroll-with-animation="scrollAnimation" :scroll-top="scrollTop"
 			 :scroll-into-view="scrollToView" @scrolltoupper="loadHistory" upper-threshold="50">
 				<!-- 加载历史数据waitingUI -->
@@ -49,14 +49,14 @@
 							</view>
 							<!-- 右-头像 -->
 							<view class="right">
-								<image :src="userInfo.userHead"></image>
+								<image :src="userInfo.userHead" mode="aspectFill"></image>
 							</view>
 						</view>
 						<!-- 别人发出的消息 -->
 						<view class="other" v-else>
 							<!-- 左-头像 -->
 							<view class="left">
-								<image :src="toUserInfo.userHead"></image>
+								<image :src="toUserInfo.userHead" mode="aspectFill"></image>
 							</view>
 							<!-- 右-用户名称-时间-消息 -->
 							<view class="right">
@@ -98,7 +98,9 @@
 			<!-- 更多功能 相册-拍照-红包 -->
 			<view class="more-layer" :class="{hidden:hideMore}">
 				<view class="list">
-					<view class="box" @tap="chooseImage"><view class="icon tupian2"></view></view>
+					<view class="box" @tap="chooseImage">
+						<view class="icon tupian2"></view>
+					</view>
 					<view class="box" @tap="camera">
 						<view class="icon paizhao"></view>
 					</view>
@@ -109,18 +111,18 @@
 			</view>
 		</view>
 		<!-- 底部输入栏 -->
-		<view class="input-box" :class="popupLayerClass" @touchmove.stop.prevent="discard">
+		<view class="input-box"  :class="popupLayerClass" @touchmove.stop.prevent="discard">
 			<!-- H5下不能录音，输入栏布局改动一下 -->
-			
+
 			<view class="voice">
 				<view class="icon" :class="isVoice?'jianpan':'yuyin'" @tap="switchVoice"></view>
 			</view>
-		
-		
+
+
 			<!-- <view class="more" @tap="showMore">
 				<view class="icon add"></view>
 			</view> -->
-		
+
 			<view class="textbox">
 				<view class="voice-mode" :class="[isVoice?'':'hidden',recording?'recording':'']" @touchstart="voiceBegin"
 				 @touchmove.stop.prevent="voiceIng" @touchend="voiceEnd" @touchcancel="voiceCancel">{{voiceTis}}</view>
@@ -152,6 +154,8 @@
 	</view>
 </template>
 <script>
+	import client from '../../../commen/tim/ossTim.js'
+
 	import { mapGetters, mapState } from 'vuex'
 	export default {
 		name:'list',
@@ -160,9 +164,6 @@
 				//tim
 				toUserInfo:null,
 				userInfo:null,
-		
-				
-				
 				//文字消息
 				textMsg:'',
 				//消息列表
@@ -260,9 +261,6 @@
 		mounted() {
 		this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
 		this.toUserInfo = JSON.parse(uni.getStorageSync('toUserInfo'))
-		console.log('*****userInfo**********')
-		console.log(this.userInfo)
-		console.log(this.toUserInfo)
 		this.createConcersation()
 			//语音自然播放结束
 			this.AUDIO.onEnded((res)=>{
@@ -282,6 +280,67 @@
 			this.getMsgList();
 		},
 		methods:{
+			
+			//oss 上传文件
+			ossUploadFile(file,attr){ 
+				console.log(file)
+			 //    this.$commen.h5_url_to_blob(file.path).then(res=>{
+				// 	console.log(res)
+				// }).cache(err=>{
+				// 	console.log(err)
+				// })
+			// 	let userId = JSON.parse(uni.getStorageSync('userInfo')).userId
+			// 	let day = this.$commen.dateTimeFliter(new Date(),1,true,true,'')
+			// 	let fileArr = file.path.split('/')
+			// 	let name = fileArr[fileArr.length-1]
+			
+			// 	let fileName = userId+'/'+day+'/'+name
+			// 	console.log(fileName)
+			// 	console.log(file)
+			// 	this.multipartUpload(fileName,file,attr)
+				
+				
+			},
+		   getProgress(num){
+				console.log(num)
+			},
+			
+			multipartUpload(upName, upFile, attr) {
+				//Vue中封装的分片上传方法（详见官方文档）
+				
+				let result =  client.put(upName, upFile);
+			// 	let _this = this
+			// 	const progress = async function(p) {
+			// 		//项目中需获取进度条，故调用进度回调函数（详见官方文档）
+			// 		// _this.$emit('getProgress', Math.round(p * 100))
+			// 		_this.getProgress(Math.round(p * 100))
+			// 	}
+			// 	try {
+			// 		let result = client.multipartUpload(upName, upFile, {
+			// 			progress,
+			// 			meta: {
+			// 				year: 2017,
+			// 				people: 'test'
+			// 			}
+			// 		}).then(res => {
+			// 			//取出存好的url
+			// 		cosnole.log(res)
+			
+			// 		}).catch(err => {
+			// 			console.log(err)
+			// 		});
+			
+			// 	} catch (e) {
+			// 		// 捕获超时异常
+			// 		if (e.code === 'ConnectionTimeoutError') {
+			// 			console.log("Woops,超时啦!");
+			// 		}
+			// 		console.log(e)
+			// 	}
+			},
+	
+	
+	
 			//没有聊天室 初始化创建
 			createConcersation(){
 				if(!this.currentConversation.currentConversationID){
@@ -495,31 +554,36 @@
 					console.log('发送失败')
 			  })
 			},
+			
+		
 			//选照片 or 拍照
 			getImage(type){
 				this.hideDrawer();
-				
 				uni.chooseImage({
 					sourceType:[type],
 					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					success: (res)=>{
+						console.log('-------res-------')
 						console.log(res)
-						
-					
 						for(let i=0;i<res.tempFiles.length;i++){
+							
 							let dateTime = new Date().getTime()
+							
+							let file = res.tempFiles[i]
 							console.log(res.tempFiles[i])
-							let file = this.$commen.blobToFile(res.tempFiles[i],dateTime+'.png')
-						    this.sendImage(file)
+							this.ossUploadFile(file)
+							// let file = this.$commen.blobToFile(res.tempFiles[i],dateTime+'.png')
 							// uni.getImageInfo({
 							// 	src: res.tempFilePaths[i],
 							// 	success: (image)=>{
-							// 		console.log(image.width);
-							// 		console.log(image.height);
-							// 		let msg = {url:res.tempFilePaths[i],w:image.width,h:image.height};
-							// 		this.sendMsg(msg,'img');
+							// 	
+							// 		// let msg = {url:res.tempFilePaths[i],w:image.width,h:image.height};
+							// 		// this.sendMsg(msg,'img');
+									
 							// 	}
 							// });
+							
+							
 						}
 					}
 				});
@@ -756,8 +820,10 @@
 			},
 			//录音结束(回调文件)
 			recordEnd(e){
+				
 				clearInterval(this.recordTimer);
 				if(!this.willStop){
+					
 					console.log("e: " + JSON.stringify(e));
 					let msg = {
 						length:0,
@@ -768,7 +834,8 @@
 					min = min<10?'0'+min:min;
 					sec = sec<10?'0'+sec:sec;
 					msg.length = min+':'+sec;
-					this.sendMsg(msg,'voice');
+					
+					// this.sendMsg(msg,'voice');
 				}else{
 					console.log('取消发送录音');
 				}

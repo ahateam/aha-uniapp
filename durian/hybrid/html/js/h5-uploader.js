@@ -9,9 +9,9 @@ let percent = 0;
 /**oss上传*/
 var client = new OSS.Wrapper({
 	region: "oss-ap-southeast-2", //阿里云获取
-	accessKeyId: "LTAIc7DrMIfkkAEh",
-	accessKeySecret: "MFmFeQ4FcFFMbw2JuzdYoIQX7RFTn1",
-	bucket: "file-duran" //要存储的目录名
+	accessKeyId: "LTAI4FqngBZhahjCXBPUDwSu",
+	accessKeySecret: "n1AjWfS1Jfdcl5ks8REHsIgHf3RT07 ",
+	bucket: "durian-file" //要存储的目录名
 });
 console.log(client)
 /**
@@ -35,22 +35,18 @@ function add0(m) {
 
 
 
-function upload(file) {
+function upload(file,front) {
 
-	let timer = new Date().getTime()
-	// 取出文件后缀名
-	var obj = timestamp();
-	var fileName = obj + '/' + timer + '_' + file.name;
+   
+	var fileName = file.name;
+	var frontFileName = front+'/'+file.name;
 	console.log('-----开始执行-----')
-	client.multipartUpload(fileName, file).then(function(result) {
+	client.multipartUpload(frontFileName, file).then(function(result) {
 		var url = result.res.requestUrls[0];
 		var length = url.lastIndexOf('?');
-		var imgUrl = url.substr(0, length); //文件最终路径
-		// $("#img").attr("src",url.substr(0,length))
-		console.log(url.substr(0, length))
-		console.log('-----asdasdas--------')
+		var fileUrl = url.substr(0, length); //文件最终路径
 		progress.innerText = '上传成功';
-		title.innerText = `${file.name}:${imgUrl}`;
+		title.innerText = `${frontFileName};;${fileUrl}`
 		setTimeout(() => {
 			tis.style.display = 'none';
 			plus.webview.currentWebview().close();
@@ -70,26 +66,20 @@ function upload(file) {
 
 
 
-let createUpload = (file, url, key = 'file', header = {}, data = {}) => {
+let createUpload = (file, front='',url, key = 'file', header = {}, data = {}) => {
 	console.log(`
-	上传地址:${url}\n
-	请求头:${JSON.stringify(header)}\n
+	上传前缀:${front}\n
+	文件名:${file.name}\n
 	参数:${JSON.stringify(data)}
 	`);
-	if (!url) {
-		return;
-	}
+
 	tis.style.display = 'flex';
 
-	console.log(file)
-	let formData = new FormData();
-	formData.append(key, file);
+	upload(file,front)
 
-	upload(file)
-	console.log(formData)
 
 	// let xhr = new XMLHttpRequest();
-	// xhr.open("POST", url, true);
+	// xhr.open("POST", url, true  );
 
 	// for (let keys in header) {
 	// 	xhr.setRequestHeader(keys, header[keys]);
@@ -167,6 +157,6 @@ document.addEventListener('UniAppJSBridgeReady', () => {
 		console.log(front)
 		console.log(file.name);
 
-		createUpload(file, url, front, key, header, formData);
+		createUpload(file,front,url, key, header, formData);
 	}, false);
 });

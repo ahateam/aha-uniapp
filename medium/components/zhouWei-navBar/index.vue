@@ -249,6 +249,7 @@
 		display: flex;
 		align-items: flex-end;
 		position: relative;
+		z-index: 1003;
 		justify-content: space-between;
 		box-sizing: border-box;
 		/* #ifdef MP */

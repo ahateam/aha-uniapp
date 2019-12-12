@@ -1,12 +1,12 @@
 <template>
-	<view >
+	<view>
 		<view v-if="toUserInfo">
 			<view class="nav-box">
 				<div class="nav-box">
-				  <div class="back-btn" @click="backBtn()">
-				    <i class="iconfont icon-fanhui"></i>
-				  </div>
-				  <div class="title-box" >{{toUserInfo.userName}}</div>
+					<div class="back-btn" @click="backBtn()">
+						<i class="iconfont icon-fanhui"></i>
+					</div>
+					<div class="title-box">{{toUserInfo.userName}}</div>
 				</div>
 			</view>
 			<view class="message-list">
@@ -14,102 +14,109 @@
 			</view>
 		</view>
 	</view>
-	
+
 </template>
 <script>
 	import list from './tim/list'
-	export default{
-		name:'msssage',
-		data(){
+	import client from '../../commen/tim/ossTim.js'
+	export default {
+		name: 'msssage',
+		data() {
 			return {
-				toUserInfo:'',
-				TIMDATA:null
+				toUserInfo: '',
+				TIMDATA: null
 			}
 		},
-		components:{
+		components: {
 			list
 		},
-		methods:{
-			getUserInfo(id){
+		methods: {
+			getUserInfo(id) {
 				let cnt = {
-					userId:id
+					userId: id
 				}
-				this.$api.getUserInfo(cnt,(res)=>{
+				this.$api.getUserInfo(cnt, (res) => {
 					console.log(res)
-					if(res.data.rc == this.$util.RC.SUCCESS){
+					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.toUserInfo = this.$util.tryParseJson(res.data.c)
-						uni.setStorageSync('toUserInfo',res.data.c)
-						
-					}else{
+						uni.setStorageSync('toUserInfo', res.data.c)
+
+					} else {
 						uni.showToast({
-							icon:'该用户不在线，请重新选择...'
+							icon: '该用户不在线，请重新选择...'
 						})
 						uni.navigateBack()
 					}
 				})
-				
+
 			},
-			
-			backBtn(){
+
+			backBtn() {
 				uni.removeStorageSync('toUserId');
 				uni.removeStorageSync('toUserInfo');
-				uni.reLaunch({
-					url:'./conversation'
+				uni.switchTab({
+					url: './index'
 				})
-						
 			}
 		},
 		mounted() {
+			console.log(client)
 			this.TIMDATA = this.TIM
 			let toUserId = uni.getStorageSync('toUserId')
-			
+
 			this.getUserInfo(toUserId)
-		
-	
+
+
 		}
 	}
 </script>
 <style scoped lang="scss">
 	.nav-box {
-	  width: 100%;
-	  height: 88rpx;
-	  background: #fff;
+		width: 100%;
+		height: 88rpx;
+		background: #fff;
 	}
+
 	.back-btn {
-	  float: left;
-	  width: 50rpx;
-	  height: 50rpx;
-	  padding: 19rpx 20rpx;
+		float: left;
+		width: 50rpx;
+		height: 50rpx;
+		padding: 19rpx 20rpx;
 	}
+
 	.back-btn i {
-	  width: 50rpx;
-	  height: 50rpx;
-	  font-size: 32rpx;
-	  line-height: 50rpx;
-	  text-align: center;
-	  color: #587685;
+		width: 50rpx;
+		height: 50rpx;
+		font-size: 32rpx;
+		line-height: 50rpx;
+		text-align: center;
+		color: #587685;
 	}
+
 	.title-box {
-	  float: left;
-	  width: 560rpx;
-	  height: 88rpx;
-	  line-height: 88rpx;
-	  text-align: center;
-	  font-size: 36rpx;
-	  color: #333333;
-	  overflow: hidden;
-	  text-overflow: ellipsis;
-	  white-space: nowrap;
+		float: left;
+		width: 560rpx;
+		height: 88rpx;
+		line-height: 88rpx;
+		text-align: center;
+		font-size: 36rpx;
+		color: #333333;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
-	.nav-box{
+
+	.nav-box {
 		position: fixed;
-		top: 40rpx;
+		top: 0rpx;
+		padding-top: var(--status-bar-height);
 		width: 100%;
 		height: 88rpx;
 		z-index: 100;
 		background: #fff;
 	}
-	.message-list{
+
+	.message-list {
 		padding-top: 88rpx;
 	}
 </style>

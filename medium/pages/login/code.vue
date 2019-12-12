@@ -33,8 +33,11 @@
 </template>
 
 <script>
-	import ValidCode from '@/components/code/ValidCode.vue'
-
+	import ValidCode from '../../components/code/ValidCode.vue'
+	//tim 
+	import {
+		mapState
+	} from 'vuex'
 	export default {
 		name: 'code',
 		data() {
@@ -44,24 +47,76 @@
 				tell: '',
 				moblie: '',
 				num: 60,
-				timer: ''
+				timer: '',
+				userInfo: '',
 			}
 		},
 		components: {
 			ValidCode
+		},
+		computed: {
+			...mapState({
+				isLogin: state => state.user.isLogin,
+				isSDKReady: state => state.user.isSDKReady,
+			}),
 		},
 		watch: {
 			num(newValue, oldValue) {
 				if (newValue == 0) {
 					clearInterval(this.timer)
 				}
+			},
+			isSDKReady(newVal) {
+				if (newVal) {
+					uni.reLaunch({
+						url: '../index/index'
+					})
+				}
 			}
+
 		},
 		methods: {
+			/*登录tim-->等待sdk状态为true后执行跳转*/
+			timLogin() {
+				let timeOut = Number(this.userInfo.userSigCreateTime) + 604800000
+				let timeNow = new Date();
+				timeNow = timeNow.getTime()
+				if (this.userInfo.userSig && (timeNow < timeOut)) {
+					if (!this.$store.state.user.isLogin) {
+						this.loginTim();
+					}
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '用户身份失效'
+					})
+				}
+			},
+			//登录tim
+			loginTim() {
+				this.tim
+					.login({
+						userID: String(this.userInfo.userId),
+						userSig: this.userInfo.userSig
+					})
+					.then(res => {
+						this.$store.commit("toggleIsLogin", true);
+						this.$store.commit("startComputeCurrent");
+						if (this.$store.state.user.isSDKReady) {
+							uni.setStorageSync('page', 'normal')
+							uni.reLaunch({
+								url: '../task/task'
+							})
+						}
+					})
+					.catch(error => {
+						setTimeout(() => {
+							this.loginTim()
+						}, 200)
+					});
+			},
 			sendSms(cnt) {
 				this.$api.sendSms(cnt, (res) => {
-					console.log(res)
-					console.log('111111')
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '验证码已发送'
@@ -85,11 +140,10 @@
 				}
 				this.$api.loginByCode(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let userInfo = this.$util.tryParseJson(res.data.c)
-						uni.setStorageSync('userInfo',JSON.string(userInfo))
-						uni.redirectTo({
-							url: '/pages/login/interest/interest'
-						})
+						this.userInfo = this.$util.tryParseJson(res.data.c)
+						uni.setStorageSync('userInfo', JSON.stringify(this.userInfo))
+						this.timLogin()
+
 					} else {
 						uni.showToast({
 							title: res.data.rm,

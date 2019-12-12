@@ -1,77 +1,132 @@
+/** 获取文件*/
 let mask = document.querySelector(".mask");
 let fileDom = document.querySelector(".file");
 let title = document.querySelector(".title");
 let tis = document.querySelector(".tis");
 let progress = document.querySelector(".tis-progress");
 let cancel = document.querySelector(".cancel-btn");
+let percent = 0;
+/**oss上传*/
+var client = new OSS.Wrapper({
+	region: "oss-ap-southeast-2", //阿里云获取
+	accessKeyId: "LTAIc7DrMIfkkAEh",
+	accessKeySecret: "MFmFeQ4FcFFMbw2JuzdYoIQX7RFTn1",
+	bucket: "file-duran" //要存储的目录名
+});
+console.log(client)
+/**
+ * 生成文件名
+ * @returns
+ */
+function timestamp() {
+	var time = new Date();
+	var y = time.getFullYear();
+	var m = time.getMonth() + 1;
+	var d = time.getDate();
+	// var h = time.getHours();
+	// var mm = time.getMinutes();
+	// var s = time.getSeconds();
+	return "" + y + add0(m) + add0(d)
+}
+
+function add0(m) {
+	return m < 10 ? '0' + m : m;
+}
 
 
-let createUpload = (file, url, key = 'file', header = {}, data = {}) => {
-	console.log(`
-	上传地址:${url}\n
-	请求头:${JSON.stringify(header)}\n
-	参数:${JSON.stringify(data)}
-	`);
-	if (!url) {
-		return;
-	}
-	tis.style.display = 'flex';
 
-	let formData = new FormData();
-	formData.append(key, file);
+function upload(file,front) {
 
-	for (let keys in data) {
-		formData.append(keys, data[keys]);
-	}
-
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-
-	for (let keys in header) {
-		xhr.setRequestHeader(keys, header[keys]);
-	}
-	xhr.upload.addEventListener("progress", function(event) {
-		if (event.lengthComputable) {
-			let percent = Math.ceil(event.loaded * 100 / event.total) + "%";
-			progress.innerText = `努力上传中..${percent}`;
-		}
-	}, false);
-
-	xhr.ontimeout = function() {
-		// xhr请求超时事件处理
-		progress.innerText = '请求超时';
+   
+	var fileName = file.name;
+	var frontFileName = front+'/'+file.name;
+	console.log('-----开始执行-----')
+	client.multipartUpload(frontFileName, file).then(function(result) {
+		var url = result.res.requestUrls[0];
+		var length = url.lastIndexOf('?');
+		var fileUrl = url.substr(0, length); //文件最终路径
+		progress.innerText = '上传成功';
+		title.innerText = `${frontFileName};;${fileUrl}`
 		setTimeout(() => {
 			tis.style.display = 'none';
 			plus.webview.currentWebview().close();
-		}, 1000);
-	};
+		}, 300);
+		
+	}).catch(function(err) {
+		console.log(err)
+		progress.innerText = '上传失败';
+		setTimeout(() => {
+			tis.style.display = 'none';
+			plus.webview.currentWebview().close();
+		}, 300);
 
-	xhr.onreadystatechange = (ev) => {
+	});
+}
 
-		if (xhr.readyState == 4) {
-			console.log('status：' + xhr.status);
 
-			if (xhr.status == 200) {
-				progress.innerText = '上传成功';
-				console.log('返回数据：' + xhr.responseText);
 
-				title.innerText = `${file.name}:${xhr.responseText}`;
 
-			} else {
-				progress.innerText = '上传失败了';
-			}
+let createUpload = (file, front='',url, key = 'file', header = {}, data = {}) => {
+	console.log(`
+	上传前缀:${front}\n
+	文件名:${file.name}\n
+	参数:${JSON.stringify(data)}
+	`);
 
-			setTimeout(() => {
-				tis.style.display = 'none';
-				plus.webview.currentWebview().close();
-			}, 1000);
+	tis.style.display = 'flex';
 
-		}
-	};
-	xhr.send(formData);
+	upload(file,front)
+
+
+	// let xhr = new XMLHttpRequest();
+	// xhr.open("POST", url, true  );
+
+	// for (let keys in header) {
+	// 	xhr.setRequestHeader(keys, header[keys]);
+	// }
+	// xhr.upload.addEventListener("progress", function(event) {
+	// 	if(event.lengthComputable){
+	// 		let percent = Math.ceil(event.loaded * 100 / event.total) + "%";
+	// 		progress.innerText = `努力上传中..${percent}`;
+	// 	}
+	// }, false);
+
+	// xhr.ontimeout = function(){
+	// 	// xhr请求超时事件处理
+	// 	progress.innerText = '请求超时';
+	// 	setTimeout(()=>{
+	// 		tis.style.display = 'none';
+	// 		plus.webview.currentWebview().close();
+	// 	},1000);
+	// };
+
+	// xhr.onreadystatechange = (ev) => {
+
+	// 	if(xhr.readyState == 4) {
+	// 		console.log('status：'+xhr.status);
+
+	// 		if (xhr.status == 200) {
+	// 			progress.innerText = '上传成功';
+	// 			console.log('返回数据：'+xhr.responseText);
+
+	// 			
+
+	// 		}
+	// 		else {
+	// 			progress.innerText = '上传失败了';
+	// 		}
+
+	// 		setTimeout(()=>{
+	// 			tis.style.display = 'none';
+	// 			plus.webview.currentWebview().close();
+	// 		},1000);
+
+	// 	}
+	// };
+	// xhr.send(formData);
 
 	cancel.addEventListener("click", () => {
-		xhr.abort();
+		// xhr.abort();
 		plus.webview.currentWebview().close();
 	});
 }
@@ -85,6 +140,7 @@ document.addEventListener('UniAppJSBridgeReady', () => {
 
 	let {
 		url,
+		front,
 		key,
 		header,
 		formData
@@ -92,28 +148,15 @@ document.addEventListener('UniAppJSBridgeReady', () => {
 
 	fileDom.addEventListener('change', (event) => {
 		let file = fileDom.files[0];
+		console.log('--------调用----------')
 		if (file.size > (1024 * 1024 * 10)) {
 			plus.nativeUI.toast('单个文件不能超过10M,请重新上传');
 			return;
 		}
-
+		console.log('sadasdasd')
+		console.log(front)
 		console.log(file.name);
 
-		let tiemr = new Date()
-		let address = tiemr.getFullYear() + "" + (tiemr.getMonth() + 1) + "" + tiemr.getDate();
-		address = 'image/' + address + '/'
-		let str = file.name.substr(file.name.lastIndexOf('.'))
-		let nameStr = address + tiemr.getTime() + str
-		formData = {
-			'name': nameStr,
-			'key': nameStr,
-			'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMi0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
-			'OSSAccessKeyId': 'LTAIJ9mYIjuW54Cj',
-			'success_action_status': '200',
-			//让服务端返回200,不然，默认会返回204
-			'signature': 'kgQ5n4s0oKpFHp35EI12CuTFvVM=',
-		}
-
-		createUpload(file, url, key, header, formData);
+		createUpload(file,front,url, key, header, formData);
 	}, false);
 });

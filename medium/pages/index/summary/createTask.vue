@@ -39,7 +39,7 @@
 
 			price: {
 				get() {
-					return this.$store.state.taskInfo.payPrice
+					return this.$store.state.taskInfo.taskBudget
 				},
 				set(value) {
 					this.$store.commit('updataPayPrice', value)
@@ -66,35 +66,44 @@
 			},
 
 			createTask(e) {
-				let cnt = { ...this.$store.state.taskInfo
-				}
-				if (cnt.fileData.length == 0) {
-					let {
-						fileData,
-						...obj
-					} = cnt
-					cnt = obj
+				if (this.$store.state.taskInfo.taskBudget && this.title) {
+					let cnt = { ...this.$store.state.taskInfo
+					}
+					if (cnt.fileData.length == 0) {
+						let {
+							fileData,
+							...obj
+						} = cnt
+						cnt = obj
+					} else {
+						cnt.fileData = JSON.stringify(cnt.fileData)
+					}
+
+					if (cnt.imgData.length == 0) {
+						let {
+							imgData,
+							...obj
+						} = cnt
+						cnt = obj
+					} else {
+						cnt.imgData = JSON.stringify(cnt.imgData)
+					}
+
+					if (e) {
+						cnt.isDrafts = true
+					}
+
+					cnt.publishUserId = this.$util.tryParseJson(uni.getStorageSync('userInfo')).userId
+
+					this.createTaskApi(cnt)
 				} else {
-					cnt.fileData = JSON.stringify(cnt.fileData)
+					uni.showToast({
+						title: '请将信息填写完整',
+						icon: 'none'
+					})
 				}
 
-				if (cnt.imgData.length == 0) {
-					let {
-						imgData,
-						...obj
-					} = cnt
-					cnt = obj
-				} else {
-					cnt.imgData = JSON.stringify(cnt.imgData)
-				}
 
-				if (e) {
-					cnt.isDrafts = true
-				}
-
-				cnt.publishUserId = this.$util.tryParseJson(uni.getStorageSync('userInfo')).userId
-
-				this.createTaskApi(cnt)
 			},
 
 			navBack() {

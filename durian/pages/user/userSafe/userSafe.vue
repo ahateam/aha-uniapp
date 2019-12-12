@@ -65,25 +65,26 @@
 
 			setPass() {
 				let passWord = uni.getStorageSync('userPass')
-				if(passWord){
+				if (passWord) {
 					uni.navigateTo({
 						url: '/pages/user/userSafe/setNewPass/setNewPass'
 					})
-				}else{
+				} else {
 					uni.navigateTo({
 						url: '/pages/user/userSafe/setNewPass/noPass'
 					})
 				}
-				
+
 			},
 
 			outLogin() {
 				uni.clearStorageSync()
+				this.$store.dispatch('logout')
 				uni.reLaunch({
 					url: '/pages/login/mobilePassword'
 				})
 			},
-			
+
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},

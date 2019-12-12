@@ -49,14 +49,14 @@
 							</view>
 							<!-- 右-头像 -->
 							<view class="right">
-								<image :src="userInfo.userHead"></image>
+								<image :src="userInfo.userHead" mode="aspectFill"></image>
 							</view>
 						</view>
 						<!-- 别人发出的消息 -->
 						<view class="other" v-else>
 							<!-- 左-头像 -->
 							<view class="left">
-								<image :src="toUserInfo.userHead"></image>
+								<image :src="toUserInfo.userHead" mode="aspectFill"></image>
 							</view>
 							<!-- 右-用户名称-时间-消息 -->
 							<view class="right">

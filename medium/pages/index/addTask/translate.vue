@@ -6,7 +6,7 @@
 		</nav-bar>
 		<view style="margin-top: 10rpx;"></view>
 
-		<data-input :inputHidden="inputHidden" v-model="taskType" hiddenIcon title="任务分类"></data-input>
+		<data-input :inputHidden="inputHidden" :value="taskType" disabled hiddenIcon title="任务分类"></data-input>
 
 		<data-input :inputHidden="inputHidden" v-model="title" hiddenIcon title="任务名称"></data-input>
 
@@ -38,9 +38,9 @@
 
 		<uni-popup :show="aptitudesStatus" type="bottom" @change="changePopup">
 			<view class="aptitudes-list">
-				<view class="aptitudes-border" :class="[{'no-border':index == 2},{'bottom-popup-box':index == 3},{'curr-box':index == aptitudesCurr}]"
+				<view class="aptitudes-border" :class="[{'no-border':index == aptitudesList.length - 2},{'bottom-popup-box':index == aptitudesList.length - 1},{'curr-box':index == aptitudesCurr}]"
 				 @click="choiceAptitudes(item)" v-for="(item,index) in aptitudesList" :key="index" @touchstart="changeAts(index)"
-				 @touchend="aptitudesCurr = -1">{{item.name}}</view>
+				 @touchend="aptitudesCurr = -1">{{item.qualName}}</view>
 			</view>
 		</uni-popup>
 
@@ -48,7 +48,7 @@
 			<view style="background-color: #FFFFFF;padding: 1rpx;">
 				<picker-view class="choice-language" :value="value" :indicator-style="indicatorStyle" @change="bindChange">
 					<picker-view-column>
-						<view class="choice-box" v-for="(list,idx) in languages" :key="idx">{{list.name}}</view>
+						<view class="choice-box" v-for="(list,idx) in languages" :key="idx">{{list.languageName}}</view>
 					</picker-view-column>
 				</picker-view>
 				<button class="popup-btn" @click="changeLg">确定</button>
@@ -86,7 +86,7 @@
 			},
 
 			aptitudes() {
-				return this.$store.state.taskInfo.qualifications
+				return this.$store.state.taskInfo.qualName
 			},
 
 			taskInfo: {
@@ -114,6 +114,10 @@
 				set(val) {
 					this.$store.commit('updataPageNumber', val)
 				}
+			},
+
+			aptitudesList() {
+				return this.$store.state.qualiList
 			}
 		},
 		data() {
@@ -121,77 +125,58 @@
 				taskType: '翻译',
 				aptitudesCurr: -1,
 				aptitudesStatus: false, //input是否隐藏
-				aptitudesList: [{
-						name: 'MARN号'
-					},
-					{
-						name: 'PIEP号'
-					},
-					{
-						name: '翻译证书'
-					}, {
-						name: '不需要'
-					}
-				],
 
-				fromLanguage: '英文',
-				toLanguage: '韩文',
+				fromLanguage: '英语',
+				toLanguage: '韩语',
 
 				translateShow: false,
 				transChioce: 0,
-				languages: [{
-						name: '越南文'
-					},
-					{
-						name: '泰文'
-					},
-					{
-						name: '马来文'
-					},
-					{
-						name: '英文'
-					},
-					{
-						name: '中文'
-					},
-					{
-						name: '韩文'
-					}
-				],
+				languages: [],
 				inputHidden: false,
 				indicatorStyle: `height: ${uni.upx2px(120)}px;`,
 
 				value: [0],
 				leftValue: [3],
 				rightValue: [5],
-				choiceCurr: 0
+				choiceCurr: 0,
+
+				getNumber: 0
 			}
 		},
 		methods: {
 			nextBtn() {
-				uni.navigateTo({
-					url: '../summary/summary'
-				})
+				if (this.$store.state.taskInfo.taskName && this.$store.state.taskInfo.taskDescribe && this.$store.state.taskInfo.pageNumber) {
+					uni.navigateTo({
+						url: '../summary/summary'
+					})
+				} else {
+					uni.showToast({
+						title: '请将资料填写完整',
+						icon: 'none'
+					})
+				}
 			},
 
 			bindChange(e) {
 				this.choiceCurr = e.detail.value[0]
+				console.log(e)
 			},
 
 			changeLg() {
 				if (this.transChioce == 0) {
-					this.fromLanguage = this.languages[this.choiceCurr].name
+					this.fromLanguage = this.languages[this.choiceCurr].languageName
 					this.leftValue.splice(0, 1, this.choiceCurr)
+					this.$store.commit('updataOldLanguage', this.fromLanguage)
 				} else {
-					this.toLanguage = this.languages[this.choiceCurr].name
+					this.toLanguage = this.languages[this.choiceCurr].languageName
 					this.rightValue.splice(0, 1, this.choiceCurr)
+					this.$store.commit('updataNewLanguage', this.toLanguage)
 				}
 				this.translateShow = false
 				this.inputHidden = false
 			},
 
 			chioceLanguage(e) {
-				this.value = [0]
 				if (e == 0) {
 					this.value = this.leftValue
 					this.choiceCurr = this.leftValue[0]
@@ -213,9 +198,8 @@
 			},
 
 			choiceAptitudes(item) {
-				this.aptitudes = item.name
+				this.$store.commit('updataQualifications', item)
 				this.aptitudesStatus = false
-				this.inputHidden = false
 			},
 
 			changePopup(e) {
@@ -240,7 +224,45 @@
 				f = this.fromLanguage
 				this.fromLanguage = this.toLanguage
 				this.toLanguage = f
+			},
+
+			getLanguage(cnt) {
+				this.$api.getLanguage(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.languages = this.$util.tryParseJson(res.data.c)
+					} else {
+						setTimeout(() => {
+							if (this.getNumber == 3) {
+								uni.showToast({
+									title: '服务器错误！',
+									icon: 'none'
+								})
+								return
+							}
+							let cnt = {
+								// languageId: languageId, // Long <选填> 语种编号
+								// languageName: languageName, // String 语种名称
+								count: 100, // Integer 
+								offset: 0, // Integer 
+							}
+							this.getLanguage(cnt)
+							this.getNumber += 1
+						}, 500)
+					}
+				})
+			},
+		},
+
+		onLoad() {
+			let cnt = {
+				// languageId: languageId, // Long <选填> 语种编号
+				// languageName: languageName, // String 语种名称
+				count: 100, // Integer 
+				offset: 0, // Integer 
 			}
+			this.getLanguage(cnt)
+			this.$store.commit('updataOldLanguage', '英语')
+			this.$store.commit('updataNewLanguage', '韩语')
 		}
 	}
 </script>

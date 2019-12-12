@@ -41,7 +41,7 @@ export default {
 			uni.showToast({title,duration,icon});
 		},
 		
-		appChooseFile({currentWebview,url,name = 'file',header,...formData} = {}) {
+		appChooseFile({currentWebview,url,font='',name = 'file',header,...formData} = {}) {
 			// #ifdef APP-PLUS
 				let wv = plus.webview.create("","/hybrid/html/index.html",{
 					'uni-app': 'none', //不加载uni-app渲染层框架，避免样式冲突
@@ -50,6 +50,7 @@ export default {
 					background: 'transparent'
 				},{
 					url,
+					font,
 					header,
 					key: name,
 					...formData,
@@ -62,21 +63,19 @@ export default {
 					if (title&&!title.includes('[文件管理器]')) {
 						console.log('Update title: '+title);
 						
-						let [fileName,id] = title.split(":");
+						let [frontFileName,fileUrl] = title.split(";;");
 						
 						return this.onCommit(this.$emit('up-success',{
-							fileName,
-							data: {
-								id,
-								statusCode: 200,
-							}
+							frontFileName,
+							fileUrl,
+							code:'200'
 						}));
 					}
 				}, false);
 				
 			// #endif
 		},
-		wxChooseFile({url,name = 'file',header,...formData} = {}) {
+		wxChooseFile({url,front='',name = 'file',header,...formData} = {}) {
 			wx.chooseMessageFile({
 				count: 1,
 				type: 'file',
@@ -86,6 +85,7 @@ export default {
 					
 					return uni.uploadFile({
 						url,
+						front,
 						name,
 						filePath,
 						formData,

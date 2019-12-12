@@ -16,8 +16,11 @@ export default new Vuex.Store({
 			taskStatus: 0,
 			fileData: [],
 			imgData: [],
-			qualifications: 'MARN号'
-		},
+			qualifications: '',
+			qualName: '',
+		}, //任务信息
+		qualiList: [], //资质列表
+
 	},
 	mutations: {
 		// 任务标题
@@ -25,13 +28,14 @@ export default new Vuex.Store({
 			state.taskInfo.taskName = taskName
 		},
 		// 任务类型
-		updataType(state, taskTypeId) {
-			state.taskInfo.taskTypeId = taskTypeId
+		updataType(state, taskType) {
+			state.taskInfo.taskType = taskType
 			console.log(state)
 		},
 		// 任务所需资质
-		updataQualifications(state, qualifications) {
-			state.taskInfo.qualifications = qualifications
+		updataQualifications(state, item) {
+			state.taskInfo.qualifications = item.qualId
+			state.taskInfo.qualName = item.qualName
 		},
 		// 申请人数
 		updataApplyNumber(state, applyNumber) {
@@ -86,8 +90,8 @@ export default new Vuex.Store({
 		},
 
 		// 任务金额
-		updataPayPrice(state, payPrice) {
-			state.taskInfo.payPrice = payPrice
+		updataPayPrice(state, taskBudget) {
+			state.taskInfo.taskBudget = taskBudget
 		},
 
 		// 任务完成时间 
@@ -103,13 +107,43 @@ export default new Vuex.Store({
 			state.taskInfo = newTaskInfo
 		},
 
+		// 获取资质列表
+		updataQualList(state, list) {
+			state.qualiList = list
+			state.taskInfo.qualifications = list[0].qualId
+			state.taskInfo.qualName = list[0].qualName
+			let obj = {
+				qualId: '',
+				qualName: '不需要',
+			}
+			state.qualiList.push(obj)
+			console.log(state.qualiList)
+		},
+
+		// 翻译任务原语种 
+		updataOldLanguage(state, oldLanguage) {
+			state.taskInfo.oldLanguage = oldLanguage
+		},
+
+		updataNewLanguage(state, newLanguage) {
+			state.taskInfo.newLanguage = newLanguage
+		},
+
 		// 初始化store的数据
 		reSetStore(state) {
+			state.taskInfo = (({
+				qualifications,
+				qualName
+			}) => ({
+				qualifications,
+				qualName
+			}))(state.taskInfo)
+
 			state.taskInfo = {
 				taskStatus: 0,
 				fileData: [],
 				imgData: [],
-				qualifications: 'MARN号'
+				...state.taskInfo
 			}
 		},
 

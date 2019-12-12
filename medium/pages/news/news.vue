@@ -3,7 +3,7 @@
 		<view class="nav-box">
 			<view @click="navActive =0" :class="navActive=='0'?'nav-item-box nav-item-active':'nav-item-box'" style="margin-left:0">聊天记录</view>
 			<view class="nav-item-box" @click="navActive =1" :class="navActive=='1'?'nav-item-box nav-item-active':'nav-item-box'">通讯录</view>
-			<view class="nav-item-box" @click="navActive =2" :class="navActive=='2'?'nav-item-box nav-item-active':'nav-item-box'">其他</view>
+			<!-- <view class="nav-item-box" @click="navActive =2" :class="navActive=='2'?'nav-item-box nav-item-active':'nav-item-box'">其他</view> -->
 			<view class="clear-both"></view>
 		</view>
 		<view class="content-box">
@@ -17,36 +17,35 @@
 					</view>
 				</view>
 				<view class="list-item-box" v-if="conversationList.length>0">
-					<view class="list-item" v-for="(item,index) in conversationList" :key="index" @click="checkConversation(item)">
-						<view class="list-item-img">
-							<img :src="item.userProfile.avatar" alt />
-						</view>
-						<view class="list-item-info">
-							<view class="list-item-title">
-								<view class="list-item-name">{{item.userProfile.nick}}</view>
-								<view class="list-item-time">{{timeFilter(item.lastMessage.lastTime)}}</view>
-								<view class="clear-both"></view>
-							</view>
-							<view class="list-item-text">
-								<view class="item-text-active" v-if="item.unreadCount ==0">
-									<rich-text :nodes="item.lastMessage.messageForShow"></rich-text>
+					<uni-swipe-action>
+						<uni-swipe-action-item :options="options" v-for="(item,index) in conversationList" :key="index" @click="delItem(index)">
+							<view class="list-item" @click.stop="checkConversation(item)">
+								<view class="list-item-img">
+									<img :src="item.userProfile.avatar" alt />
 								</view>
-								<view class="item-text" v-else>
-									<rich-text :nodes="item.lastMessage.messageForShow"></rich-text>
+								<view class="list-item-info">
+									<view class="list-item-title">
+										<view class="list-item-name">{{item.userProfile.nick}}</view>
+										<view class="list-item-time">{{timeFilter(item.lastMessage.lastTime)}}</view>
+										<view class="clear-both"></view>
+									</view>
+									<view class="list-item-text">
+										<view class="item-text-active" v-if="item.unreadCount ==0">
+											<rich-text :nodes="item.lastMessage.messageForShow"></rich-text>
+										</view>
+										<view class="item-text" v-else>
+											<rich-text :nodes="item.lastMessage.messageForShow"></rich-text>
+										</view>
+										<view class="item-msg-num" v-if="item.unreadCount>0 && item.unreadCount <100">
+											{{item.unreadCount}}</view>
+										<view class="item-msg-num" v-if="item.unreadCount>=100">...</view>
+									</view>
 								</view>
-								<view class="item-msg-num" v-if="item.unreadCount>0 && item.unreadCount <100">
-									{{item.unreadCount}}</view>
-								<view class="item-msg-num" v-if="item.unreadCount>=100">...</view>
-
 							</view>
-						</view>
-					</view>
+						</uni-swipe-action-item>
+					</uni-swipe-action>
 				</view>
 			</view>
-		</view>
-
-		<view class="footer-box">
-			<view class="footer-btn-box">+ 发起新的咨询</view>
 		</view>
 
 	</view>
@@ -58,15 +57,29 @@
 		mapGetters,
 		mapState
 	} from "vuex";
+	import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue'
+	import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue'
+
 	export default {
 		name: "conversation",
+		components: {
+			uniSwipeAction,
+			uniSwipeActionItem
+		},
 		data() {
 			return {
 				userInfo: "",
 				toUserInfo: "",
 				navActive: 0,
-				sationList: [],
 
+
+				options: [{
+					text: '删除',
+					style: {
+						backgroundColor: '#EE455A',
+						fontSize: '26rpx'
+					}
+				}]
 			};
 		},
 		watch: {
@@ -96,6 +109,13 @@
 			...mapGetters(['toAccount']),
 		},
 		methods: {
+			delItem(index) {
+				uni.showToast({
+					title: '点击刪除',
+					icon: 'none'
+				})
+			},
+
 			/** 聊天详情返回*/
 			resetConversation() {
 				if (this.isActive == 1) {
@@ -125,16 +145,7 @@
 				let timer = new Date(timeData * 1000)
 				return this.$commen.dateTimeFliter(timer, 1)
 			},
-			/**获取用户详细信息 */
-			getUserInfo(userId) {
-				let obj = null
-				userList.forEach(item => {
-					if (item.userId == userId) {
-						obj = item
-					}
-				})
-				return obj
-			},
+		
 			/** 创建且更换聊天室 */
 			checkConversation(item) {
 				console.log(item)
@@ -143,7 +154,10 @@
 				uni.setStorageSync('toUserId', toUserId)
 				this.$store.dispatch('checkoutConversation', id)
 				uni.navigateTo({
-					url: './message'
+					url: './message',
+					success: () => {
+						this.$commen.hiddenTabIcon()
+					}
 				})
 			},
 			//获取tim个人信息--并初次更新用户信息
@@ -194,6 +208,9 @@
 					});
 			},
 		},
+		onShow() {
+			this.$commen.showTabIcon()
+		},
 		onLoad() {
 			uni.removeStorageSync('toUserInfo');
 			uni.removeStorageSync('toUserId');
@@ -205,7 +222,7 @@
 			if (this.userInfo.userSig && (timeNow < timeOut)) {
 				if (!this.$store.state.user.isLogin) {
 					this.loginTim();
-				}else{
+				} else {
 					this.getConversationList();
 				}
 			} else {
@@ -410,26 +427,5 @@
 		background: #ee455a;
 		color: #ffffff;
 		font-size: 20rpx;
-	}
-
-	.footer-box {
-		position: fixed;
-		bottom: 0;
-		width: 100%;
-		height: 100rpx;
-		padding: 30rpx;
-		background: #fff;
-		z-index: 100;
-	}
-
-	.footer-btn-box {
-		width: 690rpx;
-		height: 100rpx;
-		line-height: 100rpx;
-		background: #00c8be;
-		color: #ffffff;
-		font-size: 30rpx;
-		text-align: center;
-		border-radius: 6rpx;
 	}
 </style>

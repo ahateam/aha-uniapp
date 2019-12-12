@@ -17,10 +17,7 @@ export default {
   },
   methods:{
       backBtn(){
-		  uni.removeStorageSync('toUserId');
-		  uni.removeStorageSync('toUserInfo');
-		  uni.navigateBack()
-		
+		 
 		
 		  console.log('1111111111111111')
       }

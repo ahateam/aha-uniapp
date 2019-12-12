@@ -1,6 +1,19 @@
 module.exports = [
    '/aha/normal/normal',
-  '/aha/info/',
-  '/aha/component/',
+    '/aha/info/',
+    {
+      title: '前端文档',
+      collapsable: true,
+      children: [
+        '/aha/front/example',
+      ]
+    },
+    {
+      title: '后端文档',
+      collapsable: true,
+      children: [
+        '/aha/back/example',
+      ]
+    },
    
 ]

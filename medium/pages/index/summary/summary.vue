@@ -28,13 +28,17 @@
 
 		<view class="up-file">
 			<view class="auto-title">其他文件</view>
-			<view class="up-file-btn file-list" v-for="(item,index) in fileList" :key="index">
-				<view class="">
-					<view>{{item.name}}</view>
-					<view class="file-size">{{item.size}}</view>
-				</view>
-				<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
-			</view>
+			<uni-swipe-action>
+				<uni-swipe-action-item :options="options" v-for="(item,index) in fileList" :key="index">
+					<view class="up-file-btn file-list">
+						<view class="">
+							<view>{{item.name}}</view>
+							<view class="file-size">{{item.size}}</view>
+						</view>
+						<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
+					</view>
+				</uni-swipe-action-item>
+			</uni-swipe-action>
 			<button class="up-file-btn" @click="upFile">点击上传</button>
 		</view>
 
@@ -48,9 +52,9 @@
 
 		<uni-popup :show="aptitudesStatus" type="bottom" @change="changePopup">
 			<view class="aptitudes-list">
-				<view class="aptitudes-border" :class="[{'no-border':index == 2},{'bottom-popup-box':index == 3},{'curr-box':index == aptitudesCurr}]"
+				<view class="aptitudes-border" :class="[{'no-border':index == aptitudesList.length - 2},{'bottom-popup-box':index == aptitudesList.length - 1},{'curr-box':index == aptitudesCurr}]"
 				 @click="choiceAptitudes(item)" v-for="(item,index) in aptitudesList" :key="index" @touchstart="changeAts(index)"
-				 @touchend="aptitudesCurr = -1">{{item.name}}</view>
+				 @touchend="aptitudesCurr = -1">{{item.qualName}}</view>
 			</view>
 		</uni-popup>
 	</view>
@@ -64,6 +68,8 @@
 	import NextBtn from '@/components/NextBtn/NextBtn.vue'
 	import lFile from '@/components/l-file/l-file.vue'
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue'
+	import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue'
 
 	export default {
 		name: 'summary',
@@ -74,7 +80,9 @@
 			uniPopup,
 			DataTextarea,
 			NextBtn,
-			lFile
+			lFile,
+			uniSwipeAction,
+			uniSwipeActionItem
 		},
 
 		computed: {
@@ -89,7 +97,7 @@
 			},
 
 			aptitudes() {
-				return this.$store.state.taskInfo.qualifications
+				return this.$store.state.taskInfo.qualName
 			},
 
 			imgList() {
@@ -109,25 +117,23 @@
 					this.$store.commit('resSetTaskInfo')
 				}
 			},
+
+			aptitudesList() {
+				return this.$store.state.qualiList
+			}
 		},
 		data() {
 			return {
-
+				options: [{
+					text: '删除',
+					style: {
+						backgroundColor: '#EE455A',
+						fontSize: '26rpx'
+					}
+				}],
 				formType: '',
 				aptitudesCurr: -1,
-				aptitudesStatus: false,
-				aptitudesList: [{
-						name: 'MARN号'
-					},
-					{
-						name: 'PIEP号'
-					},
-					{
-						name: '翻译证书'
-					}, {
-						name: '不需要'
-					}
-				],
+				aptitudesStatus: false
 			}
 		},
 		methods: {
@@ -136,7 +142,7 @@
 			},
 
 			choiceAptitudes(item) {
-				this.$store.commit('updataQualifications', item.name)
+				this.$store.commit('updataQualifications', item)
 				this.aptitudesStatus = false
 			},
 
@@ -145,31 +151,25 @@
 			},
 
 			upFile() {
-				let tiemr = new Date()
-				let address = tiemr.getFullYear() + "" + (tiemr.getMonth() + 1) + "" + tiemr.getDate();
-				address = 'file/' + address + '/'
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let time = new Date()
+
 				this.$refs.lFile.upload({
 					// #ifdef APP-PLUS
 					currentWebview: this.$mp.page.$getAppWebview(),
 					// #endif
-					url: 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + address,
-					name: 'file',
-					//header: {'Content-Type':'类型','Authorization':'token'},
-					//...其他参数
-					formData: {
-						name: nameStr,
-						'key': nameStr,
-						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMi0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
-						'OSSAccessKeyId': 'LTAIJ9mYIjuW54Cj',
-						'success_action_status': '200',
-						//让服务端返回200,不然，默认会返回204
-						'signature': 'kgQ5n4s0oKpFHp35EI12CuTFvVM=',
-					},
+					url: '1',
+					front: `${userInfo.userId}/${time.getFullYear()}${time.getMonth() * 1 + 1}${time.getDate()}`,
 				});
 			},
 
 			onSuccess(res) {
 				console.log('上传成功回调', JSON.stringify(res));
+				console.log('文件上传的地址不包含url')
+				console.log(res.frontFileName)
+				console.log('文件上传的完整地址，包含url')
+				console.log(res.fileUrl)
+
 			},
 
 			delImg(index) {

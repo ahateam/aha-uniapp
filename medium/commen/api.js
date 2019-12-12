@@ -45,19 +45,24 @@ api.updateUser = function(cnt, callback) {
 }
 
 /* 任务相关 */
-// 根据发布者id查询任务 
-api.getTaskListByPublishUserId = function(cnt, callback) {
-	util.call(baseUrl + '/task/getTaskListByPublishUserId', cnt, callback)
-}
-
-// 根据接收者id查询任务 
-api.getTaskListByPickUpUserId = function(cnt, callback) {
-	util.call(baseUrl + '/task/getTaskListByPickUpUserId', cnt, callback)
+// 查詢任務 
+api.getTaskList = function(cnt, callback) {
+	util.call(baseUrl + '/task/getTaskList', cnt, callback)
 }
 
 // 发布任务
 api.createTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/createTask', cnt, callback)
+}
+
+// 查询语种 
+api.getLanguage = function(cnt, callback) {
+	util.call(baseUrl + '/task/getLanguage', cnt, callback)
+}
+
+// 查询资质 
+api.getByQualId = function(cnt, callback) {
+	util.call(baseUrl + '/task/getByQualId', cnt, callback)
 }
 
 /*tim 聊天*/

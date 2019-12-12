@@ -19,6 +19,8 @@
 		mapState
 	} from 'vuex'
 
+	let getNumber = 0;
+
 	export default {
 		name: 'index',
 
@@ -30,17 +32,19 @@
 				userInfo: ''
 			}
 		},
-		watch:{
-			isSDKReady(newVal){
-				if(newVal){
+		watch: {
+			isSDKReady(newVal) {
+				if (newVal) {
 					this.getUserProfile()
 				}
 			}
 		},
-		...mapState({
-			isLogin: state => state.user.isLogin,
-			isSDKReady: state => state.user.isSDKReady,
-		}),
+		computed: {
+			...mapState({
+				isLogin: state => state.user.isLogin,
+				isSDKReady: state => state.user.isSDKReady,
+			}),
+		},
 		methods: {
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
@@ -61,6 +65,7 @@
 						url: item.src,
 						success: () => {
 							this.$store.commit('reSetStore')
+							this.$store.commit('updataType', item.key)
 							let icon = plus.nativeObj.View.getViewById("icon");
 							setTimeout(function() {
 								icon.hide();
@@ -87,7 +92,7 @@
 							console.log('11111111')
 							this.$store.commit("updateCurrentUserProfile", res1.data);
 						}).catch((err1) => {
-						
+
 							console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
 						});
 					} else {
@@ -118,7 +123,30 @@
 					});
 			},
 
+			getByQualId(cnt) {
+				this.$api.getByQualId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.$store.commit('updataQualList', this.$util.tryParseJson(res.data.c))
+					} else {
+						if (getNumber == 2) {
+							uni.showToast({
+								title: '服务器错误',
+								icon: 'none'
+							})
 
+						} else {
+							setTimeout(() => {
+								getNumber += 1
+								let cnt1 = {
+									count: 100,
+									offset: 0
+								}
+								this.getByQualId(cnt1)
+							}, 500)
+						}
+					}
+				})
+			}
 		},
 		onShow() {
 			this.$commen.showTabIcon()
@@ -126,14 +154,12 @@
 		onLoad() {
 			this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
 			let timeOut = Number(this.userInfo.userSigCreateTime) + 604800000
-			let timeNow =new Date();
-			 timeNow = timeNow.getTime()
+			let timeNow = new Date();
+			timeNow = timeNow.getTime()
 			console.log(timeNow)
 			if (this.userInfo.userSig && (timeNow < timeOut)) {
 				if (!this.$store.state.user.isLogin) {
 					this.loginTim();
-				}else{
-					
 				}
 			} else {
 				uni.showToast({
@@ -144,6 +170,13 @@
 					url: '../login/mobilePassword'
 				});
 			}
+
+
+			let cnt = {
+				count: 100,
+				offset: 0
+			}
+			this.getByQualId(cnt)
 		},
 	}
 </script>

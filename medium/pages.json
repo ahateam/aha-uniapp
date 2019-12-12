@@ -16,11 +16,19 @@
 			}
 		}, {
 			"path": "pages/news/news",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		},
 		{
 			"path": "pages/news/message",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"softinputMode": "adjustResize"
+				}
+			}
 		},
 		{
 			"path": "pages/news/conversation",

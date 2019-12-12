@@ -86,6 +86,23 @@ commen.dateTimeFliter = function(time, part = 0, dateComplete = true, timeComple
 	return '传参有误'
 }
 
+commen.h5_url_to_blob = function (url){
+    return new Promise((resolve,reject)=>{
+        var xhr = new XMLHttpRequest();
+        xhr.open( 'GET', url, true);
+        xhr.responseType = 'blob';
+        xhr.onload = function( e) {
+            if(this.status == 200) {
+                var Blob = this.response;
+                // console.log(myBlob)
+                resolve(Blob)
+                // myBlob现在是对象URL指向的blob。 
+            }
+        };
+        xhr.send();
+    })
+}
+
 
 
 export default commen

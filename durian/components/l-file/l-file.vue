@@ -63,14 +63,12 @@ export default {
 					if (title&&!title.includes('[文件管理器]')) {
 						console.log('Update title: '+title);
 						
-						let [fileName,id] = title.split(":");
+						let [frontFileName,fileUrl] = title.split(";;");
 						
 						return this.onCommit(this.$emit('up-success',{
-							fileName,
-							data: {
-								id,
-								statusCode: 200,
-							}
+							frontFileName,
+							fileUrl,
+							code:'200'
 						}));
 					}
 				}, false);

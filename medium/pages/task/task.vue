@@ -9,7 +9,7 @@
 		<view class="nav-box">
 			<scroll-view class="top-option" scroll-x="true" scroll-left="0" scroll-with-animation :scroll-into-view="'nav' + currIndex">
 				<view class="top-options" :id="'nav' + index" :class="currIndex== index?'active':''" :style="index == 0?'margin-left:0;':''"
-				 v-for="(item,index) in topOption" :key="index" @click="topoption(index)">
+				 v-for="(item,index) in tagList" :key="index" @click="currTag(index)">
 					<view>{{item.text}}</view>
 				</view>
 			</scroll-view>
@@ -27,17 +27,41 @@
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 
 	let bitmap = null
+	import {
+		mapState
+	} from 'vuex'
 
 	export default {
 		components: {
 			TaskList,
 			navBar
 		},
+		watch: {
+			isSDKReady(val) {
+				if (val) {
+					this.getUserProfile()
+				}
+			}
+		},
+		computed: {
+			...mapState({
+				isLogin: state => state.user.isLogin,
+				isSDKReady: state => state.user.isSDKReady,
+			}),
+		},
 		data() {
 			return {
+				count: 10,
+				offset: 0,
+				page: 1,
+				pageOver: false,
+				pageStatus: 'loading',
+
+
+				userInfo: '',
 				clickTab: true,
 				currIndex: 0,
-				topOption: [{
+				tagList: [{
 						text: '全部'
 					},
 					{
@@ -58,35 +82,7 @@
 				],
 				// 我的任务信息列表
 
-				tasks: [{
-						name: '全案助理',
-						money: 100,
-						infor: '500签证全案',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09'
-					},
-					{
-						name: '翻译',
-						money: 300,
-						infor: '学生成绩单翻译',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09'
-					},
-					{
-						name: '拽写文书',
-						money: 300,
-						infor: '学生个人陈述验证',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09'
-					},
-					{
-						name: '其他',
-						money: 300,
-						infor: '学生个人陈述验证',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09'
-					}
-				],
+				tasks: [],
 			}
 		},
 
@@ -97,20 +93,34 @@
 			},
 
 			navToInfo(item) {
-				console.log(item)
 				uni.navigateTo({
 					url: '/pages/task/taskInfo/taskInfo',
 					success: () => {
-						let icon = plus.nativeObj.View.getViewById("icon");
-						setTimeout(function() {
-							icon.hide();
+						setTimeout(() => {
+							this.$commen.hiddenTabIcon()
 						}, 100);
 					}
 				})
 			},
 
-			topoption(index) {
-				this.currIndex = index
+			currTag(index) {
+				if (!(this.pageStatus == 'loading')) {
+					this.currIndex = index
+					if (this.tagList[index].child) {
+						this.tasks = this.tagList[index].child
+						this.pageOver = this.tagList[index].pageOver
+						this.pageStatus = this.tagList[index].pageStatus
+					} else {
+						this.tasks = []
+						let cnt = {
+							// taskStatus: taskStatus, // Byte <选填> 任务状态
+							// status: status, // Byte <选填> 状态（是否删除）
+							count: this.count, // Integer 
+							offset: this.offset, // Integer 
+						}
+						this.getTaskList(cnt)
+					}
+				}
 			},
 
 			createtab() {
@@ -140,25 +150,125 @@
 					})
 				}, false);
 				view.show();
-			}
+			},
+
+			/*登录tim-->等待sdk状态为true后执行跳转*/
+			timLogin() {
+				let timeOut = Number(this.userInfo.userSigCreateTime) + 604800000
+				let timeNow = new Date();
+				let timeNow1 = timeNow.getTime()
+
+				if (this.userInfo.userSig && timeNow1 < timeOut) {
+					this.loginTim();
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '用户身份失效，请重新登录'
+					})
+					setTimeout(() => {
+						uni.reLaunch({
+							url: '../login/mobilePassword'
+						})
+					}, 300)
+				}
+			},
+			//登录tim
+			loginTim() {
+				this.tim
+					.login({
+						userID: String(this.userInfo.userId),
+						userSig: this.userInfo.userSig
+					})
+					.then(res => {
+						this.$store.commit("toggleIsLogin", true);
+						this.$store.commit("startComputeCurrent");
+						if (this.$store.state.user.isSDKReady) {
+							this.getUserProfile()
+							this.getUserProfile()
+						}
+					})
+					.catch(error => {
+						setTimeout(() => {
+							this.loginTim()
+						}, 200)
+					});
+			},
+			//获取tim个人信息--并初次更新用户信息
+			getUserProfile() {
+				let promise = this.tim.getMyProfile();
+				promise.then((res) => {
+					if (res.data.nick == '') {
+						let promise = this.tim.updateMyProfile({
+							nick: this.userInfo.userName,
+							avatar: this.userInfo.userHead,
+							gender: this.TIM.TYPES.GENDER_MALE,
+							selfSignature: '这个人很懒...',
+							allowType: this.TIM.TYPES.ALLOW_TYPE_ALLOW_ANY,
+							role: this.userInfo.userType
+						});
+						promise.then((res1) => {
+							this.$store.commit("updateCurrentUserProfile", res1.data);
+						}).catch((err1) => {
+							console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
+						});
+					} else {
+						this.$store.commit("updateCurrentUserProfile", res.data);
+					}
+				}).catch((err) => {
+					console.warn('getMyProfile error:', err); // 获取个人资料失败的相关信息
+				});
+			},
+
+			/**拉取历史会话列表 */
+			getConversationList() {
+				let promise = this.tim.getConversationList();
+				promise
+					.then(res => {
+						console.log('----conversation------')
+						console.log(res.data.conversationList)
+						this.$store.commit(
+							"updateConversationList",
+							res.data.conversationList
+						);
+
+					})
+					.catch(() => {
+						this.getConversationList();
+					});
+			},
+
+			tryParseData(list) {
+				if (list.length < this.count) {
+					this.pageOver = true
+					this.pageStatus = 'nomore'
+				} else {
+					this.pageOver = false
+					this.pageStatus = 'more'
+				}
+				this.tagList[this.currIndex].pageStatus = this.pageStatus
+				this.tagList[this.currIndex].pageOver = this.pageOver
+
+				this.tasks = this.tasks.concat(list)
+				this.tagList[this.currIndex].child = this.tasks
+			},
+
+			getTaskList(cnt) {
+				this.$api.getTaskList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('-----------------list-------------------')
+						console.log(this.$util.tryParseJson(res.data.c))
+						let list = this.$util.tryParseJson(res.data.c)
+						this.tryParseData(list)
+					} else {
+						this.pageStatus = 'error'
+					}
+				})
+			},
 		},
 		onShow() {
 			this.$commen.showTabIcon()
 		},
 		onLoad() {
-			let userInfo = uni.getStorageSync('userInfo')
-			if (!userInfo) {
-				uni.reLaunch({
-					url: '/pages/login/mobilePassword'
-				})
-				this.$commen.hideTabIcon()
-			}
-			// else if (true) {
-			// 	uni.navigateTo({
-			// 		url: '/pages/user/newUserInfo/newUserInfo'
-			// 	})
-			// }
-
 			// #ifdef APP-PLUS
 			if (!plus.nativeObj.Bitmap('bmp1')) {
 				bitmap = new plus.nativeObj.Bitmap('bmp1');
@@ -170,6 +280,35 @@
 				this.createtab();
 			}
 			// #endif
+
+			if (uni.getStorageSync('userInfo')) {
+				let cnt = {
+					// taskStatus: taskStatus, // Byte <选填> 任务状态
+					// status: status, // Byte <选填> 状态（是否删除）
+					count: this.count, // Integer 
+					offset: this.offset, // Integer 
+				}
+				this.getTaskList(cnt)
+				// tim登录
+				this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
+				if (this.$store.state.user.isLogin && this.$store.state.user.isSDKReady) {
+					this.getUserProfile()
+					this.getConversationList()
+				} else {
+					this.timLogin()
+				}
+			} else {
+				uni.showToast({
+					icon: 'none',
+					title: '用户身份失效，请重新登录!'
+				})
+				setTimeout(() => {
+					uni.reLaunch({
+						url: '../login/mobilePassword'
+					})
+					this.$commen.hiddenTabIcon()
+				}, 300)
+			}
 		}
 	}
 </script>
@@ -178,6 +317,7 @@
 	.page {
 		background-color: #F2F5F7;
 		padding-bottom: 1rpx;
+		min-height: 100vh;
 	}
 
 	.nav-top-box {
