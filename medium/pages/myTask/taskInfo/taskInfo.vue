@@ -86,6 +86,8 @@
 		},
 		data() {
 			return {
+				pageStatus: 'loading',
+
 				task: {
 					userName: '张曦',
 					userTime: '2019-10-08',
@@ -118,7 +120,30 @@
 
 			navBack() {
 				uni.navigateBack()
+			},
+
+			findByTaskId(cnt) {
+				this.$api.findByTaskId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						this.task = { ...this.task,
+							...obj
+						}
+					} else {
+						uni.showToast({
+							title: '网络错误',
+							icon: 'none'
+						})
+					}
+				})
 			}
+		},
+
+		onLoad(res) {
+			let cnt = {
+				taskId: res.id, // Long 任务id
+			}
+			this.findByTaskId(cnt)
 		}
 	}
 </script>

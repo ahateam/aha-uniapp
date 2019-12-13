@@ -13,7 +13,8 @@
 		}, {
 			"path": "pages/myTask/myTask",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
 			}
 		}, {
 			"path": "pages/news/news",
@@ -103,25 +104,53 @@
 			"style": {}
 		}, {
 			"path": "pages/login/resetPhone",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}, {
 			"path": "pages/login/resetPassword",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}, {
 			"path": "pages/login/mobilePassword",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}, {
 			"path": "pages/login/mobile",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}, {
 			"path": "pages/login/code",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}, {
 			"path": "pages/login/Treaty/secret",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}, {
 			"path": "pages/login/Treaty/Treaty",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}, {
 			"path": "pages/myTask/taskInfo/myTask",
 			"style": {}

@@ -1,7 +1,7 @@
 <template>
 	<view>
-		<navBar :back="false">
-			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
+		<navBar :back="false" type="transparent">
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
 		</navBar>
 		<image class="bgImg" :src="bgSrc" mode="aspectFill"></image>
 		<!-- 标题 -->
@@ -55,7 +55,7 @@
 					})
 				} else {
 					uni.redirectTo({
-						url: '/pages/login/resetPassword'
+						url: `./code?tell=86${this.phoneNumber}&type=${this.$constData.codeType[2].key}`
 					})
 				}
 			},

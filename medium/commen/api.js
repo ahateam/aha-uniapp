@@ -50,6 +50,11 @@ api.getTaskList = function(cnt, callback) {
 	util.call(baseUrl + '/task/getTaskList', cnt, callback)
 }
 
+// 根据id查询任务 
+api.findByTaskId = function(cnt, callback) {
+	util.call(baseUrl + '/task/findByTaskId', cnt, callback)
+}
+
 // 发布任务
 api.createTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/createTask', cnt, callback)

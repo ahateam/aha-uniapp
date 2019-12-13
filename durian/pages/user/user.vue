@@ -93,7 +93,7 @@
 
 				applyTitle: 'Monash大学计算机专业申请',
 				applyHsty: '签字已提交',
-				hstyNumber: '100'
+				hstyNumber: '25'
 			}
 		},
 		methods: {

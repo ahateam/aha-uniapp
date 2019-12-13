@@ -203,6 +203,11 @@
 							this.isAppraise = false
 							this.appraiseCount -= 1
 						}
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
 					}
 				})
 			},
@@ -215,10 +220,6 @@
 				}
 				this.$api.createAppraise(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.showToast({
-							title: '点赞成功',
-							duration: 1000
-						})
 						if (index || index === 0) {
 							this.commentList[index].isAppraise = true
 							this.commentList[index].appraiseCount += 1

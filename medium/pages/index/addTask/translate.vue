@@ -224,6 +224,8 @@
 				f = this.fromLanguage
 				this.fromLanguage = this.toLanguage
 				this.toLanguage = f
+				this.$store.commit('updataOldLanguage', this.fromLanguage)
+				this.$store.commit('updataNewLanguage', this.toLanguage)
 			},
 
 			getLanguage(cnt) {

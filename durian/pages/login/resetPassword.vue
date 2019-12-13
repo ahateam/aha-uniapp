@@ -42,13 +42,16 @@
 
 				eyeIcon1: '/static/image/login/icon_close_eyes.png',
 				eyeStatus1: true,
+
+				tel: '',
+				code: ''
 			}
 		},
 		methods: {
 			navToCode() {
 				if (this.passData.length < 6) {
 					uni.showToast({
-						title: '请输入正确密码',
+						title: '请输入至少6位密码',
 						icon: 'none'
 					})
 				} else if (this.passData != this.passDataAgin) {
@@ -57,11 +60,22 @@
 						icon: 'none'
 					})
 				} else {
-					uni.showToast({
-						title: '保存成功'
-					})
-					uni.redirectTo({
-						url:'/pages/login/mobilePassword'
+					let cnt = {
+						phone: this.tel, // String 手机号
+						pwd: this.passData, // String 密码
+						code: this.code, // String 验证码
+					}
+					this.$api.forgetPwd(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							uni.reLaunch({
+								url: '/pages/login/mobilePassword'
+							})
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: res.data.rm
+							})
+						}
 					})
 				}
 			},
@@ -92,6 +106,11 @@
 					url: '/pages/login/mobile'
 				})
 			},
+		},
+
+		onLoad(res) {
+			this.tel = res.tell
+			this.code = res.code
 		}
 	}
 </script>

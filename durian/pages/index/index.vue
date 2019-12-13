@@ -19,7 +19,7 @@
 				<view class="list-item-box" v-if="conversationList.length>0">
 					<view class="list-item" v-for="(item,index) in conversationList" :key="index" @click="checkConversation(item)">
 						<view class="list-item-img">
-							<img :src="item.userProfile.avatar" alt />
+							<image :src="item.userProfile.avatar" mode="aspectFill"></image>
 						</view>
 						<view class="list-item-info">
 							<view class="list-item-title">
@@ -80,7 +80,7 @@
 				console.log(val)
 			},
 			isSDKReady(val) {
-				if(val){
+				if (val) {
 					this.getUserProfile()
 					this.getConversationList()
 				}
@@ -99,10 +99,10 @@
 		},
 		methods: {
 			/*新增聊天*/
-			addBtn(){
+			addBtn() {
 				uni.removeStorageSync('toUserId')
 				uni.navigateTo({
-					url:'./choose' 
+					url: './choose'
 				})
 			},
 			/** 聊天详情返回*/
@@ -121,9 +121,9 @@
 							"updateConversationList",
 							res.data.conversationList
 						);
-						if(res.data.conversationList.length == 0){
+						if (res.data.conversationList.length == 0) {
 							uni.navigateTo({
-								url:'./choose'
+								url: './choose'
 							})
 						}
 					})
@@ -144,19 +144,19 @@
 				uni.setStorageSync('toUserId', toUserId)
 				this.$store.dispatch('checkoutConversation', id)
 				uni.navigateTo({
-					url:'./message'
+					url: './message'
 				})
 			},
 			/*登录tim-->等待sdk状态为true后执行跳转*/
 			timLogin() {
-				
+
 				let timeOut = Number(this.userInfo.userSigCreateTime) + 604800000
 				let timeNow = new Date();
 				let timeNow1 = timeNow.getTime()
 				console.log('1111111111111')
 				console.log(timeNow1 < timeOut)
 				console.log(this.userInfo)
-				
+
 				if (this.userInfo.userSig && timeNow1 < timeOut) {
 					this.loginTim();
 				} else {
@@ -164,11 +164,11 @@
 						icon: 'none',
 						title: '用户身份失效，请重新登录'
 					})
-					setTimeout(()=>{
+					setTimeout(() => {
 						uni.reLaunch({
-							url:'../login/mobilePassword'
+							url: '../login/mobilePassword'
 						})
-					},300)
+					}, 300)
 				}
 			},
 			//登录tim
@@ -187,9 +187,9 @@
 						}
 					})
 					.catch(error => {
-						 setTimeout(()=>{
-							this.loginTim() 
-						 },200)
+						setTimeout(() => {
+							this.loginTim()
+						}, 200)
 					});
 			},
 			//获取tim个人信息--并初次更新用户信息
@@ -209,7 +209,7 @@
 							console.log('11111111')
 							this.$store.commit("updateCurrentUserProfile", res1.data);
 						}).catch((err1) => {
-						
+
 							console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
 						});
 					} else {
@@ -222,28 +222,28 @@
 		},
 		mounted() {
 			console.log(uni.getStorageSync('userInfo'))
-			if(uni.getStorageSync('userInfo')){
-				
+			if (uni.getStorageSync('userInfo')) {
+
 				uni.removeStorageSync('toUserId')
 				this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
 				console.log(this.userInfo.userSig)
-				
-				if(this.$store.state.user.isLogin){
+
+				if (this.$store.state.user.isLogin) {
 					this.getUserProfile()
 					this.getConversationList()
-				}else{
+				} else {
 					this.timLogin()
 				}
-			}else{
+			} else {
 				uni.showToast({
 					icon: 'none',
 					title: '用户身份失效，请重新登录!'
 				})
-				setTimeout(()=>{
+				setTimeout(() => {
 					uni.reLaunch({
-						url:'../login/mobilePassword'
+						url: '../login/mobilePassword'
 					})
-				},300)
+				}, 300)
 			}
 		}
 	};
@@ -352,14 +352,14 @@
 		background-image: url("../../static/tim/img/bg_student.png");
 		background-position: center;
 		background-size: cover;
-	}
 
-	.list-item-img img {
-		margin-top: 6rpx;
-		margin-left: 6rpx;
-		width: 120rpx;
-		height: 120rpx;
-		border-radius: 50%;
+		image {
+			margin-top: 6rpx;
+			margin-left: 6rpx;
+			width: 120rpx;
+			height: 120rpx;
+			border-radius: 50%;
+		}
 	}
 
 	.list-item-info {

@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<!-- 顶部选项卡 end -->
-		<task-list :tasks="tasks" @getItem="navToInfo" :type="1"></task-list>
+		<task-list :tasks="tasks" @getItem="navToInfo" type="1"></task-list>
 		<!-- 任务栏  task==任务栏-->
 	</view>
 </template>
@@ -58,39 +58,7 @@
 				],
 				// 我的任务信息列表
 
-				tasks: [{
-						name: '全案助理',
-						money: 100,
-						infor: '500签证全案',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09',
-						status: 0
-					},
-					{
-						name: '翻译',
-						money: 300,
-						infor: '学生成绩单翻译',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09',
-						status: 1
-					},
-					{
-						name: '拽写文书',
-						money: 300,
-						infor: '学生个人陈述验证',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09',
-						status: 2
-					},
-					{
-						name: '其他',
-						money: 300,
-						infor: '学生个人陈述验证',
-						olddata: '2019-10-01',
-						newsdata: '2019-10-09',
-						status: 3
-					}
-				],
+				tasks: [],
 			}
 		},
 		methods: {
@@ -107,12 +75,11 @@
 					taskType = 'myTask'
 				}
 				uni.navigateTo({
-					url: '/pages/myTask/taskInfo/' + taskType,
+					url: `/pages/myTask/taskInfo/${taskType}?id=${item.taskId}`,
 					success: () => {
 						// #ifdef APP-PLUS
-						let icon = plus.nativeObj.View.getViewById("icon");
-						setTimeout(function() {
-							icon.hide();
+						setTimeout(() => {
+							this.$commen.hiddenTabIcon()
 						}, 100);
 						// #endif
 					}
@@ -121,35 +88,32 @@
 			},
 
 			topoption(index) {
-				this.currIndex = index
-				if (this.navList[index].child) {
-					this.tasks = this.navList[index].child
-				} else {
-					this.tasks = []
-					let cnt = {
-						pickUpUserId: this.userInfo.userId, // Long 发布者id
-						count: this.count, // Integer 
-						offset: this.offset, // Integer 
+				if (this.pageStatus != 'loading') {
+					this.currIndex = index
+					if (this.navList[index].child) {
+						this.tasks = this.navList[index].child
+					} else {
+						this.tasks = []
+						let cnt = {
+							count: this.count, // Integer 
+							offset: this.offset, // Integer 
+						}
+						if (index == 0) {
+							cnt.pickUpUserId = this.userInfo.userId // Long 发布者id
+						} else {
+							cnt.pickUpUserId = this.userInfo.userId // Long <选填> 接受者用户id
+						}
+						this.getTaskList(cnt)
 					}
-					this.getTaskListByPickUpUserId(cnt)
 				}
 			},
 
-			getTaskListByPickUpUserId(cnt) {
-				this.$api.getTaskListByPickUpUserId(cnt, (res) => {
+			getTaskList(cnt) {
+				this.$api.getTaskList(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.stopPullDownRefresh()
 						let list = this.$util.tryParseJson(res.data.c)
-						this.tryData(list)
-					} else {
-						console.log('error')
-					}
-				})
-			},
-
-			getTaskListByPublishUserId(cnt) {
-				this.$api.getTaskListByPublishUserId(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let list = this.$util.tryParseJson(res.data.c)
+						console.log(list)
 						this.tryData(list)
 					} else {
 						console.log('error')
@@ -179,11 +143,53 @@
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			this.userInfo = userInfo
 			let cnt = {
-				publishUserId: userInfo.userId, // Long 发布者id
+				// taskStatus: taskStatus, // Byte <选填> 任务状态
+				// status: status, // Byte <选填> 状态（是否删除）
+				publishUserId: userInfo.userId, // Long <选填> 发布者id
 				count: this.count, // Integer 
 				offset: this.offset, // Integer 
 			}
-			this.getTaskListByPublishUserId(cnt)
+			this.getTaskList(cnt)
+		},
+		onPullDownRefresh() {
+			this.page = 1
+			this.navList[this.currIndex].page = 1
+			this.pageStatus = 'loading'
+			this.tasks = []
+
+			let cnt = {
+				// taskStatus: taskStatus, // Byte <选填> 任务状态
+				// status: status, // Byte <选填> 状态（是否删除）
+				count: this.count, // Integer 
+				offset: this.offset, // Integer 
+			}
+			if (this.currIndex == 0) {
+				cnt.publishUserId = this.userInfo.userId
+			} else {
+				cnt.pickUpUserId = this.userInfo.userId
+			}
+
+			this.getTaskList(cnt)
+		},
+		onReachBottom() {
+			if (!this.pageOver) {
+				this.page += 1
+				this.navList[this.currIndex].page += 1
+				this.pageStatus = 'loading'
+
+				let cnt = {
+					count: this.count, // Integer
+					offset: (this.page - 1) * this.count, // Integer 
+				}
+
+				if (this.currIndex == 0) {
+					cnt.publishUserId = this.userInfo.userId
+				} else {
+					cnt.pickUpUserId = this.userInfo.userId
+				}
+
+				this.getTaskList(cnt)
+			}
 		}
 	}
 </script>

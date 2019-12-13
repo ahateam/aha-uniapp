@@ -18,33 +18,57 @@
 		},
 		{
 			"path": "pages/login/mobile",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		},
 		{
 			"path": "pages/login/code",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		},
 		{
 			"path": "pages/login/mobilePassword",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		},
 		{
 			"path": "pages/login/resetPhone",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		},
 		{
 			"path": "pages/login/resetPassword",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}, {
 			"path": "pages/login/Treaty/Treaty",
 			"style": {
-
+				"app-plus": {
+					"bounce": "none"
+				}
 			}
 		},
 		{
 			"path": "pages/login/Treaty/secret",
 			"style": {
-
+				"app-plus": {
+					"bounce": "none"
+				}
 			}
 		}, {
 			"path": "pages/find/find",
@@ -68,7 +92,11 @@
 			}
 		}, {
 			"path": "pages/user/user",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}, {
 			"path": "pages/shop/addGoods/addGoods",
 			"style": {}
@@ -162,12 +190,11 @@
 		}, {
 			"path": "pages/user/userShop/myGoods/myGoods",
 			"style": {}
+		}, {
+			"path": "pages/upload/upload",
+			"style": {}
 		}
-	    ,{
-            "path" : "pages/upload/upload",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",

@@ -1,8 +1,7 @@
 <template>
 	<view>
-		<navBar :back="false" type="transparent" fontColor="#FFF">
-			<!-- <view slot="right" class="navTitle" @click="navToMobile">免密登录</view> -->
-			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
+		<navBar :back="false" type="transparent">
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
 		</navBar>
 		<image class="bgImg" :src="bgSrc" mode="aspectFill"></image>
 		<!-- 标题 -->
@@ -12,7 +11,7 @@
 		<!-- 主要功能区 -->
 		<phoneInput v-model="phoneNumber" @changeCode="codeFct"></phoneInput>
 
-		<button type="primary" class="functionBox codeBtn" @click="navToReset">下一步</button>
+		<button type="primary" class="functionBox code-btn" @click="navToReset">下一步</button>
 
 	</view>
 </template>
@@ -22,7 +21,7 @@
 	import phoneInput from '@/components/phoneInput/phoneInput.vue'
 
 	export default {
-		name:'resetPhone',
+		name: 'resetPhone',
 		components: {
 			navBar,
 			phoneInput
@@ -56,7 +55,7 @@
 					})
 				} else {
 					uni.redirectTo({
-						url: '/pages/login/resetPassword'
+						url: `./code?tell=86${this.phoneNumber}&type=${this.$constData.codeType[2].key}`
 					})
 				}
 			},
@@ -127,7 +126,7 @@
 		margin-top: -18rpx;
 	}
 
-	.codeBtn {
+	.code-btn {
 		margin-top: 60rpx;
 		line-height: 102rpx;
 		color: #587685;
@@ -135,10 +134,11 @@
 		opacity: 0.8;
 	}
 
-	.icon-fanhui {
-		font-size: 33rpx;
-		color: #FFFFFF;
+	.back-icon {
 		position: absolute;
-		left: 29rpx;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
 	}
 </style>

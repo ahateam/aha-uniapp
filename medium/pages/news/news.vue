@@ -12,7 +12,7 @@
 					<view class="msg-box">
 						<view class="msg-text">重要通知第一时间知晓,开启消息通知~</view>
 						<view class="msg-btn">去开启</view>
-						<img src="../../static/tim/img/icon_close.png" class="msg-close-btn" alt />
+						<image src="/static/tim/img/icon_close.png" class="msg-close-btn" mode="aspectFill"></image>
 						<view class="clear-both"></view>
 					</view>
 				</view>
@@ -21,7 +21,7 @@
 						<uni-swipe-action-item :options="options" v-for="(item,index) in conversationList" :key="index" @click="delItem(index)">
 							<view class="list-item" @click.stop="checkConversation(item)">
 								<view class="list-item-img">
-									<img :src="item.userProfile.avatar" alt />
+									<image :src="item.userProfile.avatar" mode="aspectFill"></image>
 								</view>
 								<view class="list-item-info">
 									<view class="list-item-title">
@@ -145,7 +145,7 @@
 				let timer = new Date(timeData * 1000)
 				return this.$commen.dateTimeFliter(timer, 1)
 			},
-		
+
 			/** 创建且更换聊天室 */
 			checkConversation(item) {
 				console.log(item)
@@ -341,14 +341,14 @@
 		background-image: url("../../static/tim/img/bg_student.png");
 		background-position: center;
 		background-size: cover;
-	}
 
-	.list-item-img img {
-		margin-top: 6rpx;
-		margin-left: 6rpx;
-		width: 120rpx;
-		height: 120rpx;
-		border-radius: 50%;
+		image {
+			margin-top: 6rpx;
+			margin-left: 6rpx;
+			width: 120rpx;
+			height: 120rpx;
+			border-radius: 50%;
+		}
 	}
 
 	.list-item-info {

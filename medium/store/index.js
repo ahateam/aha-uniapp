@@ -72,6 +72,7 @@ export default new Vuex.Store({
 		// 上传文件
 		updataFileData(state, file) {
 			state.taskInfo.fileData.push(file)
+			console.log(state.taskInfo)
 		},
 
 		//删除文件

@@ -35,12 +35,16 @@
 <script>
 	import ValidCode from '../../components/code/ValidCode.vue'
 	//tim 
-	import { mapState } from 'vuex'
+	import {
+		mapState
+	} from 'vuex'
 	export default {
 		name: 'code',
 		data() {
 			return {
-				boxBg: "",
+				type: '',
+
+				boxBg: '',
 				code: '',
 				tell: '',
 				moblie: '',
@@ -64,15 +68,14 @@
 					clearInterval(this.timer)
 				}
 			},
-			isSDKReady(newVal){
-				if(newVal){
-					uni.setStorageSync('page','normal')
+			isSDKReady(newVal) {
+				if (newVal) {
 					uni.reLaunch({
-						url: '../index/index' 
+						url: '../index/index'
 					})
 				}
 			}
-			
+
 		},
 		methods: {
 			/*登录tim-->等待sdk状态为true后执行跳转*/
@@ -102,15 +105,16 @@
 						this.$store.commit("toggleIsLogin", true);
 						this.$store.commit("startComputeCurrent");
 						if (this.$store.state.user.isSDKReady) {
+							uni.setStorageSync('page', 'normal')
 							uni.reLaunch({
-								url: '../index/index' 
+								url: '../task/task'
 							})
 						}
 					})
 					.catch(error => {
-						 setTimeout(()=>{
-							this.loginTim() 
-						 },200)
+						setTimeout(() => {
+							this.loginTim()
+						}, 200)
 					});
 			},
 			sendSms(cnt) {
@@ -132,23 +136,29 @@
 				})
 			},
 			submitBtn() {
-				let cnt = {
-					phone: this.moblie, // String 手机号
-					code: this.code, // String 验证码
-				}
-				this.$api.loginByCode(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.userInfo = this.$util.tryParseJson(res.data.c)
-						uni.setStorageSync('userInfo', JSON.stringify(this.userInfo))
-						this.timLogin()
-					
-					} else {
-						uni.showToast({
-							title: res.data.rm,
-							icon: 'none'
-						})
+				if (this.type == this.$constData.codeType[2].key) {
+					uni.navigateTo({
+						url: `./resetPassword?code=${this.code}&tell=${this.moblie}`
+					})
+				} else {
+					let cnt = {
+						phone: this.moblie, // String 手机号
+						code: this.code, // String 验证码
 					}
-				})
+					this.$api.loginByCode(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							this.userInfo = this.$util.tryParseJson(res.data.c)
+							uni.setStorageSync('userInfo', JSON.stringify(this.userInfo))
+							this.timLogin()
+
+						} else {
+							uni.showToast({
+								title: res.data.rm,
+								icon: 'none'
+							})
+						}
+					})
+				}
 			},
 			finish(res) {
 				this.code = res
@@ -158,6 +168,11 @@
 					phone: this.moblie, // String 手机号
 					type: this.$constData.codeType[0].key, // String <选填> 类型
 				}
+
+				if (this.type == this.$constData.codeType[2].key) {
+					cnt.type = this.$constData.codeType[2].key
+				}
+
 				this.sendSms(cnt)
 				this.num = 60
 			}
@@ -168,6 +183,8 @@
 			let tell = option.tell
 			this.moblie = tell
 			this.tell = tell.substr(0, tell.length - 6) + '****' + tell.substr(tell.length - 2)
+
+			this.type = option.type
 
 			this.sendBtn()
 		}

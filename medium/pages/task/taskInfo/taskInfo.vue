@@ -27,11 +27,11 @@
 			</view>
 			<view class="auto-box-white space-box">
 				<view class="left-title">任务名称</view>
-				<view class="right-info">{{task.taskTitle}}</view>
+				<view class="right-info">{{task.taskName}}</view>
 			</view>
 			<view class="auto-box-white no-border">
 				<view class="left-title">任务描述</view>
-				<view class="right-info" style="margin-top: 29rpx;">{{task.taskText}}</view>
+				<view class="right-info" style="margin-top: 29rpx;">{{task.taskDescribe}}</view>
 			</view>
 
 			<view class="block-box">
@@ -41,20 +41,20 @@
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">发布时间</view>
-					<view class="right-info bottom-font">{{task.taskTime}}</view>
+					<view class="right-info bottom-font">{{getDateTime(task.taskCreateTime)}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">价格</view>
-					<view class="right-info bottom-font" style="color: #FFA405;">{{task.taskPrice}}</view>
+					<view class="right-info bottom-font" style="color: #FFA405;">{{task.taskBudget}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">完成时间</view>
-					<view class="right-info bottom-font">{{task.taskTime}}</view>
+					<view class="right-info bottom-font">{{getDateTime(task.finishDate)}}</view>
 				</view>
 
 				<view class="auto-box-gray space-box" style="border: none;">
 					<view class="left-title bottom-font">接受者所需证书</view>
-					<view class="right-info bottom-font">{{task.taskData.name}}</view>
+					<view class="right-info bottom-font">{{task.qualifications}}</view>
 				</view>
 			</view>
 		</view>
@@ -69,6 +69,8 @@
 	export default {
 		data() {
 			return {
+				pageStatus: 'loading',
+
 				task: {
 					userName: '张曦',
 					userTime: '2019-10-08',
@@ -96,7 +98,36 @@
 
 			navBack() {
 				uni.navigateBack()
+			},
+
+			findByTaskId(cnt) {
+				this.$api.findByTaskId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						console.log(obj)
+						console.log('______________________________________')
+						this.task = { ...this.task,
+							...obj
+						}
+						console.log(this.task)
+					} else {
+						uni.showToast({
+							title: '服务器错误',
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			getDateTime(time) {
+				return this.$commen.getNewDate(time)
+			},
+		},
+		onLoad(res) {
+			let cnt = {
+				taskId: res.id, // Long 任务id
 			}
+			this.findByTaskId(cnt)
 		}
 	}
 </script>

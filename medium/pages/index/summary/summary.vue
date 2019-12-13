@@ -29,10 +29,11 @@
 		<view class="up-file">
 			<view class="auto-title">其他文件</view>
 			<uni-swipe-action>
-				<uni-swipe-action-item :options="options" v-for="(item,index) in fileList" :key="index">
+				<uni-swipe-action-item :options="options" v-for="(item,index) in fileList" :key="index" btnMargin="20rpx 0 0 20rpx"
+				 @click="delFile(index)">
 					<view class="up-file-btn file-list">
-						<view class="">
-							<view>{{item.name}}</view>
+						<view>
+							<view class="file-name">{{item.name}}</view>
 							<view class="file-size">{{item.size}}</view>
 						</view>
 						<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
@@ -158,7 +159,7 @@
 					// #ifdef APP-PLUS
 					currentWebview: this.$mp.page.$getAppWebview(),
 					// #endif
-					url: '1',
+					url: this.$constData.oss,
 					front: `${userInfo.userId}/${time.getFullYear()}${time.getMonth() * 1 + 1}${time.getDate()}`,
 				});
 			},
@@ -169,7 +170,17 @@
 				console.log(res.frontFileName)
 				console.log('文件上传的完整地址，包含url')
 				console.log(res.fileUrl)
+				if (res.frontFileName != 'index.html') {
+					let obj = {
+						name: res.frontFileName,
+						src: this.$constData.oss + res.frontFileName
+					}
+					this.$store.commit('updataFileData', obj)
+				}
+			},
 
+			delFile(index) {
+				this.$store.commit('delFileData', index)
 			},
 
 			delImg(index) {
@@ -367,6 +378,12 @@
 			width: 79rpx;
 			height: 79rpx;
 		}
+	}
+
+	.file-name {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.file-size {

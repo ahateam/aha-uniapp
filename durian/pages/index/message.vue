@@ -108,10 +108,11 @@
 
 	.nav-box {
 		position: fixed;
-		top: 0rpx;
+		top: 0;
 		padding-top: var(--status-bar-height);
+		height: calc(var(--status-bar-height) + 88rpx);
+		box-sizing: border-box;
 		width: 100%;
-		height: 88rpx;
 		z-index: 100;
 		background: #fff;
 	}

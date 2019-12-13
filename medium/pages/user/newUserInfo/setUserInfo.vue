@@ -6,7 +6,7 @@
 		</nav-bar>
 		<view class="tip-box">
 			<image src="/static/image/icon/icon_l.png" mode="aspectFit"></image>
-			<view>请提供客户账户(收款账户)信息</view>
+			<view class="info-text">请提供客户账户(收款账户)信息</view>
 			<image src="/static/image/icon/icon_r.png" mode="aspectFit"></image>
 		</view>
 
@@ -73,6 +73,11 @@
 			width: 140rpx;
 			height: 14rpx;
 		}
+	}
+
+	.info-text {
+		font-size: 28rpx;
+		color: #999999;
 	}
 
 	.fixed-box {
