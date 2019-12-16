@@ -29,8 +29,8 @@
 			<view class="popup-box">
 				<view>确定接收任务吗</view>
 				<view class="popup-btn-box">
-					<button class="succ-btn">确定</button>
-					<button class="colse-btn">再想想</button>
+					<button class="succ-btn" @click="acceptTask()">确定</button>
+					<button class="colse-btn" @click="popupShow = false">再想想</button>
 				</view>
 			</view>
 		</uni-popup>
@@ -50,6 +50,8 @@
 		},
 		data() {
 			return {
+				taskId: '',
+
 				name: '',
 				BSB: '',
 				account: '',
@@ -69,7 +71,27 @@
 
 			// 接收任务
 			acceptTask() {
-
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let cnt = {
+					taskId: this.taskId, // Long 任务id
+					userId: userInfo.userId, // Long 用户id
+				}
+				this.$api.acceptTask(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url: '../task'
+						})
+						uni.showToast({
+							title: '接收成功',
+							icon: 'none'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			},
 
 			getStatusHeight() {
@@ -79,6 +101,10 @@
 			navBack() {
 				uni.navigateBack()
 			}
+		},
+
+		onLoad(res) {
+			this.taskId = res.id
 		}
 	}
 </script>
@@ -170,7 +196,7 @@
 			margin: 0 20rpx;
 			box-sizing: border-box;
 			color: $group-color;
-			border-radius: 4rpx;
+			border-radius: 0;
 
 			&:after {
 				border: none;

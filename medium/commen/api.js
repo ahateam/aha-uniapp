@@ -55,9 +55,19 @@ api.findByTaskId = function(cnt, callback) {
 	util.call(baseUrl + '/task/findByTaskId', cnt, callback)
 }
 
+// 根据id查询任务(附带用户信息) 
+api.getUserByTaskId = function(cnt, callback) {
+	util.call(baseUrl + '/task/getUserByTaskId', cnt, callback)
+}
+
 // 发布任务
 api.createTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/createTask', cnt, callback)
+}
+
+// 接取任务 
+api.acceptTask = function(cnt, callback) {
+	util.call(baseUrl + '/task/acceptTask', cnt, callback)
 }
 
 // 查询语种 

@@ -16,6 +16,14 @@
 		</view>
 
 		<view class="content-box">
+			<view class="ditor-btn">
+				<image class="btn-bg" src="/static/image/task/bg_xixi.png" mode="aspectFit"></image>
+				<view class="btn-content">
+					<image src="/static/image/task/icon_gxb.png" mode="aspectFit"></image>
+					更新
+				</view>
+			</view>
+
 			<view class="content-title">
 				<view class="content-title-text">我的任务</view>
 				<image class="content-title-bg" src="/static/image/task/icon_bg_y.png" mode="aspectFit"></image>
@@ -142,7 +150,7 @@
 					taskTitle: '500签证全案助理',
 					taskText: '请帮忙填写签证相关内容，我是第一次申请，需要准备的资料还很多，听朋友说你们是专业的，拜托你们啦！',
 					taskTime: '2019-10-08',
-					taskStatus: 3,
+					taskStatus: 0,
 					certificate: '翻译证书',
 					taskData: {
 						dataName: '我的成绩单.docx',
@@ -278,10 +286,42 @@
 	.content-box {
 		position: relative;
 		top: -70rpx;
-		background-color: #FFFFFF;
+		overflow: hidden;
 		width: 100%;
+		background-color: #FFFFFF;
 		border-radius: 40rpx 40rpx 0 0;
-		padding-top: 8rpx;
+		padding: 8rpx 0 0;
+	}
+
+	.ditor-btn {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 140rpx;
+		height: 80rpx;
+		right: 0;
+		top: 0;
+	}
+
+	.btn-bg {
+		position: absolute;
+		width: 140rpx;
+		height: 80rpx;
+	}
+
+	.btn-content {
+		display: flex;
+		align-items: center;
+		color: #507787;
+		font-size: 26rpx;
+		margin-top: -5rpx;
+
+		image {
+			width: 42rpx;
+			height: 42rpx;
+			margin-right: 7rpx;
+		}
 	}
 
 	.content-title {
@@ -426,7 +466,7 @@
 			width: 100%;
 			font-size: 36rpx;
 			color: $group-color-w;
-			border-radius: 0;
+			border-radius: 4rpx;
 
 			&:after {
 				border: none;

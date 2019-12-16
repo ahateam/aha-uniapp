@@ -114,7 +114,7 @@
 					return this.$store.state.taskInfo.otherDescribe
 				},
 				set(value) {
-					this.$store.commit('updataOtherDescribe', value)
+					this.$store.commit('updateOtherDescribe', value)
 					this.$store.commit('resSetTaskInfo')
 				}
 			},
@@ -143,7 +143,7 @@
 			},
 
 			choiceAptitudes(item) {
-				this.$store.commit('updataQualifications', item)
+				this.$store.commit('updateQualifications', item)
 				this.aptitudesStatus = false
 			},
 
@@ -175,7 +175,7 @@
 						name: res.frontFileName,
 						src: this.$constData.oss + res.frontFileName
 					}
-					this.$store.commit('updataFileData', obj)
+					this.$store.commit('updateFileData', obj)
 				}
 			},
 
@@ -189,7 +189,7 @@
 
 			upImgStar() {
 				let tiemr = new Date()
-				let address = tiemr.getFullYear() + "" + (tiemr.getMonth() + 1) + "" + tiemr.getDate();
+				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate();
 				address = 'image/' + address + '/'
 				uni.chooseImage({
 					count: 1,
@@ -233,7 +233,7 @@
 							duration: 1000
 						})
 						//只管这个变量
-						this.$store.commit('updataImgData', 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr)
+						this.$store.commit('updateImgData', 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr)
 					},
 					fail: (err) => {
 						console.log('uploadImage fail', err);
@@ -246,9 +246,17 @@
 			},
 
 			nextBtn() {
-				uni.navigateTo({
-					url: `./createTask`
-				})
+				if (this.$store.state.taskInfo.taskName && this.$store.state.taskInfo.otherDescribe) {
+					uni.navigateTo({
+						url: `./createTask`
+					})
+				} else {
+					uni.showToast({
+						title: '请将资料填写完整',
+						icon: 'none'
+					})
+
+				}
 			},
 
 			changePopup(e) {

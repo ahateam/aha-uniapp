@@ -45,7 +45,7 @@
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">价格</view>
-					<view class="right-info bottom-font" style="color: #FFA405;">{{task.taskBudget}}</view>
+					<view class="right-info bottom-font" style="color: #FFA405;">AUD {{task.taskBudget}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">完成时间</view>
@@ -72,19 +72,19 @@
 				pageStatus: 'loading',
 
 				task: {
-					userName: '张曦',
-					userTime: '2019-10-08',
-					userHead: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574775543939&di=34f1f8a709ce6958adff33a33c218451&imgtype=0&src=http%3A%2F%2Fi2.hdslb.com%2Fbfs%2Fface%2F97ea0b38bc4afa00e0b00b9035eb31368fa94f11.jpg',
-					taskType: '全案助理',
-					taskTitle: '500签证全案助理',
-					taskText: '请帮忙填写签证相关内容，我是第一次申请，需要准备的资料还很多，听朋友说你们是专业的，拜托你们啦！',
-					taskTime: '2019-10-08',
-					taskPrice: 'AUD 300',
-					taskData: {
-						name: '翻译证书',
-						dataName: '我的成绩单.docx',
-						dataSize: '216K'
-					}
+					// userName: '张曦',
+					// userTime: '2019-10-08',
+					// userHead: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574775543939&di=34f1f8a709ce6958adff33a33c218451&imgtype=0&src=http%3A%2F%2Fi2.hdslb.com%2Fbfs%2Fface%2F97ea0b38bc4afa00e0b00b9035eb31368fa94f11.jpg',
+					// taskType: '全案助理',
+					// taskTitle: '500签证全案助理',
+					// taskText: '请帮忙填写签证相关内容，我是第一次申请，需要准备的资料还很多，听朋友说你们是专业的，拜托你们啦！',
+					// taskTime: '2019-10-08',
+					// taskPrice: 'AUD 300',
+					// taskData: {
+					// 	name: '翻译证书',
+					// 	dataName: '我的成绩单.docx',
+					// 	dataSize: '216K'
+					// }
 				}
 			}
 		},
@@ -92,7 +92,7 @@
 			// 接收任务
 			acceptTask() {
 				uni.navigateTo({
-					url: '../acceptTask/acceptTask'
+					url: `../acceptTask/acceptTask?id=${this.task.taskId}`
 				})
 			},
 
@@ -100,14 +100,14 @@
 				uni.navigateBack()
 			},
 
-			findByTaskId(cnt) {
-				this.$api.findByTaskId(cnt, (res) => {
+			getUserByTaskId(cnt) {
+				this.$api.getUserByTaskId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let obj = this.$util.tryParseJson(res.data.c)
 						console.log(obj)
 						console.log('______________________________________')
 						this.task = { ...this.task,
-							...obj
+							...obj.publishUser
 						}
 						console.log(this.task)
 					} else {
@@ -127,7 +127,7 @@
 			let cnt = {
 				taskId: res.id, // Long 任务id
 			}
-			this.findByTaskId(cnt)
+			this.getUserByTaskId(cnt)
 		}
 	}
 </script>
@@ -358,7 +358,7 @@
 			width: 690rpx;
 			font-size: 36rpx;
 			color: $group-color-w;
-			border-radius: 0;
+			border-radius: 6rpx;
 
 			&:after {
 				border: none;

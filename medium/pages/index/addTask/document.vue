@@ -61,6 +61,15 @@
 				}
 			},
 
+			formType: {
+				get() {
+					return this.$store.state.taskInfo.taskCategory
+				},
+				set(value) {
+					this.$store.commit('updateCategory', value)
+				}
+			},
+
 			aptitudes() {
 				return this.$store.state.taskInfo.qualName
 			},
@@ -70,7 +79,7 @@
 					return this.$store.state.taskInfo.taskDescribe
 				},
 				set(value) {
-					this.$store.commit('updataTaskDescribe', value)
+					this.$store.commit('updateTaskDescribe', value)
 				}
 			},
 
@@ -79,26 +88,33 @@
 					return this.$store.state.taskInfo.otherDescribe
 				},
 				set(value) {
-					this.$store.commit('updataOtherDescribe', value)
+					this.$store.commit('updateOtherDescribe', value)
 				}
 			},
-			
+
 			aptitudesList() {
 				return this.$store.state.qualiList
 			}
 		},
 		data() {
 			return {
-				formType: '',
 				aptitudesCurr: -1,
 				aptitudesStatus: false
 			}
 		},
 		methods: {
 			nextBtn() {
-				uni.navigateTo({
-					url: '../summary/summary'
-				})
+				if (this.$store.state.taskInfo.taskName && this.$store.state.taskInfo.taskDescribe &&
+					this.$store.state.taskInfo.taskCategory && this.$store.state.taskInfo.otherDescribe) {
+					uni.navigateTo({
+						url: '../summary/summary'
+					})
+				} else {
+					uni.showToast({
+						title: '请将资料填写完整',
+						icon: 'none'
+					})
+				}
 			},
 
 			changeAts(index) {
@@ -106,7 +122,7 @@
 			},
 
 			choiceAptitudes(item) {
-				this.$store.commit('updataQualifications', item)
+				this.$store.commit('updateQualifications', item)
 				this.aptitudesStatus = false
 			},
 

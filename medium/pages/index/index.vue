@@ -23,7 +23,6 @@
 
 	export default {
 		name: 'index',
-
 		data() {
 			return {
 				navHeight: this.getNavHeight(),
@@ -65,7 +64,7 @@
 						url: item.src,
 						success: () => {
 							this.$store.commit('reSetStore')
-							this.$store.commit('updataType', item.key)
+							this.$store.commit('updateType', item.key)
 							let icon = plus.nativeObj.View.getViewById("icon");
 							setTimeout(function() {
 								icon.hide();
@@ -73,7 +72,7 @@
 						}
 					})
 				}
-				this.$store.commit('updataType', item.key)
+				this.$store.commit('updateType', item.key)
 			},
 			//获取tim个人信息--并初次更新用户信息
 			getUserProfile() {
@@ -126,7 +125,7 @@
 			getByQualId(cnt) {
 				this.$api.getByQualId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.$store.commit('updataQualList', this.$util.tryParseJson(res.data.c))
+						this.$store.commit('updateQualList', this.$util.tryParseJson(res.data.c))
 					} else {
 						if (getNumber == 2) {
 							uni.showToast({

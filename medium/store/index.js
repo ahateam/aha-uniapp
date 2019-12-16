@@ -28,51 +28,55 @@ export default new Vuex.Store({
 			state.taskInfo.taskName = taskName
 		},
 		// 任务类型
-		updataType(state, taskType) {
+		updateType(state, taskType) {
 			state.taskInfo.taskType = taskType
-			console.log(state)
 		},
+
+		// （表格、文书）具体类别
+		updateCategory(state, taskCategory) {
+			state.taskInfo.taskCategory = taskCategory
+		},
+
 		// 任务所需资质
-		updataQualifications(state, item) {
+		updateQualifications(state, item) {
 			state.taskInfo.qualifications = item.qualId
 			state.taskInfo.qualName = item.qualName
 		},
 		// 申请人数
-		updataApplyNumber(state, applyNumber) {
+		updateApplyNumber(state, applyNumber) {
 			state.taskInfo.applyNumber = applyNumber
 		},
 		// 主申请人国籍
-		updataApplicantNationality(state, applicantNationality) {
+		updateApplicantNationality(state, applicantNationality) {
 			state.taskInfo.applicantNationality = applicantNationality
 		},
 		// 主申请人年龄
-		updataApplicantAge(state, applicantAge) {
+		updateApplicantAge(state, applicantAge) {
 			state.taskInfo.applicantAge = applicantAge
 		},
 		// 任务描述
-		updataTaskDescribe(state, taskDescribe) {
+		updateTaskDescribe(state, taskDescribe) {
 			state.taskInfo.taskDescribe = taskDescribe
 		},
 		// 其他说明 
-		updataOtherDescribe(state, otherDescribe) {
+		updateOtherDescribe(state, otherDescribe) {
 			state.taskInfo.otherDescribe = otherDescribe
 		},
 		//   低于18岁副申请人人数
-		updataViceApplicantAge(state, viceApplicantAge) {
+		updateViceApplicantAge(state, viceApplicantAge) {
 			state.taskInfo.viceApplicantAge = viceApplicantAge
 		},
 		// (翻译)页数 
-		updataPageNumber(state, pageNumber) {
+		updatePageNumber(state, pageNumber) {
 			state.taskInfo.pageNumber = pageNumber
 		},
 		// 内容 
-		updataTaskcontent(state, Taskcontent) {
+		updateTaskcontent(state, Taskcontent) {
 			state.taskInfo.Taskcontent = Taskcontent
 		},
 		// 上传文件
-		updataFileData(state, file) {
+		updateFileData(state, file) {
 			state.taskInfo.fileData.push(file)
-			console.log(state.taskInfo)
 		},
 
 		//删除文件
@@ -81,7 +85,7 @@ export default new Vuex.Store({
 		},
 
 		// 上传图片
-		updataImgData(state, img) {
+		updateImgData(state, img) {
 			state.taskInfo.imgData.push(img)
 		},
 
@@ -91,12 +95,12 @@ export default new Vuex.Store({
 		},
 
 		// 任务金额
-		updataPayPrice(state, taskBudget) {
+		updatePayPrice(state, taskBudget) {
 			state.taskInfo.taskBudget = taskBudget
 		},
 
 		// 任务完成时间 
-		updataFinishDate(state, finishDate) {
+		updateFinishDate(state, finishDate) {
 			state.taskInfo.finishDate = finishDate
 		},
 
@@ -109,7 +113,7 @@ export default new Vuex.Store({
 		},
 
 		// 获取资质列表
-		updataQualList(state, list) {
+		updateQualList(state, list) {
 			state.qualiList = list
 			state.taskInfo.qualifications = list[0].qualId
 			state.taskInfo.qualName = list[0].qualName
@@ -118,15 +122,14 @@ export default new Vuex.Store({
 				qualName: '不需要',
 			}
 			state.qualiList.push(obj)
-			console.log(state.qualiList)
 		},
 
 		// 翻译任务原语种 
-		updataOldLanguage(state, oldLanguage) {
+		updateOldLanguage(state, oldLanguage) {
 			state.taskInfo.oldLanguage = oldLanguage
 		},
 
-		updataNewLanguage(state, newLanguage) {
+		updateNewLanguage(state, newLanguage) {
 			state.taskInfo.newLanguage = newLanguage
 		},
 

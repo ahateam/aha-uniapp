@@ -256,6 +256,7 @@
 						let list = this.$util.tryParseJson(res.data.c)
 						this.tryParseData(list)
 					} else {
+						uni.stopPullDownRefresh()
 						this.pageStatus = 'error'
 					}
 				})
@@ -358,7 +359,6 @@
 				}
 				this.getTaskList(cnt)
 			}
-
 		}
 	}
 </script>

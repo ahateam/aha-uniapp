@@ -71,7 +71,7 @@
 					return this.$store.state.taskInfo.applyNumber
 				},
 				set(value) {
-					this.$store.commit('updataApplyNumber', value)
+					this.$store.commit('updateApplyNumber', value)
 				}
 			},
 			country: {
@@ -79,7 +79,7 @@
 					return this.$store.state.taskInfo.applicantNationality
 				},
 				set(value) {
-					this.$store.commit('updataApplicantNationality', value)
+					this.$store.commit('updateApplicantNationality', value)
 				}
 			},
 			howOld: {
@@ -87,7 +87,7 @@
 					return this.$store.state.taskInfo.applicantAge
 				},
 				set(value) {
-					this.$store.commit('updataApplicantAge', value)
+					this.$store.commit('updateApplicantAge', value)
 				}
 			},
 			lowPeople: {
@@ -95,7 +95,7 @@
 					return this.$store.state.taskInfo.viceApplicantAge
 				},
 				set(value) {
-					this.$store.commit('updataViceApplicantAge', value)
+					this.$store.commit('updateViceApplicantAge', value)
 				}
 			},
 
@@ -108,7 +108,7 @@
 					return this.$store.state.taskInfo.taskDescribe
 				},
 				set(value) {
-					this.$store.commit('updataTaskDescribe', value)
+					this.$store.commit('updateTaskDescribe', value)
 				}
 			},
 
@@ -117,7 +117,7 @@
 					return this.$store.state.taskInfo.otherDescribe
 				},
 				set(value) {
-					this.$store.commit('updataOtherDescribe', value)
+					this.$store.commit('updateOtherDescribe', value)
 				}
 			},
 			aptitudesList() {
@@ -138,9 +138,18 @@
 
 		methods: {
 			nextBtn() {
-				uni.navigateTo({
-					url: '../summary/summary'
-				})
+				if (this.$store.state.taskInfo.taskName &&
+					this.$store.state.taskInfo.applicantNationality && this.$store.state.taskInfo.applicantAge &&
+					this.$store.state.taskInfo.taskDescribe && this.$store.state.taskInfo.otherDescribe) {
+					uni.navigateTo({
+						url: '../summary/summary'
+					})
+				} else {
+					uni.showToast({
+						title: '请将资料填写完整',
+						icon: 'none'
+					})
+				}
 			},
 
 			changeAts(index) {
@@ -148,7 +157,7 @@
 			},
 
 			choiceAptitudes(item) {
-				this.$store.commit('updataQualifications', item)
+				this.$store.commit('updateQualifications', item)
 				this.aptitudesStatus = false
 			},
 

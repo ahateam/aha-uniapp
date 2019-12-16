@@ -94,7 +94,7 @@
 					return this.$store.state.taskInfo.taskDescribe
 				},
 				set(value) {
-					this.$store.commit('updataTaskDescribe', value)
+					this.$store.commit('updateTaskDescribe', value)
 				}
 			},
 
@@ -103,7 +103,7 @@
 					return this.$store.state.taskInfo.otherDescribe
 				},
 				set(value) {
-					this.$store.commit('updataOtherDescribe', value)
+					this.$store.commit('updateOtherDescribe', value)
 				}
 			},
 
@@ -112,7 +112,7 @@
 					return this.$store.state.taskInfo.pageNumber
 				},
 				set(val) {
-					this.$store.commit('updataPageNumber', val)
+					this.$store.commit('updatePageNumber', val)
 				}
 			},
 
@@ -145,7 +145,8 @@
 		},
 		methods: {
 			nextBtn() {
-				if (this.$store.state.taskInfo.taskName && this.$store.state.taskInfo.taskDescribe && this.$store.state.taskInfo.pageNumber) {
+				if (this.$store.state.taskInfo.taskName && this.$store.state.taskInfo.taskDescribe && this.$store.state.taskInfo.pageNumber &&
+					this.$store.state.taskInfo.otherDescribe) {
 					uni.navigateTo({
 						url: '../summary/summary'
 					})
@@ -166,11 +167,11 @@
 				if (this.transChioce == 0) {
 					this.fromLanguage = this.languages[this.choiceCurr].languageName
 					this.leftValue.splice(0, 1, this.choiceCurr)
-					this.$store.commit('updataOldLanguage', this.fromLanguage)
+					this.$store.commit('updateOldLanguage', this.fromLanguage)
 				} else {
 					this.toLanguage = this.languages[this.choiceCurr].languageName
 					this.rightValue.splice(0, 1, this.choiceCurr)
-					this.$store.commit('updataNewLanguage', this.toLanguage)
+					this.$store.commit('updateNewLanguage', this.toLanguage)
 				}
 				this.translateShow = false
 				this.inputHidden = false
@@ -198,7 +199,7 @@
 			},
 
 			choiceAptitudes(item) {
-				this.$store.commit('updataQualifications', item)
+				this.$store.commit('updateQualifications', item)
 				this.aptitudesStatus = false
 			},
 
@@ -224,8 +225,8 @@
 				f = this.fromLanguage
 				this.fromLanguage = this.toLanguage
 				this.toLanguage = f
-				this.$store.commit('updataOldLanguage', this.fromLanguage)
-				this.$store.commit('updataNewLanguage', this.toLanguage)
+				this.$store.commit('updateOldLanguage', this.fromLanguage)
+				this.$store.commit('updateNewLanguage', this.toLanguage)
 			},
 
 			getLanguage(cnt) {
@@ -263,8 +264,8 @@
 				offset: 0, // Integer 
 			}
 			this.getLanguage(cnt)
-			this.$store.commit('updataOldLanguage', '英语')
-			this.$store.commit('updataNewLanguage', '韩语')
+			this.$store.commit('updateOldLanguage', '英语')
+			this.$store.commit('updateNewLanguage', '韩语')
 		}
 	}
 </script>

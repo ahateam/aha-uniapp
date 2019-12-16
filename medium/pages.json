@@ -41,10 +41,14 @@
 			"style": {}
 		}, {
 			"path": "pages/task/taskInfo/taskInfo",
-			"style": {}
+			"style": {
+				"navigationBarTextStyle": "white"
+			}
 		}, {
 			"path": "pages/myTask/taskInfo/taskInfo",
-			"style": {}
+			"style": {
+				"navigationBarTextStyle": "white"
+			}
 		}, {
 			"path": "pages/task/acceptTask/acceptTask",
 			"style": {}
@@ -153,7 +157,9 @@
 			}
 		}, {
 			"path": "pages/myTask/taskInfo/myTask",
-			"style": {}
+			"style": {
+				"navigationBarTextStyle": "white"
+			}
 		}
 	],
 	"globalStyle": {

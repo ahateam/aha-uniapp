@@ -84,29 +84,51 @@ constData.orderType = [{
 	}
 ]
 
+constData.taskWall = [{
+		key: 0,
+		val: '正常'
+	},
+	{
+		key: 1,
+		val: '删除'
+	},
+	{
+		key: 2,
+		val: '草稿',
+		icon:'/static/image/icon/task/icon_cg.png'
+	}
+]
+
 constData.taskStatus = [{
 		key: 0,
-		val: '已发布',
+		val: '等待接收',
 		icon: '/static/image/icon/task/icon_jxz.png'
 	},
 	{
 		key: 1,
-		val: '已接收',
-		icon: '/static/image/icon/task/icon_yjs.png'
+		val: [
+			'已分配',
+			'进行中'
+		],
+		icon: [
+			'/static/image/icon/task/icon_yjs.png',
+			'/static/image/icon/task/icon_jxz.png'
+		]
 	},
 	{
 		key: 2,
-		val: '进行中',
-		icon: '/static/image/icon/task/icon_jxz.png'
-	},
-	{
-		key: 3,
-		val: '未付款',
+		val: [
+			'未付款',
+			'未收款'
+		],
 		icon: '/static/image/icon/task/icon_wfk.png'
 	},
 	{
-		key: 4,
-		val: '收款完成',
+		key: 3,
+		val: [
+			'付款完成',
+			'收款完成'
+		],
 		icon: '/static/image/icon/task/icon_skwc.png'
 	}
 ]

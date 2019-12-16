@@ -42,7 +42,7 @@
 					return this.$store.state.taskInfo.taskBudget
 				},
 				set(value) {
-					this.$store.commit('updataPayPrice', value)
+					this.$store.commit('updatePayPrice', value)
 				}
 			},
 		},
@@ -56,7 +56,7 @@
 		},
 		methods: {
 			onConfirm(res) {
-				this.$store.commit('updataFinishDate', res.result)
+				this.$store.commit('updateFinishDate', res.result)
 				this.time = res.result
 				this.$refs.picker.hide()
 			},
@@ -66,7 +66,7 @@
 			},
 
 			createTask(e) {
-				if (this.$store.state.taskInfo.taskBudget && this.title) {
+				if (this.$store.state.taskInfo.taskBudget && this.$store.state.taskInfo.finishDate) {
 					let cnt = { ...this.$store.state.taskInfo
 					}
 					if (cnt.fileData.length == 0) {
@@ -102,8 +102,6 @@
 						icon: 'none'
 					})
 				}
-
-
 			},
 
 			navBack() {

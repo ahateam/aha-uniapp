@@ -9,7 +9,7 @@
 			</view>
 			<view class="task-center">{{item.taskDescribe}}</view>
 			<view class="task-bottom">
-				<view class="task-bottom-box" :style="item.olddata?'opacity: 1':'opacity: 0'">
+				<view class="task-bottom-box" v-if="item.olddata">
 					<view class="task-rec">接收</view>
 					<view class="data">{{item.olddata}}</view>
 				</view>
@@ -19,8 +19,10 @@
 				</view>
 			</view>
 			<view class="status-box" v-if="showStatus()">
-				<image :src="taskStatus[item.status].icon" mode="aspectFit"></image>
-				<view>{{taskStatus[item.status].val}}</view>
+				<!-- <image :src="taskStatus[item.status].icon" mode="aspectFit"></image> -->
+				<image :src="getIcon(item)" mode="aspectFit"></image>
+				<!-- <view>{{taskStatus[item.status].val}}</view> -->
+				<view>{{getStatus(item)}}</view>
 			</view>
 		</view>
 	</view>
@@ -28,7 +30,7 @@
 
 <script>
 	export default {
-		props: ['tasks', 'type'],
+		props: ['tasks', 'type', 'myTask'],
 		data() {
 			return {
 				taskStatus: this.$constData.taskStatus,
@@ -36,6 +38,34 @@
 			}
 		},
 		methods: {
+			getIcon(item) {
+				if (item.status == this.$constData.taskWall[2].key) {
+					return this.$constData.taskWall[2].icon
+				} else if (item.taskStatus == this.taskStatus[1].key) {
+					if (this.myTask) {
+						return this.taskStatus[1].icon[0]
+					} else {
+						return this.taskStatus[1].icon[1]
+					}
+				} else {
+					return this.taskStatus[item.taskStatus].icon
+				}
+			},
+
+			getStatus(item) {
+				if (item.status == this.$constData.taskWall[2].key) {
+					return this.$constData.taskWall[2].val
+				} else if (item.taskStatus == this.taskStatus[0].key) {
+					return this.taskStatus[0].val
+				} else {
+					if (this.myTask) {
+						return this.taskStatus[item.taskStatus].val[0]
+					} else {
+						return this.taskStatus[item.taskStatus].val[1]
+					}
+				}
+			},
+
 			getTime(time) {
 				return this.$commen.getNewDate(time)
 			},
@@ -51,10 +81,6 @@
 					return false
 				}
 			},
-
-			getStatus(status) {
-
-			}
 		}
 	}
 </script>
