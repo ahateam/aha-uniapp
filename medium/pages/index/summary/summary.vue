@@ -89,7 +89,7 @@
 		computed: {
 			title: {
 				get() {
-					return this.$store.state.taskInfo.taskName
+					return this.$store.state.task.taskInfo.taskName
 				},
 				set(value) {
 					this.$store.commit('updateTitle', value)
@@ -98,20 +98,20 @@
 			},
 
 			aptitudes() {
-				return this.$store.state.taskInfo.qualName
+				return this.$store.state.task.taskInfo.qualName
 			},
 
 			imgList() {
-				return this.$store.state.taskInfo.imgData
+				return this.$store.state.task.taskInfo.imgData
 			},
 
 			fileList() {
-				return this.$store.state.taskInfo.fileData
+				return this.$store.state.task.taskInfo.fileData
 			},
 
 			remark: {
 				get() {
-					return this.$store.state.taskInfo.otherDescribe
+					return this.$store.state.task.taskInfo.otherDescribe
 				},
 				set(value) {
 					this.$store.commit('updateOtherDescribe', value)
@@ -120,7 +120,7 @@
 			},
 
 			aptitudesList() {
-				return this.$store.state.qualiList
+				return this.$store.state.task.qualiList
 			}
 		},
 		data() {
@@ -246,7 +246,7 @@
 			},
 
 			nextBtn() {
-				if (this.$store.state.taskInfo.taskName && this.$store.state.taskInfo.otherDescribe) {
+				if (this.$store.state.task.taskInfo.taskName && this.$store.state.task.taskInfo.otherDescribe) {
 					uni.navigateTo({
 						url: `./createTask`
 					})

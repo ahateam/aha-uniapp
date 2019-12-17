@@ -15,7 +15,7 @@
 		<data-input title="账号" hiddenIcon placeholder="Account Number" v-model="accountNumber"></data-input>
 		<data-input title="电子邮件地址" hiddenIcon placeholder="用于接收电子账单" v-model="email"></data-input>
 		<view class="fixed-box">
-			<next-btn title="保存"></next-btn>
+			<next-btn title="保存" @click="editUserAccountById"></next-btn>
 		</view>
 
 	</view>
@@ -41,8 +41,59 @@
 			};
 		},
 		methods: {
+			editUserAccountById() {
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				if (this.name && this.BSB && this.accountNumber && this.email) {
+					let cnt = {
+						userId: userInfo.userId, // Long 用户id
+						accountName: this.name, // String 收款账户名
+						BsbNumber: this.BSB, // String BSB号
+						account: this.accountNumber, // String 收款账户号
+						email: this.email, // String <选填> 电子邮件
+					}
+					this.$api.updateUser(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							Object.assign(userInfo, cnt)
+							uni.setStorageSync('userInfo', JSON.stringify(userInfo))
+							uni.switchTab({
+								url: '../user'
+							})
+							uni.showToast({
+								title: '已保存',
+								icon: 'none'
+							})
+						} else {
+							uni.showToast({
+								title: res.data.rm,
+								icon: 'none'
+							})
+						}
+					})
+				} else {
+					uni.showToast({
+						title: '请将资料填写完整！',
+						icon: 'none'
+					})
+				}
+			},
+
 			navBack() {
 				uni.navigateBack()
+			}
+		},
+		onLoad() {
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			if (userInfo.accountName) {
+				this.name = userInfo.accountName
+			}
+			if (userInfo.BsbNumber) {
+				this.BSB = userInfo.BsbNumber
+			}
+			if (userInfo.account) {
+				this.accountNumber = userInfo.account
+			}
+			if (userInfo.email) {
+				this.email = userInfo.email
 			}
 		}
 	}

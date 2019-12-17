@@ -44,6 +44,11 @@ api.updateUser = function(cnt, callback) {
 	util.call(baseUrl + '/user/updateUser', cnt, callback)
 }
 
+// 修改用户收款账户信息 
+api.editUserAccountById = function(cnt, callback) {
+	util.call(baseUrl + '/user/editUserAccountById', cnt, callback)
+}
+
 /* 任务相关 */
 // 查詢任務 
 api.getTaskList = function(cnt, callback) {
@@ -58,6 +63,11 @@ api.findByTaskId = function(cnt, callback) {
 // 根据id查询任务(附带用户信息) 
 api.getUserByTaskId = function(cnt, callback) {
 	util.call(baseUrl + '/task/getUserByTaskId', cnt, callback)
+}
+
+// 撤回任务 
+api.withdrawTask = function(cnt, callback) {
+	util.call(baseUrl + '/task/withdrawTask', cnt, callback)
 }
 
 // 发布任务

@@ -78,7 +78,7 @@
 		computed: {
 			title: {
 				get() {
-					return this.$store.state.taskInfo.taskName
+					return this.$store.state.task.taskInfo.taskName
 				},
 				set(value) {
 					this.$store.commit('updateTitle', value)
@@ -86,12 +86,12 @@
 			},
 
 			aptitudes() {
-				return this.$store.state.taskInfo.qualName
+				return this.$store.state.task.taskInfo.qualName
 			},
 
 			taskInfo: {
 				get() {
-					return this.$store.state.taskInfo.taskDescribe
+					return this.$store.state.task.taskInfo.taskDescribe
 				},
 				set(value) {
 					this.$store.commit('updateTaskDescribe', value)
@@ -100,7 +100,7 @@
 
 			remark: {
 				get() {
-					return this.$store.state.taskInfo.otherDescribe
+					return this.$store.state.task.taskInfo.otherDescribe
 				},
 				set(value) {
 					this.$store.commit('updateOtherDescribe', value)
@@ -109,7 +109,7 @@
 
 			much: {
 				get() {
-					return this.$store.state.taskInfo.pageNumber
+					return this.$store.state.task.taskInfo.pageNumber
 				},
 				set(val) {
 					this.$store.commit('updatePageNumber', val)
@@ -117,7 +117,7 @@
 			},
 
 			aptitudesList() {
-				return this.$store.state.qualiList
+				return this.$store.state.task.qualiList
 			}
 		},
 		data() {
@@ -145,8 +145,9 @@
 		},
 		methods: {
 			nextBtn() {
-				if (this.$store.state.taskInfo.taskName && this.$store.state.taskInfo.taskDescribe && this.$store.state.taskInfo.pageNumber &&
-					this.$store.state.taskInfo.otherDescribe) {
+				if (this.$store.state.task.taskInfo.taskName && this.$store.state.task.taskInfo.taskDescribe && this.$store.state.task
+					.taskInfo.pageNumber &&
+					this.$store.state.task.taskInfo.otherDescribe) {
 					uni.navigateTo({
 						url: '../summary/summary'
 					})

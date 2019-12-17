@@ -60,19 +60,27 @@
 
 			navToAdd(item) {
 				if (item.src) {
-					uni.navigateTo({
-						url: item.src,
-						success: () => {
-							this.$store.commit('reSetStore')
+					this.$store.dispatch('setStore').then((res) => {
+						if (res == 'succ') {
 							this.$store.commit('updateType', item.key)
-							let icon = plus.nativeObj.View.getViewById("icon");
-							setTimeout(function() {
-								icon.hide();
-							}, 100);
+							uni.navigateTo({
+								url: item.src,
+								success: () => {
+									let icon = plus.nativeObj.View.getViewById("icon");
+									setTimeout(function() {
+										icon.hide();
+									}, 100);
+								}
+							})
+						} else {
+							uni.showToast({
+								title: 'error!',
+								icon: 'none'
+							})
 						}
 					})
+
 				}
-				this.$store.commit('updateType', item.key)
 			},
 			//获取tim个人信息--并初次更新用户信息
 			getUserProfile() {
@@ -132,7 +140,6 @@
 								title: '服务器错误',
 								icon: 'none'
 							})
-
 						} else {
 							setTimeout(() => {
 								getNumber += 1

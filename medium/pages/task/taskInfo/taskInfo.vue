@@ -6,7 +6,7 @@
 				<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
 				<view class="top-info-box">
 					<view class="top-name">{{task.userName}}</view>
-					<view class="top-time"><text class="iconfont iconshengri"></text><text>{{task.userTime}}</text></view>
+					<view class="top-time"><text class="iconfont iconshengri"></text><text>{{getDateTime(task.brithday)}}</text></view>
 				</view>
 			</view>
 			<view class="top-head">
@@ -22,8 +22,8 @@
 			</view>
 
 			<view class="auto-box-white space-box">
-				<view class="left-title">任务发布者</view>
-				<view class="right-info">{{task.taskType}}</view>
+				<view class="left-title">任务分类</view>
+				<view class="right-info">{{taskType[task.taskType].name}}</view>
 			</view>
 			<view class="auto-box-white space-box">
 				<view class="left-title">任务名称</view>
@@ -54,7 +54,7 @@
 
 				<view class="auto-box-gray space-box" style="border: none;">
 					<view class="left-title bottom-font">接受者所需证书</view>
-					<view class="right-info bottom-font">{{task.qualifications}}</view>
+					<view class="right-info bottom-font">{{task.qualName}}</view>
 				</view>
 			</view>
 		</view>
@@ -62,38 +62,79 @@
 		<view class="bottom-btn">
 			<button @click="acceptTask">接任务</button>
 		</view>
+
+		<uni-popup :show="popupShow" type="center" @change="change">
+			<view class="popup-box">
+				<view>确定接收任务吗</view>
+				<view class="popup-btn-box">
+					<button class="succ-btn" @click="accTheTask">确定</button>
+					<button class="colse-btn" @click="popupShow = false">再想想</button>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
+	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+
 	export default {
+		components: {
+			uniPopup
+		},
 		data() {
 			return {
 				pageStatus: 'loading',
 
-				task: {
-					// userName: '张曦',
-					// userTime: '2019-10-08',
-					// userHead: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574775543939&di=34f1f8a709ce6958adff33a33c218451&imgtype=0&src=http%3A%2F%2Fi2.hdslb.com%2Fbfs%2Fface%2F97ea0b38bc4afa00e0b00b9035eb31368fa94f11.jpg',
-					// taskType: '全案助理',
-					// taskTitle: '500签证全案助理',
-					// taskText: '请帮忙填写签证相关内容，我是第一次申请，需要准备的资料还很多，听朋友说你们是专业的，拜托你们啦！',
-					// taskTime: '2019-10-08',
-					// taskPrice: 'AUD 300',
-					// taskData: {
-					// 	name: '翻译证书',
-					// 	dataName: '我的成绩单.docx',
-					// 	dataSize: '216K'
-					// }
-				}
+				task: {},
+
+				taskType: this.$constData.taskType,
+
+				popupShow: false
 			}
 		},
 		methods: {
+			accTheTask() {
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let cnt = {
+					taskId: this.task.taskId, // Long 任务id
+					userId: userInfo.userId, // Long 用户id
+				};
+				this.$api.acceptTask(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url: '../task'
+						})
+						uni.showToast({
+							title: '接收成功',
+							icon: 'none'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			change(e) {
+				if (!e.show) {
+					this.popupShow = false
+				}
+			},
+
 			// 接收任务
 			acceptTask() {
-				uni.navigateTo({
-					url: `../acceptTask/acceptTask?id=${this.task.taskId}`
-				})
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				if (userInfo.accountName && userInfo.BsbNumber && userInfo.account) {
+					this.popupShow = true
+				} else {
+					uni.navigateTo({
+						url: `../acceptTask/acceptTask?id=${this.task.taskId}`
+					})
+				}
+
 			},
 
 			navBack() {
@@ -364,5 +405,45 @@
 				border: none;
 			}
 		}
+	}
+
+	.popup-box {
+		width: 600rpx;
+		height: 322rpx;
+		box-sizing: border-box;
+		padding: 70rpx 40rpx 40rpx;
+		font-size: $group-font-befor;
+		line-height: 42rpx;
+		background-color: $group-color-w;
+		border-radius: 4rpx;
+		text-align: center;
+	}
+
+	.popup-btn-box {
+		display: flex;
+		margin-top: 90rpx;
+		line-height: 80rpx;
+
+		button {
+			width: 250rpx;
+			margin: 0 20rpx;
+			box-sizing: border-box;
+			color: $group-color;
+			border-radius: 0;
+
+			&:after {
+				border: none;
+			}
+		}
+	}
+
+	.succ-btn {
+		background-color: #00C8BE;
+		color: $group-color-w !important;
+	}
+
+	.colse-btn {
+		background: #FFFFFF;
+		border: 1rpx solid $group-color-befor;
 	}
 </style>

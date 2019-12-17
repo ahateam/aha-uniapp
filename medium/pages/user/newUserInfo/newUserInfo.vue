@@ -19,7 +19,7 @@
 		<data-input title="FIER号" hiddenIcon v-model="FIER"></data-input>
 		<data-input title="NAATI号" hiddenIcon v-model="NAATI"></data-input>
 		<view style="margin-top: 70rpx;"></view>
-		<next-btn title="确认"></next-btn>
+		<next-btn title="确认" @click="updateUser"></next-btn>
 	</view>
 </template>
 
@@ -46,6 +46,55 @@
 			};
 		},
 		methods: {
+			updateUser() {
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let cnt = {
+					userId: userInfo.userId, // Long 用户编号
+				}
+				if (this.name) {
+					cnt.accountName = this.name
+				}
+				if (this.BSB) {
+					cnt.BsbNumber = this.BSB
+				}
+				if (this.accountNumber) {
+					cnt.account = this.accountNumber
+				}
+				if (this.email) {
+					cnt.email = this.email
+				}
+
+				if (this.MARN) {
+					cnt.marnNumber = this.MARN
+				}
+
+				if (this.FIER) {
+					cnt.fierNumber = this.FIER
+				}
+
+				if (this.NAATI) {
+					cnt.naatiNumber = this.NAATI
+				}
+				this.$api.updateUser(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url: '../user'
+						})
+						uni.showToast({
+							title: '修改成功',
+							icon: 'none'
+						})
+						Object.assign(userInfo, cnt)
+						uni.setStorageSync('userInfo', userInfo)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
 			navBack() {
 				uni.navigateBack()
 			}

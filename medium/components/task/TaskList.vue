@@ -7,11 +7,11 @@
 				<view class="task-top-l">{{taskType[item.taskType].name}}</view>
 				<view class="task-top-r">AUD {{item.taskBudget}}</view>
 			</view>
-			<view class="task-center">{{item.taskDescribe}}</view>
+			<view class="task-center">{{item.taskName}}</view>
 			<view class="task-bottom">
-				<view class="task-bottom-box" v-if="item.olddata">
+				<view class="task-bottom-box" v-if="item.acceptTime">
 					<view class="task-rec">接收</view>
-					<view class="data">{{item.olddata}}</view>
+					<view class="data">{{getTime(item.acceptTime)}}</view>
 				</view>
 				<view class="task-bottom-box">
 					<view class="task-recc">完成</view>

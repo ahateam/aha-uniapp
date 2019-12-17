@@ -6,7 +6,13 @@ commen.getNewDate = (time) => {
 	let newData = new Date(time)
 	let y = newData.getFullYear()
 	let m = newData.getMonth() * 1 + 1
+	if (m < 10) {
+		m = 0 + '' + m
+	}
 	let d = newData.getDate()
+	if (d < 10) {
+		d = 0 + '' + d
+	}
 	return `${y}-${m}-${d}`
 }
 
@@ -43,7 +49,7 @@ commen.hiddenTabIcon = () => {
  * **/
 commen.dateTimeFliter = function(time, part = 0, dateComplete = true, timeComplete = true, dateConnector = '-',
 	timeConnector = ':', hour12 = false) {
-		
+
 	let year = time.getFullYear()
 	let month = time.getMonth() + 1
 	let day = time.getDate()

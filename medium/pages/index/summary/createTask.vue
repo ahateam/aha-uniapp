@@ -39,7 +39,7 @@
 
 			price: {
 				get() {
-					return this.$store.state.taskInfo.taskBudget
+					return this.$store.state.task.taskInfo.taskBudget
 				},
 				set(value) {
 					this.$store.commit('updatePayPrice', value)
@@ -51,7 +51,7 @@
 			return {
 				title: '发布任务',
 				defaultVal: "['2018','12','31']",
-				time: this.$store.state.taskInfo.finishDate
+				time: this.$store.state.task.taskInfo.finishDate
 			};
 		},
 		methods: {
@@ -66,8 +66,8 @@
 			},
 
 			createTask(e) {
-				if (this.$store.state.taskInfo.taskBudget && this.$store.state.taskInfo.finishDate) {
-					let cnt = { ...this.$store.state.taskInfo
+				if (this.$store.state.task.taskInfo.taskBudget && this.$store.state.task.taskInfo.finishDate) {
+					let cnt = { ...this.$store.state.task.taskInfo
 					}
 					if (cnt.fileData.length == 0) {
 						let {

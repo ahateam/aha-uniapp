@@ -170,7 +170,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 143rpx;
 		border-radius: 25rpx;
 		background-color: #FFF8E5;
 		box-sizing: border-box;
@@ -178,10 +177,13 @@
 		color: #FFA405;
 		margin-top: 22rpx;
 		font-size: 24rpx;
+		line-height: 34rpx;
+		padding: 0 10rpx 0 4rpx;
 
 		image {
 			width: 26rpx;
 			height: 26rpx;
+			margin-right: 6rpx;
 		}
 	}
 

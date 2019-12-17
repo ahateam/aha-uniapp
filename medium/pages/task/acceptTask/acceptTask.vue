@@ -29,7 +29,7 @@
 			<view class="popup-box">
 				<view>确定接收任务吗</view>
 				<view class="popup-btn-box">
-					<button class="succ-btn" @click="acceptTask()">确定</button>
+					<button class="succ-btn" @click="editUserAccountById()">确定</button>
 					<button class="colse-btn" @click="popupShow = false">再想想</button>
 				</view>
 			</view>
@@ -69,9 +69,31 @@
 				}
 			},
 
-			// 接收任务
-			acceptTask() {
+			// 修改账户信息
+			editUserAccountById() {
 				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let cnt = {
+					userId: userInfo.userId, // Long 用户id
+					accountName: this.name, // String 收款账户名
+					BsbNumber: this.BSB, // String BSB号
+					account: this.account, // String 收款账户号
+				}
+				this.$api.editUserAccountById(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						Object.assign(userInfo, cnt)
+						uni.setStorageSync('userInfo', JSON.stringify(userInfo))
+						this.acceptTask(userInfo)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+
+			},
+
+			acceptTask(userInfo) {
 				let cnt = {
 					taskId: this.taskId, // Long 任务id
 					userId: userInfo.userId, // Long 用户id

@@ -6,7 +6,7 @@
 				<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
 				<view class="top-info-box">
 					<view class="top-name">{{task.userName}}</view>
-					<view class="top-time"><text class="iconfont iconshengri"></text><text>{{task.userTime}}</text></view>
+					<view class="top-time"><text class="iconfont iconshengri"></text><text>{{getDateTime(task.brithday)}}</text></view>
 				</view>
 			</view>
 			<view class="top-head">
@@ -16,7 +16,7 @@
 		</view>
 
 		<view class="content-box">
-			<view class="ditor-btn">
+			<view class="ditor-btn" v-if="task.taskStatus == constData.taskStatus[0].key" @click="edtiorBtn">
 				<image class="btn-bg" src="/static/image/task/bg_xixi.png" mode="aspectFit"></image>
 				<view class="btn-content">
 					<image src="/static/image/task/icon_gxb.png" mode="aspectFit"></image>
@@ -30,8 +30,8 @@
 			</view>
 
 			<view class="auto-box-white space-box">
-				<view class="left-title">任务发布者</view>
-				<view class="right-info">{{task.taskType}}</view>
+				<view class="left-title">任务分类</view>
+				<view class="right-info">{{constData.taskType[task.taskType].name}}</view>
 			</view>
 
 			<view class="auto-box-white space-box">
@@ -47,7 +47,7 @@
 			<view class="block-box" v-if="task.taskStatus == 0">
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">任务发布时间</view>
-					<view class="right-info bottom-font">{{task.createTime}}</view>
+					<view class="right-info bottom-font">{{getDateTime(task.taskCreateTime)}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">任务发布者</view>
@@ -55,15 +55,15 @@
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">完成时间</view>
-					<view class="right-info bottom-font">{{task.taskTime}}</view>
+					<view class="right-info bottom-font">{{getDateTime(task.finishDate)}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">价格</view>
-					<view class="right-info bottom-font" style="color: #FFA405;">{{task.price}}</view>
+					<view class="right-info bottom-font" style="color: #FFA405;">AUD {{task.taskBudget}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">接收者所需证书</view>
-					<view class="right-info bottom-font">{{task.certificate}}</view>
+					<view class="right-info bottom-font">{{task.qualName}}</view>
 				</view>
 				<view class="auto-box-gray space-box" style="border: none;">
 					<view class="left-title bottom-font">共享文件</view>
@@ -81,11 +81,11 @@
 			<view class="block-box" v-else>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">接收人</view>
-					<view class="right-info bottom-font">{{task.accUser.name}}</view>
+					<view class="right-info bottom-font">{{pickUpUser.userName}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">完成时间</view>
-					<view class="right-info bottom-font">{{task.taskTime}}</view>
+					<view class="right-info bottom-font">{{getDateTime(task.finishDate)}}</view>
 				</view>
 				<view class="auto-box-gray space-box">
 					<view class="left-title bottom-font">完成状态</view>
@@ -114,8 +114,8 @@
 				<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < 3">
 					<view class="left-title bottom-font">收回材料</view>
 					<view class="data-img-list">
-						<view class="data-img-box" v-for="(item,index) in task.taskList" :key="index" :class="{'no-margin':getIndex(index)}">
-							<image src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
+						<view class="data-img-box" v-for="(item,index) in $util.tryParseJson(task.imgData)" :key="index" :class="{'no-margin':getIndex(index)}">
+							<image :src="item" mode="aspectFill"></image>
 						</view>
 					</view>
 				</view>
@@ -128,7 +128,7 @@
 		</view>
 
 		<view v-if="task.taskStatus < 3" class="bottom-btn" :class="task.taskStatus == 0?'':'pay-btn'">
-			<button @click="navBack">{{btnName}}</button>
+			<button @click="bottomBtn">{{btnName}}</button>
 		</view>
 	</view>
 </template>
@@ -182,27 +182,102 @@
 					payMoney: '300澳元'
 				},
 
+				pickUpUser: {},
+
 				btnName: '',
 
+				constData: this.$constData
 			}
 		},
 		methods: {
+			withdrawTask() {
+				let cnt = {
+					taskId: this.task.taskId
+				}
+				this.$api.withdrawTask(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url: '../myTask'
+						})
+						uni.showToast({
+							title: '撤回成功',
+							icon: 'none'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			bottomBtn() {
+				let cnt = {}
+				switch (this.task.taskStatus) {
+					case this.$constData.taskType[0].key:
+						this.withdrawTask()
+						break;
+					default:
+						cnt = {
+
+						}
+						this.updateTaskByTaskId(cnt)
+				}
+			},
+
 			getIndex(index) {
 				if ((index + 1) % 3 == 0 && index != 0) {
 					return true
 				}
 			},
 
+			getDateTime(time) {
+				return this.$commen.getNewDate(time)
+			},
+
 			navBack() {
 				uni.navigateBack()
-			}
+			},
+
+			edtiorBtn() {
+				this.$store.commit('editorTask', this.task)
+				let src = this.$constData.taskType[this.task.taskType].src
+				uni.navigateTo({
+					url: src
+				})
+			},
+
+			getUserByTaskId(cnt) {
+				this.$api.getUserByTaskId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						console.log(obj)
+						console.log('______________________________________')
+						this.task = { ...this.task,
+							...obj.publishUser
+						}
+						this.pickUpUser = obj.pickUpUser
+						console.log(this.task)
+						if (this.task.taskStatus == 0) {
+							this.btnName = '撤回'
+						} else {
+							this.btnName = '付款'
+						}
+					} else {
+						uni.showToast({
+							title: '服务器错误',
+							icon: 'none'
+						})
+					}
+				})
+			},
 		},
-		onLoad() {
-			if (this.task.taskStatus == 0) {
-				this.btnName = '撤回'
-			} else {
-				this.btnName = '付款'
+		onLoad(res) {
+			let cnt = {
+				taskId: res.id, // Long 任务id
 			}
+			this.getUserByTaskId(cnt)
 		}
 	}
 </script>

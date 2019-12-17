@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<!-- 顶部选项卡 end -->
-		<task-list :tasks="tasks" @getItem="navToInfo" type="1"></task-list>
+		<task-list :tasks="tasks" @getItem="navToInfo" type="1" :myTask="currIndex == 0"></task-list>
 		<!-- 任务栏  task==任务栏-->
 	</view>
 </template>
