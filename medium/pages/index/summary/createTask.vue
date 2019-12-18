@@ -3,6 +3,7 @@
 		<nav-bar :back="false">
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="view-title">{{title}}</view>
+			<view slot="right" class="del-text" @click="delTask" v-if="status">删除</view>
 		</nav-bar>
 		<data-input v-model="price" price="澳元" title="您给多少钱" hiddenIcon></data-input>
 		<data-input v-model="time" title="完成时间" hiddenIcon disabled @click="showTimeBox"></data-input>
@@ -51,7 +52,8 @@
 			return {
 				title: '发布任务',
 				defaultVal: "['2018','12','31']",
-				time: this.$store.state.task.taskInfo.finishDate
+				time: this.$store.state.task.taskInfo.finishDate,
+				status: 0
 			};
 		},
 		methods: {
@@ -92,10 +94,12 @@
 					if (e) {
 						cnt.isDrafts = true
 					}
-
 					cnt.publishUserId = this.$util.tryParseJson(uni.getStorageSync('userInfo')).userId
-
-					this.createTaskApi(cnt)
+					if (this.status) {
+						this.updateTaskByTaskId(cnt)
+					} else {
+						this.createTaskApi(cnt)
+					}
 				} else {
 					uni.showToast({
 						title: '请将信息填写完整',
@@ -106,6 +110,34 @@
 
 			navBack() {
 				uni.navigateBack()
+			},
+
+			delTask() {
+				let cnt = {
+
+				}
+				this.$api.deletDurianTaskByTaskId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+
+					} else {
+
+					}
+				})
+			},
+
+			updateTaskByTaskId(cnt) {
+				this.$api.createTask(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.reLaunch({
+							url: './complete'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			},
 
 			createTaskApi(cnt) {
@@ -124,7 +156,7 @@
 			}
 		},
 		onLoad(res) {
-			console.log(res)
+			this.status = res.ediotr
 		}
 	}
 </script>
@@ -142,6 +174,12 @@
 		color: #333333;
 		font-size: 36rpx;
 		font-weight: normal;
+	}
+
+	.del-text {
+		font-size: 34rpx;
+		color: $group-color;
+		margin-right: 30rpx;
 	}
 
 	.bottom-box {

@@ -16,6 +16,11 @@ commen.getNewDate = (time) => {
 	return `${y}-${m}-${d}`
 }
 
+commen.getFullDate = (time) => {
+	let newData = new Date(time)
+	return commen.dateTimeFliter(newData)
+}
+
 commen.showTabIcon = () => {
 	// #ifdef APP-PLUS
 	let icon = plus.nativeObj.View.getViewById("icon");

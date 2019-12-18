@@ -18,12 +18,12 @@ const taskModules = {
 		updateType(state, taskType) {
 			state.taskInfo.taskType = taskType
 		},
-		
+
 		// （表格、文书）具体类别
 		updateCategory(state, taskCategory) {
 			state.taskInfo.taskCategory = taskCategory
 		},
-		
+
 		// 任务所需资质
 		updateQualifications(state, item) {
 			state.taskInfo.qualifications = item.qualId
@@ -65,32 +65,32 @@ const taskModules = {
 		updateFileData(state, file) {
 			state.taskInfo.fileData.push(file)
 		},
-		
+
 		//删除文件
 		delFileData(state, index) {
 			state.taskInfo.fileData.splice(index, 1)
 		},
-		
+
 		// 上传图片
 		updateImgData(state, img) {
 			state.taskInfo.imgData.push(img)
 		},
-		
+
 		//删除图片
 		delImgData(state, index) {
 			state.taskInfo.fileData.splice(index, 1)
 		},
-		
+
 		// 任务金额
 		updatePayPrice(state, taskBudget) {
 			state.taskInfo.taskBudget = taskBudget
 		},
-		
+
 		// 任务完成时间 
 		updateFinishDate(state, finishDate) {
 			state.taskInfo.finishDate = finishDate
 		},
-		
+
 		// 计算属性get()不同步时,强制刷新页面
 		resSetTaskInfo(state) {
 			let newTaskInfo = { ...state.taskInfo
@@ -98,7 +98,7 @@ const taskModules = {
 			state.taskInfo = null
 			state.taskInfo = newTaskInfo
 		},
-		
+
 		// 获取资质列表
 		updateQualList(state, list) {
 			state.qualiList = list
@@ -110,16 +110,16 @@ const taskModules = {
 			}
 			state.qualiList.push(obj)
 		},
-		
+
 		// 翻译任务原语种 
 		updateOldLanguage(state, oldLanguage) {
 			state.taskInfo.oldLanguage = oldLanguage
 		},
-		
+
 		updateNewLanguage(state, newLanguage) {
 			state.taskInfo.newLanguage = newLanguage
 		},
-		
+
 		// 初始化store的数据
 		reSetStore(state) {
 			state.taskInfo = (({
@@ -129,7 +129,7 @@ const taskModules = {
 				qualifications,
 				qualName
 			}))(state.taskInfo)
-		
+
 			state.taskInfo = {
 				taskStatus: 0,
 				fileData: [],
@@ -137,7 +137,7 @@ const taskModules = {
 				...state.taskInfo
 			}
 		},
-		
+
 		editorTask(state, taskInfo) {
 			state.taskInfo = taskInfo
 		},
@@ -148,6 +148,16 @@ const taskModules = {
 		}) {
 			return new Promise((resolve, reject) => {
 				commit('reSetStore')
+				resolve('succ')
+				reject('error')
+			})
+		},
+
+		editorTask({
+			commit
+		}, taskInfo) {
+			return new Promise((resolve, reject) => {
+				commit('editorTask', taskInfo)
 				resolve('succ')
 				reject('error')
 			})

@@ -65,6 +65,11 @@ api.getUserByTaskId = function(cnt, callback) {
 	util.call(baseUrl + '/task/getUserByTaskId', cnt, callback)
 }
 
+// 任务总览
+api.getAllTask = function(cnt, callback) {
+	util.call(baseUrl + '/task/getAllTask', cnt, callback)
+}
+
 // 撤回任务 
 api.withdrawTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/withdrawTask', cnt, callback)
@@ -78,6 +83,16 @@ api.createTask = function(cnt, callback) {
 // 接取任务 
 api.acceptTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/acceptTask', cnt, callback)
+}
+
+// 修改任务 
+api.updateTaskByTaskId = function(cnt, callback) {
+	util.call(baseUrl + '/task/updateTaskByTaskId', cnt, callback)
+}
+
+// 删除任务 
+api.deletDurianTaskByTaskId = function(cnt, callback) {
+	util.call(baseUrl + '/task/deletDurianTaskByTaskId', cnt, callback)
 }
 
 // 查询语种 

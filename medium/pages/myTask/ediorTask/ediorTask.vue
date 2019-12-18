@@ -2,32 +2,22 @@
 	<view>
 		<nav-bar :back="false">
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
-			<view class="view-title">发布任务</view>
+			<view class="view-title">我的任务</view>
+			<view slot="right" class="del-text" @click="delTask">删除</view>
 		</nav-bar>
 		<view style="margin-top: 10rpx;"></view>
+		<data-input :inputHidden="aptitudesStatus" disabled v-model="type" :hiddenIcon="true" title="任务分类"></data-input>
 
 		<data-input :inputHidden="aptitudesStatus" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
+
+		<data-textarea :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" placeholder="请输入任务描述" title="任务描述"></data-textarea>
 
 		<choice-input :value="aptitudes" title="任务接收者所需资质" :hiddenIcon="true" @click="openAts"></choice-input>
 
 		<data-input :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" title="和接收者共享的文件"></data-input>
 
-		<view style="margin-top: 20rpx;">
-			<button class="uploding-img" @click="upImgStar" v-if="imgList.length == 0">
-				<image src="/static/image/icon/icon_pzsc.png" mode="aspectFit"></image>
-				<view>上传照片</view>
-			</button>
-			<view class="img-list" v-else>
-				<view class="img-list-box" v-for="(item,index) in imgList" :key="index">
-					<image :src="item" mode="aspectFill"></image>
-					<view class="iconfont iconguanbi" @click.stop="delImg(index)"></view>
-				</view>
-				<view class="iconfont iconjia img-list-box" @click="upImgStar"></view>
-			</view>
-		</view>
-
 		<view class="up-file">
-			<view class="auto-title">其他文件</view>
+			<view class="auto-title">文件上传</view>
 			<uni-swipe-action>
 				<uni-swipe-action-item :options="options" v-for="(item,index) in fileList" :key="index" btnMargin="20rpx 0 0 20rpx"
 				 @click="delFile(index)">
@@ -41,6 +31,22 @@
 				</uni-swipe-action-item>
 			</uni-swipe-action>
 			<button class="up-file-btn" @click="upFile">点击上传</button>
+		</view>
+
+
+		<view class="up-file" style="padding-right: 0;">
+			<view class="auto-title" style="margin-bottom: 30rpx;">其他文件</view>
+			<button class="uploding-img" @click="upImgStar" v-if="imgList.length == 0">
+				<image src="/static/image/icon/icon_pzsc.png" mode="aspectFit"></image>
+				<view>上传照片</view>
+			</button>
+			<view class="img-list" v-else>
+				<view class="img-list-box" v-for="(item,index) in imgList" :key="index">
+					<image :src="item" mode="aspectFill"></image>
+					<view class="iconfont iconguanbi" @click.stop="delImg(index)"></view>
+				</view>
+				<view class="iconfont iconjia img-list-box" @click="upImgStar"></view>
+			</view>
 		</view>
 
 		<data-input :inputHidden="aptitudesStatus" v-model="remark" :hiddenIcon="true" title="特别提醒"></data-input>
@@ -87,6 +93,9 @@
 		},
 
 		computed: {
+			type() {
+				return this.$constData.taskType[this.$store.state.task.taskInfo.taskType].name
+			},
 			title: {
 				get() {
 					return this.$store.state.task.taskInfo.taskName
@@ -94,6 +103,15 @@
 				set(value) {
 					this.$store.commit('updateTitle', value)
 					this.$store.commit('resSetTaskInfo')
+				}
+			},
+
+			taskInfo: {
+				get() {
+					return this.$store.state.task.taskInfo.taskDescribe
+				},
+				set(value) {
+					this.$store.commit('updateTaskDescribe', value)
 				}
 			},
 
@@ -248,7 +266,7 @@
 			nextBtn() {
 				if (this.$store.state.task.taskInfo.taskName && this.$store.state.task.taskInfo.otherDescribe) {
 					uni.navigateTo({
-						url: `./createTask`
+						url: `../../index/summary/createTask?ediotr=1`
 					})
 				} else {
 					uni.showToast({
@@ -267,7 +285,7 @@
 
 			navBack() {
 				uni.navigateBack()
-			}
+			},
 		}
 	}
 </script>
@@ -295,6 +313,12 @@
 		color: #333333;
 		font-size: 36rpx;
 		font-weight: normal;
+	}
+
+	.del-text {
+		font-size: 34rpx;
+		color: $group-color;
+		margin-right: 30rpx;
 	}
 
 	.aptitudes-list {
@@ -406,7 +430,6 @@
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
-		padding-left: 30rpx;
 		width: 100%;
 		box-sizing: border-box;
 

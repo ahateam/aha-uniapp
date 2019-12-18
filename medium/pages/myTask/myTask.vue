@@ -74,17 +74,65 @@
 				} else {
 					taskType = 'myTask'
 				}
-				uni.navigateTo({
-					url: `/pages/myTask/taskInfo/${taskType}?id=${item.taskId}`,
-					success: () => {
-						// #ifdef APP-PLUS
-						setTimeout(() => {
-							this.$commen.hiddenTabIcon()
-						}, 100);
-						// #endif
+				if (item.status == this.$constData.taskWall[2].key) { //跳轉草稿修改
+					uni.showLoading({
+						title: '数据拉取中...'
+					})
+					let cnt = {
+						taskId: item.taskId, // Long 任务id
+					}
+					this.getUserByTaskId(cnt, item)
+				} else {
+					uni.navigateTo({
+						url: `/pages/myTask/taskInfo/${taskType}?id=${item.taskId}`,
+						success: () => {
+							// #ifdef APP-PLUS
+							setTimeout(() => {
+								this.$commen.hiddenTabIcon()
+							}, 100);
+							// #endif
+						}
+					})
+				}
+			},
+
+			getUserByTaskId(cnt, item) { // 取出全部屬性
+				this.$api.getUserByTaskId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c).publishUser
+						obj.finishDate = this.$commen.getFullDate(obj.finishDate)
+						if (obj.imgData) {
+							obj.imgData = this.$util.tryParseJson(obj.imgData)
+						}
+						if (obj.fileData) {
+							obj.fileData = this.$util.tryParseJson(obj.fileData)
+						}
+						let {
+							userHead,
+							userName,
+							brithday,
+							...newObj
+						} = obj
+						this.$store.dispatch('editorTask', newObj).then((res) => {
+							uni.hideLoading()
+							uni.navigateTo({
+								url: `./ediorTask/ediorTask?id=${item.taskId}`,
+								success: () => {
+									// #ifdef APP-PLUS
+									setTimeout(() => {
+										this.$commen.hiddenTabIcon()
+									}, 100);
+									// #endif
+								}
+							})
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
 					}
 				})
-
 			},
 
 			topoption(index) {
@@ -113,10 +161,12 @@
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.stopPullDownRefresh()
 						let list = this.$util.tryParseJson(res.data.c)
-						console.log(list)
 						this.tryData(list)
 					} else {
-						console.log('error')
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
 					}
 				})
 			},

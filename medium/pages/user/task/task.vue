@@ -10,21 +10,21 @@
 				<view class="list">
 					<view class="top-img-box">
 						<image class="status-icon" src="/static/image/icon/user/task/icon_yfk.png" mode="aspectFit"></image>
-						<view class="list-red white">1</view>
+						<view class="list-red white" v-if="myTask.paid">{{myTask.paid}}</view>
 					</view>
 					<view>已付款</view>
 				</view>
 				<view class="list">
 					<view class="top-img-box">
 						<image class="status-icon" src="/static/image/icon/user/task/icon_yfp.png" mode="aspectFit"></image>
-						<view class="list-red white">1</view>
+						<view class="list-red white" v-if="myTask.onging">{{myTask.onging}}</view>
 					</view>
 					<view>已分配</view>
 				</view>
 				<view class="list">
 					<view class="top-img-box">
 						<image class="status-icon" src="/static/image/icon/user/task/icon_cg.png" mode="aspectFit"></image>
-						<view class="list-red white">1</view>
+						<view class="list-red white" v-if="myTask.draft">{{myTask.draft}}</view>
 					</view>
 					<view>草稿</view>
 
@@ -32,7 +32,7 @@
 				<view class="list">
 					<view class="top-img-box">
 						<image class="status-icon" src="/static/image/icon/user/task/icon_ddfp.png" mode="aspectFit"></image>
-						<view class="list-red white">1</view>
+						<view class="list-red white" v-if="myTask.ready">{{myTask.ready}}</view>
 					</view>
 					<view>等待分配</view>
 				</view>
@@ -45,14 +45,14 @@
 				<view class="list">
 					<view class="top-img-box">
 						<image class="status-icon" src="/static/image/icon/user/task/icon_jxz.png" mode="aspectFit"></image>
-						<view class="list-red white">1</view>
+						<view class="list-red white" v-if="accTask.onging">{{accTask.onging}}</view>
 					</view>
 					<view>进行中</view>
 
 				</view>
 				<view class="list">
 					<view class="top-img-box">
-						<view class="list-red white">1</view>
+						<view class="list-red white" v-if="accTask.nopay">{{accTask.nopay}}</view>
 						<image class="status-icon" src="/static/image/icon/user/task/icon_wcwsk.png" mode="aspectFit"></image>
 					</view>
 					<view>完成未收款</view>
@@ -60,7 +60,7 @@
 				<view class="list">
 					<view class="top-img-box">
 						<image class="status-icon" src="/static/image/icon/user/task/icon_ysk.png" mode="aspectFit"></image>
-						<view class="list-red white">1</view>
+						<view class="list-red white" v-if="accTask.paid">{{accTask.paid}}</view>
 					</view>
 					<view>已收款</view>
 
@@ -91,8 +91,20 @@
 		},
 		data() {
 			return {
-				taskList: [
-					{
+				myTask: {
+					paid: 0,
+					onging: 0,
+					ready: 0,
+					draft: 0
+				},
+
+				accTask: {
+					onging: 0,
+					nopay: 0,
+					paid: 0
+				},
+
+				taskList: [{
 						name: '全案助理',
 						money: 100,
 						infor: '500签证全案',
@@ -110,7 +122,68 @@
 		methods: {
 			navBack() {
 				uni.navigateBack()
+			},
+
+			getAllTask(cnt, e) {
+				this.$api.getAllTask(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c)
+						console.log(arr)
+						for (let i = 0; i < arr.length; i++) {
+							if (arr[i].count > 99) {
+								arr[i].count == '···'
+							}
+							if (arr[i].taskStatus == this.$constData.taskStatus[3].key) {
+								if (e) {
+									this.myTask.paid = arr[i].count
+								} else {
+									this.accTask.paid = arr[i].count
+								}
+							}
+							if (arr[i].taskStatus == this.$constData.taskStatus[2].key) {
+								if (e) {
+									this.myTask.nopay = arr[i].count
+								} else {
+									this.accTask.nopay = arr[i].count
+								}
+							} else if (arr[i].taskStatus == this.$constData.taskStatus[1].key) {
+								if (e) {
+									this.myTask.onging = arr[i].count
+								} else {
+									this.accTask.onging = arr[i].count
+								}
+							} else if (arr[i].taskStatus == this.$constData.taskStatus[0].key) {
+								if (e) {
+									this.myTask.ready = arr[i].count
+								} else {
+									this.accTask.ready = arr[i].count
+								}
+							} else if (arr[i].title == '草稿') {
+								this.myTask.draft = arr[i].count
+							}
+						}
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			}
+		},
+		onLoad() {
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			let cnt = {
+				userId: userInfo.userId, // Long 用戶id
+				isPublishUser: true, // boolean 是否为发布者
+			}
+			this.getAllTask(cnt, true)
+
+			let cnt1 = {
+				userId: userInfo.userId, // Long 用戶id
+				isPublishUser: false, // boolean 是否为发布者
+			}
+			this.getAllTask(cnt1, false)
 		}
 	}
 </script>
