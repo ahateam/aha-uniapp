@@ -114,21 +114,29 @@
 
 			delTask() {
 				let cnt = {
-
+					taskId: this.$store.state.task.taskInfo.taskId, // Long 任务id
 				}
 				this.$api.deletDurianTaskByTaskId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-
+						uni.switchTab({
+							url: '/pages/myTask/myTask'
+						})
+						uni.showToast({
+							title: '删除成功!'
+						})
 					} else {
-
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
 					}
 				})
 			},
 
 			updateTaskByTaskId(cnt) {
-				this.$api.createTask(cnt, (res) => {
+				this.$api.updateTaskByTaskId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.reLaunch({
+						uni.navigateTo({
 							url: './complete'
 						})
 					} else {
@@ -143,7 +151,7 @@
 			createTaskApi(cnt) {
 				this.$api.createTask(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.reLaunch({
+						uni.navigateTo({
 							url: './complete'
 						})
 					} else {

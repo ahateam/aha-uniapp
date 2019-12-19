@@ -92,6 +92,7 @@
 		height: 260rpx;
 		margin: 30rpx;
 		box-shadow: 0 0 15rpx 0 rgba($color: #B6C4D2, $alpha: .4);
+		border-radius: 4rpx;
 	}
 
 	.task-top {

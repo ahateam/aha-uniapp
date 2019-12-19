@@ -82,6 +82,13 @@
 						taskId: item.taskId, // Long 任务id
 					}
 					this.getUserByTaskId(cnt, item)
+					if (this.$store.state.task.qualiList.length == 0) {
+						let cnt1 = {
+							count: 100,
+							offset: 0
+						}
+						this.getByQualId(cnt1)
+					}
 				} else {
 					uni.navigateTo({
 						url: `/pages/myTask/taskInfo/${taskType}?id=${item.taskId}`,
@@ -184,6 +191,30 @@
 
 				this.tasks = this.tasks.concat(list)
 				this.navList[this.currIndex].child = this.tasks
+			},
+
+			getByQualId(cnt) {
+				this.$api.getByQualId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.$store.commit('updateQualList', this.$util.tryParseJson(res.data.c))
+					} else {
+						if (getNumber == 2) {
+							uni.showToast({
+								title: '服务器错误',
+								icon: 'none'
+							})
+						} else {
+							setTimeout(() => {
+								getNumber += 1
+								let cnt1 = {
+									count: 100,
+									offset: 0
+								}
+								this.getByQualId(cnt1)
+							}, 500)
+						}
+					}
+				})
 			}
 		},
 		onShow() {
@@ -201,6 +232,9 @@
 			}
 			this.getTaskList(cnt)
 		},
+
+
+
 		onPullDownRefresh() {
 			this.page = 1
 			this.navList[this.currIndex].page = 1
@@ -274,6 +308,7 @@
 		position: relative;
 		background-color: #FFFFFF;
 		padding: 0 29rpx 30rpx;
+		border-radius: 0 0 20rpx 20rpx;
 	}
 
 	.flex-box {

@@ -190,29 +190,22 @@
 			},
 
 			upLoadImg() {
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 				let tiemr = new Date()
-				let address = tiemr.getFullYear() + "" + (tiemr.getMonth() + 1) + "" + tiemr.getDate()
-				address = 'image/' + address + '/'
+				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['compressed'],
-					sourceType: ['album', 'camera'],
 					success: (res) => {
 						let imageSrc = res.tempFilePaths[0]
 						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
-						let nameStr = address + tiemr.getTime() + str
+						let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
 						// nameStr =  res.tempFilePaths[0]
 						console.log(nameStr)
 						uni.showLoading({
 							title: '上传中'
 						})
 						this.upLoadOss(imageSrc, nameStr)
-					},
-					fail: (err) => {
-						uni.showToast({
-							title: '已取消',
-							icon: 'none'
-						})
 					}
 				})
 			},
@@ -220,18 +213,18 @@
 			// 上传至oss
 			upLoadOss(imageSrc, nameStr) {
 				uni.uploadFile({
-					url: 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com',
+					url: this.$constData.oss,
 					filePath: imageSrc,
 					fileType: 'image',
 					name: 'file',
 					formData: {
 						name: nameStr,
 						'key': nameStr,
-						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMi0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
-						'OSSAccessKeyId': 'LTAIJ9mYIjuW54Cj',
+						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+						'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
 						'success_action_status': '200',
 						//让服务端返回200,不然，默认会返回204
-						'signature': 'kgQ5n4s0oKpFHp35EI12CuTFvVM=',
+						'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
 					},
 					success: (res) => {
 						console.log(res)
@@ -242,7 +235,7 @@
 							duration: 1000
 						})
 						//只管这个变量
-						this.headSrc = 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr
+						this.headSrc = this.$constData.oss + nameStr
 						console.log(this.headSrc)
 					},
 					fail: (err) => {

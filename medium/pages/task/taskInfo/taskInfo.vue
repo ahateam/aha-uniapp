@@ -165,8 +165,10 @@
 			},
 		},
 		onLoad(res) {
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			let cnt = {
 				taskId: res.id, // Long 任务id
+				userId: userInfo.userId, // Long <选填> 用户id
 			}
 			this.getUserByTaskId(cnt)
 		}

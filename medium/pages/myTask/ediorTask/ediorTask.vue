@@ -156,6 +156,27 @@
 			}
 		},
 		methods: {
+			delTask() {
+				let cnt = {
+					taskId: this.$store.state.task.taskInfo.taskId, // Long 任务id
+				}
+				this.$api.deletDurianTaskByTaskId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url: '/pages/myTask/myTask'
+						})
+						uni.showToast({
+							title: '删除成功!'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
 			changeAts(index) {
 				this.aptitudesCurr = index
 			},
@@ -183,15 +204,17 @@
 			},
 
 			onSuccess(res) {
-				console.log('上传成功回调', JSON.stringify(res));
-				console.log('文件上传的地址不包含url')
-				console.log(res.frontFileName)
-				console.log('文件上传的完整地址，包含url')
-				console.log(res.fileUrl)
+				// console.log('上传成功回调', JSON.stringify(res));
+				// console.log('文件上传的地址不包含url')
+				// console.log(res.frontFileName)
+				// console.log('文件上传的完整地址，包含url')
+				// console.log(res.fileUrl)
 				if (res.frontFileName != 'index.html') {
+					let fileName = res.frontFileName.substr(res.frontFileName.lastIndexOf('/') + 1)
 					let obj = {
-						name: res.frontFileName,
-						src: this.$constData.oss + res.frontFileName
+						name: fileName,
+						url: res.frontFileName,
+						size: res.fileSize
 					}
 					this.$store.commit('updateFileData', obj)
 				}
@@ -206,16 +229,16 @@
 			},
 
 			upImgStar() {
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 				let tiemr = new Date()
-				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate();
-				address = 'image/' + address + '/'
+				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['compressed'],
 					success: (res) => {
 						let imageSrc = res.tempFilePaths[0]
 						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
-						let nameStr = address + tiemr.getTime() + str
+						let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
 						// nameStr =  res.tempFilePaths[0]
 						console.log(nameStr)
 						uni.showLoading({
@@ -229,29 +252,28 @@
 			// 上传至服务器
 			upLoadImg(imageSrc, nameStr) {
 				uni.uploadFile({
-					url: 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com',
+					url: this.$constData.oss,
 					filePath: imageSrc,
 					fileType: 'image',
 					name: 'file',
 					formData: {
 						name: nameStr,
 						'key': nameStr,
-						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMi0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
-						'OSSAccessKeyId': 'LTAIJ9mYIjuW54Cj',
+						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+						'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
 						'success_action_status': '200',
 						//让服务端返回200,不然，默认会返回204
-						'signature': 'kgQ5n4s0oKpFHp35EI12CuTFvVM=',
+						'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
 					},
 					success: (res) => {
 						console.log(res)
 						uni.hideLoading()
 						uni.showToast({
 							title: '上传成功',
-							icon: 'success',
-							duration: 1000
+							icon: 'success'
 						})
 						//只管这个变量
-						this.$store.commit('updateImgData', 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/' + nameStr)
+						this.$store.commit('updateImgData', this.$constData.oss + nameStr)
 					},
 					fail: (err) => {
 						console.log('uploadImage fail', err);

@@ -96,7 +96,6 @@
 							role: this.userInfo.userType
 						});
 						promise.then((res1) => {
-							console.log('11111111')
 							this.$store.commit("updateCurrentUserProfile", res1.data);
 						}).catch((err1) => {
 
@@ -178,11 +177,13 @@
 			}
 
 
-			let cnt = {
-				count: 100,
-				offset: 0
+			if (this.$store.state.task.qualiList.length == 0) {
+				let cnt = {
+					count: 100,
+					offset: 0
+				}
+				this.getByQualId(cnt)
 			}
-			this.getByQualId(cnt)
 		},
 	}
 </script>

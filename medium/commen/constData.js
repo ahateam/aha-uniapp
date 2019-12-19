@@ -2,7 +2,7 @@
 
 const constData = {}
 
-constData.oss = 'http://file-duran.oss-ap-southeast-2.aliyuncs.com'
+constData.oss = 'http://durian-file.oss-ap-southeast-2.aliyuncs.com/'
 
 constData.module = 1190
 
@@ -95,7 +95,7 @@ constData.taskWall = [{
 	{
 		key: 2,
 		val: '草稿',
-		icon:'/static/image/icon/task/icon_cg.png'
+		icon: '/static/image/icon/task/icon_cg.png'
 	}
 ]
 

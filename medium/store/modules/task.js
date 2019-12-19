@@ -78,7 +78,7 @@ const taskModules = {
 
 		//删除图片
 		delImgData(state, index) {
-			state.taskInfo.fileData.splice(index, 1)
+			state.taskInfo.imgData.splice(index, 1)
 		},
 
 		// 任务金额
@@ -139,6 +139,12 @@ const taskModules = {
 		},
 
 		editorTask(state, taskInfo) {
+			if (!taskInfo.fileData) {
+				taskInfo.fileData = []
+			}
+			if (!taskInfo.imgData) {
+				taskInfo.imgData = []
+			}
 			state.taskInfo = taskInfo
 		},
 	},
