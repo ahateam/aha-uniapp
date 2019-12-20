@@ -3,10 +3,10 @@
 		<nav-bar :back="false">
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="view-title">{{title}}</view>
-			<view slot="right" class="del-text" @click="delTask" v-if="status">删除</view>
+			<view slot="right" class="del-text" @click="delBoxShow = true" v-if="status">删除</view>
 		</nav-bar>
-		<data-input v-model="price" price="澳元" title="您给多少钱" hiddenIcon></data-input>
-		<data-input v-model="time" title="完成时间" hiddenIcon disabled @click="showTimeBox"></data-input>
+		<data-input v-model="price" :inputHidden="delBoxShow" type="number" price="澳元" title="您给多少钱" hiddenIcon></data-input>
+		<data-input v-model="time" :inputHidden="delBoxShow" title="完成时间" hiddenIcon disabled @click="showTimeBox"></data-input>
 
 		<view class="bottom-box">
 			<next-btn title="发布任务" radius="6rpx" @click="createTask(0)"></next-btn>
@@ -17,6 +17,16 @@
 
 		<w-picker mode="limit" :startYear="startYear" :endYear="startYear + 30" :defaultVal="defaultVal" :current="true"
 		 @confirm="onConfirm" ref="picker" themeColor="#00C8BE"></w-picker>
+
+		<uni-popup :show="delBoxShow" type="center" @change="changePopup">
+			<view class="popup-box">
+				<view>确定删除任务吗</view>
+				<view class="popup-btn-box">
+					<button class="succ-btn" @click="delTask">确定</button>
+					<button class="colse-btn" @click="delBoxShow = false">再想想</button>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -25,13 +35,15 @@
 	import NextBtn from '@/components/NextBtn/NextBtn.vue'
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import wPicker from "@/components/w-picker/w-picker.vue";
+	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 
 	export default {
 		components: {
 			navBar,
 			DataInput,
 			NextBtn,
-			wPicker
+			wPicker,
+			uniPopup
 		},
 		computed: {
 			startYear() {
@@ -53,10 +65,17 @@
 				title: '发布任务',
 				defaultVal: "['2018','12','31']",
 				time: this.$store.state.task.taskInfo.finishDate,
-				status: 0
+				status: 0,
+				delBoxShow: false
 			};
 		},
 		methods: {
+			changePopup(e) {
+				if (!e.show) {
+					this.delBoxShow = false
+				}
+			},
+
 			onConfirm(res) {
 				this.$store.commit('updateFinishDate', res.result)
 				this.time = res.result
@@ -93,6 +112,9 @@
 
 					if (e) {
 						cnt.isDrafts = true
+						cnt.status = this.$constData.taskWall[2].key
+					} else {
+						cnt.status = this.$constData.taskWall[0].key
 					}
 					cnt.publishUserId = this.$util.tryParseJson(uni.getStorageSync('userInfo')).userId
 					if (this.status) {
@@ -196,5 +218,45 @@
 		box-sizing: border-box;
 		bottom: 30rpx;
 		padding: 0 30rpx;
+	}
+
+	.popup-box {
+		width: 600rpx;
+		height: 322rpx;
+		box-sizing: border-box;
+		padding: 70rpx 40rpx 40rpx;
+		font-size: $group-font-befor;
+		line-height: 42rpx;
+		background-color: $group-color-w;
+		border-radius: 4rpx;
+		text-align: center;
+	}
+
+	.popup-btn-box {
+		display: flex;
+		margin-top: 90rpx;
+		line-height: 80rpx;
+
+		button {
+			width: 250rpx;
+			margin: 0 20rpx;
+			box-sizing: border-box;
+			color: $group-color;
+			border-radius: 0;
+
+			&:after {
+				border: none;
+			}
+		}
+	}
+
+	.succ-btn {
+		background-color: #00C8BE;
+		color: $group-color-w !important;
+	}
+
+	.colse-btn {
+		background: #FFFFFF;
+		border: 1rpx solid $group-color-befor;
 	}
 </style>

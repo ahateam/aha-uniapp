@@ -67,7 +67,6 @@
 			},
 
 			navToInfo(item) {
-				console.log(item)
 				let taskType = ''
 				if (this.currIndex == 1) {
 					taskType = 'taskInfo'
@@ -80,6 +79,7 @@
 					})
 					let cnt = {
 						taskId: item.taskId, // Long 任务id
+						userId: this.userInfo.userId, // Long <选填> 用户id
 					}
 					this.getUserByTaskId(cnt, item)
 					if (this.$store.state.task.qualiList.length == 0) {
@@ -114,6 +114,8 @@
 						if (obj.fileData) {
 							obj.fileData = this.$util.tryParseJson(obj.fileData)
 						}
+						obj.finishDate = this.$commen.getFullDate(obj.finishDate)
+						console.log(obj.finishDate)
 						let {
 							userHead,
 							userName,
@@ -191,6 +193,8 @@
 
 				this.tasks = this.tasks.concat(list)
 				this.navList[this.currIndex].child = this.tasks
+
+				console.log(this.tasks)
 			},
 
 			getByQualId(cnt) {

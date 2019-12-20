@@ -1,161 +1,152 @@
 <template>
 	<view>
-		<view class="top-box">
-			<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
-			<view class="top-content">
-				<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
-				<view class="top-info-box">
-					<view class="top-name">{{task.userName}}</view>
-					<view class="top-time"><text class="iconfont iconshengri"></text><text>{{getDateTime(task.brithday)}}</text></view>
+		<view class="succ-view" :style="pageStatus == 'succ'?'opacity:1':''">
+			<view class="top-box">
+				<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
+				<view class="top-content">
+					<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
+					<view class="top-info-box">
+						<view class="top-name">{{task.userName}}</view>
+						<view class="top-time"><text class="iconfont iconshengri"></text><text>{{getDateTime(task.brithday)}}</text></view>
+					</view>
+				</view>
+				<view class="top-head">
+					<image class="top-head-bg" src="/static/image/user/icon_xstx.png" mode="aspectFit"></image>
+					<image class="top-head-img" :src="task.userHead" mode="aspectFill"></image>
 				</view>
 			</view>
-			<view class="top-head">
-				<image class="top-head-bg" src="/static/image/user/icon_xstx.png" mode="aspectFit"></image>
-				<image class="top-head-img" :src="task.userHead" mode="aspectFill"></image>
-			</view>
-		</view>
 
-		<view class="content-box">
-			<view class="ditor-btn" v-if="task.taskStatus == constData.taskStatus[0].key" @click="edtiorBtn">
+			<view class="content-box">
+				<!-- <view class="ditor-btn" v-if="task.taskStatus == $constData.taskStatus[0].key" @click="edtiorBtn">
 				<image class="btn-bg" src="/static/image/task/bg_xixi.png" mode="aspectFit"></image>
 				<view class="btn-content">
 					<image src="/static/image/task/icon_gxb.png" mode="aspectFit"></image>
 					更新
 				</view>
-			</view>
+			</view> -->
 
-			<view class="content-title">
-				<view class="content-title-text">我的任务</view>
-				<image class="content-title-bg" src="/static/image/task/icon_bg_y.png" mode="aspectFit"></image>
-			</view>
+				<view class="content-title">
+					<view class="content-title-text">我的任务</view>
+					<image class="content-title-bg" src="/static/image/task/icon_bg_y.png" mode="aspectFit"></image>
+				</view>
+				<view class="auto-box-white space-box">
+					<view class="left-title">任务分类</view>
+					<view class="right-info">{{constData.taskType[task.taskType].name}}</view>
+				</view>
 
-			<view class="auto-box-white space-box">
-				<view class="left-title">任务分类</view>
-				<view class="right-info">{{constData.taskType[task.taskType].name}}</view>
-			</view>
+				<view class="auto-box-white space-box">
+					<view class="left-title">任务名称</view>
+					<view class="right-info">{{task.taskName}}</view>
+				</view>
 
-			<view class="auto-box-white space-box">
-				<view class="left-title">任务名称</view>
-				<view class="right-info">{{task.taskTitle}}</view>
-			</view>
+				<view class="auto-box-white no-border">
+					<view class="left-title">任务描述</view>
+					<view class="right-info" style="margin-top: 29rpx;">{{task.taskDescribe}}</view>
+				</view>
 
-			<view class="auto-box-white no-border">
-				<view class="left-title">任务描述</view>
-				<view class="right-info" style="margin-top: 29rpx;">{{task.taskText}}</view>
-			</view>
-
-			<view class="block-box" v-if="task.taskStatus == 0">
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">任务发布时间</view>
-					<view class="right-info bottom-font">{{getDateTime(task.taskCreateTime)}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">任务发布者</view>
-					<view class="right-info bottom-font">{{task.userName}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">完成时间</view>
-					<view class="right-info bottom-font">{{getDateTime(task.finishDate)}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">价格</view>
-					<view class="right-info bottom-font" style="color: #FFA405;">AUD {{task.taskBudget}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">接收者所需证书</view>
-					<view class="right-info bottom-font">{{task.qualName}}</view>
-				</view>
-				<view class="auto-box-gray space-box" style="border: none;">
-					<view class="left-title bottom-font">共享文件</view>
-					<view class="right-info bottom-font">{{task.taskData.name}}</view>
-					<view class="data-box space-box">
-						<view>
-							<view class="data-title">{{task.taskData.dataName}}</view>
-							<view class="data-size">{{task.taskData.dataSize}}</view>
+				<view class="block-box" v-if="task.taskStatus == 0">
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">任务发布时间</view>
+						<view class="right-info bottom-font">{{getDateTime(task.taskCreateTime)}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">任务发布者</view>
+						<view class="right-info bottom-font">{{task.userName}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">完成时间</view>
+						<view class="right-info bottom-font">{{getDateTime(task.finishDate)}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">价格</view>
+						<view class="right-info bottom-font" style="color: #FFA405;">AUD {{task.taskBudget}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">接收者所需证书</view>
+						<view class="right-info bottom-font">{{task.qualName}}</view>
+					</view>
+					<view class="auto-box-gray space-box" style="border: none;" v-if="task.fileData">
+						<view class="left-title bottom-font">共享文件</view>
+						<view class="right-info bottom-font">{{task.taskData.name}}</view>
+						<view class="data-box space-box" v-for="(item,index) in $util.tryParseJson(task.fileData)" :key="index">
+							<view>
+								<view class="data-title">{{item.name}}</view>
+								<view class="data-size">{{item.size}}</view>
+							</view>
+							<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
 						</view>
-						<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
 					</view>
 				</view>
-			</view>
 
-			<view class="block-box" v-else>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">接收人</view>
-					<view class="right-info bottom-font">{{pickUpUser.userName}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">完成时间</view>
-					<view class="right-info bottom-font">{{getDateTime(task.finishDate)}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">完成状态</view>
-					<view class="hsty-list">
-						<view class="hsty-item" :class="[{'border-none':index == 0},{'left-dot-border':!item.status}]" v-for="(item,index) in task.historyList"
-						 :key="index">
-							<view>
-								<view class="hsty-dot" :class="!item.status?'curr-dot':''"></view>
-								<view class="hsty-text" :class="{'curr-text-color':!item.status}">{{item.time}}</view>
-								<view class="hsty-text hsty-text-right" :class="{'curr-text-color':!item.status}">{{item.text}}</view>
+				<view class="block-box" v-else>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">接收人</view>
+						<view class="right-info bottom-font">{{pickUpUser.userName}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">完成时间</view>
+						<view class="right-info bottom-font">{{getDateTime(task.finishDate)}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">完成状态</view>
+						<view class="hsty-list">
+							<view class="hsty-item" :class="[{'border-none':index == 0},{'left-dot-border':!item.status}]" v-for="(item,index) in task.historyList"
+							 :key="index">
+								<view>
+									<view class="hsty-dot" :class="!item.status?'curr-dot':''"></view>
+									<view class="hsty-text" :class="{'curr-text-color':!item.status}">{{item.time}}</view>
+									<view class="hsty-text hsty-text-right" :class="{'curr-text-color':!item.status}">{{item.text}}</view>
+								</view>
 							</view>
 						</view>
 					</view>
-				</view>
-				<view class="auto-box-gray space-box" v-if="task.taskStatus < 3">
-					<view class="left-title bottom-font">共享文件</view>
-					<view class="right-info bottom-font">{{task.taskData.name}}</view>
-					<view class="data-box space-box">
-						<view>
-							<view class="data-title">{{task.taskData.dataName}}</view>
-							<view class="data-size">{{task.taskData.dataSize}}</view>
-						</view>
-						<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
-					</view>
-				</view>
-				<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < 3">
-					<view class="left-title bottom-font">收回材料</view>
-					<view class="data-img-list">
-						<view class="data-img-box" v-for="(item,index) in $util.tryParseJson(task.imgData)" :key="index" :class="{'no-margin':getIndex(index)}">
-							<image :src="item" mode="aspectFill"></image>
+					<view class="auto-box-gray space-box" v-if="task.taskStatus < 3&&task.fileData">
+						<view class="left-title bottom-font">共享文件</view>
+						<view class="right-info bottom-font">{{task.taskData.name}}</view>
+						<view class="data-box space-box" v-for="(item,index) in $util.tryParseJson(task.fileData)" :key="index">
+							<view>
+								<view class="data-title">{{item.name}}</view>
+								<view class="data-size">{{item.size}}</view>
+							</view>
+							<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
 						</view>
 					</view>
-				</view>
-				<view class="auto-box-gray space-box" style="border: none;" v-else>
-					<view class="left-title bottom-font">支付信息</view>
-					<view class="right-info bottom-font">{{task.payTime}}</view>
-					<view class="pay-money-text">-{{task.payMoney}}</view>
+					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < 3&&task.imgData">
+						<view class="left-title bottom-font">收回材料</view>
+						<view class="data-img-list">
+							<view class="data-img-box" v-for="(item,index) in $util.tryParseJson(task.imgData)" :key="index" :class="{'no-margin':getIndex(index)}">
+								<image :src="item" mode="aspectFill"></image>
+							</view>
+						</view>
+					</view>
+					<view class="auto-box-gray space-box" style="border: none;" v-else-if="task.taskStatus == constData.taskStatus[3].key">
+						<view class="left-title bottom-font">支付信息</view>
+						<view class="right-info bottom-font">{{task.payTime}}</view>
+						<view class="pay-money-text">-{{task.payMoney}}</view>
+					</view>
 				</view>
 			</view>
-		</view>
 
-		<view v-if="task.taskStatus < 3" class="bottom-btn" :class="task.taskStatus == 0?'':'pay-btn'">
-			<button @click="bottomBtn">{{btnName}}</button>
+			<view v-if="task.taskStatus < 3" class="bottom-btn" :class="task.taskStatus == 0?'':'pay-btn'">
+				<button @click="bottomBtn">{{btnName}}</button>
+			</view>
+		</view>
+		<view class="loading-view" v-if="pageStatus == 'loading'">
+			<loading></loading>
 		</view>
 	</view>
 </template>
 
 <script>
+	import Loading from '@/components/Loading/Loading.vue'
+
 	export default {
+		components: {
+			Loading
+		},
 		data() {
 			return {
 				task: {
-					userName: '张曦',
-					accUser: {
-						name: '小飞'
-					},
-					userTime: '2019-10-08',
-					createTime: '2019-10-08',
-					userHead: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574775543939&di=34f1f8a709ce6958adff33a33c218451&imgtype=0&src=http%3A%2F%2Fi2.hdslb.com%2Fbfs%2Fface%2F97ea0b38bc4afa00e0b00b9035eb31368fa94f11.jpg',
-					price: 'AUD 300',
-					taskType: '全案助理',
-					taskTitle: '500签证全案助理',
-					taskText: '请帮忙填写签证相关内容，我是第一次申请，需要准备的资料还很多，听朋友说你们是专业的，拜托你们啦！',
-					taskTime: '2019-10-08',
-					taskStatus: 0,
-					certificate: '翻译证书',
-					taskData: {
-						dataName: '我的成绩单.docx',
-						dataSize: '216K'
-					},
 					historyList: [{
 							time: '2019-10-05',
 							text: '提交签证申请',
@@ -177,16 +168,16 @@
 						'',
 						'',
 						''
-					],
-					payTime: '2019-10-1 10:01',
-					payMoney: '300澳元'
+					]
 				},
+
+				pageStatus: 'loading',
 
 				pickUpUser: {},
 
-				btnName: '',
+				constData: this.$constData,
 
-				constData: this.$constData
+				btnName: '',
 			}
 		},
 		methods: {
@@ -240,20 +231,31 @@
 				uni.navigateBack()
 			},
 
-			edtiorBtn() {
-				this.$store.commit('editorTask', this.task)
-				let src = this.$constData.taskType[this.task.taskType].src
-				uni.navigateTo({
-					url: src
-				})
-			},
+			// edtiorBtn() {
+			// 	this.$store.commit('editorTask', this.task)
+			// 	let src = this.$constData.taskType[this.task.taskType].src
+			// 	uni.navigateTo({
+			// 		url: src
+			// 	})
+			// },
 
 			getUserByTaskId(cnt) {
 				this.$api.getUserByTaskId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let obj = this.$util.tryParseJson(res.data.c)
 						console.log(obj)
-						console.log('______________________________________')
+						if (obj.imgData) {
+							obj.imgData = this.$util.tryParseJson(obj.imgData)
+						} else {
+							obj.imgData = []
+						}
+
+						if (obj.fileData) {
+							obj.fileData = this.$util.tryParseJson(obj.fileData)
+						} else {
+							obj.fileData = []
+						}
+
 						this.task = { ...this.task,
 							...obj.publishUser
 						}
@@ -264,6 +266,7 @@
 						} else {
 							this.btnName = '付款'
 						}
+						this.pageStatus = 'succ'
 					} else {
 						uni.showToast({
 							title: '服务器错误',
@@ -274,8 +277,10 @@
 			},
 		},
 		onLoad(res) {
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			let cnt = {
 				taskId: res.id, // Long 任务id
+				userId: userInfo.userId
 			}
 			this.getUserByTaskId(cnt)
 		}
@@ -619,5 +624,21 @@
 		text-align: right;
 		font-size: 26rpx;
 		margin: 30rpx 0 0;
+	}
+
+	.loading-view {
+		position: fixed;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: #FFFFFF;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.succ-view {
+		transition: all 1s;
+		opacity: 0;
 	}
 </style>

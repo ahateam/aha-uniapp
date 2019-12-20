@@ -123,6 +123,7 @@
 			console.log(userInfo)
 			this.name = userInfo.userName
 			this.imgSrc = userInfo.userHead
+			// if(userInfo.) //需要判定資料完善顯示提醒
 		}
 	}
 </script>

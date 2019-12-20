@@ -63,19 +63,18 @@
 						<view class="list-red white" v-if="accTask.paid">{{accTask.paid}}</view>
 					</view>
 					<view>已收款</view>
-
 				</view>
 			</view>
 		</view>
-		<view class="title white">游览历史</view>
-		<view class="history">
-			<image class="history-img" src="/static/image/icon/icon_l.png" mode="aspectFit"></image>
-			<view>2019-10-01</view>
-			<image class="history-img" src="/static/image/icon/icon_r.png" mode="aspectFit"></image>
+		<view class="title white">浏览历史</view>
+		<view v-for="(item,index) in histyList" :key="index">
+			<view class="history">
+				<image class="history-img" src="/static/image/icon/icon_l.png" mode="aspectFit"></image>
+				<view>{{item.date}}</view>
+				<image class="history-img" src="/static/image/icon/icon_r.png" mode="aspectFit"></image>
+			</view>
+			<other-task-list :tasks="item.child" @getItem="navToTask"></other-task-list>
 		</view>
-
-		<other-task-list :tasks="taskList"></other-task-list>
-
 	</view>
 </template>
 
@@ -104,24 +103,127 @@
 					paid: 0
 				},
 
-				taskList: [{
-						name: '全案助理',
-						money: 100,
-						infor: '500签证全案',
-						time: '2019-10-10'
-					},
-					{
-						name: '翻译',
-						money: 300,
-						infor: '学生成绩单翻译',
-						time: '2019-10-10'
-					}
-				]
+				histyList: [],
+
+				userInfo: {},
 			}
 		},
 		methods: {
+			navToTask(item) {
+				let src = ''
+				if (item.publishUserId == this.userInfo.userId) {
+					if (item.status == this.$constData.taskWall[2].key) {
+						src = '/pages/myTask/ediorTask/ediorTask'
+						uni.showLoading({
+							title: '数据拉取中...'
+						})
+						let cnt = {
+							taskId: item.taskId, // Long 任务id
+							userId: this.userInfo.userId, // Long <选填> 用户id
+						}
+						this.getUserByTaskId(cnt, item)
+						if (this.$store.state.task.qualiList.length == 0) {
+							let cnt1 = {
+								count: 100,
+								offset: 0
+							}
+							this.getByQualId(cnt1)
+						}
+						return
+					} else {
+						src = `/pages/myTask/taskInfo/myTask?id=${item.taskId}`
+					}
+				} else if (item.pickUpUserId == this.userInfo.userId) {
+					src = `/pages/myTask/taskInfo/taskInfo?id=${item.taskId}`
+				} else {
+					src = `/pages/task/taskInfo/taskInfo?id=${item.taskId}`
+				}
+
+				uni.navigateTo({
+					url: src
+				})
+			},
+
 			navBack() {
 				uni.navigateBack()
+			},
+
+			getUserByTaskId(cnt, item) { // 取出全部屬性
+				this.$api.getUserByTaskId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c).publishUser
+						obj.finishDate = this.$commen.getFullDate(obj.finishDate)
+						if (obj.imgData) {
+							obj.imgData = this.$util.tryParseJson(obj.imgData)
+						}
+						if (obj.fileData) {
+							obj.fileData = this.$util.tryParseJson(obj.fileData)
+						}
+						obj.finishDate = this.$commen.getFullDate(obj.finishDate)
+						console.log(obj.finishDate)
+						let {
+							userHead,
+							userName,
+							brithday,
+							...newObj
+						} = obj
+						this.$store.dispatch('editorTask', newObj).then((res) => {
+							uni.hideLoading()
+							uni.navigateTo({
+								url: `/pages/myTask/ediorTask/ediorTask?id=${item.taskId}`,
+								success: () => {
+									// #ifdef APP-PLUS
+									setTimeout(() => {
+										this.$commen.hiddenTabIcon()
+									}, 100);
+									// #endif
+								}
+							})
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			tryListData(arr) {
+				let list = [{
+					date: '',
+					child: []
+				}]
+				arr.map((item, index) => {
+					if (list[0].date == '') {
+						list[0].date = item.date
+						list[0].child.splice(0, 0, item)
+					} else if (item.date == list[list.length - 1].date) {
+						list[list.length - 1].child.splice(list.length, 0, item)
+					} else {
+						let obj = {
+							date: item.date,
+							child: [item]
+						}
+						list.splice(list.length, 0, obj)
+					}
+				})
+				this.histyList = list
+				console.log(this.histyList)
+			},
+
+			getBrowsingHistoryList(cnt) {
+				this.$api.getBrowsingHistoryList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c)
+						this.tryListData(arr)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			},
 
 			getAllTask(cnt, e) {
@@ -169,10 +271,35 @@
 						})
 					}
 				})
+			},
+
+			getByQualId(cnt) {
+				this.$api.getByQualId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.$store.commit('updateQualList', this.$util.tryParseJson(res.data.c))
+					} else {
+						if (getNumber == 2) {
+							uni.showToast({
+								title: '服务器错误',
+								icon: 'none'
+							})
+						} else {
+							setTimeout(() => {
+								getNumber += 1
+								let cnt1 = {
+									count: 100,
+									offset: 0
+								}
+								this.getByQualId(cnt1)
+							}, 500)
+						}
+					}
+				})
 			}
 		},
 		onLoad() {
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			this.userInfo = userInfo
 			let cnt = {
 				userId: userInfo.userId, // Long 用戶id
 				isPublishUser: true, // boolean 是否为发布者
@@ -184,6 +311,14 @@
 				isPublishUser: false, // boolean 是否为发布者
 			}
 			this.getAllTask(cnt1, false)
+
+			let cnt2 = {
+				// taskId: taskId, // Long <选填> 任务id
+				userId: userInfo.userId, // Long 用户id
+				count: 10, // Integer 
+				offset: 0, // Integer 
+			}
+			this.getBrowsingHistoryList(cnt2)
 		}
 	}
 </script>

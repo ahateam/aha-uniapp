@@ -3,18 +3,19 @@
 		<nav-bar :back="false">
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="view-title">我的任务</view>
-			<view slot="right" class="del-text" @click="delTask">删除</view>
+			<view slot="right" class="del-text" @click="delBoxShow = true">删除</view>
 		</nav-bar>
 		<view style="margin-top: 10rpx;"></view>
-		<data-input :inputHidden="aptitudesStatus" disabled v-model="type" :hiddenIcon="true" title="任务分类"></data-input>
+		<data-input :inputHidden="aptitudesStatus||delBoxShow" disabled v-model="type" :hiddenIcon="true" title="任务分类"></data-input>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
+		<data-input :inputHidden="aptitudesStatus||delBoxShow" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
 
-		<data-textarea :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" placeholder="请输入任务描述" title="任务描述"></data-textarea>
+		<data-textarea :inputHidden="aptitudesStatus||delBoxShow" v-model="taskInfo" :hiddenIcon="true" placeholder="请输入任务描述"
+		 title="任务描述"></data-textarea>
 
 		<choice-input :value="aptitudes" title="任务接收者所需资质" :hiddenIcon="true" @click="openAts"></choice-input>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="taskInfo" :hiddenIcon="true" title="和接收者共享的文件"></data-input>
+		<data-input :inputHidden="aptitudesStatus||delBoxShow" v-model="taskInfo" :hiddenIcon="true" title="和接收者共享的文件"></data-input>
 
 		<view class="up-file">
 			<view class="auto-title">文件上传</view>
@@ -49,7 +50,7 @@
 			</view>
 		</view>
 
-		<data-input :inputHidden="aptitudesStatus" v-model="remark" :hiddenIcon="true" title="特别提醒"></data-input>
+		<data-input :inputHidden="aptitudesStatus||delBoxShow" v-model="remark" :hiddenIcon="true" title="特别提醒"></data-input>
 
 		<view class="bottom-btn">
 			<next-btn @click="nextBtn"></next-btn>
@@ -62,6 +63,16 @@
 				<view class="aptitudes-border" :class="[{'no-border':index == aptitudesList.length - 2},{'bottom-popup-box':index == aptitudesList.length - 1},{'curr-box':index == aptitudesCurr}]"
 				 @click="choiceAptitudes(item)" v-for="(item,index) in aptitudesList" :key="index" @touchstart="changeAts(index)"
 				 @touchend="aptitudesCurr = -1">{{item.qualName}}</view>
+			</view>
+		</uni-popup>
+
+		<uni-popup :show="delBoxShow" type="center" @change="changePopup">
+			<view class="popup-box">
+				<view>确定删除任务吗</view>
+				<view class="popup-btn-box">
+					<button class="succ-btn" @click="delTask">确定</button>
+					<button class="colse-btn" @click="delBoxShow = false">再想想</button>
+				</view>
 			</view>
 		</uni-popup>
 	</view>
@@ -152,7 +163,8 @@
 				}],
 				formType: '',
 				aptitudesCurr: -1,
-				aptitudesStatus: false
+				aptitudesStatus: false,
+				delBoxShow: false
 			}
 		},
 		methods: {
@@ -302,6 +314,7 @@
 			changePopup(e) {
 				if (!e.show) {
 					this.aptitudesStatus = false
+					this.delBoxShow = false
 				}
 			},
 
@@ -493,5 +506,45 @@
 			line-height: 38rpx;
 			text-align: center;
 		}
+	}
+
+	.popup-box {
+		width: 600rpx;
+		height: 322rpx;
+		box-sizing: border-box;
+		padding: 70rpx 40rpx 40rpx;
+		font-size: $group-font-befor;
+		line-height: 42rpx;
+		background-color: $group-color-w;
+		border-radius: 4rpx;
+		text-align: center;
+	}
+
+	.popup-btn-box {
+		display: flex;
+		margin-top: 90rpx;
+		line-height: 80rpx;
+
+		button {
+			width: 250rpx;
+			margin: 0 20rpx;
+			box-sizing: border-box;
+			color: $group-color;
+			border-radius: 0;
+
+			&:after {
+				border: none;
+			}
+		}
+	}
+
+	.succ-btn {
+		background-color: #00C8BE;
+		color: $group-color-w !important;
+	}
+
+	.colse-btn {
+		background: #FFFFFF;
+		border: 1rpx solid $group-color-befor;
 	}
 </style>

@@ -5,17 +5,17 @@
 			<view class="task-content">
 				<view class="task-top">
 					<view class="task-l-img"></view>
-					<view class="task-top-l">{{item.name}}</view>
-					<view class="task-top-r">AUD {{item.money}}</view>
+					<view class="task-top-l">{{constData.taskType[item.taskType].name}}</view>
+					<view class="task-top-r">AUD {{item.taskBudget}}</view>
 				</view>
 				<view class="task-center flex-box">
 					<image class="left-icon" src="/static/image/icon/user/task/icon_rw.png" mode="aspectFit"></image>
-					<view>{{item.infor}}</view>
+					<view class="task-title">{{item.taskName}}</view>
 				</view>
 				<view class="task-center flex-box" style="justify-content: space-between;">
 					<view class="flex-box">
 						<image class="left-icon" src="/static/image/icon/user/task/icon_timet.png" mode="aspectFit"></image>
-						<view>{{item.time}}</view>
+						<view>{{getTime(item.finishDate)}}</view>
 					</view>
 					<image class="right-icon" src="/static/image/icon/user/task/icon_ckgd.png" mode="aspectFit"></image>
 				</view>
@@ -29,12 +29,16 @@
 		props: ['tasks', 'type'],
 		data() {
 			return {
-
+				constData: this.$constData
 			}
 		},
 		methods: {
 			getItem(item) {
 				this.$emit('getItem', item)
+			},
+
+			getTime(time) {
+				return this.$commen.getNewDate(time)
 			},
 		}
 	}
@@ -76,6 +80,12 @@
 		color: #464042;
 		padding: 40rpx 0 30rpx 40rpx;
 
+	}
+
+	.task-title {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.task-top-r {

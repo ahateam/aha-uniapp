@@ -96,7 +96,7 @@
 						this.tasks = []
 						let cnt = {
 							// taskStatus: taskStatus, // Byte <选填> 任务状态
-							// status: status, // Byte <选填> 状态（是否删除）
+							status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
 							taskType: item.key, // Byte <选填> 任务类型
 							count: this.count, // Integer 
 							offset: this.offset, // Integer 
@@ -332,8 +332,7 @@
 			this.tagList[this.currIndex].page = 1
 
 			let cnt = {
-				// taskStatus: taskStatus, // Byte <选填> 任务状态
-				// status: status, // Byte <选填> 状态（是否删除）
+				status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
 				count: this.count, // Integer 
 				offset: this.offset, // Integer 
 			}
@@ -348,8 +347,7 @@
 				this.tagList[this.currIndex].page += 1
 
 				let cnt = {
-					// taskStatus: taskStatus, // Byte <选填> 任务状态
-					// status: status, // Byte <选填> 状态（是否删除）
+					status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
 					count: this.count, // Integer 
 					offset: this.offset, // Integer 
 				}

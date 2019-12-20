@@ -1,88 +1,96 @@
 <template>
 	<view style="padding-bottom: 102rpx;">
-		<view class="top-box">
-			<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
-			<view class="top-content">
-				<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
-				<view class="top-info-box">
-					<view class="top-name">{{task.userName}}</view>
-					<view class="top-time"><text class="iconfont iconshengri"></text><text>{{task.userTime}}</text></view>
+		<view class="succ-view" :style="pageStatus == 'succ'?'opacity:1':''">
+			<view class="top-box">
+				<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
+				<view class="top-content">
+					<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
+					<view class="top-info-box">
+						<view class="top-name">{{task.userName}}</view>
+						<view class="top-time"><text class="iconfont iconshengri"></text><text>{{task.userTime}}</text></view>
+					</view>
+				</view>
+				<view class="top-head">
+					<image class="top-head-bg" src="/static/image/user/icon_xstx.png" mode="aspectFit"></image>
+					<image class="top-head-img" :src="task.userHead" mode="aspectFill"></image>
 				</view>
 			</view>
-			<view class="top-head">
-				<image class="top-head-bg" src="/static/image/user/icon_xstx.png" mode="aspectFit"></image>
-				<image class="top-head-img" :src="task.userHead" mode="aspectFill"></image>
+
+			<view class="content-box">
+				<view class="content-title">
+					<view class="content-title-text">任务明细</view>
+					<image class="content-title-bg" src="/static/image/task/icon_bg_y.png" mode="aspectFit"></image>
+				</view>
+
+				<view class="auto-box-white space-box">
+					<view class="left-title">任务发布者</view>
+					<view class="right-info">{{task.taskType}}</view>
+				</view>
+
+				<view class="auto-box-white space-box">
+					<view class="left-title">任务名称</view>
+					<view class="right-info">{{task.taskTitle}}</view>
+				</view>
+
+				<view class="auto-box-white no-border">
+					<view class="left-title">任务描述</view>
+					<view class="right-info" style="margin-top: 29rpx;">{{task.taskText}}</view>
+				</view>
+
+				<view class="block-box">
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">任务发布者</view>
+						<view class="right-info bottom-font">{{task.userName}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">完成时间</view>
+						<view class="right-info bottom-font">{{task.taskTime}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">最新状态</view>
+						<view class="right-info bottom-font" style="color: #24D4D0;">{{task.taskStatus}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">共享文件</view>
+						<view class="right-info bottom-font">{{task.taskData.name}}</view>
+						<view class="data-box space-box">
+							<view>
+								<view class="data-title">{{task.taskData.dataName}}</view>
+								<view class="data-size">{{task.taskData.dataSize}}</view>
+							</view>
+							<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
+						</view>
+					</view>
+
+					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;">
+						<view class="left-title bottom-font">提交完成文件</view>
+						<view class="data-img-list">
+							<view class="data-img-box" v-for="(item,index) in task.taskList" :key="index" :class="{'no-margin':getIndex(index)}">
+								<image src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+			<view class="fixed-btn">
+				<next-btn title="确定" @click="navBack"></next-btn>
 			</view>
 		</view>
 
-		<view class="content-box">
-			<view class="content-title">
-				<view class="content-title-text">任务明细</view>
-				<image class="content-title-bg" src="/static/image/task/icon_bg_y.png" mode="aspectFit"></image>
-			</view>
-
-			<view class="auto-box-white space-box">
-				<view class="left-title">任务发布者</view>
-				<view class="right-info">{{task.taskType}}</view>
-			</view>
-
-			<view class="auto-box-white space-box">
-				<view class="left-title">任务名称</view>
-				<view class="right-info">{{task.taskTitle}}</view>
-			</view>
-
-			<view class="auto-box-white no-border">
-				<view class="left-title">任务描述</view>
-				<view class="right-info" style="margin-top: 29rpx;">{{task.taskText}}</view>
-			</view>
-
-			<view class="block-box">
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">任务发布者</view>
-					<view class="right-info bottom-font">{{task.userName}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">完成时间</view>
-					<view class="right-info bottom-font">{{task.taskTime}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">最新状态</view>
-					<view class="right-info bottom-font" style="color: #24D4D0;">{{task.taskStatus}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">共享文件</view>
-					<view class="right-info bottom-font">{{task.taskData.name}}</view>
-					<view class="data-box space-box">
-						<view>
-							<view class="data-title">{{task.taskData.dataName}}</view>
-							<view class="data-size">{{task.taskData.dataSize}}</view>
-						</view>
-						<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
-					</view>
-				</view>
-
-				<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;">
-					<view class="left-title bottom-font">提交完成文件</view>
-					<view class="data-img-list">
-						<view class="data-img-box" v-for="(item,index) in task.taskList" :key="index" :class="{'no-margin':getIndex(index)}">
-							<image src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view>
-		<view class="fixed-btn">
-			<next-btn title="确定" @click="navBack"></next-btn>
+		<view class="loading-view" v-if="pageStatus == 'loading'">
+			<loading></loading>
 		</view>
 	</view>
 </template>
 
 <script>
 	import NextBtn from '@/components/NextBtn/NextBtn.vue'
+	import Loading from '@/components/Loading/Loading.vue'
 
 	export default {
 		components: {
-			NextBtn
+			NextBtn,
+			Loading
 		},
 		data() {
 			return {
@@ -129,6 +137,7 @@
 						this.task = { ...this.task,
 							...obj
 						}
+						this.pageStatus = 'succ'
 					} else {
 						uni.showToast({
 							title: '网络错误',
@@ -140,8 +149,10 @@
 		},
 
 		onLoad(res) {
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			let cnt = {
 				taskId: res.id, // Long 任务id
+				userId: userInfo.userId
 			}
 			this.findByTaskId(cnt)
 		}
@@ -367,5 +378,22 @@
 		position: fixed;
 		bottom: 0;
 		width: 100%;
+	}
+
+	.loading-view {
+		position: fixed;
+		z-index: 3;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: #FFFFFF;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.succ-view {
+		transition: all 1s;
+		opacity: 0;
 	}
 </style>

@@ -2,6 +2,7 @@
 
 const commen = {}
 
+// 时间戳转换为 YYYY-MM-DD
 commen.getNewDate = (time) => {
 	let newData = new Date(time)
 	let y = newData.getFullYear()
@@ -93,6 +94,10 @@ commen.dateTimeFliter = function(time, part = 0, dateComplete = true, timeComple
 					hour = '上午 ' + hour
 				}
 			}
+		}
+	} else {
+		if (hour < 10) {
+			hour = 0 + '' + hour
 		}
 	}
 	//判断分钟与秒

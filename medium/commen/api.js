@@ -70,6 +70,11 @@ api.getAllTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/getAllTask', cnt, callback)
 }
 
+//  任务浏览记录 
+api.getBrowsingHistoryList = function(cnt, callback) {
+	util.call(baseUrl + '/task/getBrowsingHistoryList', cnt, callback)
+}
+
 // 撤回任务 
 api.withdrawTask = function(cnt, callback) {
 	util.call(baseUrl + '/task/withdrawTask', cnt, callback)

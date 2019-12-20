@@ -1,66 +1,68 @@
 <template>
 	<view style="padding-bottom: 30rpx;">
-		<view class="top-box">
-			<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
-			<view class="top-content">
-				<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
-				<view class="top-info-box">
-					<view class="top-name">{{task.userName}}</view>
-					<view class="top-time"><text class="iconfont iconshengri"></text><text>{{getDateTime(task.brithday)}}</text></view>
+		<view class="succ-view" :style="pageStatus == 'succ'?'opacity:1':''">
+			<view class="top-box">
+				<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
+				<view class="top-content">
+					<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
+					<view class="top-info-box">
+						<view class="top-name">{{task.userName}}</view>
+						<view class="top-time"><text class="iconfont iconshengri"></text><text>{{getDateTime(task.brithday)}}</text></view>
+					</view>
 				</view>
-			</view>
-			<view class="top-head">
-				<image class="top-head-bg" src="/static/image/user/icon_xstx.png" mode="aspectFit"></image>
-				<image class="top-head-img" :src="task.userHead" mode="aspectFill"></image>
-			</view>
-		</view>
-
-		<view class="content-box">
-			<view class="content-title">
-				<view class="content-title-text">任务明细</view>
-				<image class="content-title-bg" src="/static/image/task/icon_bg_y.png" mode="aspectFit"></image>
+				<view class="top-head">
+					<image class="top-head-bg" src="/static/image/user/icon_xstx.png" mode="aspectFit"></image>
+					<image class="top-head-img" :src="task.userHead" mode="aspectFill"></image>
+				</view>
 			</view>
 
-			<view class="auto-box-white space-box">
-				<view class="left-title">任务分类</view>
-				<view class="right-info">{{taskType[task.taskType].name}}</view>
-			</view>
-			<view class="auto-box-white space-box">
-				<view class="left-title">任务名称</view>
-				<view class="right-info">{{task.taskName}}</view>
-			</view>
-			<view class="auto-box-white no-border">
-				<view class="left-title">任务描述</view>
-				<view class="right-info" style="margin-top: 29rpx;">{{task.taskDescribe}}</view>
-			</view>
-
-			<view class="block-box">
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">任务发布者</view>
-					<view class="right-info bottom-font">{{task.userName}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">发布时间</view>
-					<view class="right-info bottom-font">{{getDateTime(task.taskCreateTime)}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">价格</view>
-					<view class="right-info bottom-font" style="color: #FFA405;">AUD {{task.taskBudget}}</view>
-				</view>
-				<view class="auto-box-gray space-box">
-					<view class="left-title bottom-font">完成时间</view>
-					<view class="right-info bottom-font">{{getDateTime(task.finishDate)}}</view>
+			<view class="content-box">
+				<view class="content-title">
+					<view class="content-title-text">任务明细</view>
+					<image class="content-title-bg" src="/static/image/task/icon_bg_y.png" mode="aspectFit"></image>
 				</view>
 
-				<view class="auto-box-gray space-box" style="border: none;">
-					<view class="left-title bottom-font">接受者所需证书</view>
-					<view class="right-info bottom-font">{{task.qualName}}</view>
+				<view class="auto-box-white space-box">
+					<view class="left-title">任务分类</view>
+					<view class="right-info">{{taskType[task.taskType].name}}</view>
+				</view>
+				<view class="auto-box-white space-box">
+					<view class="left-title">任务名称</view>
+					<view class="right-info">{{task.taskName}}</view>
+				</view>
+				<view class="auto-box-white no-border">
+					<view class="left-title">任务描述</view>
+					<view class="right-info" style="margin-top: 29rpx;">{{task.taskDescribe}}</view>
+				</view>
+
+				<view class="block-box">
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">任务发布者</view>
+						<view class="right-info bottom-font">{{task.userName}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">发布时间</view>
+						<view class="right-info bottom-font">{{getDateTime(task.taskCreateTime)}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">价格</view>
+						<view class="right-info bottom-font" style="color: #FFA405;">AUD {{task.taskBudget}}</view>
+					</view>
+					<view class="auto-box-gray space-box">
+						<view class="left-title bottom-font">完成时间</view>
+						<view class="right-info bottom-font">{{getDateTime(task.finishDate)}}</view>
+					</view>
+
+					<view class="auto-box-gray space-box" style="border: none;">
+						<view class="left-title bottom-font">接受者所需证书</view>
+						<view class="right-info bottom-font">{{task.qualName}}</view>
+					</view>
 				</view>
 			</view>
-		</view>
 
-		<view class="bottom-btn">
-			<button @click="acceptTask">接任务</button>
+			<view class="bottom-btn">
+				<button @click="acceptTask">接任务</button>
+			</view>
 		</view>
 
 		<uni-popup :show="popupShow" type="center" @change="change">
@@ -72,15 +74,21 @@
 				</view>
 			</view>
 		</uni-popup>
+		<view class="loading-view" v-if="pageStatus == 'loading'">
+			<loading></loading>
+		</view>
+
 	</view>
 </template>
 
 <script>
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import Loading from '@/components/Loading/Loading.vue'
 
 	export default {
 		components: {
-			uniPopup
+			uniPopup,
+			Loading
 		},
 		data() {
 			return {
@@ -134,7 +142,6 @@
 						url: `../acceptTask/acceptTask?id=${this.task.taskId}`
 					})
 				}
-
 			},
 
 			navBack() {
@@ -150,6 +157,9 @@
 						this.task = { ...this.task,
 							...obj.publishUser
 						}
+
+						this.pageStatus = 'succ'
+
 						console.log(this.task)
 					} else {
 						uni.showToast({
@@ -447,5 +457,21 @@
 	.colse-btn {
 		background: #FFFFFF;
 		border: 1rpx solid $group-color-befor;
+	}
+
+	.loading-view {
+		position: fixed;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: #FFFFFF;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.succ-view {
+		transition: all 1s;
+		opacity: 0;
 	}
 </style>
