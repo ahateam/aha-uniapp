@@ -7,12 +7,12 @@
 					<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
 					<view class="top-info-box">
 						<view class="top-name">{{task.userName}}</view>
-						<view class="top-time"><text class="iconfont iconshengri"></text><text>{{task.userTime}}</text></view>
+						<view class="top-time"><text class="iconfont iconshengri"></text><text>{{getDateTime(task.brithday)}}</text></view>
 					</view>
 				</view>
 				<view class="top-head">
 					<image class="top-head-bg" src="/static/image/user/icon_xstx.png" mode="aspectFit"></image>
-					<image class="top-head-img" :src="task.userHead" mode="aspectFill"></image>
+					<image class="top-head-img" :src="constData.oss + task.userHead" mode="aspectFill"></image>
 				</view>
 			</view>
 
@@ -23,8 +23,8 @@
 				</view>
 
 				<view class="auto-box-white space-box">
-					<view class="left-title">任务发布者</view>
-					<view class="right-info">{{task.taskType}}</view>
+					<view class="left-title">任务分类</view>
+					<view class="right-info">{{constData.taskType[task.taskType].name}}</view>
 				</view>
 
 				<view class="auto-box-white space-box">
@@ -44,29 +44,29 @@
 					</view>
 					<view class="auto-box-gray space-box">
 						<view class="left-title bottom-font">完成时间</view>
-						<view class="right-info bottom-font">{{task.taskTime}}</view>
+						<view class="right-info bottom-font">{{getDateTime(task.finishDate)}}</view>
 					</view>
 					<view class="auto-box-gray space-box">
 						<view class="left-title bottom-font">最新状态</view>
 						<view class="right-info bottom-font" style="color: #24D4D0;">{{task.taskStatus}}</view>
 					</view>
-					<view class="auto-box-gray space-box">
+					<view class="auto-box-gray space-box" v-if="task.fileData.length > 0">
 						<view class="left-title bottom-font">共享文件</view>
 						<view class="right-info bottom-font">{{task.taskData.name}}</view>
-						<view class="data-box space-box">
+						<view class="data-box space-box" v-for="(item,index) in task.fileData" :key="index">
 							<view>
-								<view class="data-title">{{task.taskData.dataName}}</view>
-								<view class="data-size">{{task.taskData.dataSize}}</view>
+								<view class="data-title">{{item.name}}</view>
+								<view class="data-size">{{item.size}}</view>
 							</view>
 							<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
 						</view>
 					</view>
 
-					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;">
+					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.imgData.length > 0">
 						<view class="left-title bottom-font">提交完成文件</view>
 						<view class="data-img-list">
-							<view class="data-img-box" v-for="(item,index) in task.taskList" :key="index" :class="{'no-margin':getIndex(index)}">
-								<image src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
+							<view class="data-img-box" v-for="(item,index) in task.imgData" :key="index" :class="{'no-margin':getIndex(index)}">
+								<image :src="constData.oss + item" mode="aspectFill"></image>
 							</view>
 						</view>
 					</view>
@@ -94,22 +94,16 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
 				pageStatus: 'loading',
 
 				task: {
-					userName: '张曦',
-					userTime: '2019-10-08',
 					userHead: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574775543939&di=34f1f8a709ce6958adff33a33c218451&imgtype=0&src=http%3A%2F%2Fi2.hdslb.com%2Fbfs%2Fface%2F97ea0b38bc4afa00e0b00b9035eb31368fa94f11.jpg',
 					taskType: '全案助理',
 					taskTitle: '500签证全案助理',
 					taskText: '请帮忙填写签证相关内容，我是第一次申请，需要准备的资料还很多，听朋友说你们是专业的，拜托你们啦！',
 					taskTime: '2019-10-08',
 					taskStatus: '学校申请已经递交',
-					taskData: {
-						name: '翻译证书',
-						dataName: '我的成绩单.docx',
-						dataSize: '216K'
-					},
 					taskList: [
 						'',
 						'',
@@ -120,6 +114,10 @@
 			}
 		},
 		methods: {
+			getDateTime(time) {
+				return this.$commen.getNewDate(time)
+			},
+
 			getIndex(index) {
 				if ((index + 1) % 3 == 0 && index != 0) {
 					return true
@@ -130,17 +128,37 @@
 				uni.navigateBack()
 			},
 
-			findByTaskId(cnt) {
-				this.$api.findByTaskId(cnt, (res) => {
+			getUserByTaskId(cnt) {
+				this.$api.getUserByTaskId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let obj = this.$util.tryParseJson(res.data.c)
+						console.log(obj)
+						if (obj.publishUser.imgData) {
+							obj.publishUser.imgData = this.$util.tryParseJson(obj.publishUser.imgData)
+						} else {
+							obj.publishUser.imgData = []
+						}
+
+						if (obj.publishUser.fileData) {
+							obj.publishUser.fileData = this.$util.tryParseJson(obj.publishUser.fileData)
+						} else {
+							obj.publishUser.fileData = []
+						}
+
 						this.task = { ...this.task,
-							...obj
+							...obj.publishUser
+						}
+						this.pickUpUser = obj.pickUpUser
+						console.log(this.task)
+						if (this.task.taskStatus == 0) {
+							this.btnName = '撤回'
+						} else {
+							this.btnName = '付款'
 						}
 						this.pageStatus = 'succ'
 					} else {
 						uni.showToast({
-							title: '网络错误',
+							title: '服务器错误',
 							icon: 'none'
 						})
 					}
@@ -154,7 +172,7 @@
 				taskId: res.id, // Long 任务id
 				userId: userInfo.userId
 			}
-			this.findByTaskId(cnt)
+			this.getUserByTaskId(cnt)
 		}
 	}
 </script>
@@ -185,11 +203,11 @@
 		display: block;
 		width: 33rpx;
 		height: 33rpx;
-		padding: 70rpx 0 0 20rpx;
+		padding: 70rpx 40rpx 30rpx 20rpx;
 	}
 
 	.top-info-box {
-		margin-top: 61rpx;
+		margin-top: 31rpx;
 		color: $group-color-w;
 		padding-left: 50rpx;
 	}

@@ -13,7 +13,7 @@
 				{{text}}
 			</view>
 			<view class="imgList" v-if="imgList.length > 0">
-				<image :src="item" mode="aspectFill" v-for="(item,index) in imgList" :key="index" :style="index == 2?'margin:0':''"></image>
+				<image :src="constData.oss + item" mode="aspectFill" v-for="(item,index) in imgList" :key="index" :style="index == 2?'margin:0':''"></image>
 			</view>
 			<view class="abilityBox">
 				<view class="icon-box">
@@ -80,6 +80,7 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
 				opacity: 'opacity: 0',
 
 				id: '', //文章id

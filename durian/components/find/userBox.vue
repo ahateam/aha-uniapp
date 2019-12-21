@@ -1,7 +1,7 @@
 <template>
 	<view class="body">
 		<view class="userBox">
-			<image :src="upHead" mode="aspectFill"></image>
+			<image :src="constData.oss + upHead" mode="aspectFill"></image>
 			<view class="rightBox">
 				<view>{{upName}}</view>
 				<view class="time">{{time}}</view>
@@ -15,12 +15,13 @@
 		props: ['upName', 'time', 'upHead'],
 		data() {
 			return {
-				id:123456
+				id: 123456,
+				constData: this.$constData
 			}
 		},
-		methods:{
-			zan(){
-				this.$emit('zan',this.id)
+		methods: {
+			zan() {
+				this.$emit('zan', this.id)
 			}
 		}
 	}
@@ -70,12 +71,13 @@
 		font-size: $group-font;
 		line-height: $group-font-line;
 		color: $group-color-befor;
-		.iconfont{
+
+		.iconfont {
 			margin-right: $group-margin-s;
 		}
 	}
-	
-	.iconCurr{
+
+	.iconCurr {
 		color: $group-color-curr;
 	}
 </style>

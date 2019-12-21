@@ -3,7 +3,7 @@
 		<view :style="{'padding-top':`calc(${getNavHeight()} - 20rpx)` }"></view>
 		<view class="user-box" :style="dataChangeStatus?'':'padding-bottom: 37rpx;'">
 			<view class="flex-box">
-				<image class="user-head" :src="imgSrc" mode="aspectFill"></image>
+				<image class="user-head" :src="constData.oss + imgSrc" mode="aspectFill"></image>
 				<view class="btns-box">
 					<view class="user-name">{{name}}</view>
 					<view class="money-box">
@@ -58,6 +58,7 @@
 		components: {},
 		data() {
 			return {
+				constData: this.$constData,
 				userInfo: {},
 				// imgSrc: uni.getStorageSync('userHead'),
 				imgSrc: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1575299763852&di=29607e81f528164e31fa7e0fde3e8c2f&imgtype=0&src=http%3A%2F%2F04imgmini.eastday.com%2Fmobile%2F20191022%2F2019102213_68c92b59f9a34b9b85fd586fa71112bc_7805_cover_mwpm_03201609.jpg',

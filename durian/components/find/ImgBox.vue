@@ -1,7 +1,7 @@
 <template>
 	<view class="body">
 		<view class="userBox">
-			<image :src="item.posting.userHead" mode="aspectFill"></image>
+			<image :src="constData.oss + item.posting.userHead" mode="aspectFill"></image>
 			<view class="rightBox">
 				<view>{{item.posting.userName}}</view>
 				<view class="time">{{newTime(item.posting.postingCreateTime)}}</view>
@@ -13,13 +13,13 @@
 		<view class="img-box" v-if="imgList.length > 3&&imgList.length < 9&&imgList.length != 6 ||imgList.length == 2">
 			<view style="line-height: 0;" v-for="(item,index) in imgList" :key="index">
 				<image v-if="index < 4" style="width:328rpx;height: 328rpx;" :style="(index + 1) % 2 == 0?'margin-right:0;':''"
-				 :src="item" mode="aspectFill"></image>
+				 :src="constData.oss + item" mode="aspectFill"></image>
 			</view>
 		</view>
 
 		<view class="img-box" v-else>
 			<view style="line-height: 0;" v-for="(item,index) in imgList" :key="index">
-				<image :style="(index + 1) % 3 == 0?'margin-right:0;':''" :src="item" mode="aspectFill" v-if="index < 9"></image>
+				<image :style="(index + 1) % 3 == 0?'margin-right:0;':''" :src="constData.oss + item" mode="aspectFill" v-if="index < 9"></image>
 			</view>
 		</view>
 

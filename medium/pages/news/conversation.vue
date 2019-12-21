@@ -19,7 +19,7 @@
 				<view class="list-item-box" v-if="conversationList.length>0">
 					<view class="list-item" v-for="(item,index) in conversationList" :key="index" @click="checkConversation(item)">
 						<view class="list-item-img">
-							<img :src="item.userProfile.avatar" alt />
+							<img :src="constData.oss + item.userProfile.avatar" alt />
 						</view>
 						<view class="list-item-info">
 							<view class="list-item-title">

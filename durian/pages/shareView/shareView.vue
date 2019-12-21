@@ -6,8 +6,8 @@
 				<view class="share-info">
 					<view class="user-box">
 						<view class="share-user">
-							<image class="head-img" :src="shareHead" mode="aspectFill"></image>
-							<text>{{shareName}}</text>
+							<image class="head-img" :src="constData.oss + userInfo.userHead" mode="aspectFill"></image>
+							<text>{{userInfo.userName}}</text>
 						</view>
 						<view class="share-text">{{shareText}}</view>
 					</view>
@@ -48,11 +48,11 @@
 
 	// let w = 325
 	// let h = 445.5
-	let x = 0
-	let y = 0
-	let r = 30
-	let w = 650
-	let h = 891
+	const x = 0
+	const y = 0
+	const r = 30
+	const w = 650
+	const h = 891
 
 	export default {
 		name: 'shareView',
@@ -61,10 +61,8 @@
 		},
 		data() {
 			return {
-				shareName: uni.getStorageSync('userName'),
-				shareHead: uni.getStorageSync('userHead'),
-				// shareName: '奥术大师',
-				// shareHead: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574423321164&di=bbd9ca7a5c229c6ef9923a3fe8f24d75&imgtype=0&src=http%3A%2F%2Fimg02.tooopen.com%2Fimages%2F20150714%2Ftooopen_sy_133978098392.jpg',
+				constData: this.$constData,
+				userInfo: {},
 				shareText: '我刚刚在「榴莲」APP成功获得签证…',
 
 				/* 二维码 */
@@ -163,7 +161,7 @@
 				context.fillRect(0, 0, w, h)
 
 				let src =
-					'http://tmp/touristappid.o6zAJsxuJcZsaFhgPrbETZGlPbPc.Uu8vt3LvqosJ4c2b35102913e90135f5ad501930af21.jpg'
+					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1576931069518&di=a990568119111523cc5cc765377fba40&imgtype=0&src=http%3A%2F%2Fimage.biaobaiju.com%2Fuploads%2F20180917%2F22%2F1537193274-diLswpUDbH.jpg'
 				uni.downloadFile({
 					url: src,
 					success: (res) => {
@@ -179,7 +177,7 @@
 
 			//生成up圆形头像
 			getUpHead() {
-				let img = uni.getStorageSync('userHead')
+				let img = this.$constData.oss + this.userInfo.userHead
 				console.log(img)
 				console.log('头像地址')
 				let imgSrc = ''
@@ -237,7 +235,7 @@
 				// 文字
 				context.setFillStyle('#587685')
 				context.font = '26px Arial'
-				context.fillText(uni.getStorageSync('userName'), 120, 576.4)
+				context.fillText(this.userInfo.userName, 120, 576.4)
 
 				context.font = '32px Arial'
 				let text = this.shareText
@@ -271,11 +269,11 @@
 						destHeight: h,
 						canvasId: 'firstCanvas',
 						success: (res) => {
-							uni.hideLoading()
 							// 在H5平台下，tempFilePath 为 base64
 							this.posterImg = res.tempFilePath
+							console.log('---------海报地址---------')
 							console.log(this.posterImg)
-							uni.setStorageSync('posterImg',this.posterImg)
+							uni.setStorageSync('posterImg', this.posterImg)
 							this.val = ''
 							uni.hideLoading()
 						}
@@ -284,6 +282,8 @@
 			},
 		},
 		onLoad() {
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			this.userInfo = userInfo
 			this.val = 'https://www.baidu.com'
 		}
 	}

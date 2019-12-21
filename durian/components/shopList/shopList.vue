@@ -18,7 +18,7 @@
 
 			<!-- 自由商品图片 -->
 			<view class="stuty-img" v-if="item.goodsType == constData.goodsType[0].key">
-				<image :src="getImgSrc(item.goodsData)" mode="aspectFill"></image>
+				<image :src="constData.oss + getImgSrc(item.goodsData)" mode="aspectFill"></image>
 			</view>
 
 			<!-- 平台商品兑换价格 -->

@@ -12,7 +12,7 @@
 			<view class="textBox">
 				{{text}}
 			</view>
-			<video class="videoBox" :src="videoSrc" controls></video>
+			<video class="videoBox" :src="constData.oss + videoSrc" controls></video>
 			<view class="abilityBox">
 				<view class="icon-box">
 					<image src="/static/image/find/icon_llrs.png" mode="aspectFit"></image>
@@ -77,6 +77,7 @@
 		data() {
 			return {
 				opacity: 'opacity: 0',
+				constData: this.$constData,
 				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo')),
 
 				// 评论分页

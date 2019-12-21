@@ -1,7 +1,7 @@
 <template>
 	<view class="body">
 		<view class="userBox">
-			<image :src="item.posting.userHead" mode="aspectFill"></image>
+			<image :src="constData.oss + item.posting.userHead" mode="aspectFill"></image>
 			<view class="rightBox">
 				<view>{{item.posting.userName}}</view>
 				<view class="time">{{newTime(item.posting.postingCreateTime)}}</view>

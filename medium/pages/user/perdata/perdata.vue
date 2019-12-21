@@ -10,7 +10,7 @@
 			<view class="head-change" v-if="headSrc == ''">
 				<image src="/static/image/icon/icon_pzsc.png" mode="aspectFit"></image>
 			</view>
-			<image class="head-img" :src="headSrc" mode="aspectFill" v-else></image>
+			<image class="head-img" :src="constData.oss + headSrc" mode="aspectFill" v-else></image>
 			<view class="head-text">更换头像</view>
 		</view>
 
@@ -152,6 +152,8 @@
 				format: true
 			})
 			return {
+				constData: this.$constData,
+
 				headSrc: '',
 				showName: false,
 				newName: '',
@@ -235,7 +237,7 @@
 							duration: 1000
 						})
 						//只管这个变量
-						this.headSrc = this.$constData.oss + nameStr
+						this.headSrc = nameStr
 						console.log(this.headSrc)
 					},
 					fail: (err) => {

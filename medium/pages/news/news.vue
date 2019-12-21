@@ -68,6 +68,7 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
 				userInfo: "",
 				toUserInfo: "",
 				navActive: 0,

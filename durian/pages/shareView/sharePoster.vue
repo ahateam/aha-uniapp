@@ -33,14 +33,22 @@
 		},
 		methods: {
 			savePoster() {
-				uni.downloadFile({
-					url: this.imgSrc,
+				uni.saveImageToPhotosAlbum({
+					filePath: this.imgSrc,
 					success: (res) => {
-						if (res.statusCode === 200) {
-							uni.showToast({
-								title: '保存成功'
-							})
-						}
+						console.log(res)
+						uni.showToast({
+							title: '保存成功',
+							icon: 'none'
+						})
+
+					},
+					fail: (err) => {
+						console.log(err)
+						uni.showToast({
+							title: '错误！',
+							icon: 'none'
+						})
 					}
 				})
 			},

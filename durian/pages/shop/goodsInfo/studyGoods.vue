@@ -9,7 +9,7 @@
 		<view class="bannerBox">
 			<swiper class="swiper-box" @change="change" autoplay>
 				<swiper-item v-for="(item ,index) in imgList" :key="index">
-					<image style="width: 100%;height: 100%;" :src="item" mode="aspectFill"></image>
+					<image style="width: 100%;height: 100%;" :src="constData.oss + item" mode="aspectFill"></image>
 				</swiper-item>
 			</swiper>
 			<view class="dotBox">
@@ -60,6 +60,7 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
 				id: '',
 				upId: '',
 
@@ -130,7 +131,7 @@
 			change(e) {
 				this.current = e.detail.current;
 			},
-			
+
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},

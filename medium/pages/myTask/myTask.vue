@@ -74,14 +74,6 @@
 					taskType = 'myTask'
 				}
 				if (item.status == this.$constData.taskWall[2].key) { //跳轉草稿修改
-					uni.showLoading({
-						title: '数据拉取中...'
-					})
-					let cnt = {
-						taskId: item.taskId, // Long 任务id
-						userId: this.userInfo.userId, // Long <选填> 用户id
-					}
-					this.getUserByTaskId(cnt, item)
 					if (this.$store.state.task.qualiList.length == 0) {
 						let cnt1 = {
 							count: 100,
@@ -89,6 +81,16 @@
 						}
 						this.getByQualId(cnt1)
 					}
+					uni.navigateTo({
+						url: `./ediorTask/ediorTask?id=${item.taskId}`,
+						success: () => {
+							// #ifdef APP-PLUS
+							setTimeout(() => {
+								this.$commen.hiddenTabIcon()
+							}, 100);
+							// #endif
+						}
+					})
 				} else {
 					uni.navigateTo({
 						url: `/pages/myTask/taskInfo/${taskType}?id=${item.taskId}`,
@@ -101,47 +103,6 @@
 						}
 					})
 				}
-			},
-
-			getUserByTaskId(cnt, item) { // 取出全部屬性
-				this.$api.getUserByTaskId(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let obj = this.$util.tryParseJson(res.data.c).publishUser
-						obj.finishDate = this.$commen.getFullDate(obj.finishDate)
-						if (obj.imgData) {
-							obj.imgData = this.$util.tryParseJson(obj.imgData)
-						}
-						if (obj.fileData) {
-							obj.fileData = this.$util.tryParseJson(obj.fileData)
-						}
-						obj.finishDate = this.$commen.getFullDate(obj.finishDate)
-						console.log(obj.finishDate)
-						let {
-							userHead,
-							userName,
-							brithday,
-							...newObj
-						} = obj
-						this.$store.dispatch('editorTask', newObj).then((res) => {
-							uni.hideLoading()
-							uni.navigateTo({
-								url: `./ediorTask/ediorTask?id=${item.taskId}`,
-								success: () => {
-									// #ifdef APP-PLUS
-									setTimeout(() => {
-										this.$commen.hiddenTabIcon()
-									}, 100);
-									// #endif
-								}
-							})
-						})
-					} else {
-						uni.showToast({
-							title: res.data.rm,
-							icon: 'none'
-						})
-					}
-				})
 			},
 
 			topoption(index) {

@@ -12,7 +12,7 @@
 				</view>
 				<view class="top-head">
 					<image class="top-head-bg" src="/static/image/user/icon_xstx.png" mode="aspectFit"></image>
-					<image class="top-head-img" :src="task.userHead" mode="aspectFill"></image>
+					<image class="top-head-img" :src="constData.oss + task.userHead" mode="aspectFill"></image>
 				</view>
 			</view>
 
@@ -68,7 +68,7 @@
 					<view class="auto-box-gray space-box" style="border: none;" v-if="task.fileData">
 						<view class="left-title bottom-font">共享文件</view>
 						<view class="right-info bottom-font">{{task.taskData.name}}</view>
-						<view class="data-box space-box" v-for="(item,index) in $util.tryParseJson(task.fileData)" :key="index">
+						<view class="data-box space-box" v-for="(item,index) in task.fileData" :key="index">
 							<view>
 								<view class="data-title">{{item.name}}</view>
 								<view class="data-size">{{item.size}}</view>
@@ -103,7 +103,7 @@
 					<view class="auto-box-gray space-box" v-if="task.taskStatus < 3&&task.fileData">
 						<view class="left-title bottom-font">共享文件</view>
 						<view class="right-info bottom-font">{{task.taskData.name}}</view>
-						<view class="data-box space-box" v-for="(item,index) in $util.tryParseJson(task.fileData)" :key="index">
+						<view class="data-box space-box" v-for="(item,index) in task.fileData" :key="index">
 							<view>
 								<view class="data-title">{{item.name}}</view>
 								<view class="data-size">{{item.size}}</view>
@@ -111,11 +111,11 @@
 							<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
 						</view>
 					</view>
-					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < 3&&task.imgData">
+					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < 3&&task.imgData.length > 0">
 						<view class="left-title bottom-font">收回材料</view>
 						<view class="data-img-list">
-							<view class="data-img-box" v-for="(item,index) in $util.tryParseJson(task.imgData)" :key="index" :class="{'no-margin':getIndex(index)}">
-								<image :src="item" mode="aspectFill"></image>
+							<view class="data-img-box" v-for="(item,index) in task.imgData" :key="index" :class="{'no-margin':getIndex(index)}">
+								<image :src="constData.oss + item" mode="aspectFill"></image>
 							</view>
 						</view>
 					</view>
@@ -146,6 +146,8 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
+
 				task: {
 					historyList: [{
 							time: '2019-10-05',
@@ -174,8 +176,6 @@
 				pageStatus: 'loading',
 
 				pickUpUser: {},
-
-				constData: this.$constData,
 
 				btnName: '',
 			}
@@ -243,24 +243,23 @@
 				this.$api.getUserByTaskId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let obj = this.$util.tryParseJson(res.data.c)
-						console.log(obj)
-						if (obj.imgData) {
-							obj.imgData = this.$util.tryParseJson(obj.imgData)
+						// console.log(obj)
+						if (obj.publishUser.imgData) {
+							obj.publishUser.imgData = this.$util.tryParseJson(obj.imgData)
 						} else {
-							obj.imgData = []
+							obj.publishUser.imgData = []
 						}
 
-						if (obj.fileData) {
-							obj.fileData = this.$util.tryParseJson(obj.fileData)
+						if (obj.publishUser.fileData) {
+							obj.publishUser.fileData = this.$util.tryParseJson(obj.publishUser.fileData)
 						} else {
-							obj.fileData = []
+							obj.publishUser.fileData = []
 						}
 
 						this.task = { ...this.task,
 							...obj.publishUser
 						}
 						this.pickUpUser = obj.pickUpUser
-						console.log(this.task)
 						if (this.task.taskStatus == 0) {
 							this.btnName = '撤回'
 						} else {
@@ -313,11 +312,11 @@
 		display: block;
 		width: 33rpx;
 		height: 33rpx;
-		padding: 70rpx 0 0 20rpx;
+		padding: 70rpx 40rpx 30rpx 20rpx;
 	}
 
 	.top-info-box {
-		margin-top: 61rpx;
+		margin-top: 31rpx;
 		color: $group-color-w;
 		padding-left: 50rpx;
 	}
@@ -500,6 +499,7 @@
 		font-size: 24rpx;
 		margin-top: 12rpx;
 		line-height: 20rpx;
+		color: $group-color-befor;
 	}
 
 	.data-icon {

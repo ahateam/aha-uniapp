@@ -5,7 +5,7 @@
 		<view class="right-radius"></view>
 		<view class="user-box">
 			<image class="head-bg" src="/static/image/user/icon_xstx.png" mode="scaleToFill"></image>
-			<image class="user-head" :src="imgSrc" mode="aspectFill"></image>
+			<image class="user-head" :src="constData.oss + imgSrc" mode="aspectFill"></image>
 		</view>
 
 		<view class="user-name">

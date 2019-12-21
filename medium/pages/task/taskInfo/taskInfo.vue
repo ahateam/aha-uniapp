@@ -12,7 +12,7 @@
 				</view>
 				<view class="top-head">
 					<image class="top-head-bg" src="/static/image/user/icon_xstx.png" mode="aspectFit"></image>
-					<image class="top-head-img" :src="task.userHead" mode="aspectFill"></image>
+					<image class="top-head-img" :src="constData.oss + task.userHead" mode="aspectFill"></image>
 				</view>
 			</view>
 
@@ -92,6 +92,8 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
+
 				pageStatus: 'loading',
 
 				task: {},
@@ -211,11 +213,11 @@
 		display: block;
 		width: 33rpx;
 		height: 33rpx;
-		padding: 70rpx 0 0 20rpx;
+		padding: 70rpx 40rpx 30rpx 20rpx;
 	}
 
 	.top-info-box {
-		margin-top: 61rpx;
+		margin-top: 31rpx;
 		color: $group-color-w;
 		padding-left: 50rpx;
 	}

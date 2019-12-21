@@ -28,7 +28,7 @@
 			@change="moveBox" 
 			@touchend="reSet" 
 			 >
-				<image class="img-list" :src="item" mode="aspectFill" :style="index == currIndex&&delImg?'opacity: 0.5':''"></image>
+				<image class="img-list" :src="constData.oss + item" mode="aspectFill" :style="index == currIndex&&delImg?'opacity: 0.5':''"></image>
 			</movable-view>
 			
 			<view class="addImgBtn" :style="isLeftBtn()?'margin-left:60rpx':''" @click="openPopup" v-if="imgList.length < 9">
@@ -73,32 +73,13 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
 				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo')),
 				
 				text:'',
-				imgList:[
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574481485225&di=de0ef6dad880523f807387db7adc6cf7&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F3%2F5834044414919.jpg',
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574433704351&di=4cf91a007e1dd0415600b94836e5eba1&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1310%2F07%2Fc61%2F27063604_27063604_1381150720096_mthumb.jpg',
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574481485225&di=de0ef6dad880523f807387db7adc6cf7&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F3%2F5834044414919.jpg',
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574433704351&di=4cf91a007e1dd0415600b94836e5eba1&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1310%2F07%2Fc61%2F27063604_27063604_1381150720096_mthumb.jpg',
-				],
+				imgList:[],
 				statusName:'公开',
 				showPopup:false,
-				
-				statusList:[
-					{
-						key:0,
-						val:'公开'
-					},
-					{
-						key:1,
-						val:'仅校内可见'
-					},
-					{
-						key:2,
-						val:'仅校外可见'
-					}
-				],
 				statusIndex:0,
 				
 				choseImg:[
@@ -199,6 +180,7 @@
 				let cnt = {
 					moduleId: this.$constData.module, // String 模块编号
 					// ownerId: ownerId, // Long 持有者内容编号
+					show: this.statusIndex, // Byte <选填> 校内外可见
 					upUserId: this.userInfo.userId, // Long 创建者用户编号
 					text: this.text, // String <选填> 文本
 					data: data, // String <选填> 其他图片视频数据
@@ -228,9 +210,9 @@
 			
 			//相册添加图片
 			addImgs(e){
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 				let tiemr = new Date()
-				let address = tiemr.getFullYear()+"" + (tiemr.getMonth()+1) + "" + tiemr.getDate();
-				address ='image/'+address+'/'
+				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['compressed'],
@@ -239,7 +221,7 @@
 						this.showPopup = false
 						let imageSrc = res.tempFilePaths[0]
 						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
-						let nameStr =address+ tiemr.getTime()+str
+						let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
 						// nameStr =  res.tempFilePaths[0]
 						console.log(nameStr)
 						uni.showLoading({
@@ -257,17 +239,18 @@
 			
 			// 拍照添加图片
 			cameraChose(){
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 				let tiemr = new Date()
-				let address = tiemr.getFullYear()+"" + (tiemr.getMonth()+1) + "" + tiemr.getDate();
-				address ='image/'+address+'/'
+				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['compressed'],
 					sourceType: ['camera'],
 					success: (res) => {
-						var imageSrc = res.tempFilePaths[0]
+						this.showPopup = false
+						let imageSrc = res.tempFilePaths[0]
 						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
-						let nameStr =address+ tiemr.getTime()+str
+						let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
 						// nameStr =  res.tempFilePaths[0]
 						console.log(nameStr)
 						uni.showLoading({
@@ -286,34 +269,33 @@
 			// 上传至服务器
 			upLoadImg(imageSrc,nameStr){
 				uni.uploadFile({
-						url: 'https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com',
+						url: this.$constData.oss,
 						filePath: imageSrc,
 						fileType: 'image',
 						name: 'file',
 						formData:{
-							name:nameStr,
-							'key' : nameStr,
-							'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMi0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
-							'OSSAccessKeyId': 'LTAIJ9mYIjuW54Cj', 
-							'success_action_status' : '200', 
+							name: nameStr,
+							'key': nameStr,
+							'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+							'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
+							'success_action_status': '200',
 							//让服务端返回200,不然，默认会返回204
-							'signature': 'kgQ5n4s0oKpFHp35EI12CuTFvVM=',
+							'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
 					},success: (res) => {
 						console.log(res)
 						uni.hideLoading()
 						uni.showToast({
 							title: '上传成功',
-							icon: 'success',
-							duration: 1000
+							icon: 'none'
 						})
 						//只管这个变量
-						this.imgList.push('https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/'+nameStr)
+						this.imgList.push(nameStr)
 						console.log(this.imgList)
 					},fail: (err) => {
 						console.log('uploadImage fail', err);
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
+						uni.showToast({
+							title: '上传失敗',
+							icon: 'none'
 						})
 					}
 				})
@@ -332,8 +314,8 @@
 			setTimeout(()=>{
 				let status = uni.getStorageSync('createStatus')
 				this.statusIndex = status
-				this.statusName = this.statusList[status].val
-			})
+				this.statusName = this.$constData.postingStatus[status].val
+			},300)
 		}
 	}
 </script>

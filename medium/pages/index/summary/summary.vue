@@ -19,7 +19,7 @@
 			</button>
 			<view class="img-list" v-else>
 				<view class="img-list-box" v-for="(item,index) in imgList" :key="index">
-					<image :src="item" mode="aspectFill"></image>
+					<image :src="constData.oss + item" mode="aspectFill"></image>
 					<view class="iconfont iconguanbi" @click.stop="delImg(index)"></view>
 				</view>
 				<view class="iconfont iconjia img-list-box" @click="upImgStar"></view>
@@ -125,6 +125,8 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
+
 				options: [{
 					text: '删除',
 					style: {
@@ -233,7 +235,7 @@
 							icon: 'success'
 						})
 						//只管这个变量
-						this.$store.commit('updateImgData', this.$constData.oss + nameStr)
+						this.$store.commit('updateImgData', nameStr)
 					},
 					fail: (err) => {
 						console.log('uploadImage fail', err);

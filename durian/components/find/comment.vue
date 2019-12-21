@@ -3,7 +3,7 @@
 		<!-- 用户 -->
 		<view class="commentBox" :style="index == 0?'border:none':''" v-for="(list,index) in comment" :key="index">
 			<view class="userBox">
-				<image :src="JSON.parse(list.user.ext).userHead" mode="aspectFill"></image>
+				<image :src="constData.oss +  JSON.parse(list.user.ext).userHead" mode="aspectFill"></image>
 				<view class="rightBox">
 					<view>{{list.user.name}}</view>
 					<view class="time">{{getTime(list.reply.createTime)}}</view>
@@ -39,12 +39,12 @@
 		props: ['comment'],
 		data() {
 			return {
-
+				constData: this.$constData
 			}
 		},
 		methods: {
-			zan(list,index) {
-				this.$emit('zan', list.reply.sequenceId,index)
+			zan(list, index) {
+				this.$emit('zan', list.reply.sequenceId, index)
 			},
 
 			getTime(time) {

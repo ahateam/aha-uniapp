@@ -1,60 +1,64 @@
 <template>
 	<view>
-		<nav-bar :back="false">
-			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
-			<view class="view-title">我的任务</view>
-			<view slot="right" class="del-text" @click="delBoxShow = true">删除</view>
-		</nav-bar>
-		<view style="margin-top: 10rpx;"></view>
-		<data-input :inputHidden="aptitudesStatus||delBoxShow" disabled v-model="type" :hiddenIcon="true" title="任务分类"></data-input>
+		<view class="succ-view" v-if="pageStatus == 'succ'">
+			<nav-bar :back="false">
+				<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
+				<view class="view-title">我的任务</view>
+				<view slot="right" class="del-text" @click="delBoxShow = true">删除</view>
+			</nav-bar>
+			<view style="margin-top: 10rpx;"></view>
+			<data-input :inputHidden="aptitudesStatus||delBoxShow" disabled v-model="type" :hiddenIcon="true" title="任务分类"></data-input>
 
-		<data-input :inputHidden="aptitudesStatus||delBoxShow" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
+			<data-input :inputHidden="aptitudesStatus||delBoxShow" v-model="title" :hiddenIcon="true" title="任务名称"></data-input>
 
-		<data-textarea :inputHidden="aptitudesStatus||delBoxShow" v-model="taskInfo" :hiddenIcon="true" placeholder="请输入任务描述"
-		 title="任务描述"></data-textarea>
+			<data-textarea :inputHidden="aptitudesStatus||delBoxShow" v-model="taskInfo" :hiddenIcon="true" placeholder="请输入任务描述"
+			 title="任务描述"></data-textarea>
 
-		<choice-input :value="aptitudes" title="任务接收者所需资质" :hiddenIcon="true" @click="openAts"></choice-input>
+			<choice-input :value="aptitudes" title="任务接收者所需资质" :hiddenIcon="true" @click="openAts"></choice-input>
 
-		<data-input :inputHidden="aptitudesStatus||delBoxShow" v-model="taskInfo" :hiddenIcon="true" title="和接收者共享的文件"></data-input>
+			<data-input :inputHidden="aptitudesStatus||delBoxShow" v-model="taskInfo" :hiddenIcon="true" title="和接收者共享的文件"></data-input>
 
-		<view class="up-file">
-			<view class="auto-title">文件上传</view>
-			<uni-swipe-action>
-				<uni-swipe-action-item :options="options" v-for="(item,index) in fileList" :key="index" btnMargin="20rpx 0 0 20rpx"
-				 @click="delFile(index)">
-					<view class="up-file-btn file-list">
-						<view>
-							<view class="file-name">{{item.name}}</view>
-							<view class="file-size">{{item.size}}</view>
+			<view class="up-file">
+				<view class="auto-title">文件上传</view>
+				<uni-swipe-action>
+					<uni-swipe-action-item :options="options" v-for="(item,index) in fileList" :key="index" btnMargin="20rpx 0 0 20rpx"
+					 @click="delFile(index)">
+						<view class="up-file-btn file-list">
+							<view>
+								<view class="file-name">{{item.name}}</view>
+								<view class="file-size">{{item.size}}</view>
+							</view>
+							<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
 						</view>
-						<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
+					</uni-swipe-action-item>
+				</uni-swipe-action>
+				<button class="up-file-btn" @click="upFile">点击上传</button>
+			</view>
+
+
+			<view class="up-file" style="padding-right: 0;">
+				<view class="auto-title" style="margin-bottom: 30rpx;">其他文件</view>
+				<button class="uploding-img" @click="upImgStar" v-if="imgList.length == 0">
+					<image src="/static/image/icon/icon_pzsc.png" mode="aspectFit"></image>
+					<view>上传照片</view>
+				</button>
+				<view class="img-list" v-else>
+					<view class="img-list-box" v-for="(item,index) in imgList" :key="index">
+						<image :src="item" mode="aspectFill"></image>
+						<view class="iconfont iconguanbi" @click.stop="delImg(index)"></view>
 					</view>
-				</uni-swipe-action-item>
-			</uni-swipe-action>
-			<button class="up-file-btn" @click="upFile">点击上传</button>
-		</view>
-
-
-		<view class="up-file" style="padding-right: 0;">
-			<view class="auto-title" style="margin-bottom: 30rpx;">其他文件</view>
-			<button class="uploding-img" @click="upImgStar" v-if="imgList.length == 0">
-				<image src="/static/image/icon/icon_pzsc.png" mode="aspectFit"></image>
-				<view>上传照片</view>
-			</button>
-			<view class="img-list" v-else>
-				<view class="img-list-box" v-for="(item,index) in imgList" :key="index">
-					<image :src="item" mode="aspectFill"></image>
-					<view class="iconfont iconguanbi" @click.stop="delImg(index)"></view>
+					<view class="iconfont iconjia img-list-box" @click="upImgStar"></view>
 				</view>
-				<view class="iconfont iconjia img-list-box" @click="upImgStar"></view>
+			</view>
+
+			<data-input :inputHidden="aptitudesStatus||delBoxShow" v-model="remark" :hiddenIcon="true" title="特别提醒"></data-input>
+
+			<view class="bottom-btn">
+				<next-btn @click="nextBtn"></next-btn>
 			</view>
 		</view>
 
-		<data-input :inputHidden="aptitudesStatus||delBoxShow" v-model="remark" :hiddenIcon="true" title="特别提醒"></data-input>
 
-		<view class="bottom-btn">
-			<next-btn @click="nextBtn"></next-btn>
-		</view>
 
 		<l-file ref="lFile" @up-success="onSuccess"></l-file>
 
@@ -75,6 +79,10 @@
 				</view>
 			</view>
 		</uni-popup>
+
+		<view class="loading-view" :style="pageStatus == 'succ'?'opacity:0;pointer-events: none;':''">
+			<loading></loading>
+		</view>
 	</view>
 </template>
 
@@ -88,6 +96,7 @@
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 	import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue'
 	import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue'
+	import Loading from '@/components/Loading/Loading.vue'
 
 	export default {
 		name: 'summary',
@@ -100,13 +109,11 @@
 			NextBtn,
 			lFile,
 			uniSwipeAction,
-			uniSwipeActionItem
+			uniSwipeActionItem,
+			Loading
 		},
 
 		computed: {
-			type() {
-				return this.$constData.taskType[this.$store.state.task.taskInfo.taskType].name
-			},
 			title: {
 				get() {
 					return this.$store.state.task.taskInfo.taskName
@@ -154,6 +161,9 @@
 		},
 		data() {
 			return {
+				pageStatus: 'loading',
+
+				type: '',
 				options: [{
 					text: '删除',
 					style: {
@@ -321,7 +331,49 @@
 			navBack() {
 				uni.navigateBack()
 			},
-		}
+
+			getUserByTaskId(cnt) { // 取出全部屬性
+				this.$api.getUserByTaskId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c).publishUser
+						obj.finishDate = this.$commen.getFullDate(obj.finishDate)
+						if (obj.imgData) {
+							obj.imgData = this.$util.tryParseJson(obj.imgData)
+						}
+						if (obj.fileData) {
+							obj.fileData = this.$util.tryParseJson(obj.fileData)
+						}
+						obj.finishDate = this.$commen.getFullDate(obj.finishDate)
+						console.log(obj.finishDate)
+						let {
+							userHead,
+							userName,
+							brithday,
+							...newObj
+						} = obj
+						this.$store.dispatch('editorTask', newObj).then((res) => {
+							this.type = this.$constData.taskType[newObj.taskType].name
+							this.pageStatus = 'succ'
+							this.$store.commit('resSetTaskInfo')
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+		},
+		onLoad(res) {
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			let cnt = {
+				taskId: res.id, // Long 任务id
+				userId: userInfo.userId, // Long <选填> 用户id
+			}
+			this.getUserByTaskId(cnt)
+		},
 	}
 </script>
 
@@ -546,5 +598,23 @@
 	.colse-btn {
 		background: #FFFFFF;
 		border: 1rpx solid $group-color-befor;
+	}
+
+	.loading-view {
+		position: fixed;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: #FFFFFF;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 1;
+		transition: all .8s;
+	}
+
+	.succ-view {
+		// transition: all 1s;
+		// opacity: 0;
 	}
 </style>
