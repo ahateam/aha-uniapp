@@ -63,6 +63,8 @@
 		name: 'user',
 		data() {
 			return {
+				constData: this.$constData,
+
 				userInfo: {},
 				imgSrc: '',
 				name: '',

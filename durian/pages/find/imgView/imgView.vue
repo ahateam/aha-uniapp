@@ -419,6 +419,8 @@
 		font-size: $group-font;
 		color: $group-color-article;
 		margin: $group-margin-top 0;
+		user-select: text; // 长按复制属性，可能有兼容问题
+		caret-color: #00C8BE;
 	}
 
 	.imgList {

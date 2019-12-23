@@ -208,33 +208,49 @@
 				})
 			},
 			
+			choiceSucc(e){
+				console.log('成功')
+				console.log(e)
+			},
+			
+			choiceErr(e){
+				console.log('失败')
+				console.log(e)
+			},
+			
 			//相册添加图片
 			addImgs(e){
-				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
-				let tiemr = new Date()
-				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
-				uni.chooseImage({
-					count: 1,
-					sizeType: ['compressed'],
-					sourceType: [e],
-					success: (res) => {
-						this.showPopup = false
-						let imageSrc = res.tempFilePaths[0]
-						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
-						let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
-						// nameStr =  res.tempFilePaths[0]
-						console.log(nameStr)
-						uni.showLoading({
-						    title: '上传中'
-						})
-						this.upLoadImg(imageSrc,nameStr)
-					},fail: (err) => {
-					uni.showToast({
-						title:'已取消',
-						icon:'none'
-					})
-					}
-				})
+				if(e == 'album'){
+					plus.gallery.pick(this.choiceSucc, this.choiceErr,{filter:'none'});
+				}else{
+					let camera = plus.camera.getCamera();
+					camera.captureImage(this.choiceSucc,this.choiceErr)
+				}
+				// let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				// let tiemr = new Date()
+				// let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
+				// uni.chooseImage({
+				// 	count: 1,
+				// 	sizeType: ['compressed'],
+				// 	sourceType: [e],
+				// 	success: (res) => {
+				// 		this.showPopup = false
+				// 		let imageSrc = res.tempFilePaths[0]
+				// 		let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
+				// 		let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
+				// 		// nameStr =  res.tempFilePaths[0]
+				// 		console.log(nameStr)
+				// 		uni.showLoading({
+				// 		    title: '上传中'
+				// 		})
+				// 		this.upLoadImg(imageSrc,nameStr)
+				// 	},fail: (err) => {
+				// 	uni.showToast({
+				// 		title:'已取消',
+				// 		icon:'none'
+				// 	})
+				// 	}
+				// })
 			},
 			
 			// 拍照添加图片

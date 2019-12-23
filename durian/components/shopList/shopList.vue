@@ -1,7 +1,8 @@
 <template>
 	<view>
-		<view class="contentList" :style="item.goodsType == constData.goodsType[0].key?cardBg:''" v-for="(item,index) in list"
-		 :key="index" @touchstart="change(index,item)" @touchend="changeEnd(index,item,true)" @click="navToInfo(item)">
+		<view class="contentList" :class="{'show-time':showTime&&showTime&&item.goodsType == constData.goodsType[0].key}"
+		 :style="item.goodsType == constData.goodsType[0].key?cardBg:''" v-for="(item,index) in list" :key="index"
+		 @touchstart="change(index,item)" @touchend="changeEnd(index,item,true)" @click="navToInfo(item)">
 			<!-- 平台商品背景图片    -->
 			<image v-if="item.goodsType != constData.goodsType[0].key" class="card-img" :src="item.goodsType == constData.goodsType[1].key?cardImgSrcY:cardImgSrcB"
 			 mode="aspectFill"></image>
@@ -10,10 +11,12 @@
 			<!-- 标题 -->
 			<view class="titleBox" :style="item.goodsType == constData.goodsType[2].key?'color:#FFFFFF':''">{{item.goodsName}}</view>
 
+			<view v-if="showTime&&item.goodsType == constData.goodsType[0].key" class="pay-time-box">发布日期：{{getDataTime(item.createTime)}}</view>
+
 			<!-- 价值 -->
 			<view class="priceBox" :class="item.goodsType == constData.goodsType[2].key?'card-bg-B':''" :style="item.goodsType == constData.goodsType[1].key?cardInfo:''">
-				<text v-if="item.goodsType == constData.goodsType[0].key" style="margin-right: 0.3em;">AUD</text>
-				{{item.goodsPrice}}
+				<text v-if="item.goodsType == constData.goodsType[0].key" style="margin-right: 0.3em;">AUD {{item.goodsPrice}}</text>
+				<text v-else>(面值{{getPrice(item.goodsPrice)}}澳元)</text>
 			</view>
 
 			<!-- 自由商品图片 -->
@@ -23,7 +26,7 @@
 
 			<!-- 平台商品兑换价格 -->
 			<view class="cardPrice" :style="item.goodsType == constData.goodsType[2].key?'color:#FFFFFF':''" v-else-if="item.goodsType != constData.goodsType[0].key">
-				平台币{{item.cardPrice}}
+				平台币{{item.goodsPrice}}
 			</view>
 		</view>
 	</view>
@@ -31,7 +34,7 @@
 
 <script>
 	export default {
-		props: ['list'],
+		props: ['list', 'showTime'],
 		data() {
 			return {
 				cardInfo: 'color:#333333;opacity: .5;',
@@ -48,17 +51,25 @@
 				return this.$util.tryParseJson(arr)[0]
 			},
 
-			change(index,item) {
-				this.$emit('change', index,item.goodsType)
+			change(index, item) {
+				this.$emit('change', index, item.goodsType)
 			},
 
-			changeEnd(index,item) {
-				this.$emit('changeEnd', index,item.goodsType)
+			changeEnd(index, item) {
+				this.$emit('changeEnd', index, item.goodsType)
 			},
 
 			navToInfo(item) {
 				this.$emit('emitItem', item)
 			},
+
+			getPrice(price) {
+				return price / 10
+			},
+
+			getDataTime(time) {
+				return this.$commen.getNewDate(time)
+			}
 		}
 	}
 </script>
@@ -76,11 +87,12 @@
 
 	.stuty-img {
 		position: absolute;
-		top: 15rpx;
+		top: 50%;
 		right: 20rpx;
 		width: 150rpx;
 		height: 150rpx;
 		border-radius: 6rpx;
+		margin-top: -75rpx;
 
 		image {
 			width: 100%;
@@ -93,9 +105,7 @@
 		font-size: $group-font-befor;
 		line-height: $group-font-befor-line;
 		color: #333333;
-		margin-top: 25rpx;
-		margin-bottom: 20rpx;
-		margin-right: 155rpx;
+		margin: 25rpx 155rpx 20rpx 0;
 		word-break: keep-all;
 		white-space: nowrap;
 		overflow: hidden;
@@ -143,5 +153,16 @@
 	.card-bg-B {
 		color: #FFFFFF;
 		opacity: .5;
+	}
+
+	.pay-time-box {
+		color: #999999;
+		font-size: 22rpx;
+		line-height: 30rpx;
+		margin-bottom: 20rpx;
+	}
+
+	.show-time {
+		height: 230rpx;
 	}
 </style>

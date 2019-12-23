@@ -55,19 +55,7 @@
 				offset: 0,
 				pageOver: false,
 				// 平台商品列表
-				contentList: [{
-						goodsName: 'Coles购物卡',
-						goodsPrice: '(面值233澳元)',
-						cardPrice: '100',
-						goodsType: 1
-					},
-					{
-						goodsName: 'Coles购物卡',
-						goodsPrice: '(面值233澳元)',
-						cardPrice: '100',
-						goodsType: 1
-					}
-				],
+				contentList: [],
 				// 学生商品列表
 				studyList: [],
 
@@ -158,9 +146,7 @@
 		},
 		// 上拉加载
 		onReachBottom() {
-			if (this.pageOver) {
-				console.log('结束拉取')
-			} else {
+			if (!this.pageOver) {
 				this.page += 1
 				let cnt = {
 					count: this.count, // Integer
@@ -168,7 +154,6 @@
 				}
 				this.getGoods(cnt)
 			}
-
 		}
 	}
 </script>

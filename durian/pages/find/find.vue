@@ -1,77 +1,83 @@
 <template>
 	<view style="background-color: #FFFFFF;">
-		<view class="fixed-status" :style="{'height': getNavHeight() + 'px'}">
-			<cover-view></cover-view>
-		</view>
-		<view :style="{'height': getNavHeight() + 44 + 'px'}"></view>
+		<view v-if="pageStatus != 'onload'">
+			<view class="fixed-status" :style="{'height': getNavHeight() + 'px'}">
+				<cover-view></cover-view>
+			</view>
+			<view :style="{'height': getNavHeight() + 44 + 'px'}"></view>
 
-		<view class="topBox auto-margin">
-			<view class="title_box" @click="navTest">
-				发现
-			</view>
-			<view class="searchBox" @click="navToAdd">
-				<text class="iconfont icon-iconfonticonfontsousuo1 searchIcon"></text>
-				<text class="iconText" style="vertical-align: bottom;">发现新鲜事</text>
-			</view>
-		</view>
-		<!-- 导航栏 -->
-		<view class="navBox auto-margin">
-			<view class="navList" v-for="(item,index) in navList" :key="index" :style="index==1?'margin-right:0;':''" @click="changeNav(index)">
-				<image :src="item.imgSrc" mode="aspectFill"></image>
-				<view class="mask" :class="{displayBox:index == navCurrtent}"></view>
-				<view class="navTitle">
-					{{item.name}}
+			<view class="topBox auto-margin">
+				<view class="title_box">
+					发现
 				</view>
-				<!-- 選中样式 -->
-				<view class="currNav" :class="{displayBox:index == navCurrtent}">
-					<image src="/static/image/find/icon_xt.png" mode="aspectFit"></image>
-				</view>
-				<!-- the end -->
-			</view>
-		</view>
-
-		<!-- 标签栏 -->
-		<view class="tagBox auto-margin">
-			<view class="tagsList" :class="{currTag:index == navList[navCurrtent].tagCurrtent}" v-for="(item,index) in navList[navCurrtent].tagList"
-			 :key="index" :style="index != 0?'margin-left:30rpx':''" @click="changeTag(index)">{{item.name}}</view>
-		</view>
-
-		<view>
-			<view class="listBox" :class="{autoList:index != 0}" v-for="(item,index) in contentList" :key="index" @click="navToContent(item)">
-				<trans-video :item="item" v-if="item.posting.postingType == constData.groupType[3].key"></trans-video>
-
-				<img-box v-if="item.posting.postingType == constData.groupType[1].key" :item="item" :imgList="$util.tryParseJson(item.posting.postingDate)"></img-box>
-
-				<only-text :item="item" v-if="item.posting.postingType == constData.groupType[0].key"></only-text>
-
-				<view class="abilityBox" @click.stop>
-					<view class="icon-box">
-						<image src="/static/image/find/icon_llrs.png" mode="aspectFit"></image>
-						<text class="iconText">{{item.posting.postingPageView}}</text>
-					</view>
-
-					<view class="icon-box" :class="{currentIcon:item.isAppraise}" @click="createAppraise(item,index)">
-						<image :src="item.isAppraise?'/static/image/find/icon_z_p.png':'/static/image/find/icon_z.png'" mode="aspectFit"></image>
-						<text class="iconText">{{item.appraiseCount}}</text>
-					</view>
-
-					<view class="icon-box" @click="shareBtn(item,index)">
-						<image src="/static/image/find/icon_zf.png" mode="aspectFit"></image>
-						<text class="iconText">{{item.posting.postingShareNumber}}</text>
-					</view>
+				<view class="searchBox">
+					<text class="iconfont icon-iconfonticonfontsousuo1 searchIcon"></text>
+					<text class="iconText" style="vertical-align: bottom;">发现新鲜事</text>
 				</view>
 			</view>
-		</view>
+			<!-- 导航栏 -->
+			<view class="navBox auto-margin">
+				<view class="navList" v-for="(item,index) in navList" :key="index" :style="index==1?'margin-right:0;':''" @click="changeNav(index)">
+					<image :src="item.imgSrc" mode="aspectFill"></image>
+					<view class="mask" :class="{displayBox:index == navCurrtent}"></view>
+					<view class="navTitle">
+						{{item.name}}
+					</view>
+					<!-- 選中样式 -->
+					<view class="currNav" :class="{displayBox:index == navCurrtent}">
+						<image src="/static/image/find/icon_xt.png" mode="aspectFit"></image>
+					</view>
+					<!-- the end -->
+				</view>
+			</view>
 
-		<view class="add-btn" @click="navToAdd">
+			<!-- 标签栏 -->
+			<view class="tagBox auto-margin">
+				<view class="tagsList" :class="{currTag:index == navList[navCurrtent].tagCurrtent}" v-for="(item,index) in navList[navCurrtent].tagList"
+				 :key="index" :style="index != 0?'margin-left:30rpx':''" @click="changeTag(index)">{{item.name}}</view>
+			</view>
+
 			<view>
-				<!-- <image src="/static/image/user/icon_xggrxx.png" mode="aspectFit"></image> -->
-				<view class="iconfont icon-xie"></view>
-				<view>
-					发帖
+				<view class="listBox" :class="{autoList:index != 0}" v-for="(item,index) in contentList" :key="index" @click="navToContent(item)">
+					<trans-video :item="item" v-if="item.posting.postingType == constData.groupType[3].key"></trans-video>
+
+					<img-box v-if="item.posting.postingType == constData.groupType[1].key" :item="item" :imgList="$util.tryParseJson(item.posting.postingDate)"></img-box>
+
+					<only-text :item="item" v-if="item.posting.postingType == constData.groupType[0].key"></only-text>
+
+					<view class="abilityBox" @click.stop>
+						<view class="icon-box">
+							<image src="/static/image/find/icon_llrs.png" mode="aspectFit"></image>
+							<text class="iconText">{{item.posting.postingPageView}}</text>
+						</view>
+
+						<view class="icon-box" :class="{currentIcon:item.isAppraise}" @click="createAppraise(item,index)">
+							<image :src="item.isAppraise?'/static/image/find/icon_z_p.png':'/static/image/find/icon_z.png'" mode="aspectFit"></image>
+							<text class="iconText">{{item.appraiseCount}}</text>
+						</view>
+
+						<view class="icon-box" @click="shareBtn(item,index)">
+							<image src="/static/image/find/icon_zf.png" mode="aspectFit"></image>
+							<text class="iconText">{{item.posting.postingShareNumber}}</text>
+						</view>
+					</view>
 				</view>
 			</view>
+
+			<view class="add-btn" @click="navToAdd">
+				<view>
+					<!-- <image src="/static/image/user/icon_xggrxx.png" mode="aspectFit"></image> -->
+					<view class="iconfont icon-xie"></view>
+					<view>
+						发帖
+					</view>
+				</view>
+			</view>
+
+			<uni-load-more :status="pageStatus"></uni-load-more>
 		</view>
+
+		<loading :status="pageStatus"></loading>
 	</view>
 </template>
 
@@ -79,12 +85,16 @@
 	import ImgBox from '@/components/find/ImgBox.vue'
 	import transVideo from '@/components/find/TransVideo.vue'
 	import onlyText from '@/components/find/onlyText.vue'
+	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
+	import Loading from '@/components/Loading/Loading.vue'
 
 	export default {
 		components: {
 			ImgBox,
 			transVideo,
-			onlyText
+			onlyText,
+			uniLoadMore,
+			Loading
 		},
 		data() {
 			return {
@@ -92,16 +102,21 @@
 				count: 10,
 				offset: 0,
 				page: 1,
-
+				pageStatus: 'onload',
+				pageOver: false,
 
 				navList: [{
 						name: '校内向外',
 						imgSrc: '/static/image/find/bg_xnxw.png',
 						tagList: [{
-								name: '只看校内'
+								name: '只看校内',
+								pageStatus: 'loading',
+								pageOver: false
 							},
 							{
-								name: '只看校外'
+								name: '只看校外',
+								pageStatus: 'loading',
+								pageOver: false
 							}
 						],
 						tagCurrtent: 0,
@@ -110,10 +125,14 @@
 						name: '热点',
 						imgSrc: '/static/image/find/bg_rd.png',
 						tagList: [{
-								name: '最新'
+								name: '最新',
+								pageStatus: 'loading',
+								pageOver: false
 							},
 							{
-								name: '精选'
+								name: '精选',
+								pageStatus: 'loading',
+								pageOver: false
 							}
 						],
 						tagCurrtent: 0,
@@ -252,11 +271,47 @@
 			},
 
 			changeNav(index) {
-				this.navCurrtent = index
+				if (this.pageStatus != 'loading' && this.pageStatus != 'onload') {
+					this.navCurrtent = index
+					let navList = this.navList[this.navCurrtent]
+					if (navList.tagList[navList.tagCurrtent].child) {
+						this.contentList = navList.tagList[navList.tagCurrtent].child
+						this.pageOver = navList.tagList[navList.tagCurrtent].pageOver
+						this.pageStatus = navList.tagList[navList.tagCurrtent].pageStatus
+						this.page = navList.tagList[navList.tagCurrtent].page
+					} else {
+						let cnt = {
+							count: this.count,
+							offset: this.offset,
+							moduleId: this.$constData.module,
+							userId: this.userInfo.userId,
+							// show: this.$constData.postingStatus[], // Byte <选填> 可见范围
+						}
+						this.getPostingList(cnt)
+					}
+				}
 			},
 
 			changeTag(index) {
 				this.navList[this.navCurrtent].tagCurrtent = index
+				let cnt = {}
+				this.contentList = []
+				if (this.navCurrtent == 0) {
+					cnt = {
+						moduleId: this.$constData.module, // String 模块
+						sort: true, // boolean 是否倒序
+						userId: this.userInfo.userId, // long <选填> 用户id
+						count: this.count, // int 
+						offset: this.offset, // int
+					}
+					if (index == 1) {
+						cnt.showRange = this.$constData.postingStatus[2].key
+					} else {
+						cnt.showRange = this.$constData.postingStatus[1].key
+					}
+				}
+				this.pageStatus = 'loading'
+				this.getPostingList(cnt)
 			},
 
 			newTime(time) {
@@ -272,14 +327,29 @@
 						url: `/pages/find/imgView/imgView?id=${item.posting.postingId}`
 					})
 				}
+			},
 
+			tryDataList(list) {
+				console.log(this.navList[this.navCurrtent])
+				if (list.length < this.count) {
+					this.pageOver = true
+					this.pageStatus = 'nomore'
+				} else {
+					this.pageStatus = 'more'
+					this.pageOver = false
+				}
+				let navList = this.navList[this.navCurrtent]
+				navList.tagList[navList.tagCurrtent].pageOver = this.pageOver
+				navList.tagList[navList.tagCurrtent].pageStatus = this.pageStatus
+				this.contentList = this.contentList.concat(list)
+				navList.tagList[navList.tagCurrtent].child = this.contentList
 			},
 
 			getPostingList(cnt) {
 				this.$api.getPostingList(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.contentList = this.$util.tryParseJson(res.data.c)
-						console.log(this.contentList)
+						let list = this.$util.tryParseJson(res.data.c)
+						this.tryDataList(list)
 						uni.stopPullDownRefresh()
 					} else {
 						console.log('error')
@@ -297,14 +367,9 @@
 				moduleId: this.$constData.module, // String 模块
 				sort: true, // boolean 是否倒序
 				userId: this.userInfo.userId, // long <选填> 用户id
-				// type: type, // Byte <选填> 类型
-				// status: status, // Byte <选填> 状态编号
-				// power: power, // Byte <选填> 权力
-				// upUserId: upUserId, // Long <选填> 上传用户编号
-				// upChannelId: upChannelId, // Long <选填> 上传专栏编号
-				// tags: tags, // JSONObject <选填> 标签
 				count: this.count, // int 
 				offset: this.offset, // int
+				showRange: this.$constData.postingStatus[1].key, // Byte <选填> 可见范围
 			}
 			this.getPostingList(cnt)
 		},
@@ -322,6 +387,7 @@
 				userId: this.userInfo.userId, // Long <选填> 当前用户编号
 				count: this.count, // int 
 				offset: this.offset, // int
+				showRange: this.$constData.postingStatus[1].key, // Byte <选填> 可见范围
 			}
 			this.contentList = []
 			this.getPostingList(cnt)
@@ -330,10 +396,6 @@
 </script>
 
 <style lang="scss" scoped>
-	// @font-face {
-	// 	font-family: 'appleFont';
-	// 	src: url('~@/static/font/appleFont.ttf'), ;
-	// }
 	.auto-margin {
 		padding: 0 $group-margin-left;
 	}
@@ -563,5 +625,15 @@
 			width: 100%;
 			height: 100%;
 		}
+	}
+
+	.onload-view {
+		position: fixed;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		top: 0;
+		height: 100vh;
+		width: 100vw;
 	}
 </style>

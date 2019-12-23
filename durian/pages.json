@@ -194,7 +194,11 @@
 			"path": "pages/upload/upload",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/shop/addGoods/succView",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",

@@ -132,60 +132,73 @@
 			},
 			
 			addGoods(){
-				if(this.title == ''){
-					uni.showToast({
-						title:'请输入商品名称',
-						icon:'none'
-					})
-				}else if(this.imgList.length ==''){
-					uni.showToast({
-						title:'请上传至少一张商品图片',
-						icon:'none'
-					})
-				}else if(this.money == ''){
-					uni.showToast({
-						title:'请输入商品价格',
-						icon:'none'
-					})
-				}else if(this.info == ''){
-					uni.showToast({
-						title:'请输入商品简介',
-						icon:'none'
-					})
-				}else{
-					// 发布商品 **************************
-					let cnt = {
-						goodsName: this.title, // String 商品标题
-						senderId: this.$util.tryParseJson(uni.getStorageSync('userInfo')).userId, // Long 发布者编号
-						goodsType: this.$constData.goodsType[0].key, // Byte 商品类型
-						goodsClassifyId: 402755506127634, // Long 商品分类
-						stock: 1, // Integer 库存
-						goodsPrice: this.money, // Double 商品价格
-						goodsDescribe: this.info, // String 商品描述
-						goodsData: JSON.stringify(this.imgList), // String 商品图片数据
-						// keyword: '学生', // String 商品关键字
-						// isOnline: 1, // Byte 商品是否需要发货
-					}
-					this.createGoods(cnt)
+				let cnt = {
+					goodsName: this.title, // String 商品标题
+					senderId: this.$util.tryParseJson(uni.getStorageSync('userInfo')).userId, // Long 发布者编号
+					goodsType: this.$constData.goodsType[0].key, // Byte 商品类型
+					goodsClassifyId: 402755506127634, // Long 商品分类
+					stock: 1, // Integer 库存
+					goodsPrice: this.money, // Double 商品价格
+					goodsDescribe: this.info, // String 商品描述
+					goodsData: JSON.stringify(this.imgList), // String 商品图片数据
+					// keyword: '学生', // String 商品关键字
+					// isOnline: 1, // Byte 商品是否需要发货
 				}
+				this.createGoods(cnt)
+				// if(this.title == ''){
+				// 	uni.showToast({
+				// 		title:'请输入商品名称',
+				// 		icon:'none'
+				// 	})
+				// }else if(this.imgList.length ==''){
+				// 	uni.showToast({
+				// 		title:'请上传至少一张商品图片',
+				// 		icon:'none'
+				// 	})
+				// }else if(this.money == ''){
+				// 	uni.showToast({
+				// 		title:'请输入商品价格',
+				// 		icon:'none'
+				// 	})
+				// }else if(this.info == ''){
+				// 	uni.showToast({
+				// 		title:'请输入商品简介',
+				// 		icon:'none'
+				// 	})
+				// }else{
+				// 	// 发布商品 **************************
+				// 	let cnt = {
+				// 		goodsName: this.title, // String 商品标题
+				// 		senderId: this.$util.tryParseJson(uni.getStorageSync('userInfo')).userId, // Long 发布者编号
+				// 		goodsType: this.$constData.goodsType[0].key, // Byte 商品类型
+				// 		goodsClassifyId: 402755506127634, // Long 商品分类
+				// 		stock: 1, // Integer 库存
+				// 		goodsPrice: this.money, // Double 商品价格
+				// 		goodsDescribe: this.info, // String 商品描述
+				// 		goodsData: JSON.stringify(this.imgList), // String 商品图片数据
+				// 		// keyword: '学生', // String 商品关键字
+				// 		// isOnline: 1, // Byte 商品是否需要发货
+				// 	}
+				// 	this.createGoods(cnt)
+				// }
 			},
 			
 			createGoods(cnt){
-				this.$api.createGoods(cnt,(res)=>{
-					if(res.data.rc == this.$util.RC.SUCCESS){
-						uni.switchTab({
-							url:'/pages/shop/shop'
+						uni.redirectTo({
+							url:'./succView'
 						})
-						uni.showToast({
-							title:'发布成功！'
-						})
-					}else{
-						uni.showToast({
-							title:'发布失败',
-							icon:'none'
-						})
-					}
-				})
+				// this.$api.createGoods(cnt,(res)=>{
+				// 	if(res.data.rc == this.$util.RC.SUCCESS){
+				// 		uni.redirectTo({
+				// 			url:'./succView'
+				// 		})
+				// 	}else{
+				// 		uni.showToast({
+				// 			title:res.data.rm,
+				// 			icon:'none'
+				// 		})
+				// 	}
+				// })
 			}
 		}
 	}

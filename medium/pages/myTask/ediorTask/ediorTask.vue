@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="succ-view" v-if="pageStatus == 'succ'">
+		<view class="succ-view" v-if="pageStatus != 'onload'">
 			<nav-bar :back="false">
 				<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 				<view class="view-title">我的任务</view>
@@ -79,10 +79,8 @@
 				</view>
 			</view>
 		</uni-popup>
-
-		<view class="loading-view" :style="pageStatus == 'succ'?'opacity:0;pointer-events: none;':''">
-			<loading></loading>
-		</view>
+		
+		<loading :status="pageStatus"></loading>
 	</view>
 </template>
 
@@ -161,7 +159,7 @@
 		},
 		data() {
 			return {
-				pageStatus: 'loading',
+				pageStatus: 'onload',
 
 				type: '',
 				options: [{

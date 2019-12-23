@@ -1,6 +1,6 @@
 <template>
 	<view style="padding-bottom: 102rpx;">
-		<view class="succ-view" :style="pageStatus == 'succ'?'opacity:1':''">
+		<view class="succ-view" v-if="pageStatus != 'onload'">
 			<view class="top-box">
 				<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
 				<view class="top-content">
@@ -77,9 +77,7 @@
 			</view>
 		</view>
 
-		<view class="loading-view" v-if="pageStatus == 'loading'">
-			<loading></loading>
-		</view>
+		<loading :status="pageStatus"></loading>
 	</view>
 </template>
 

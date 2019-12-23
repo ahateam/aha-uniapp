@@ -8,24 +8,22 @@
 		<view :style="{'padding-top': getNavHeight()}"></view>
 		<!-- 商品列表切换导航 -->
 		<view class="trans">
-			<view class="trans-l" @click="change" :style="!buy?'color:#587685;':'color:#FFFFFF;'">
-				<image class="pt-img" :src="buy?'/static/image/shop/bg_spqd_p.png':'/static/image/shop/icon_jyl.png'" mode="scaleToFill"></image>
-				<text>商品清单</text>
-			</view>
-			<view class="trans-l" style="margin-left: 31rpx;" @click="change" :style="!buy?'color:#FFFFFF;':'color:#587685;'">
-				<image class="pt-img" :src="buy?'/static/image/shop/icon_jyl.png':'/static/image/shop/bg_spqd_p.png'" mode="scaleToFill"></image>
-				<text>交易历史</text>
+			<view class="trans-box" @click="change(index)" :style="index == navCurr?'color:#FFFFFF;':'color:#587685;'" v-for="(item ,index) in navList"
+			 :key="index">
+				<image class="pt-img" :src="index == navCurr?'/static/image/shop/bg_spqd_p.png':'/static/image/shop/icon_jyl.png'"
+				 mode="scaleToFill"></image>
+				<text>{{item.name}}</text>
 			</view>
 		</view>
 
-		<!-- 中间背景 -->
+		<!-- 分割线 -->
 		<view class="bg-color"></view>
 
 		<view class="buy-box">
-			<view class="buy" :hidden="!buy">
+			<view class="buy" :hidden="buy">
 				购买清单
 			</view>
-			<view class="buy" :hidden="buy">
+			<view class="buy" :hidden="!buy">
 				交易清单
 			</view>
 			<image src="/static/image/shop/icon_sx.png" mode="aspectFit" @click="filterStatus = !filterStatus"></image>
@@ -61,7 +59,7 @@
 			</view>
 
 			<!-- 我的商品列表 -->
-			<shop-list :list="myGoods" @change="changeGoods" @changeEnd="changeGoodsEnd" @emitItem="navToOrder"></shop-list>
+			<shop-list showTime :list="myGoods" @change="changeGoods" @changeEnd="changeGoodsEnd" @emitItem="navToOrder"></shop-list>
 			<view class="more-text" v-if="myGoods.length > 0">
 				<text>查看更多</text>
 				<text class="iconfont icon-xiayibu"></text>
@@ -119,40 +117,24 @@
 		},
 		data() {
 			return {
-				buy: true, //开启
-				contentList: [{
-						goodsName: 'Coles购物卡',
-						goodsPrice: '(面值233澳元)',
-						goodsData: '["https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/image/20191121/1574328267400.jpg"]',
-						cardPrice: '100',
-						goodsType: 0
-					},
-					{
-						goodsName: 'Coles购物卡',
-						goodsPrice: '(面值233澳元)',
-						cardPrice: '100',
-						goodsType: 1
-					}
-				],
-				myGoods: [{
-						goodsName: 'Coles购物卡',
-						goodsPrice: '(面值233澳元)',
-						goodsData: '["https://weapp-xhj.oss-cn-hangzhou.aliyuncs.com/image/20191121/1574328267400.jpg"]',
-						cardPrice: '100',
-						goodsType: 0
-					},
-					{
-						goodsName: 'Coles购物卡',
-						goodsPrice: '(面值233澳元)',
-						cardPrice: '100',
-						goodsType: 1
-					}
-				],
-
 				count: 10,
 				offset: 0,
-				pageStatus: false,
+				page: 1,
+				pageStatus: 'onload',
 				pageOver: false,
+
+				navList: [{
+						name: '商品清单'
+					},
+					{
+						name: '交易历史'
+					}
+				],
+				navCurr: 0,
+
+				buy: false, //开启
+				contentList: [],
+				myGoods: [],
 
 				filterStatus: false,
 				moneyFilter: false,
@@ -239,10 +221,9 @@
 				uni.navigateBack()
 			},
 
-			change() {
-				//定义一个变量
-				let clickright = 0;
-				if (clickright == this.buy) {
+			change(e) {
+				this.navCurr = e
+				if (e == 1) {
 					this.buy = true
 				} else {
 					this.buy = false
@@ -252,13 +233,39 @@
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
+
+			getGoodsList(cnt) {
+				this.$api.getGoodsList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let list = this.$util.tryParseJson(res.data.c)
+						this.myGoods = list
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
 		},
+		onLoad() {
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			this.userInfo = userInfo
+			let cnt = {
+				senderId: userInfo.userId, // Long <选填> 发布者id
+				// goodsStatus: goodsStatus, // Byte <选填> 商品状态
+				// goodsType: goodsType, // Byte <选填> 商品类型
+				count: this.count, // Integer 
+				offset: this.offset, // Integer 
+			}
+			this.getGoodsList(cnt)
+		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	.trans {
-		margin: 30rpx;
+		margin: 30rpx 0 30rpx 30rpx;
 		padding-top: 30rpx;
 		overflow: hidden;
 	}
@@ -272,12 +279,13 @@
 		box-sizing: border-box;
 	}
 
-	.trans-l {
+	.trans-box {
 		position: relative;
 		display: inline-block;
 		border-radius: 4rpx;
 		width: 330rpx;
 		height: 145rpx;
+		margin-right: 30rpx;
 
 		text {
 			position: absolute;

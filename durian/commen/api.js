@@ -109,9 +109,14 @@ api.updateUser = function(cnt, callback) {
 }
 
 /* 商城 */
-// 商品列表 
+// 商城页商品列表 
 api.getGoods = function(cnt, callback) {
 	util.call(baseUrl + '/goods/getGoods', cnt, callback)
+}
+
+// 查询商品 
+api.getGoodsList = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getGoodsList', cnt, callback)
 }
 
 // 商品id获取商品 
