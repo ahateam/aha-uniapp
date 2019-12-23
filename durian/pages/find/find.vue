@@ -39,11 +39,21 @@
 
 			<view>
 				<view class="listBox" :class="{autoList:index != 0}" v-for="(item,index) in contentList" :key="index" @click="navToContent(item)">
-					<trans-video :item="item" v-if="item.posting.postingType == constData.groupType[3].key"></trans-video>
+					<view v-if="navCurrtent == 0">
+						<trans-video :item="item" v-if="item.posting.postingType == constData.groupType[3].key"></trans-video>
 
-					<img-box v-if="item.posting.postingType == constData.groupType[1].key" :item="item" :imgList="$util.tryParseJson(item.posting.postingDate)"></img-box>
+						<img-box v-else-if="item.posting.postingType == constData.groupType[1].key" :item="item" :imgList="$util.tryParseJson(item.posting.postingDate)"></img-box>
 
-					<only-text :item="item" v-if="item.posting.postingType == constData.groupType[0].key"></only-text>
+						<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key"></only-text>
+					</view>
+
+					<view v-else>
+						<right-video v-if="item.posting.postingType == constData.groupType[1].key||item.posting.postingType == constData.groupType[3].key"
+						 :item="item" :imgSrc="constData.oss + getJsonParse(item.posting.postingDate)[0]" :listLength="getJsonParse(item.posting.postingDate).length"
+						 tagType="new"></right-video>
+
+						<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key" tagType="new"></only-text>
+					</view>
 
 					<view class="abilityBox" @click.stop>
 						<view class="icon-box">
@@ -87,6 +97,7 @@
 	import onlyText from '@/components/find/onlyText.vue'
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
 	import Loading from '@/components/Loading/Loading.vue'
+	import rightVideo from '@/components/find/rightVideo.vue'
 
 	export default {
 		components: {
@@ -94,7 +105,8 @@
 			transVideo,
 			onlyText,
 			uniLoadMore,
-			Loading
+			Loading,
+			rightVideo
 		},
 		data() {
 			return {
@@ -152,6 +164,10 @@
 			}
 		},
 		methods: {
+			getJsonParse(data) {
+				return this.$util.tryParseJson(data)
+			},
+
 			navToAdd() {
 				uni.navigateTo({
 					url: '/pages/find/createView/createView'
@@ -287,6 +303,8 @@
 							userId: this.userInfo.userId,
 							// show: this.$constData.postingStatus[], // Byte <选填> 可见范围
 						}
+						this.contentList = []
+						this.pageStatus = 'loading'
 						this.getPostingList(cnt)
 					}
 				}
@@ -294,24 +312,33 @@
 
 			changeTag(index) {
 				this.navList[this.navCurrtent].tagCurrtent = index
-				let cnt = {}
-				this.contentList = []
-				if (this.navCurrtent == 0) {
-					cnt = {
-						moduleId: this.$constData.module, // String 模块
-						sort: true, // boolean 是否倒序
-						userId: this.userInfo.userId, // long <选填> 用户id
-						count: this.count, // int 
-						offset: this.offset, // int
-					}
-					if (index == 1) {
-						cnt.showRange = this.$constData.postingStatus[2].key
+				if (this.navList[this.navCurrtent].tagList[index].child) {
+					let oldList = this.navList[this.navCurrtent].tagList[index]
+					this.contentList = oldList.child
+					this.pageOver = oldList.pageOver
+					this.pageStatus = oldList.pageOver
+				} else {
+					let cnt = {}
+					if (this.navCurrtent == 0) {
+						cnt = {
+							moduleId: this.$constData.module, // String 模块
+							sort: true, // boolean 是否倒序
+							userId: this.userInfo.userId, // long <选填> 用户id
+							count: this.count, // int 
+							offset: this.offset, // int
+						}
+						if (index == 1) {
+							cnt.showRange = this.$constData.postingStatus[2].key
+						} else {
+							cnt.showRange = this.$constData.postingStatus[1].key
+						}
 					} else {
-						cnt.showRange = this.$constData.postingStatus[1].key
+
 					}
+					this.pageStatus = 'loading'
+					this.contentList = []
+					this.getPostingList(cnt)
 				}
-				this.pageStatus = 'loading'
-				this.getPostingList(cnt)
 			},
 
 			newTime(time) {

@@ -7,21 +7,24 @@
 				<view class="time">{{newTime(item.posting.postingCreateTime)}}</view>
 			</view>
 		</view>
-		
-		<view class="title">{{item.posting.postingTextDate}}</view>
+
+		<view class="title">
+			<view :class="{'tag-show':tagType}">{{item.posting.postingTextDate}}</view>
+			<image class="tag-icon" v-show="tagType" src="/static/image/find/icon_new.png" mode="aspectFit"></image>
+		</view>
 	</view>
 </template>
 
 <script>
 	export default {
-		props: ['item','title', 'upName', 'time', 'type','upHead'],
+		props: ['item', 'title', 'tagType'],
 		data() {
 			return {
-				
+
 			}
 		},
-		methods:{
-			newTime(time){
+		methods: {
+			newTime(time) {
 				return this.$commen.getNewDate(time)
 			}
 		}
@@ -37,6 +40,7 @@
 	}
 
 	.title {
+		position: relative;
 		font-size: $group-font;
 		color: $group-color;
 		line-height: $group-font-line;
@@ -54,8 +58,8 @@
 		font-size: $group-font;
 		line-height: $group-font-line;
 		color: $group-color;
-		
-		image{
+
+		image {
 			position: absolute;
 			top: 50%;
 			margin-top: -30rpx;
@@ -65,8 +69,8 @@
 			overflow: hidden;
 		}
 	}
-	
-	.rightBox{
+
+	.rightBox {
 		margin-left: 80rpx;
 		font-size: $group-font;
 		line-height: $group-font-line;
@@ -77,5 +81,17 @@
 		line-height: $group-font-info;
 		color: $group-color-befor;
 		margin-top: $group-margin-s;
+	}
+
+	.tag-show {
+		text-indent: 2em;
+	}
+
+	.tag-icon {
+		position: absolute;
+		top: 4rpx;
+		left: 0;
+		width: 47rpx;
+		height: 28rpx;
 	}
 </style>

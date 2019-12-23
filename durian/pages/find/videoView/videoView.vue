@@ -1,63 +1,67 @@
 <template>
 	<view class="body">
-		<navBar :back="false" class="navBox">
-			<view slot="left" class="iconfont icon-fanhui backIcon" @click="navBack"></view>
-			<view slot="right" class="rightNav">
-				<text class="iconfont icon-xing navMargin" @click="createCollect"></text>
-				<text class="iconfont icon-fenxiang"></text>
-			</view>
-		</navBar>
-		<view :style="opacity">
-			<userBox :upName="upName" :time="time" :upHead="upHead"></userBox>
-			<view class="textBox">
-				{{text}}
-			</view>
-			<video class="videoBox" :src="constData.oss + videoSrc" controls></video>
-			<view class="abilityBox">
-				<view class="icon-box">
-					<image src="/static/image/find/icon_llrs.png" mode="aspectFit"></image>
-					<text class="iconText">{{watchNumber}}</text>
+		<view>
+			<navBar :back="false" class="navBox">
+				<view slot="left" class="iconfont icon-fanhui backIcon" @click="navBack"></view>
+				<view slot="right" class="rightNav">
+					<text class="iconfont icon-xing navMargin" @click="createCollect"></text>
+					<text class="iconfont icon-fenxiang"></text>
 				</view>
+			</navBar>
+			<view :style="opacity">
+				<userBox :upName="upName" :time="time" :upHead="upHead"></userBox>
+				<view class="textBox">
+					{{text}}
+				</view>
+				<video class="videoBox" :src="constData.oss + videoSrc" controls></video>
+				<view class="abilityBox">
+					<view class="icon-box">
+						<image src="/static/image/find/icon_llrs.png" mode="aspectFit"></image>
+						<text class="iconText">{{watchNumber}}</text>
+					</view>
 
-				<view :class="{currentIcon:isAppraise}" @click="createAppraise">
-					<text class="iconfont icon-zan"></text>
-					<text class="iconText">{{appraiseCount}}</text>
-				</view>
+					<view :class="{currentIcon:isAppraise}" @click="createAppraise">
+						<text class="iconfont icon-zan"></text>
+						<text class="iconText">{{appraiseCount}}</text>
+					</view>
 
-				<view class="currentIcon" @click="sheetStatus = true">
-					<text class="iconText">太棒了，打赏！</text>
-				</view>
-			</view>
-		</view>
-		<!-- 评论区 -->
-		<view class="commentBox" :style="opacity">
-			<view class="commentTitle">
-				大家在说
-			</view>
-			<view v-if="commentList.length > 0">
-				<comment :comment="commentList" @zan="zan"></comment>
-			</view>
-			<view v-if="commentList.length == 0&&commentApi" class="noCommentBox">
-				<view class="noComIcon">
-					<image src="/static/image/find/bg-ly.png" mode="aspectFit"></image>
-					<view class="noComText">
-						爱我就留言，不用跪榴莲。
+					<view class="currentIcon" @click="sheetStatus = true">
+						<text class="iconText">太棒了，打赏！</text>
 					</view>
 				</view>
 			</view>
-		</view>
-
-		<!-- 评论栏 -->
-		<view class="replayBox" :style="opacity">
-			<view class="inputBox">
-				<text class="iconfont icon-xie"></text>
-				<input type="text" v-model="replayText" placeholder="我也说两句…" />
+			<!-- 评论区 -->
+			<view class="commentBox" :style="opacity">
+				<view class="commentTitle">
+					大家在说
+				</view>
+				<view v-if="commentList.length > 0">
+					<comment :comment="commentList" @zan="zan"></comment>
+				</view>
+				<view v-if="commentList.length == 0&&commentApi" class="noCommentBox">
+					<view class="noComIcon">
+						<image src="/static/image/find/bg-ly.png" mode="aspectFit"></image>
+						<view class="noComText">
+							爱我就留言，不用跪榴莲。
+						</view>
+					</view>
+				</view>
 			</view>
-			<button class="submitBtn" @click="submit">发表</button>
-		</view>
 
-		<uni-load-more :status="pageStatus" v-if="commentApi == false||commentList.length > 0&&commentApi == true"></uni-load-more>
-		<sheet isShowBottom @closeBottom="closeSheet" @changeMoney="changeMoney" v-if="sheetStatus"></sheet>
+			<!-- 评论栏 -->
+			<view class="replayBox" :style="opacity">
+				<view class="inputBox">
+					<text class="iconfont icon-xie"></text>
+					<input type="text" v-model="replayText" placeholder="我也说两句…" />
+				</view>
+				<button class="submitBtn" @click="submit">发表</button>
+			</view>
+
+			<uni-load-more :status="pageStatus" v-if="commentApi == false||commentList.length > 0&&commentApi == true"></uni-load-more>
+			<sheet isShowBottom @closeBottom="closeSheet" @changeMoney="changeMoney" v-if="sheetStatus"></sheet>
+		</view>
+		
+		<loading :status="pageStatus"></loading>
 	</view>
 </template>
 
@@ -66,13 +70,15 @@
 	import comment from '@/components/find/comment.vue'
 	import sheet from '@/components/bbh-sheet/bottomSheet.vue'
 	import navBar from '@/components/zhouWei-navBar/index.vue'
+	import Loading from '@/components/Loading/Loading.vue'
 
 	export default {
 		components: {
 			userBox,
 			comment,
 			sheet,
-			navBar
+			navBar,
+			Loading
 		},
 		data() {
 			return {
@@ -86,7 +92,7 @@
 				offset: 0,
 				page: 1,
 				pageOver: false,
-				pageStatus: 'loading',
+				pageStatus: 'onload',
 
 				// 帖子数据
 				upName: '', //上传者名字

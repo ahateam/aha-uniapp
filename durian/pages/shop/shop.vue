@@ -1,51 +1,56 @@
 <template>
 	<view class="body">
-		<view :style="{'padding-top': getNavHeight()}"></view>
-		<view v-if="netStatus == 0">
-			<view class="topBox">
-				<view class="title_box">
-					商城
+		<view v-if="pageStatus != 'onload'">
+			<view :style="{'padding-top': getNavHeight()}"></view>
+			<view v-if="netStatus == 0">
+				<view class="topBox">
+					<view class="title_box">
+						商城
+					</view>
+					<view class="add-box" @click="navToAdd">
+						<text class="iconfont icon-jia add-icon"></text>
+						<text class="iconText">我要发布商品</text>
+					</view>
 				</view>
-				<view class="add-box" @click="navToAdd">
-					<text class="iconfont icon-jia add-icon"></text>
-					<text class="iconText">我要发布商品</text>
+
+				<view class="search-box" @click="navToSearch">
+					<text class="iconfont icon-iconfonticonfontsousuo1 search-icon"></text>
+					<text>{{searchTxet}}</text>
 				</view>
-			</view>
 
-			<view class="search-box" @click="navToSearch">
-				<text class="iconfont icon-iconfonticonfontsousuo1 search-icon"></text>
-				<text>{{searchTxet}}</text>
-			</view>
+				<view class="title-box">平台兑换</view>
+				<view class="noShop" v-if="contentList.length == 0">
+					<image src="/static/image/shop/zwdh.png" mode="aspectFill"></image>
+					<view style="margin-top: 30rpx;">暂无兑换</view>
+				</view>
+				<shopList :list="contentList" @change="change" @changeEnd="changeEnd" @emitItem="navToInfo"></shopList>
 
-			<view class="title-box">平台兑换</view>
-			<view class="noShop" v-if="contentList.length == 0">
-				<image src="/static/image/shop/zwdh.png" mode="aspectFill"></image>
-				<view style="margin-top: 30rpx;">暂无兑换</view>
+				<view class="title-box">自由市场</view>
+				<view class="noShop" v-if="studyList.length == 0">
+					<image src="/static/image/shop/zwdh.png" mode="aspectFill"></image>
+					<view style="margin-top: 30rpx;">暂无商品</view>
+				</view>
+				<shopList :list="studyList" @emitItem="navToInfo"></shopList>
 			</view>
-			<shopList :list="contentList" @change="change" @changeEnd="changeEnd" @emitItem="navToInfo"></shopList>
-
-			<view class="title-box">自由市场</view>
-			<view class="noShop" v-if="studyList.length == 0">
-				<image src="/static/image/shop/zwdh.png" mode="aspectFill"></image>
-				<view style="margin-top: 30rpx;">暂无商品</view>
-			</view>
-			<shopList :list="studyList" @emitItem="navToInfo"></shopList>
 		</view>
-
 		<view v-if="netStatus == 404" class="error-view">
 			<image class="net-error-img" src="/static/image/shop/mwl.png" mode="aspectFit"></image>
 			<view class="error-text">网管去吃榴莲了，请稍后重试</view>
 			<button class="error-btn" @click="getGoodsAgin">点击重试</button>
 		</view>
+
+		<loading :status="pageStatus"></loading>
 	</view>
 </template>
 
 <script>
 	import shopList from '@/components/shopList/shopList.vue'
+	import Loading from '@/components/Loading/Loading.vue'
 
 	export default {
 		components: {
-			shopList
+			shopList,
+			Loading
 		},
 		data() {
 			return {
@@ -54,6 +59,8 @@
 				count: 10,
 				offset: 0,
 				pageOver: false,
+				pageStatus: 'onload',
+
 				// 平台商品列表
 				contentList: [],
 				// 学生商品列表
@@ -84,6 +91,10 @@
 						console.log(data)
 						if (data.platform.length < this.count && data.free.length < this.count) {
 							this.pageOver = true
+							this.pageStatus = 'nomore'
+						} else {
+							this.pageOver = false
+							this.pageStatus = 'more'
 						}
 						this.contentList = this.contentList.concat(data.platform)
 						this.studyList = this.studyList.concat(data.free)
