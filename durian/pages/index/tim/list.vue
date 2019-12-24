@@ -774,7 +774,7 @@
 				}
 				this.initPoint.Y = e.touches[0].clientY;
 				this.initPoint.identifier = e.touches[0].identifier;
-				this.RECORDER.start({format:"mp3"});//录音开始,
+				this.RECORDER.start({duration: 45000,sampleRate: 8000,format: 'aac'});//录音开始,
 			},
 			//录音开始UI效果
 			recordBegin(e){

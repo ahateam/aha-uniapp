@@ -83,7 +83,11 @@
 			"style": {}
 		}, {
 			"path": "pages/find/createView/createView",
-			"style": {}
+			"style": {
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}, {
 			"path": "pages/shop/shop",
 			"style": {
@@ -196,6 +200,10 @@
 		}
 	    ,{
             "path" : "pages/shop/addGoods/succView",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/userCollect/userCollect",
             "style" : {}
         }
     ],

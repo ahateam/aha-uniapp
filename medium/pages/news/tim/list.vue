@@ -1,6 +1,6 @@
 <template>
 	<view>
-		
+
 		<view class="content" @touchstart="hideDrawer">
 			<scroll-view class="msg-list" scroll-y="true" :scroll-with-animation="scrollAnimation" :scroll-top="scrollTop"
 			 :scroll-into-view="scrollToView" @scrolltoupper="loadHistory" upper-threshold="50">
@@ -98,7 +98,9 @@
 			<!-- 更多功能 相册-拍照-红包 -->
 			<view class="more-layer" :class="{hidden:hideMore}">
 				<view class="list">
-					<view class="box" @tap="chooseImage"><view class="icon tupian2"></view></view>
+					<view class="box" @tap="chooseImage">
+						<view class="icon tupian2"></view>
+					</view>
 					<view class="box" @tap="camera">
 						<view class="icon paizhao"></view>
 					</view>
@@ -111,16 +113,16 @@
 		<!-- 底部输入栏 -->
 		<view class="input-box" :class="popupLayerClass" @touchmove.stop.prevent="discard">
 			<!-- H5下不能录音，输入栏布局改动一下 -->
-			
+
 			<view class="voice">
 				<view class="icon" :class="isVoice?'jianpan':'yuyin'" @tap="switchVoice"></view>
 			</view>
-		
-		
+
+
 			<!-- <view class="more" @tap="showMore">
 				<view class="icon add"></view>
 			</view> -->
-		
+
 			<view class="textbox">
 				<view class="voice-mode" :class="[isVoice?'':'hidden',recording?'recording':'']" @touchstart="voiceBegin"
 				 @touchmove.stop.prevent="voiceIng" @touchend="voiceEnd" @touchcancel="voiceCancel">{{voiceTis}}</view>
@@ -710,7 +712,7 @@
 				}
 				this.initPoint.Y = e.touches[0].clientY;
 				this.initPoint.identifier = e.touches[0].identifier;
-				this.RECORDER.start({format:"mp3"});//录音开始,
+				this.RECORDER.start({duration: 45000,sampleRate: 8000,format: 'aac'});//录音开始,
 			},
 			//录音开始UI效果
 			recordBegin(e){

@@ -17,21 +17,26 @@
 				<textarea v-model="text" placeholder="告诉大家你今天的分享…" />
 				</view>
 				
+			<movable-view class="video-box" direction="all" out-of-bounds @change="moveBox" @touchend="reSet" v-if="videoSrc">
+				<video :src="videoSrc" controls></video>
+			</movable-view>
+			
 			<movable-view 
+			class="movable-view"
 			:class="item == ''?'hidden-box':'pt-view'"
 			:style="isLeftImg(index)?'margin-left:60rpx':''"
 			:data-index="index" 
 			direction="all" 
-			:out-of-bounds="true" 
+			out-of-bounds
 			v-for="(item,index) in imgList" 
-			:key="index"  
+			:key="index"
 			@change="moveBox" 
 			@touchend="reSet" 
-			 >
+			>
 				<image class="img-list" :src="constData.oss + item" mode="aspectFill" :style="index == currIndex&&delImg?'opacity: 0.5':''"></image>
 			</movable-view>
 			
-			<view class="addImgBtn" :style="isLeftBtn()?'margin-left:60rpx':''" @click="openPopup" v-if="imgList.length < 9">
+			<view class="addImgBtn" :style="isLeftBtn()?'margin-left:60rpx':''" @click="openPopup" v-if="imgList.length < 9&&videoSrc == ''">
 				<text class="iconfont icon-jia"></text>
 			</view>
 			
@@ -78,6 +83,8 @@
 				
 				text:'',
 				imgList:[],
+				
+				videoSrc:'',
 				statusName:'公开',
 				showPopup:false,
 				statusIndex:0,
@@ -136,25 +143,46 @@
 			},
 			
 			reSet(e){
-				setTimeout(()=>{
-					this.imgList.splice(this.imgList.length ,0,'')
-					setTimeout(()=> {
-						if(this.delImg){
-							let index = e.currentTarget.dataset.index
-							this.delImg = false
-							this.imgList.splice(index,1)
-							uni.showToast({
-								title:'已删除该图片',
-								icon:'none'
-							})
-						}
-						if(this.imgList[this.imgList.length - 1] == ''){
-							this.imgList.splice(this.imgList.length - 1 , 1)
-						}
-						this.delImgHover = false
-						console.log(this.imgList)
-					}, 50)
-				},50)
+				if(this.imgList.length > 0){
+					setTimeout(()=>{
+						this.imgList.splice(this.imgList.length ,0,'')
+						setTimeout(()=> {
+							if(this.delImg){
+								let index = e.currentTarget.dataset.index
+								this.delImg = false
+								this.imgList.splice(index,1)
+								uni.showToast({
+									title:'已删除',
+									icon:'none'
+								})
+							}
+							if(this.imgList[this.imgList.length - 1] == ''){
+								this.imgList.splice(this.imgList.length - 1 , 1)
+							}
+							this.delImgHover = false
+							console.log(this.imgList)
+						}, 50)
+					},50)
+				}else{
+					
+					setTimeout(()=>{
+						this.imgList.splice(this.imgList.length ,0,'')
+						setTimeout(()=> {
+							if(this.delImg){
+								this.videoSrc = ''
+								uni.showToast({
+									title:'已删除',
+									icon:'none'
+								})
+							}
+							if(this.imgList[this.imgList.length - 1] == ''){
+								this.imgList.splice(this.imgList.length - 1 , 1)
+							}
+							this.delImgHover = false
+							console.log(this.imgList)
+						}, 50)
+					},50)
+				}
 			},
 			
 			//弹出层显示
@@ -176,19 +204,26 @@
 			},
 			
 			addContent(){
-				let data = JSON.stringify(this.imgList)
+				
 				let cnt = {
 					moduleId: this.$constData.module, // String 模块编号
 					// ownerId: ownerId, // Long 持有者内容编号
 					show: this.statusIndex, // Byte <选填> 校内外可见
 					upUserId: this.userInfo.userId, // Long 创建者用户编号
 					text: this.text, // String <选填> 文本
-					data: data, // String <选填> 其他图片视频数据
+					// data: data, // String <选填> 其他图片视频数据
 					// ext: ext, // String <选填> 扩展数据
 				}
-				if(this.imgList.length == 0){
+				if(this.videoSrc){
+					let data = this
+					cnt.data = data
+					cnt.type = this.$constData.groupType[2].key
+				}
+				else if(this.imgList.length == 0){
 					cnt.type = this.$constData.groupType[0].key
 				}else{
+					let data = JSON.stringify(this.imgList)
+					cnt.data = data
 					cnt.type = this.$constData.groupType[1].key
 				}
 				this.$api.createPosting(cnt,(res)=>{
@@ -209,48 +244,58 @@
 			},
 			
 			choiceSucc(e){
-				console.log('成功')
-				console.log(e)
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let tiemr = new Date()
+				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
+				let str = e.substr(e.lastIndexOf('.'))
+				let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
+				
+				let imgType = ["gif", "jpeg", "jpg", "bmp", "png"];
+				let videoType = ["avi","wmv","mkv","mp4","mov","rm","3gp","flv","mpg","rmvb"];
+				if(RegExp("\.(" + imgType.join("|") + ")$", "i").test(str.toLowerCase())) {
+					uni.showLoading({
+						title: '上传中'
+					})
+					this.upLoadImg(e,nameStr)
+				} else if(RegExp("\.(" + videoType.join("|") + ")$", "i").test(str.toLowerCase())) {
+					uni.showLoading({
+						title: '上传中'
+					})
+					this.uploadVideo(e,nameStr)
+				} else {
+					uni.showToast({
+						title:'请选择媒体文件',
+						icon:'none'
+					})
+				}
 			},
 			
 			choiceErr(e){
 				console.log('失败')
 				console.log(e)
+				
 			},
 			
 			//相册添加图片
 			addImgs(e){
-				if(e == 'album'){
-					plus.gallery.pick(this.choiceSucc, this.choiceErr,{filter:'none'});
-				}else{
-					let camera = plus.camera.getCamera();
-					camera.captureImage(this.choiceSucc,this.choiceErr)
-				}
-				// let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
-				// let tiemr = new Date()
-				// let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
-				// uni.chooseImage({
-				// 	count: 1,
-				// 	sizeType: ['compressed'],
-				// 	sourceType: [e],
-				// 	success: (res) => {
-				// 		this.showPopup = false
-				// 		let imageSrc = res.tempFilePaths[0]
-				// 		let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
-				// 		let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
-				// 		// nameStr =  res.tempFilePaths[0]
-				// 		console.log(nameStr)
-				// 		uni.showLoading({
-				// 		    title: '上传中'
-				// 		})
-				// 		this.upLoadImg(imageSrc,nameStr)
-				// 	},fail: (err) => {
-				// 	uni.showToast({
-				// 		title:'已取消',
-				// 		icon:'none'
-				// 	})
+				plus.io.requestFileSystem(plus.io.PRIVATE_WWW,function(e){
+					console.log(e)
+				},function(e){
+					console.log(e)
+				})
+				// this.showPopup = false
+				// if(e == 'album'){
+				// 	let type = ''
+				// 	if(this.imgList.length > 0){
+				// 		 type = 'image'
+				// 	}else{
+				// 		type = 'none'
 				// 	}
-				// })
+				// 	plus.gallery.pick(this.choiceSucc, this.choiceErr,{filter: type});
+				// }else{
+				// 	let camera = plus.camera.getCamera();
+				// 	camera.captureImage(this.choiceSucc,this.choiceErr)
+				// }
 			},
 			
 			// 拍照添加图片
@@ -278,6 +323,34 @@
 						title:'已取消',
 						icon:'none'
 					})
+					}
+				})
+			},
+			
+			uploadVideo(videoSrc,nameStr){
+				uni.uploadFile({
+					url: this.$constData.oss,
+					filePath: videoSrc,
+					fileType: 'video',
+					name: 'file',
+					formData:{
+							name: nameStr,
+							'key': nameStr,
+							'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+							'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
+							'success_action_status': '200',
+							//让服务端返回200,不然，默认会返回204
+							'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
+					},success: (res) =>{
+						console.log(res)
+						uni.hideLoading()
+						uni.showToast({
+							title: '上传成功',
+							icon: 'none'
+						})
+						//只管这个变量
+						this.videoSrc = this.$constData.oss + nameStr
+						console.log(this.videoSrc)
 					}
 				})
 			},
@@ -392,7 +465,7 @@
 		// align-items: flex-start;
 		// justify-content: space-between;
 		
-		movable-view{
+		.movable-view{
 			// position: relative;
 			display: inline-block;
 			width: 197rpx;
@@ -405,6 +478,18 @@
 			width: 197rpx;
 			height: 197rpx;
 			border-radius: 4rpx;
+		}
+	}
+	
+	.video-box{
+		position: relative;
+		width: 650rpx;
+		height: 365.6rpx;
+		margin-left:50rpx;
+		
+		video{
+			width: 100%;
+			height: 100%;
 		}
 	}
 	

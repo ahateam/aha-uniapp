@@ -66,7 +66,7 @@ constData.goodsType = [{
 		val: '平台兑换'
 	},
 	{
-		key: 2,
+		key: -1,
 		val: '平台卡片选中'
 	}
 ]

@@ -233,7 +233,7 @@
 
 				var that = this;
 				var moveLength = pageX - that._blockDownX;
-				console.log(pageX, that._blockDownX, that.minBlockLeft)
+				// console.log(pageX, that._blockDownX, that.minBlockLeft)
 				var left = that._blockLeft + that._pxToRpx(moveLength);
 				left = Math.max(0, left);
 				left = Math.min(left, that.MAX_LENGTH);
@@ -284,7 +284,7 @@
 			 * 刷新整个视图
 			 */
 			_refresh: function() {
-				console.log('refresh');
+				// console.log('refresh');
 				var that = this;
 				var MAX_LENGTH = that.width - that.blockSize;
 				that.MAX_LENGTH = MAX_LENGTH;

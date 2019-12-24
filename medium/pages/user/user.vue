@@ -124,6 +124,7 @@
 			console.log(userInfo)
 			this.name = userInfo.userName
 			this.imgSrc = userInfo.userHead
+			this.money = userInfo.currency
 			// if(userInfo.) //需要判定資料完善顯示提醒
 		}
 	}
