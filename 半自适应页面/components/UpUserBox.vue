@@ -68,12 +68,13 @@
 	}
 
 	.fllow-btn {
-		font-size: 20px;
-		line-height: 40px;
-		border-radius: 35px;
+		font-size: 18px;
+		line-height: 35px;
+		border-radius: 33px;
 		background-color: #00d48c;
 		margin: 0;
 		color: #FFF;
+		padding: 0 12px;
 
 		&:after {
 			border: none;

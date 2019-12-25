@@ -94,6 +94,8 @@
 		},
 		data() {
 			return {
+				userInfo: {},
+
 				school: 'Monash', //学校
 				major: '计算机', //专业
 				time: '2018年3月5日', //时间
@@ -185,6 +187,9 @@
 			},
 		},
 		onLoad() {
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			this.userInfo = userInfo
+
 			this.datas[0].value = this.time
 			this.datas[1].value = this.school
 			this.datas[2].value = this.major
@@ -377,11 +382,11 @@
 		top: -10rpx;
 		left: -10rpx;
 	}
-	
-	.curr-text-color{
+
+	.curr-text-color {
 		color: #00C8BE;
 	}
-	
+
 	.left-dot-border {
 		border-left: 1rpx dotted #00C8BE;
 	}
@@ -492,6 +497,4 @@
 			margin-right: 20rpx;
 		}
 	}
-
-	
 </style>

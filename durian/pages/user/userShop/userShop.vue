@@ -8,7 +8,7 @@
 		<view :style="{'padding-top': getNavHeight()}"></view>
 		<!-- 商品列表切换导航 -->
 		<view class="trans">
-			<view class="trans-box" @click="change(index)" :style="index == navCurr?'color:#FFFFFF;':'color:#587685;'" v-for="(item ,index) in navList"
+			<view class="trans-box" @click="changeNav(index)" :style="index == navCurr?'color:#FFFFFF;':'color:#587685;'" v-for="(item ,index) in navList"
 			 :key="index">
 				<image class="pt-img" :src="index == navCurr?'/static/image/shop/bg_spqd_p.png':'/static/image/shop/icon_jyl.png'"
 				 mode="scaleToFill"></image>
@@ -221,7 +221,7 @@
 				uni.navigateBack()
 			},
 
-			change(e) {
+			changeNav(e) {
 				this.navCurr = e
 				if (e == 1) {
 					this.buy = true
@@ -232,6 +232,21 @@
 
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
+			},
+
+			getOrderByBuyerId(cnt) {
+				this.$api.getOrderByBuyerId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let list = this.$util.tryParseJson(res.data.c)
+						// this.contentList = list
+						console.log(list)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			},
 
 			getGoodsList(cnt) {
@@ -259,6 +274,13 @@
 				offset: this.offset, // Integer 
 			}
 			this.getGoodsList(cnt)
+
+			let cnt1 = {
+				buyerId: userInfo.userId, // Long 买家id
+				count: this.count, // Integer 
+				offset: this.offset, // Integer 
+			}
+			this.getOrderByBuyerId(cnt1)
 		}
 	}
 </script>
