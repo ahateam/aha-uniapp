@@ -30,8 +30,10 @@
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import otherFct from '@/components/otherFct/otherFct.vue'
 	import phoneInput from '@/components/phoneInput/phoneInput.vue'
-//tim 
-	import { mapState } from 'vuex'
+	//tim 
+	import {
+		mapState
+	} from 'vuex'
 	export default {
 		components: {
 			navBar,
@@ -45,11 +47,11 @@
 			}),
 		},
 		watch: {
-			isSDKReady(newVal){
-				if(newVal){
-					uni.setStorageSync('page','normal')
+			isSDKReady(newVal) {
+				if (newVal) {
+					uni.setStorageSync('page', 'normal')
 					uni.reLaunch({
-						url: '../index/index' 
+						url: '../index/index'
 					})
 				}
 			}
@@ -64,7 +66,7 @@
 
 				eyeIcon: '/static/image/login/icon_close_eyes.png',
 				eyeStatus: true,
-				userInfo:'',
+				userInfo: '',
 
 			}
 		},
@@ -97,14 +99,14 @@
 						this.$store.commit("startComputeCurrent");
 						if (this.$store.state.user.isSDKReady) {
 							uni.reLaunch({
-								url: '../index/index' 
+								url: '../index/index'
 							})
 						}
 					})
 					.catch(error => {
-						 setTimeout(()=>{
-							this.loginTim() 
-						 },200)
+						setTimeout(() => {
+							this.loginTim()
+						}, 200)
 					});
 			},
 			codeFct(res) {
@@ -112,7 +114,7 @@
 			},
 
 			login() {
-				
+
 				if (this.phoneNumber == '') {
 					uni.showToast({
 						title: '请输入手机号',
@@ -131,7 +133,7 @@
 					this.$api.login(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
 							this.userInfo = this.$util.tryParseJson(res.data.c)
-							uni.setStorageSync('userInfo',JSON.stringify(this.userInfo))
+							uni.setStorageSync('userInfo', JSON.stringify(this.userInfo))
 							this.timLogin()
 							// uni.reLaunch({
 							// 	url: '../index/index?type='+false

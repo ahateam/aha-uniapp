@@ -20,7 +20,7 @@
 		props: ['item', 'title', 'tagType'],
 		data() {
 			return {
-
+				constData: this.$constData
 			}
 		},
 		methods: {

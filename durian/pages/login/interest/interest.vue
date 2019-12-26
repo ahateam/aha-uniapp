@@ -64,10 +64,11 @@
 
 <style lang="scss" scoped>
 	.back-icon {
+		position: absolute;
+		left: 0;
+		padding: 10rpx 29rpx;
 		width: 33rpx;
 		height: 33rpx;
-		position: absolute;
-		left: 29rpx;
 	}
 
 

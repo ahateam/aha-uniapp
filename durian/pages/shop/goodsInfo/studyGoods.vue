@@ -1,9 +1,9 @@
 <template>
 	<view>
-		<view class="nav-bar">
-			<view class="iconfont icon-fanhui backBtn" @click="navBack"></view>
+		<navBar :back="false" type="transparent" fontColor="#000" class="nav-bar">
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="nav-title">商品详情</view>
-		</view>
+		</navBar>
 		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="bannerBox">
@@ -147,15 +147,16 @@
 		justify-content: center;
 		width: 100%;
 		background-color: $group-color-w;
-		height: 64px;
+		height: calc(var(--status-bar-height) + 44px);
 		text-align: center;
 	}
 
-	.backBtn {
+	.back-icon {
 		position: absolute;
-		left: 29rpx;
-		font-size: 33rpx;
-		color: $group-color;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
 	}
 
 	.nav-title {

@@ -1,10 +1,9 @@
 <template>
 	<view>
-		<nav-bar :back="false" type="transparent" fontColor="#000" class="nav-bar">
-			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
-			<view class="title-nav">购买商品</view>
-			<view slot="right" class="save-btn" @click="saveBtn">保存</view>
-		</nav-bar>
+		<navBar :back="false" type="transparent" fontColor="#000" class="nav-bar">
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
+			<view class="title-box">收货信息</view>
+		</navBar>
 		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="tip-box">
@@ -75,6 +74,14 @@
 		height: 64px;
 		width: 100%;
 		box-sizing: border-box;
+	}
+	
+	.back-icon {
+		position: absolute;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
 	}
 
 	.save-btn {

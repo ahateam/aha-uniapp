@@ -1,7 +1,7 @@
 <template>
 	<view class="body">
 		<navBar :back="false" type="transparent" fontColor="#587685">
-			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 		</navBar>
 
 		<view :style="{'padding-top':getNavHeight()}"></view>

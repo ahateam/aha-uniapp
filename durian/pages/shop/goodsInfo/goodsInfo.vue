@@ -1,7 +1,7 @@
 <template>
 	<view class="body">
 		<navBar :back="false" type="transparent" fontColor="#000">
-			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="title-box">商品详情</view>
 		</navBar>
 
@@ -121,7 +121,7 @@
 					}
 				})
 			},
-			
+
 			changeStatus() {
 				let userMoney = 99
 				//判断用户的钱数是否大于平台币100的数量 大于平台币 true
@@ -247,11 +247,12 @@
 
 
 
-	.backBtn {
+	.back-icon {
 		position: absolute;
-		left: 29rpx;
-		font-size: 33rpx;
-		color: $group-color;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
 	}
 
 	.title-box {

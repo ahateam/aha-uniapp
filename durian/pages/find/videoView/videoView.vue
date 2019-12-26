@@ -2,7 +2,7 @@
 	<view class="body">
 		<view>
 			<navBar :back="false" class="navBox">
-				<view slot="left" class="iconfont icon-fanhui backIcon" @click="navBack"></view>
+				<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 				<view slot="right" class="rightNav">
 					<text class="iconfont icon-xing navMargin" @click="createCollect"></text>
 					<text class="iconfont icon-fenxiang"></text>
@@ -55,12 +55,13 @@
 					<input type="text" v-model="replayText" placeholder="我也说两句…" />
 				</view>
 				<button class="submitBtn" @click="submit">发表</button>
+				<button class="secretBtn" @click="submit(true)">密信</button>
 			</view>
 
 			<uni-load-more :status="pageStatus" v-if="commentApi == false||commentList.length > 0&&commentApi == true"></uni-load-more>
 			<sheet isShowBottom @closeBottom="closeSheet" @changeMoney="changeMoney" v-if="sheetStatus"></sheet>
 		</view>
-		
+
 		<loading :status="pageStatus"></loading>
 	</view>
 </template>
@@ -135,7 +136,7 @@
 				count: this.count, // int 
 				offset: this.offset, // int 
 			}
-			this.getReplyList(cnt1)
+			this.getReplys(cnt1)
 		},
 
 		methods: {
@@ -175,9 +176,6 @@
 				this.$api.createUserFavorite(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.isfavorite = true
-						uni.showToast({
-							title: '已收藏'
-						})
 					} else {
 						uni.showToast({
 							title: res.data.rm,
@@ -350,11 +348,13 @@
 				})
 			},
 
-			getReplyList(cnt) {
-				this.$api.getReplyList(cnt, (res) => {
+			getReplys(cnt) {
+				this.$api.getReplys(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.commentApi = true
 						this.commentList = this.$util.tryParseJson(res.data.c)
+						console.log('--------------评论列表-----------------')
+						console.log(this.commentList)
 						console.log(this.commentList)
 						if (this.commentList.length < this.count) {
 							this.pageStatus = 'nomore'
@@ -450,7 +450,7 @@
 
 		.inputBox {
 			height: 66rpx;
-			width: 560rpx;
+			width: 390rpx;
 			border: 1rpx solid $group-color-border;
 			border-radius: 6rpx;
 			font-size: $group-font;
@@ -468,30 +468,39 @@
 			input {
 				position: absolute;
 				display: inline-block;
-				width: 480rpx;
+				width: 380rpx;
 				top: 50%;
 				margin-top: -0.7rem;
 				margin-left: 56rpx;
 			}
 		}
+
+		button {
+			position: absolute;
+			right: $group-margin-top;
+			top: 50%;
+			margin-top: -33rpx;
+			display: inline-block;
+			line-height: 66rpx;
+			padding: 0 35rpx;
+			font-size: $group-font-befor;
+			border-radius: 6rpx;
+
+			&:after {
+				border: none;
+			}
+		}
 	}
 
 	.submitBtn {
-		position: absolute;
-		right: $group-margin-top;
-		top: 50%;
-		margin-top: -33rpx;
-		display: inline-block;
-		line-height: 66rpx;
-		padding: 0 $group-margin-befor;
-		font-size: $group-font-befor;
+		right: 180rpx !important;
 		color: $group-color-w;
-		border-radius: 6rpx;
-		background-color: $group-color-curr;
+		background-color: #00C8BE;
+	}
 
-		&:after {
-			border: none;
-		}
+	.secretBtn {
+		color: #8296A0;
+		background-color: #CFDCE9;
 	}
 
 	.noCommentBox {
@@ -523,10 +532,12 @@
 		}
 	}
 
-	.backIcon {
+	.back-icon {
 		position: absolute;
 		left: 0;
-		margin-left: 29rpx;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
 	}
 
 	.navMargin {

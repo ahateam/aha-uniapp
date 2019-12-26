@@ -1,9 +1,10 @@
 <template>
 	<view class="body">
 		<navBar :back="false" type="transparent" fontColor="#000">
-			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="title-box">付款成功</view>
 		</navBar>
+		
 		<view :style="{'padding-top': getNavHeight()}"></view>
 		<image class="imgBox" src="/static/image/shop/dhcg.png" mode="aspectFit"></image>
 		<view class="titleText">兑换成功</view>
@@ -38,11 +39,12 @@
 		text-align: center;
 	}
 	
-	.backBtn {
+	.back-icon {
 		position: absolute;
-		left: 29rpx;
-		font-size: 33rpx;
-		color: $group-color;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
 	}
 
 	.title-box {

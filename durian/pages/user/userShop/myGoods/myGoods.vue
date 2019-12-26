@@ -1,9 +1,10 @@
 <template>
 	<view>
-		<nav-bar :back="false" type="transparent" fontColor="#333333" class="nav-bar">
-			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
-			<view class="title-nav">买家信息</view>
-		</nav-bar>
+		<navBar :back="false" type="transparent" fontColor="#333" class="nav-bar">
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
+			<view class="title-box">买家信息</view>
+		</navBar>
+		
 		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="tip-box">
@@ -75,10 +76,30 @@
 			saveBtn() {
 				console.log('save')
 			},
-			
+
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
+
+			getOrderByOrderId(cnt) {
+				this.$api.getOrderByOrderId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log(this.$util.tryParseJson(res.data.c))
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon:'none'
+						})
+					}
+				})
+			},
+		},
+
+		onLoad(res) {
+			let cnt = {
+				orderId: res.id, // Long 订单id
+			}
+			this.getOrderByOrderId(cnt)
 		}
 	}
 </script>
@@ -91,6 +112,14 @@
 		height: 64px;
 		width: 100%;
 		box-sizing: border-box;
+	}
+	
+	.back-icon {
+		position: absolute;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
 	}
 
 	.tip-box {

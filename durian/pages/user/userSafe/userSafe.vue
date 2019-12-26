@@ -1,7 +1,8 @@
 <template>
 	<view>
-		<navBar :back="false" type="transparent" fontColor="#587685" title="帐户安全">
-			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
+		<navBar :back="false" type="transparent" fontColor="#587685" class="nav-bar">
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
+			<view class="title-box">帐户安全</view>
 		</navBar>
 		<view :style="{'padding-top': getNavHeight()}"></view>
 
@@ -98,12 +99,23 @@
 </script>
 
 <style lang="scss" scoped>
-	.icon-fanhui {
-		font-size: 33rpx;
-		color: $group-color;
-		position: absolute;
-		left: 29rpx;
+	.nav-bar {
+		position: fixed;
+		z-index: 2;
+		background-color: $group-color-w;
+		height: 64px;
+		width: 100%;
+		box-sizing: border-box;
 	}
+
+	.back-icon {
+		position: absolute;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
+	}
+
 
 	.auto-margin {
 		padding: 36rpx 40rpx;

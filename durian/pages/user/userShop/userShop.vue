@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<navBar :back="false" type="transparent" fontColor="#000" class="nav-bar">
-			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="title-box">我的商品</view>
 		</navBar>
 
@@ -91,7 +91,7 @@
 					</view>
 				</view>
 				<view class="price-btn">
-					<button type="primary">确定</button>
+					<button type="primary" @click="changeList">确定</button>
 				</view>
 			</view>
 		</uni-popup>
@@ -99,6 +99,8 @@
 		<uni-popup type="center" :show="timeFilter" @change="changeFilter">
 			time！！！！
 		</uni-popup>
+
+		<view class="transparentBg" :hidden="!filterStatus" @click="filterStatus = false"></view>
 	</view>
 </template>
 
@@ -119,9 +121,13 @@
 			return {
 				count: 10,
 				offset: 0,
-				page: 1,
-				pageStatus: 'onload',
-				pageOver: false,
+				buyPage: 1,
+				buyStatus: 'onload',
+				buyOver: false,
+
+				sellOver: false,
+				sellPage: 1,
+				sellStatus: 'onload',
 
 				navList: [{
 						name: '商品清单'
@@ -143,10 +149,26 @@
 				sectionPrice: [0, 1000],
 				smallPrice: 0,
 				bigPrice: 1000,
-
 			}
 		},
 		methods: {
+			changeList() {
+				let cnt = {
+					sellerId: this.userInfo.userId, // Long <选填> 发布者id
+					buyerId: this.userInfo.userId, // Long 买家id
+					// startTime: startTime, // String <选填> 起始时间
+					// endTime: endTime, // String <选填> 结束时间
+					startMoney: this.smallPrice, // Double <选填> 起始金额
+					endMoney: this.bigPrice, // Double <选填> 结束金额
+					count: this.count, // Integer 
+					offset: this.offset, // Integer 
+				}
+				this.getOrderBySellerId(cnt)
+				this.getOrderByBuyerId(cnt)
+
+				this.moneyFilter = false
+			},
+
 			onRangeChange(e) {
 				let start = e.originalValue.minValue
 				let end = e.originalValue.maxValue
@@ -167,7 +189,7 @@
 
 			navToOrder(item) {
 				uni.navigateTo({
-					url: './myGoods/myGoods'
+					url: `./myGoods/myGoods?id=${item.senderId}`
 				})
 			},
 
@@ -222,11 +244,43 @@
 			},
 
 			changeNav(e) {
-				this.navCurr = e
-				if (e == 1) {
-					this.buy = true
-				} else {
-					this.buy = false
+				if (this.buyStatus != 'loading' && this.sellStatus != 'loading') {
+					this.navCurr = e
+					if (e == 1) {
+						this.buy = true
+					} else {
+						this.buy = false
+					}
+
+					if (this.navList[e].buyChild) {
+						this.contentList = this.navList[e].buyChild
+						this.buyPage = this.navList[e].buyPage
+						this.buyStatus = this.navList[e].buyStatus
+						this.buyOver = this.navList[e].buyOver
+					} else {
+						let cnt = {
+							buyerId: this.userInfo.userId, // Long 买家id
+							count: this.count, // Integer 
+							offset: this.offset, // Integer 
+						}
+						this.buyStatus = 'loading'
+						this.getOrderByBuyerId(cnt)
+					}
+
+					if (this.navList[e].sellChild) {
+						this.myGoods = this.navList[e].sellChild
+						this.sellPage = this.navList[e].sellPage
+						this.sellStatus = this.navList[e].sellStatus
+						this.sellOver = this.navList[e].sellOver
+					} else {
+						let cnt1 = {
+							sellerId: this.userInfo.userId, // Long <选填> 发布者id
+							count: this.count, // Integer 
+							offset: this.offset, // Integer 
+						}
+						this.sellStatus = 'loading'
+						this.getOrderBySellerId(cnt1)
+					}
 				}
 			},
 
@@ -234,27 +288,66 @@
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 
+			tryListPush(obj) {
+				if (obj.completed.length < this.count && obj.ongoing.length < this.count) {
+					this.buyOver = true
+					this.buyStatus = 'nomore'
+				} else {
+					this.buyOver = false
+					this.buyStatus = 'more'
+				}
+				if (this.navCurr == 0) {
+					this.contentList = obj.ongoing
+				} else {
+					this.contentList = obj.completed
+				}
+				this.navList[this.navCurr].buyChild = this.contentList
+				this.navList[this.navCurr].buyOver = this.buyOver
+				this.navList[this.navCurr].buyStatus = this.buyStatus
+			},
+
+			tryObjPush(obj) {
+				console.log(obj)
+				if (obj.completed.length < this.count && obj.ongoing.length < this.count) {
+					this.sellOver = true
+					this.sellStatus = 'nomore'
+				} else {
+					this.sellOver = false
+					this.sellStatus = 'more'
+				}
+				if (this.navCurr == 0) {
+					this.myGoods = obj.ongoing
+				} else {
+					this.myGoods = obj.completed
+				}
+				this.navList[this.navCurr].sellChild = this.myGoods
+				this.navList[this.navCurr].sellOver = this.sellOver
+				this.navList[this.navCurr].sellStatus = this.sellStatus
+			},
+
 			getOrderByBuyerId(cnt) {
 				this.$api.getOrderByBuyerId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let list = this.$util.tryParseJson(res.data.c)
+						let obj = this.$util.tryParseJson(res.data.c)
 						// this.contentList = list
-						console.log(list)
+						this.tryListPush(obj)
 					} else {
 						uni.showToast({
 							title: res.data.rm,
 							icon: 'none'
 						})
+						this.buyStatus = 'error'
 					}
 				})
 			},
 
-			getGoodsList(cnt) {
-				this.$api.getGoodsList(cnt, (res) => {
+			getOrderBySellerId(cnt) {
+				this.$api.getOrderBySellerId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let list = this.$util.tryParseJson(res.data.c)
-						this.myGoods = list
+						let obj = this.$util.tryParseJson(res.data.c)
+						this.tryObjPush(obj)
 					} else {
+						this.sellStatus = 'error'
 						uni.showToast({
 							title: res.data.rm,
 							icon: 'none'
@@ -267,20 +360,13 @@
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			this.userInfo = userInfo
 			let cnt = {
-				senderId: userInfo.userId, // Long <选填> 发布者id
-				// goodsStatus: goodsStatus, // Byte <选填> 商品状态
-				// goodsType: goodsType, // Byte <选填> 商品类型
-				count: this.count, // Integer 
-				offset: this.offset, // Integer 
-			}
-			this.getGoodsList(cnt)
-
-			let cnt1 = {
+				sellerId: userInfo.userId, // Long <选填> 发布者id
 				buyerId: userInfo.userId, // Long 买家id
 				count: this.count, // Integer 
 				offset: this.offset, // Integer 
 			}
-			this.getOrderByBuyerId(cnt1)
+			this.getOrderBySellerId(cnt)
+			this.getOrderByBuyerId(cnt)
 		}
 	}
 </script>
@@ -299,6 +385,14 @@
 		height: 64px;
 		width: 100%;
 		box-sizing: border-box;
+	}
+
+	.back-icon {
+		position: absolute;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
 	}
 
 	.trans-box {
@@ -437,7 +531,7 @@
 		position: absolute;
 		top: -156rpx;
 		right: 30rpx;
-		z-index: 1;
+		z-index: 2;
 		width: 138rpx;
 		height: 135rpx;
 		line-height: 67.5rpx;
@@ -512,5 +606,14 @@
 				border: none;
 			}
 		}
+	}
+
+	.transparentBg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1;
 	}
 </style>

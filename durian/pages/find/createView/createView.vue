@@ -215,7 +215,7 @@
 					// ext: ext, // String <选填> 扩展数据
 				}
 				if(this.videoSrc){
-					let data = this
+					let data = this.videoSrc
 					cnt.data = data
 					cnt.type = this.$constData.groupType[2].key
 				}

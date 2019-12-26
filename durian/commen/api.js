@@ -25,8 +25,8 @@ api.getPosting = function(cnt, callback) {
 }
 
 //获取评论 
-api.getReplyList = function(cnt, callback) {
-	util.call(baseUrl + '/reply/getReplyList', cnt, callback)
+api.getReplys = function(cnt, callback) {
+	util.call(baseUrl + '/posting/getReplys', cnt, callback)
 }
 
 //分享 
@@ -138,6 +138,17 @@ api.createDurianOrder = function(cnt, callback) {
 api.getOrderByBuyerId = function(cnt, callback) {
 	util.call(baseUrl + '/goods/getOrderByBuyerId', cnt, callback)
 }
+
+// 根据卖家id查询订单
+api.getOrderBySellerId = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getOrderBySellerId', cnt, callback)
+}
+
+// 根据订单id查询订单
+api.getOrderByOrderId = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getOrderByOrderId', cnt, callback)
+}
+
 /* 商城end */
 
 /*tim 聊天*/

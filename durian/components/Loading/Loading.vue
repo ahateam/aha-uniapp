@@ -20,6 +20,7 @@
 	.loading-box {
 		position: fixed;
 		top: 0;
+		left: 0;
 		width: 100vw;
 		height: 100vh;
 		background-color: #FFFFFF;
@@ -28,7 +29,7 @@
 		justify-content: center;
 		flex-direction: column;
 		opacity: 1;
-		transition: all .8s;
+		transition: all .6s;
 
 		font-size: $group-font;
 		color: #999999;

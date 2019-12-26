@@ -1,9 +1,6 @@
 <template>
 	<view style="background-color: #FFFFFF;">
 		<view v-if="pageStatus != 'onload'">
-			<view class="fixed-status" :style="{'height': getNavHeight() + 'px'}">
-				<cover-view></cover-view>
-			</view>
 			<view :style="{'height': getNavHeight() + 44 + 'px'}"></view>
 
 			<view class="topBox auto-margin">
@@ -49,8 +46,7 @@
 
 					<view v-else>
 						<right-video v-if="item.posting.postingType == constData.groupType[1].key||item.posting.postingType == constData.groupType[3].key"
-						 :item="item" :imgSrc="constData.oss + getJsonParse(item.posting.postingDate)[0]" :listLength="getJsonParse(item.posting.postingDate).length"
-						 tagType="new"></right-video>
+						 :item="item" :src="constData.oss + getJsonParse(item)" :listLength="getJsonParse(item,true)" tagType="new"></right-video>
 
 						<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key" tagType="new"></only-text>
 					</view>
@@ -164,8 +160,14 @@
 			}
 		},
 		methods: {
-			getJsonParse(data) {
-				return this.$util.tryParseJson(data)
+			getJsonParse(item, e) {
+				if (e) {
+					return this.$util.tryParseJson(item.posting.postingDate).length
+				} else if (item.posting.postingType == this.$constData.groupType[3].key) {
+					return this.$util.tryParseJson(item.posting.postingDate)
+				} else if (item.posting.postingType == this.$constData.groupType[1].key) {
+					return this.$util.tryParseJson(item.posting.postingDate)[0]
+				}
 			},
 
 			navToAdd() {
@@ -417,6 +419,7 @@
 				showRange: this.$constData.postingStatus[1].key, // Byte <选填> 可见范围
 			}
 			this.contentList = []
+			this.pageStatus = 'loading'
 			this.getPostingList(cnt)
 		}
 	}

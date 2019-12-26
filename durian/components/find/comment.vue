@@ -3,9 +3,9 @@
 		<!-- 用户 -->
 		<view class="commentBox" :style="index == 0?'border:none':''" v-for="(list,index) in comment" :key="index">
 			<view class="userBox">
-				<image :src="constData.oss +  JSON.parse(list.user.ext).userHead" mode="aspectFill"></image>
+				<image :src="constData.oss + list.user.userHead" mode="aspectFill"></image>
 				<view class="rightBox">
-					<view>{{list.user.name}}</view>
+					<view>{{list.user.userName}}</view>
 					<view class="time">{{getTime(list.reply.createTime)}}</view>
 				</view>
 

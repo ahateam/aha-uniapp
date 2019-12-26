@@ -1,9 +1,10 @@
 <template>
 	<view>
 		<navBar :back="false" type="transparent" fontColor="#000">
-			<view slot="left" class="iconfont icon-fanhui backBtn" @click="navBack"></view>
+			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="title-box">商品兑换</view>
 		</navBar>
+		
 		<view :style="{'padding-top': getNavHeight()}"></view>
 		<view class="tipBox">
 			<image src="/static/image/shop/icon_l.png" mode="aspectFit"></image>
@@ -43,9 +44,8 @@
 
 				name: '', //收货人姓名
 				address: '', //地址
-				tel: '', //电话
 				remark: '', //备注
-				phone: '',
+				phone: '', //电话
 				userInfo: ''
 			}
 		},
@@ -62,7 +62,7 @@
 						title: '请输入收货人姓名',
 						icon: 'none'
 					})
-				} else if (this.tel == '') {
+				} else if (this.phone == '') {
 					uni.showToast({
 						title: '请输入收货人电话',
 						icon: 'none'
@@ -109,18 +109,19 @@
 			this.id = res.id
 			this.upUserId = res.upId
 			this.price = res.price
-			this.userInfo = uni.getStorageSync('userInfo')
+			this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			this.phone = this.userInfo.phone
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-	.backBtn {
+	.back-icon {
 		position: absolute;
-		left: 29rpx;
-		font-size: 33rpx;
-		color: $group-color;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
 	}
 
 	.title-box {
