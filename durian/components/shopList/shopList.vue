@@ -91,10 +91,10 @@
 		right: 20rpx;
 		width: 150rpx;
 		height: 150rpx;
-		border-radius: 6rpx;
 		margin-top: -75rpx;
 
 		image {
+			border-radius: 6rpx;
 			width: 100%;
 			height: 100%;
 		}

@@ -1,20 +1,28 @@
 <template>
 	<view>
-		<nav-bar :back="false" type="transparent" fontColor="#333333" title="个人资料">
+		<nav-bar :back="false" fontColor="#333333" class="nav-box">
 			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
 			<view slot="right" class="save-Btn" @click="saveData">保存</view>
 		</nav-bar>
 		<view :style="{'padding-top': getNavHeight()}"></view>
-
-		<view class="head-box" @click="upLoadImg">
+		<!-- <view class="head-box" @click="upLoadImg">
 			<view class="head-change" v-if="headSrc == ''">
 				<image src="/static/image/user/icon_xj.png" mode="aspectFit"></image>
 			</view>
 			<image class="head-img" :src="constData.oss + headSrc" mode="aspectFill" v-else></image>
 			<view class="head-text">更换头像</view>
-		</view>
+		</view> -->
 
 		<view class="content-List">
+			<view class="type-tile content-box">个人资料</view>
+			<view class="content-box" @click="upLoadImg">
+				<view class="left-box">头像</view>
+				<view class="head-change right-head" v-if="headSrc == ''">
+					<image src="/static/image/user/icon_xj.png" mode="aspectFit"></image>
+				</view>
+				<image class="head-img right-head" :src="constData.oss + headSrc" mode="aspectFill" v-else></image>
+			</view>
+
 			<view class="content-box" @click="showName = true">
 				<view class="left-box">昵称</view>
 				<view class="right-box">
@@ -55,30 +63,66 @@
 				</view>
 			</view>
 
-			<uni-popup :show="showName" type="bottom" :mask-click="true" @change="change">
-				<view class="name-input">
-					<input type="text" v-model="newName" placeholder="请输入昵称" />
-					<button class="name-btn" @click="changeName">确定</button>
+			<view class="content-box">
+				<view class="left-box">电子邮箱</view>
+				<view class="right-box">
+					<text>{{userInfo.email}}</text>
+					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
-			</uni-popup>
+			</view>
 
-			<uni-popup :show="showSchool" type="bottom" :mask-click="true" @change="change">
-				<view class="name-input">
-					<input type="text" v-model="newSchool" placeholder="请输入学校名" />
-					<button class="name-btn" @click="changeSchool">确定</button>
+			<view class="type-tile content-box">
+				收款账户
+			</view>
+
+			<view class="content-box">
+				<view class="left-box">账户名</view>
+				<view class="right-box">
+					<text>{{userInfo.accountName}}</text>
+					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
-			</uni-popup>
+			</view>
 
-			<uni-popup :show="showSex" type="bottom" :mask-click="true" @change="change">
-				<view class="sex-list">
-					<view class="sex-border" @click="choiceSex(1)">男</view>
-					<view @click="choiceSex(0)">女</view>
+			<view class="content-box">
+				<view class="left-box">BSB</view>
+				<view class="right-box">
+					<text>{{userInfo.BsbNumber}}</text>
+					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
 				</view>
-			</uni-popup>
+			</view>
 
-			<sen-set-picker ref="setpicker" @colseBox="quxiaobutton" :shixian="shixian" @quxiaoButton="quxiaobutton"
-			 @quedingButton="quedingbutton"></sen-set-picker>
+			<view class="content-box">
+				<view class="left-box">账号</view>
+				<view class="right-box">
+					<text>{{userInfo.account}}</text>
+					<image src="/static/image/user/icon_enter.png" mode="aspectFit"></image>
+				</view>
+			</view>
 		</view>
+
+		<uni-popup :show="showName" type="bottom" :mask-click="true" @change="change">
+			<view class="name-input">
+				<input type="text" v-model="newName" placeholder="请输入昵称" />
+				<button class="name-btn" @click="changeName">确定</button>
+			</view>
+		</uni-popup>
+
+		<uni-popup :show="showSchool" type="bottom" :mask-click="true" @change="change">
+			<view class="name-input">
+				<input type="text" v-model="newSchool" placeholder="请输入学校名" />
+				<button class="name-btn" @click="changeSchool">确定</button>
+			</view>
+		</uni-popup>
+
+		<uni-popup :show="showSex" type="bottom" :mask-click="true" @change="change">
+			<view class="sex-list">
+				<view class="sex-border" @click="choiceSex(1)">男</view>
+				<view @click="choiceSex(0)">女</view>
+			</view>
+		</uni-popup>
+
+		<sen-set-picker ref="setpicker" @colseBox="quxiaobutton" :shixian="shixian" @quxiaoButton="quxiaobutton"
+		 @quedingButton="quedingbutton"></sen-set-picker>
 	</view>
 </template>
 
@@ -339,6 +383,12 @@
 </script>
 
 <style lang="scss" scoped>
+	.nav-box {
+		position: fixed;
+		width: 100%;
+		background-color: #FFFFFF;
+	}
+
 	.icon-fanhui {
 		font-size: 33rpx;
 		position: absolute;
@@ -359,19 +409,23 @@
 		margin-top: $group-margin-top;
 	}
 
+	.right-head {
+		position: absolute;
+		right: 40rpx;
+	}
+
 	.head-change {
-		margin: 0 auto;
 		border-radius: 50%;
 		background-color: #F2F5F7;
-		width: 120rpx;
-		height: 120rpx;
+		width: 100rpx;
+		height: 100rpx;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 
 		image {
 			width: 40rpx;
-			height: 40rpx;
+			height: 33rpx;
 		}
 	}
 
@@ -380,11 +434,11 @@
 	}
 
 	.content-List {
-		padding: 46rpx 40rpx 0;
+		padding: 0 40rpx;
 	}
 
 	.content-box {
-		padding: 38rpx 0;
+		padding: 39rpx 0 38rpx;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -463,7 +517,15 @@
 		display: block;
 		margin: 0 auto;
 		border-radius: 50%;
-		width: 120rpx;
-		height: 120rpx;
+		width: 100rpx;
+		height: 100rpx;
+	}
+
+	.type-tile {
+		font-size: 36rpx;
+		line-height: 50rpx;
+		color: #333333;
+		padding: 30rpx 0;
+		font-weight: bold;
 	}
 </style>

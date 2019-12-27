@@ -71,6 +71,8 @@ constData.goodsType = [{
 	}
 ]
 
+/* 订单 */
+//订单类型
 constData.orderType = [{
 		key: 0,
 		val: '商品'
@@ -82,6 +84,19 @@ constData.orderType = [{
 	{
 		key: 2,
 		val: '任务'
+	}
+]
+//订单状态
+constData.orderStatus = [{
+		key: 0,
+		val: '待发货'
+	},
+	{
+		key: 1,
+		val: '已发货'
+	}, {
+		key: 2,
+		val: '已收货'
 	}
 ]
 

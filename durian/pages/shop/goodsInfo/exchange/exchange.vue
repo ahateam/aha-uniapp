@@ -4,7 +4,7 @@
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="title-box">付款成功</view>
 		</navBar>
-		
+
 		<view :style="{'padding-top': getNavHeight()}"></view>
 		<image class="imgBox" src="/static/image/shop/dhcg.png" mode="aspectFit"></image>
 		<view class="titleText">兑换成功</view>
@@ -20,11 +20,10 @@
 		},
 		data() {
 			return {
-
 			};
 		},
-		methods:{
-			navBack(){
+		methods: {
+			navBack() {
 				uni.navigateBack()
 			},
 			getNavHeight() {
@@ -35,10 +34,10 @@
 </script>
 
 <style lang="scss" scoped>
-	.body{
+	.body {
 		text-align: center;
 	}
-	
+
 	.back-icon {
 		position: absolute;
 		left: 0;
@@ -51,21 +50,21 @@
 		font-weight: $group-title-weight;
 		font-size: 36rpx;
 	}
-	
-	.imgBox{
+
+	.imgBox {
 		margin-top: 120rpx;
 		width: 233rpx;
 		height: 327rpx;
 	}
-	
-	.titleText{
+
+	.titleText {
 		color: #666666;
 		font-size: 40rpx;
 		line-height: 56rpx;
 		margin-top: 60rpx;
 	}
-	
-	.tipText{
+
+	.tipText {
 		margin-top: 20rpx;
 		color: #999999;
 		font-size: $group-font-befor;

@@ -189,13 +189,13 @@
 
 			navToOrder(item) {
 				uni.navigateTo({
-					url: `./myGoods/myGoods?id=${item.senderId}`
+					url: `./myGoods/myGoods?id=${item.orderId}&addressId=${item.addressId}`
 				})
 			},
 
 			navToInfo(item) {
 				uni.navigateTo({
-					url: './myShop/myShop'
+					url: `./myShop/myShop?id=${item.orderId}&addressId=${item.addressId}`
 				})
 			},
 

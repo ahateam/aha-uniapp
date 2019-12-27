@@ -24,7 +24,7 @@
 					<view class="palt-bi">平台币</view><text class="text">{{price}}</text>
 				</view>
 				<view class="palt-right">
-					<text>面值20澳元</text>
+					<text>面值{{getMoney()}}澳元</text>
 				</view>
 			</view>
 			<view class="text-box">
@@ -75,19 +75,17 @@
 		},
 		data() {
 			return {
-				imgList: [
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg',
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573030448&di=3a6aa2b4072eb80bf924343e09f8fcb9&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201508%2F24%2F20150824231358_NukhZ.thumb.700_0.jpeg'
-				],
-				current: 0,
-				text: '此款面值100澳元的Coles购物卡在奥尔本各大coles及商场可以同面值价格购买。',
+				userInfo: {},
 
-				noMoney: false,
+				imgList: [],
+				current: 0,
+				text: '',
+				senderId: '',
 
 				buyStatus: false,
 
-				title: 'Coles购物卡-商品名称字数限制二十一Coles购物卡-商品名称字数限制二十一',
-				price: 100,
+				title: '',
+				price: '',
 
 				showBox: false,
 				dots: [{
@@ -100,13 +98,19 @@
 			};
 		},
 		onLoad(res) {
-			// this.id = res.id
-			// let cnt = {
-			// 	goodsId: this.id, // Long 商品id
-			// }
-			// this.getByGoodId(cnt)
+			this.id = res.id
+			let cnt = {
+				goodsId: this.id, // Long 商品id
+			}
+			this.getByGoodId(cnt)
+
+			this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 		},
 		methods: {
+			getMoney() {
+				return this.price / 10
+			},
+
 			getByGoodId(cnt) {
 				this.$api.getByGoodId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -115,6 +119,8 @@
 						this.price = data.goodsPrice
 						this.imgList = this.$util.tryParseJson(data.goodsData)
 						this.text = data.goodsDescribe
+						this.senderId = data.senderId
+						this.changeStatus()
 						console.log(data)
 					} else {
 						console.log('error')
@@ -123,9 +129,8 @@
 			},
 
 			changeStatus() {
-				let userMoney = 99
 				//判断用户的钱数是否大于平台币100的数量 大于平台币 true
-				if (this.price > userMoney) {
+				if (this.price > this.userInfo.currency) {
 					this.buyStatus = false
 				} else {
 					this.buyStatus = true
@@ -140,9 +145,15 @@
 
 			likeBtn() {
 				if (this.buyStatus) {
-					uni.navigateTo({
-						url: '/pages/shop/goodsInfo/exchange/exchange'
-					})
+					let cnt = {
+						orderType: this.$constData.goodsType[1].key, // Byte 订单类型
+						buyerId: this.userInfo.userId, // Long 买家id
+						goodsId: this.id, // Long 商品id
+						sellerId: this.senderId, // Long 卖家id
+						goodsNumber: 1, // Integer 商品数量
+						payment: this.price, // Double 支付金额
+					}
+					this.exchangeGoods(cnt)
 				} else {
 					this.showBox = true
 				}
@@ -162,6 +173,21 @@
 			change(e) {
 				this.current = e.detail.current;
 			},
+
+			exchangeGoods(cnt) {
+				this.$api.exchangeGoods(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.navigateTo({
+							url: `/pages/shop/goodsInfo/exchange/exchange?id=${this.id}`
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			}
 		}
 	}
 </script>

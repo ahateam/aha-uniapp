@@ -76,11 +76,15 @@
 			},
 
 			change(index) {
-				this.contentList[index].goodsType = 2
+				if (this.contentList[index].goodsType == this.$constData.goodsType[1].key) {
+					this.contentList[index].goodsType = this.$constData.goodsType[2].key
+				}
 			},
 
 			changeEnd(index) {
-				this.contentList[index].goodsType = 1
+				if (this.contentList[index].goodsType == this.$constData.goodsType[2].key) {
+					this.contentList[index].goodsType = this.$constData.goodsType[1].key
+				}
 			},
 
 			getGoods(cnt) {

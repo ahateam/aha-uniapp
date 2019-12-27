@@ -1,4 +1,4 @@
-<template>
+<template style="font-size: 26rpx;">
 	<view class="body">
 		<view>
 			<navBar :back="false" class="navBox">
@@ -283,16 +283,10 @@
 						let m = 1 + time.getMonth()
 						let d = time.getDate()
 
-						let userHead = {
-							userHead: this.userInfo.userHead
-						}
-
-						userHead = JSON.stringify(userHead)
-
 						let data = {
 							user: {
-								name: this.userInfo.userName,
-								ext: userHead
+								userName: this.userInfo.userName,
+								userHead: this.userInfo.userHead
 							},
 							reply: {
 								createTime: Math.round(new Date()),

@@ -1,4 +1,4 @@
-<template>
+<template style="font-size: 26rpx;">
 	<view class="body">
 		<view v-if="pageStatus != 'onload'">
 			<navBar :back="false" class="navBox">
@@ -315,16 +315,10 @@
 						let m = 1 + time.getMonth()
 						let d = time.getDate()
 
-						let userHead = {
-							userHead: this.userInfo.userHead
-						}
-
-						userHead = JSON.stringify(userHead)
-
 						let data = {
 							user: {
-								name: this.userInfo.userName,
-								ext: userHead
+								userName: this.userInfo.userName,
+								userHead: this.userInfo.userHead
 							},
 							reply: {
 								createTime: Math.round(new Date()),
@@ -507,10 +501,11 @@
 			input {
 				position: absolute;
 				display: inline-block;
-				width: 380rpx;
+				width: 300rpx;
 				top: 50%;
-				margin-top: -0.7rem;
+				margin-top: -0.8rem;
 				margin-left: 56rpx;
+				min-height: 1.6rem;
 			}
 		}
 
@@ -532,7 +527,7 @@
 	}
 
 	.submitBtn {
-		right: 180rpx!important;
+		right: 180rpx !important;
 		color: $group-color-w;
 		background-color: #00C8BE;
 	}

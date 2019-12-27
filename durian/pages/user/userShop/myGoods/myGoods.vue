@@ -2,9 +2,9 @@
 	<view>
 		<navBar :back="false" type="transparent" fontColor="#333" class="nav-bar">
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
-			<view class="title-box">买家信息</view>
+			<view class="title-nav">买家信息</view>
 		</navBar>
-		
+
 		<view :style="{'padding-top': getNavHeight()}"></view>
 
 		<view class="tip-box">
@@ -29,7 +29,7 @@
 		</view>
 
 		<view class="bottom-box">
-			<button class="success-btn">已发货</button>
+			<button class="success-btn" @click="setOrderStatus">已发货</button>
 			<button class="nomrl-btn">联系买家</button>
 		</view>
 	</view>
@@ -44,21 +44,23 @@
 		},
 		data() {
 			return {
+				id: '',
+
 				froms: [{
 						name: '收货人',
-						value: '王尼玛'
+						value: ''
 					},
 					{
 						name: '收货地址',
-						value: '四川省成都外北熊猫大道1375号'
+						value: ''
 					},
 					{
 						name: '手机号',
-						value: '13452667890'
+						value: ''
 					},
 					{
 						name: '买家送你的一句话',
-						value: '亲，记得赶紧发货哦'
+						value: ''
 					}
 				],
 				express: {
@@ -69,6 +71,35 @@
 			}
 		},
 		methods: {
+			setOrderStatus() {
+				let shippingInfo = {
+					name: this.express.name,
+					id: this.express.id
+				}
+
+				let cnt = {
+					orderId: this.id, // Long 订单id
+					status: this.$constData.orderStatus[1].key, // Byte 订单状态
+					shippingInfo: shippingInfo, // JSONObject <选填> 快递信息
+				}
+				this.$api.setOrderStatus(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url: '../../user'
+						})
+						uni.showToast({
+							title: '已发货',
+							icon: 'none'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
 			navBack() {
 				uni.navigateBack()
 			},
@@ -84,22 +115,49 @@
 			getOrderByOrderId(cnt) {
 				this.$api.getOrderByOrderId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						console.log(this.$util.tryParseJson(res.data.c))
+						let obj = this.$util.tryParseJson(res.data.c)
+						if (obj.remark) {
+							this.froms[3].value = obj.remark
+						} else {
+							this.froms[3].value = '(无)'
+						}
 					} else {
 						uni.showToast({
 							title: res.data.rm,
-							icon:'none'
+							icon: 'none'
 						})
 					}
 				})
 			},
+
+			getReceivingAddressById(cnt) {
+				this.$api.getReceivingAddressById(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						this.froms[0].value = obj.addressUserName
+						this.froms[1].value = obj.address
+						this.froms[2].value = obj.addressPhone
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			}
 		},
 
 		onLoad(res) {
+			this.id = res.id
 			let cnt = {
 				orderId: res.id, // Long 订单id
-			}
+			};
 			this.getOrderByOrderId(cnt)
+
+			let cnt1 = {
+				addressId: res.addressId, // Long 收货地址id
+			};
+			this.getReceivingAddressById(cnt1)
 		}
 	}
 </script>
@@ -113,13 +171,19 @@
 		width: 100%;
 		box-sizing: border-box;
 	}
-	
+
 	.back-icon {
 		position: absolute;
 		left: 0;
 		padding: 10rpx 29rpx;
 		width: 33rpx;
 		height: 33rpx;
+	}
+
+	.title-nav {
+		color: #333333;
+		font-size: 36rpx;
+		font-weight: normal;
 	}
 
 	.tip-box {

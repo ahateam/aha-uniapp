@@ -149,6 +149,36 @@ api.getOrderByOrderId = function(cnt, callback) {
 	util.call(baseUrl + '/goods/getOrderByOrderId', cnt, callback)
 }
 
+//  修改订单状态 
+api.setOrderStatus = function(cnt, callback) {
+	util.call(baseUrl + '/goods/setOrderStatus', cnt, callback)
+}
+
+// 兑换商品 
+api.exchangeGoods = function(cnt, callback) {
+	util.call(baseUrl + '/goods/exchangeGoods', cnt, callback)
+}
+
+// 创建收货地址 
+api.createReceivingAddress = function(cnt, callback) {
+	util.call(baseUrl + '/goods/createReceivingAddress', cnt, callback)
+}
+
+// 修改收货地址 
+api.editReceivingAddressById = function(cnt, callback) {
+	util.call(baseUrl + '/goods/editReceivingAddressById', cnt, callback)
+}
+
+// 查询地址列表 
+api.getReceivingAddressListByUserId = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getReceivingAddressListByUserId', cnt, callback)
+}
+
+// 根据地址id查询地址  
+api.getReceivingAddressById = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getReceivingAddressById', cnt, callback)
+}
+
 /* 商城end */
 
 /*tim 聊天*/

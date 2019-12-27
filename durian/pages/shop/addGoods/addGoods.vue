@@ -4,6 +4,7 @@
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="title-box">发布商品</view>
 		</navBar>
+		<view class="padding-nav"></view>
 
 		<view class="autoTitle">
 			商品名称
@@ -208,6 +209,10 @@
 <style lang="scss" scoped>
 	.body {
 		padding-bottom: 102rpx;
+	}
+	
+	.padding-nav{
+		padding-top: calc(var(--status-bar-height) + 44px);
 	}
 
 	.back-icon {

@@ -4,7 +4,7 @@
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="title-box">商品兑换</view>
 		</navBar>
-		
+
 		<view :style="{'padding-top': getNavHeight()}"></view>
 		<view class="tipBox">
 			<image src="/static/image/shop/icon_l.png" mode="aspectFit"></image>
@@ -46,41 +46,126 @@
 				address: '', //地址
 				remark: '', //备注
 				phone: '', //电话
-				userInfo: ''
+				userInfo: '',
+
+				addressId: ''
 			}
 		},
 
 		methods: {
 			payMoney() {
-				if (this.address == '') {
-					uni.showToast({
-						title: '请输入地址',
-						icon: 'none'
-					})
-				} else if (this.name == '') {
-					uni.showToast({
-						title: '请输入收货人姓名',
-						icon: 'none'
-					})
-				} else if (this.phone == '') {
-					uni.showToast({
-						title: '请输入收货人电话',
-						icon: 'none'
-					})
+				if (this.addressId) {
+					if (this.address == '') {
+						uni.showToast({
+							title: '请输入地址',
+							icon: 'none'
+						})
+					} else if (this.name == '') {
+						uni.showToast({
+							title: '请输入收货人姓名',
+							icon: 'none'
+						})
+					} else if (this.phone == '') {
+						uni.showToast({
+							title: '请输入收货人电话',
+							icon: 'none'
+						})
+					} else {
+						if (this.name != this.addressInfo.addressUserName || this.address != this.addressInfo.address || this.phone !=
+							this.addressInfo.addressPhone) {
+							/* 如果修改了地址信息则修改地址再下订单 */
+							let cnt = {
+								addressId: this.addressId, // Long 收货地址id
+								address: this.address, // String 地址信息
+								addressPhone: this.phone, // String 收货电话
+								addressUserName: this.name, // String 收货人姓名
+								addressStatus: 1, // Byte 是否默认收货地址
+								userId: this.userInfo.userId, // Long 用户id
+							}
+							this.editReceivingAddressById(cnt)
+						} else {
+							let cnt = {
+								orderType: this.$constData.orderType[0].key, // Byte 订单类型
+								buyerId: this.userInfo.userId, // Long 买家id
+								goodsId: this.id, // Long 商品id
+								sellerId: this.upUserId, // Long 卖家id
+								goodsNumber: 1, // Integer 商品数量
+								payment: this.price, // Double 支付金额
+								addressId: this.addressId, // Long 收货地址id
+								addressName: this.address, // String 收货地址名称
+							}
+							if (this.remark) {
+								cnt.remark = this.remark // String 备注
+							}
+							this.createDurianOrder(cnt)
+						}
+					}
 				} else {
 					let cnt = {
-						orderType: this.$constData.orderType[0].key, // Byte 订单类型
-						buyerId: this.userInfo.userId, // Long 买家id
-						goodsId: this.id, // Long 商品id
-						sellerId: this.upUserId, // Long 卖家id
-						goodsNumber: 1, // Integer 商品数量
-						payment: this.price, // Double 支付金额
+						address: this.address, // String 地址信息
+						addressPhone: this.phone, // String 收货电话
+						addressUserName: this.name, // String 收货人姓名
+						addressStatus: 1, // Byte 是否默认收货地址
+						userId: this.userInfo.userId, // Long 用户id
 					}
-					this.createDurianOrder(cnt)
+					this.createReceivingAddress(cnt)
 				}
 			},
 			navBack() {
 				uni.navigateBack()
+			},
+
+			editReceivingAddressById(cnt) {
+				this.$api.editReceivingAddressById(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let cnt1 = {
+							orderType: this.$constData.orderType[0].key, // Byte 订单类型
+							buyerId: this.userInfo.userId, // Long 买家id
+							goodsId: this.id, // Long 商品id
+							sellerId: this.upUserId, // Long 卖家id
+							goodsNumber: 1, // Integer 商品数量
+							payment: this.price, // Double 支付金额
+							addressId: this.addressId, // Long 收货地址id
+							addressName: this.address, // String 收货地址名称
+						}
+						if (this.remark) {
+							cnt.remark = this.remark // String 备注
+						}
+						this.createDurianOrder(cnt1)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			createReceivingAddress(cnt) {
+				this.$api.createReceivingAddress(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log(this.$util.tryParseJson(res.data.c))
+						let cnt1 = {
+							orderType: this.$constData.orderType[0].key, // Byte 订单类型
+							buyerId: this.userInfo.userId, // Long 买家id
+							goodsId: this.id, // Long 商品id
+							sellerId: this.upUserId, // Long 卖家id
+							goodsNumber: 1, // Integer 商品数量
+							payment: this.price, // Double 支付金额
+							addressId: this.addressId, // Long 收货地址id
+							addressName: this.address, // String 收货地址名称
+						}
+						if (this.remark) {
+							cnt.remark = this.remark // String 备注
+						}
+						this.createDurianOrder(cnt1)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			},
 
 			createDurianOrder(cnt) {
@@ -90,7 +175,8 @@
 							url: '/pages/shop/shop'
 						})
 						uni.showToast({
-							title: '下单成功'
+							title: '下单成功',
+							icon: 'none'
 						})
 					} else {
 						uni.showToast({
@@ -104,13 +190,45 @@
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
+
+			getReceivingAddressListByUserId(cnt) {
+				this.$api.getReceivingAddressListByUserId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let list = this.$util.tryParseJson(res.data.c)
+						if (list.length > 0) {
+							console.log(list)
+							this.addressId = list[0].addressId
+							this.name = list[0].addressUserName
+							this.address = list[0].address
+							this.phone = list[0].addressPhone
+
+							this.addressInfo = list[0]
+						}
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			}
 		},
 		onLoad(res) {
+			this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+
+			let cnt = {
+				userId: this.userInfo.userId, // Long 用户id
+				count: 5, // Integer 
+				offset: 0, // Integer
+			}
+			this.getReceivingAddressListByUserId(cnt)
+
 			this.id = res.id
 			this.upUserId = res.upId
 			this.price = res.price
-			this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
-			this.phone = this.userInfo.phone
+			this.phone = this.userInfo.phone.substr(2)
+
+
 		}
 	}
 </script>
