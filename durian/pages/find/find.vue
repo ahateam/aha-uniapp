@@ -7,7 +7,7 @@
 				<view class="title_box">
 					发现
 				</view>
-				<view class="searchBox">
+				<view class="searchBox" @click="navSearch">
 					<text class="iconfont icon-iconfonticonfontsousuo1 searchIcon"></text>
 					<text class="iconText" style="vertical-align: bottom;">发现新鲜事</text>
 				</view>
@@ -36,6 +36,7 @@
 
 			<view>
 				<view class="listBox" :class="{autoList:index != 0}" v-for="(item,index) in contentList" :key="index" @click="navToContent(item)">
+					<!-- 校内校外 -->
 					<view v-if="navCurrtent == 0">
 						<trans-video :item="item" v-if="item.posting.postingType == constData.groupType[3].key"></trans-video>
 
@@ -44,11 +45,12 @@
 						<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key"></only-text>
 					</view>
 
+					<!-- 最新最热 -->
 					<view v-else>
 						<right-video v-if="item.posting.postingType == constData.groupType[1].key||item.posting.postingType == constData.groupType[3].key"
-						 :item="item" :src="constData.oss + getJsonParse(item)" :listLength="getJsonParse(item,true)" tagType="new"></right-video>
+						 :item="item" :src="constData.oss + getJsonParse(item)" :listLength="getJsonParse(item,true)" :tagType="tagCurrtent == 0?'new':''"></right-video>
 
-						<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key" tagType="new"></only-text>
+						<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key" :tagType="tagCurrtent == 0?'new':''"></only-text>
 					</view>
 
 					<view class="abilityBox" @click.stop>
@@ -160,6 +162,12 @@
 			}
 		},
 		methods: {
+			navSearch() {
+				uni.navigateTo({
+					url: './search/search'
+				})
+			},
+
 			getJsonParse(item, e) {
 				if (e) {
 					return this.$util.tryParseJson(item.posting.postingDate).length
@@ -289,7 +297,7 @@
 			},
 
 			changeNav(index) {
-				if (this.pageStatus != 'loading' && this.pageStatus != 'onload') {
+				if (this.pageStatus != 'loading') {
 					this.navCurrtent = index
 					let navList = this.navList[this.navCurrtent]
 					if (navList.tagList[navList.tagCurrtent].child) {
@@ -304,6 +312,7 @@
 							moduleId: this.$constData.module,
 							userId: this.userInfo.userId,
 							// show: this.$constData.postingStatus[], // Byte <选填> 可见范围
+							sort: true
 						}
 						this.contentList = []
 						this.pageStatus = 'loading'
@@ -313,33 +322,42 @@
 			},
 
 			changeTag(index) {
-				this.navList[this.navCurrtent].tagCurrtent = index
-				if (this.navList[this.navCurrtent].tagList[index].child) {
-					let oldList = this.navList[this.navCurrtent].tagList[index]
-					this.contentList = oldList.child
-					this.pageOver = oldList.pageOver
-					this.pageStatus = oldList.pageOver
-				} else {
-					let cnt = {}
-					if (this.navCurrtent == 0) {
-						cnt = {
-							moduleId: this.$constData.module, // String 模块
-							sort: true, // boolean 是否倒序
-							userId: this.userInfo.userId, // long <选填> 用户id
-							count: this.count, // int 
-							offset: this.offset, // int
-						}
-						if (index == 1) {
-							cnt.showRange = this.$constData.postingStatus[2].key
-						} else {
-							cnt.showRange = this.$constData.postingStatus[1].key
-						}
+				if (this.pageStatus != 'loading') {
+					this.navList[this.navCurrtent].tagCurrtent = index
+					if (this.navList[this.navCurrtent].tagList[index].child) {
+						let oldList = this.navList[this.navCurrtent].tagList[index]
+						this.contentList = oldList.child
+						this.pageOver = oldList.pageOver
+						this.pageStatus = oldList.pageStatus
 					} else {
-
+						let cnt = {}
+						if (this.navCurrtent == 0) {
+							cnt = {
+								moduleId: this.$constData.module, // String 模块
+								sort: true, // boolean 是否倒序
+								userId: this.userInfo.userId, // long <选填> 用户id
+								count: this.count, // int 
+								offset: this.offset, // int
+							}
+							if (index == 1) {
+								cnt.showRange = this.$constData.postingStatus[2].key
+							} else {
+								cnt.showRange = this.$constData.postingStatus[1].key
+							}
+						} else {
+							cnt = {
+								moduleId: this.$constData.module, // String 模块
+								sort: true, // boolean 是否倒序
+								userId: this.userInfo.userId, // long <选填> 用户id
+								selected: 1, // Byte <选填> 是否精选
+								count: this.count, // int 
+								offset: this.offset, // int
+							}
+						}
+						this.pageStatus = 'loading'
+						this.contentList = []
+						this.getPostingList(cnt)
 					}
-					this.pageStatus = 'loading'
-					this.contentList = []
-					this.getPostingList(cnt)
 				}
 			},
 
@@ -416,11 +434,57 @@
 				userId: this.userInfo.userId, // Long <选填> 当前用户编号
 				count: this.count, // int 
 				offset: this.offset, // int
-				showRange: this.$constData.postingStatus[1].key, // Byte <选填> 可见范围
+				// showRange: this.$constData.postingStatus[1].key, // Byte <选填> 可见范围
+			}
+			if (this.navCurrtent == 0) {
+				if (this.navList[this.navCurrtent].tagCurrtent == 0) {
+					cnt.showRange = this.$constData.postingStatus[1].key
+				} else {
+					cnt.showRange = this.$constData.postingStatus[2].key
+				}
+			} else {
+				if (this.navList[this.navCurrtent].tagCurrtent == 1) {
+					cnt.selected = 1
+				}
 			}
 			this.contentList = []
 			this.pageStatus = 'loading'
 			this.getPostingList(cnt)
+		},
+
+		onReachBottom() {
+			let index = this.navList[this.navCurrtent].tagCurrtent
+			if (!this.navList[this.navCurrtent].tagList[index].pageOver) {
+				this.page += 1
+				this.navList[this.navCurrtent].tagList[index].page += 1
+				let cnt = {
+					moduleId: this.$constData.module, // String 模块
+					sort: true, // boolean 是否倒序
+					// type: type, // Byte <选填> 类型
+					// status: status, // Byte <选填> 状态编号
+					// power: power, // Byte <选填> 权力
+					// upUserId: upUserId, // Long <选填> 上传用户编号
+					// upChannelId: upChannelId, // Long <选填> 上传专栏编号
+					// tags: tags, // JSONObject <选填> 标签
+					userId: this.userInfo.userId, // Long <选填> 当前用户编号
+					count: this.count, // int 
+					offset: (this.page - 1) * this.count, // int
+					// showRange: this.$constData.postingStatus[1].key, // Byte <选填> 可见范围
+				}
+				if (this.navCurrtent == 0) {
+					if (this.navList[this.navCurrtent].tagCurrtent == 0) {
+						cnt.showRange = this.$constData.postingStatus[1].key
+					} else {
+						cnt.showRange = this.$constData.postingStatus[2].key
+					}
+				} else {
+					if (this.navList[this.navCurrtent].tagCurrtent == 1) {
+						cnt.selected = 1
+					}
+				}
+				this.pageStatus = 'loading'
+				this.getPostingList(cnt)
+			}
 		}
 	}
 </script>

@@ -44,6 +44,16 @@ api.createReply = function(cnt, callback) {
 	util.call(baseUrl + '/reply/createReply', cnt, callback)
 }
 
+// 创建密信 
+api.createSecretLetter = function(cnt, callback) {
+	util.call(baseUrl + '/secret/createSecretLetter', cnt, callback)
+}
+
+// 获取密信 
+api.getSecretLetter = function(cnt, callback) {
+	util.call(baseUrl + '/secret/getSecretLetter', cnt, callback)
+}
+
 // 创建收藏 
 api.createUserFavorite = function(cnt, callback) {
 	util.call(baseUrl + '/posting/createUserFavorite', cnt, callback)
@@ -124,6 +134,12 @@ api.getByGoodId = function(cnt, callback) {
 	util.call(baseUrl + '/goods/getByGoodId', cnt, callback)
 }
 
+// 根据商品名字获取商品 
+api.getByGoodsName = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getByGoodsName', cnt, callback)
+}
+
+
 // 发布商品 
 api.createGoods = function(cnt, callback) {
 	util.call(baseUrl + '/goods/createGoods', cnt, callback)
@@ -147,6 +163,11 @@ api.getOrderBySellerId = function(cnt, callback) {
 // 根据订单id查询订单
 api.getOrderByOrderId = function(cnt, callback) {
 	util.call(baseUrl + '/goods/getOrderByOrderId', cnt, callback)
+}
+
+// 根据商品id查询订单 
+api.getOrderByContractId = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getOrderByContractId', cnt, callback)
 }
 
 //  修改订单状态 
@@ -195,4 +216,19 @@ api.getUserInfo = function(cnt, callback) {
 	util.call(baseUrl + '/user/getUserInfo', cnt, callback)
 }
 
+
+/* 合同  */
+// 获取合同列表 
+api.getContractList = function(cnt, callback) {
+	util.call(baseUrl + '/contract/getContractList', cnt, callback)
+}
+// 根据合同获取任务 
+api.getTaskByContractId = function(cnt, callback) {
+	util.call(baseUrl + '/task/getTaskByContractId', cnt, callback)
+}
+
+// 根据任务id查询完成记录 
+api.getChangeRecordList = function(cnt, callback) {
+	util.call(baseUrl + '/task/getChangeRecordList', cnt, callback)
+}
 export default api

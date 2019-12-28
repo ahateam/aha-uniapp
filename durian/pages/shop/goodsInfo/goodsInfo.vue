@@ -61,17 +61,21 @@
 				<button class="btn-can" @click="showBox = false">再想想</button>
 			</view>
 		</uni-popup>
+
+		<sheet :isShow="showBuy" @closeCenter="showBuy =! showBuy" @buyGoods="navToBuy"></sheet>
 	</view>
 </template>
 
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import sheet from '@/components/shop-sheet/centerSheet.vue'
 
 	export default {
 		components: {
 			navBar,
-			uniPopup
+			uniPopup,
+			sheet
 		},
 		data() {
 			return {
@@ -88,6 +92,7 @@
 				price: '',
 
 				showBox: false,
+				showBuy: false,
 				dots: [{
 					name: ''
 				}, {
@@ -109,6 +114,12 @@
 		methods: {
 			getMoney() {
 				return this.price / 10
+			},
+
+			navToBuy() {
+				uni.navigateTo({
+					url: `/pages/shop/goodsInfo/buyGoods/buyGoods?id=${this.id}&upId=${this.senderId}&price=${this.price}&free=1`
+				})
 			},
 
 			getByGoodId(cnt) {
@@ -145,15 +156,16 @@
 
 			likeBtn() {
 				if (this.buyStatus) {
-					let cnt = {
-						orderType: this.$constData.goodsType[1].key, // Byte 订单类型
-						buyerId: this.userInfo.userId, // Long 买家id
-						goodsId: this.id, // Long 商品id
-						sellerId: this.senderId, // Long 卖家id
-						goodsNumber: 1, // Integer 商品数量
-						payment: this.price, // Double 支付金额
-					}
-					this.exchangeGoods(cnt)
+					this.showBuy = true
+					// let cnt = {
+					// 	orderType: this.$constData.goodsType[1].key, // Byte 订单类型
+					// 	buyerId: this.userInfo.userId, // Long 买家id
+					// 	goodsId: this.id, // Long 商品id
+					// 	sellerId: this.senderId, // Long 卖家id
+					// 	goodsNumber: 1, // Integer 商品数量
+					// 	payment: this.price, // Double 支付金额
+					// }
+					// this.exchangeGoods(cnt)
 				} else {
 					this.showBox = true
 				}

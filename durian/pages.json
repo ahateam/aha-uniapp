@@ -210,7 +210,11 @@
 			"style": {}
 		}
 
-	],
+	    ,{
+            "path" : "pages/find/search/search",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",

@@ -129,7 +129,7 @@
 							addressName: this.address, // String 收货地址名称
 						}
 						if (this.remark) {
-							cnt.remark = this.remark // String 备注
+							cnt1.remark = this.remark // String 备注
 						}
 						this.createDurianOrder(cnt1)
 					} else {
@@ -156,7 +156,7 @@
 							addressName: this.address, // String 收货地址名称
 						}
 						if (this.remark) {
-							cnt.remark = this.remark // String 备注
+							cnt1.remark = this.remark // String 备注
 						}
 						this.createDurianOrder(cnt1)
 					} else {

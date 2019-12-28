@@ -34,13 +34,15 @@
 			</view>
 			<!-- 评论区 -->
 			<view class="commentBox" :style="opacity">
-				<view class="commentTitle">
-					大家在说
+				<view class="commentTitle flex-box">
+					<view :class="{'curr-title':titleCurr == 0}" @click="changeCommen(0)">大家在说</view>
+					<view :class="{'curr-title':titleCurr == 1}" style="margin-left: 15rpx;" @click="changeCommen(1)">密信</view>
 				</view>
-				<view v-if="commentList.length > 0">
-					<comment :comment="commentList" @zan="zan"></comment>
+				<view v-if="titleCurr == 0?commentList.length > 0:secretList.length > 0">
+					<comment :comment="commentList" @zan="zan" v-if="titleCurr == 0"></comment>
+					<secret :comment="secretList" v-else></secret>
 				</view>
-				<view v-if="commentList.length == 0&&commentApi" class="noCommentBox">
+				<view v-if="titleCurr == 0?commentList.length == 0:secretList.length == 0&&commentApi" class="noCommentBox">
 					<view class="noComIcon">
 						<image src="/static/image/find/bg-ly.png" mode="aspectFit"></image>
 						<view class="noComText">
@@ -57,20 +59,21 @@
 					<input type="text" v-model="replayText" placeholder="我也说两句…" />
 				</view>
 				<button class="submitBtn" @click="submit">发表</button>
-				<button class="secretBtn" @click="submit(true)">密信</button>
+				<button class="secretBtn" @click="createSecretLetter">密信</button>
 			</view>
 
 
-			<uni-load-more :status="pageStatus" v-if="commentApi == false||commentList.length > 0&&commentApi == true"></uni-load-more>
+			<uni-load-more :status="titleCurr == 0?commenPageStatus:secretPageStatus" v-if="commentApi == false||commentList.length > 0&&commentApi == true"></uni-load-more>
 			<sheet isShowBottom @closeBottom="closeSheet" @changeMoney="changeMoney" v-if="sheetStatus"></sheet>
 		</view>
-		<loading :status="pageStatus"></loading>
+		<loading :status="commenPageStatus"></loading>
 	</view>
 </template>
 
 <script>
 	import userBox from '@/components/find/userBox.vue'
 	import comment from '@/components/find/comment.vue'
+	import secret from '@/components/find/secret.vue'
 	import sheet from '@/components/bbh-sheet/bottomSheet.vue'
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
@@ -83,7 +86,8 @@
 			sheet,
 			navBar,
 			uniLoadMore,
-			Loading
+			Loading,
+			secret
 		},
 		data() {
 			return {
@@ -96,9 +100,14 @@
 				commentApi: false, //是否返回数据
 				count: 10,
 				offset: 0,
-				page: 1,
-				pageOver: false,
-				pageStatus: 'onload',
+				commenPage: 1,
+				commenPageOver: false,
+				commenPageStatus: 'onload',
+
+
+				secretPage: 1,
+				secretPageOver: false,
+				secretPageStatus: 'loading',
 
 				// 帖子数据
 				upName: '', //上传者名字
@@ -112,9 +121,13 @@
 				appraiseCount: '', //点赞次数
 				isAppraise: false, //是否点赞
 
+				titleCurr: 0,
+
 				// 评论
 				commentList: [], //评论列表
 				replayText: '', //回复文本
+
+				secretList: [], //密信列表
 
 				sheetStatus: false,
 				money: 5, //打赏价格
@@ -144,9 +157,22 @@
 				offset: this.offset, // int 
 			}
 			this.getReplys(cnt1)
+
+			let cnt2 = {
+				postingId: this.id, // Long 帖子编号
+				userId: this.userInfo.userId, // Long <选填> 浏览帖子用户编号
+				count: this.count, // Integer 
+				offset: this.offset, // Integer 
+			}
+			this.getSecretLetter(cnt2)
 		},
 
 		methods: {
+			// 切换密信评论
+			changeCommen(e) {
+				this.titleCurr = e
+			},
+
 			// 收藏按钮
 			createCollect() {
 				if (this.isfavorite) {
@@ -227,8 +253,13 @@
 				this.$api.createAppraise(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						if (index || index === 0) {
-							this.commentList[index].isAppraise = true
-							this.commentList[index].appraiseCount += 1
+							if (this.titleCurr == 0) {
+								this.commentList[index].isAppraise = true
+								this.commentList[index].appraiseCount += 1
+							} else {
+								this.secretList[index].isAppraise = true
+								this.secretList[index].appraiseCount += 1
+							}
 						} else {
 							this.isAppraise = true
 							this.appraiseCount += 1
@@ -288,7 +319,44 @@
 				})
 			},
 
-			submit(e) {
+			createSecretLetter() {
+				let cnt = {
+					publishUserId: this.userInfo.userId, // Long 密信发布用户编号
+					text: this.replayText, // String 密信内容
+					postingId: this.id, // Long 回复帖子编号
+				}
+				this.$api.createSecretLetter(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							title: '已私信',
+							icon: 'none'
+						});
+						let time = new Date()
+						let y = time.getFullYear()
+						let m = 1 + time.getMonth()
+						let d = time.getDate()
+
+						let data = {
+							letterTime: Math.round(new Date()),
+							text: this.replayText,
+							userName: this.userInfo.userName,
+							userHead: this.userInfo.userHead,
+							...this.$util.tryParseJson(res.data.c)
+						}
+						this.secretList.splice(0, 0, data)
+						console.log('_________________密信_______________________')
+						console.log(this.secretList)
+						this.replayText = ''
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			submit() {
 				let cnt = {
 					// module: this.$constData.module, // String 隶属
 					ownerId: this.id, // Long 内容编号
@@ -299,17 +367,13 @@
 					atUserName: '0', // String <选填> @对象名称
 					title: 'title', // String <选填> 标题
 					ext: '0', // String <选填> 扩展
-				};
-				if (e) {
-
 				}
 				this.$api.createReply(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.showToast({
 							title: '评论成功',
-							duration: 1000
+							icon: 'none'
 						});
-						this.hidden = true
 						let time = new Date()
 						let y = time.getFullYear()
 						let m = 1 + time.getMonth()
@@ -374,6 +438,28 @@
 				})
 			},
 
+			getSecretLetter(cnt) {
+				this.$api.getSecretLetter(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let list = this.$util.tryParseJson(res.data.c)
+						this.secretList = list
+						console.log('--------------密信列表-----------------')
+						console.log(this.secretList)
+						if (this.secretList.length < this.count) {
+							this.secretPageStatus = 'nomore'
+							this.secretPageOver = true
+						} else {
+							this.secretPageStatus = 'more'
+							this.secretPageOver = false
+						}
+					} else {
+						this.secretPageStatus = 'nomore'
+						this.secretPageOver = true
+						console.log('error')
+					}
+				})
+			},
+
 			getReplys(cnt) {
 				this.$api.getReplys(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -382,14 +468,16 @@
 						console.log('--------------评论列表-----------------')
 						console.log(this.commentList)
 						if (this.commentList.length < this.count) {
-							this.pageStatus = 'nomore'
-							this.pageOver = true
+							this.commenPageStatus = 'nomore'
+							this.commenPageOver = true
 						} else {
-							this.pageStatus = 'more'
+							this.commenPageStatus = 'more'
+							this.commenPageOver = false
 						}
 					} else {
 						this.commentApi = true
-						this.pageStatus = 'nomore'
+						this.commenPageStatus = 'nomore'
+						this.commenPageOver = true
 						console.log('error')
 					}
 				})
@@ -407,6 +495,11 @@
 		padding: $group-margin-top $group-margin-left;
 		padding-bottom: 109rpx;
 		transition: all 0.5s;
+	}
+
+	.flex-box {
+		display: flex;
+		align-items: center;
 	}
 
 	.textBox {
@@ -466,8 +559,12 @@
 	.commentTitle {
 		font-size: $group-font-befor;
 		line-height: $group-font-befor-line;
-		color: $group-color-article;
-		font-weight: 550;
+		color: $group-color-befor;
+
+		.curr-title {
+			color: $group-color-article;
+			font-weight: 550;
+		}
 	}
 
 	.replayBox {

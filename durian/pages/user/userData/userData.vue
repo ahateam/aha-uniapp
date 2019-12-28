@@ -5,7 +5,8 @@
 			<view slot="right" class="save-Btn" @click="saveData">保存</view>
 		</nav-bar>
 		<view :style="{'padding-top': getNavHeight()}"></view>
-		<!-- <view class="head-box" @click="upLoadImg">
+		<!--设计有修改，废弃
+		 <view class="head-box" @click="upLoadImg">
 			<view class="head-change" v-if="headSrc == ''">
 				<image src="/static/image/user/icon_xj.png" mode="aspectFit"></image>
 			</view>
@@ -47,7 +48,7 @@
 				</view>
 			</view>
 
-			<view class="content-box" @click="showSchoolBox">
+			<view class="content-box" @click="showSchool = true">
 				<view class="left-box">所在学校</view>
 				<view class="right-box">
 					<text>{{userInfo.school}}</text>
@@ -63,7 +64,7 @@
 				</view>
 			</view>
 
-			<view class="content-box">
+			<view class="content-box" @click="showEmail = true">
 				<view class="left-box">电子邮箱</view>
 				<view class="right-box">
 					<text>{{userInfo.email}}</text>
@@ -75,7 +76,7 @@
 				收款账户
 			</view>
 
-			<view class="content-box">
+			<view class="content-box" @click="showAcName = true">
 				<view class="left-box">账户名</view>
 				<view class="right-box">
 					<text>{{userInfo.accountName}}</text>
@@ -83,7 +84,7 @@
 				</view>
 			</view>
 
-			<view class="content-box">
+			<view class="content-box" @click="showBsb = true">
 				<view class="left-box">BSB</view>
 				<view class="right-box">
 					<text>{{userInfo.BsbNumber}}</text>
@@ -91,7 +92,7 @@
 				</view>
 			</view>
 
-			<view class="content-box">
+			<view class="content-box" @click="showAccount = true">
 				<view class="left-box">账号</view>
 				<view class="right-box">
 					<text>{{userInfo.account}}</text>
@@ -121,6 +122,34 @@
 			</view>
 		</uni-popup>
 
+		<uni-popup :show="showEmail" type="bottom" :mask-click="true" @change="change">
+			<view class="name-input">
+				<input type="text" v-model="newEmail" placeholder="请输入电子邮箱" />
+				<button class="name-btn" @click="changeEmail">确定</button>
+			</view>
+		</uni-popup>
+
+		<uni-popup :show="showAcName" type="bottom" :mask-click="true" @change="change">
+			<view class="name-input">
+				<input type="text" v-model="newAcName" placeholder="请输入账户名" />
+				<button class="name-btn" @click="changeAcName">确定</button>
+			</view>
+		</uni-popup>
+		
+		<uni-popup :show="showBsb" type="bottom" :mask-click="true" @change="change">
+			<view class="name-input">
+				<input type="text" v-model="newBsb" placeholder="请输入BSB" />
+				<button class="name-btn" @click="changeBsb">确定</button>
+			</view>
+		</uni-popup>
+		
+		<uni-popup :show="showAccount" type="bottom" :mask-click="true" @change="change">
+			<view class="name-input">
+				<input type="text" v-model="newAccount" placeholder="请输入账户名" />
+				<button class="name-btn" @click="changeAccount">确定</button>
+			</view>
+		</uni-popup>
+
 		<sen-set-picker ref="setpicker" @colseBox="quxiaobutton" :shixian="shixian" @quxiaoButton="quxiaobutton"
 		 @quedingButton="quedingbutton"></sen-set-picker>
 	</view>
@@ -145,6 +174,7 @@
 			})
 			return {
 				constData: this.$constData,
+				userInfo: {},
 				headSrc: '',
 				showName: false,
 				newName: '',
@@ -155,7 +185,14 @@
 				showTel: false,
 				inputValue: currentDate,
 				shixian: false,
-				userInfo: {},
+				showEmail: false,
+				newEmail: '',
+				showAcName: false,
+				newAcName: '',
+				showAccount: false,
+				newAccount: '',
+				showBsb: false,
+				newBsb: ''
 			}
 
 		},
@@ -239,6 +276,26 @@
 					}
 				})
 			},
+			
+			changeBsb(){
+				this.userInfo.BsbNumber = this.newBsb
+				this.showBsb = false
+			},
+			
+			changeAccount(){
+				this.userInfo.account = this.newAccount
+				this.showAccount = false
+			},
+
+			changeAcName() {
+				this.userInfo.accountName = this.newAcName
+				this.showAcName = false
+			},
+
+			changeEmail() {
+				this.userInfo.email = this.newEmail
+				this.showEmail = false
+			},
 
 			changeName() {
 				this.userInfo.userName = this.newName
@@ -259,11 +316,6 @@
 				this.showSex = false
 			},
 
-			showSchoolBox() {
-				this.showSchool = true
-				console.log(this.$refs)
-			},
-
 			change(e) {
 				if (!e.show) {
 					this.showName = false
@@ -271,6 +323,10 @@
 					this.showBirth = false
 					this.showSchool = false
 					this.showTel = false
+					this.showEmail = false
+					this.showAcName = false
+					this.showBsb = false
+					this.showAccount = false
 				}
 			},
 
@@ -411,6 +467,7 @@
 
 	.right-head {
 		position: absolute;
+		z-index: -1;
 		right: 40rpx;
 	}
 

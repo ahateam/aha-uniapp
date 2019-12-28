@@ -7,15 +7,17 @@
 		<view :style="{'padding-top': getNavHeight()}"></view>
 		<view style="position: relative;">
 			<view class="title-text">我的申请</view>
-			<view class="title-info">{{school}}大学{{major}}专业申请</view>
+			<view class="title-info" v-if="datas[1].value">{{datas[1].value}}{{datas[2].value}}专业申请</view>
+			<view class="title-info" v-else>{{userName}}移民申请</view>
 		</view>
 
 		<view class="content-box">
-			<view class="auto-box top-list" v-for="(item,index) in datas" :key="index">
-				<view class="left-title">{{item.name}}</view>
-				<view>{{item.value}}</view>
+			<view v-for="(item,index) in datas" :key="index">
+				<view class="auto-box top-list" v-if="item.value">
+					<view class="left-title">{{item.name}}</view>
+					<view>{{item.value}}</view>
+				</view>
 			</view>
-
 			<view class="auto-box schedule-box">
 				<view class="left-title" style="line-height: 42rpx;">最新进展</view>
 				<view class="schedule-line-box">
@@ -37,30 +39,29 @@
 			<view class="auto-box history-box">
 				<view class="left-title" style="line-height: 42rpx;">历史进展</view>
 				<view class="hsty-list">
-					<view class="hsty-item" :class="[{'border-none':index + 1 == historyList.length&&moreStatus},{'border-none':index == 2&&!moreStatus},{'left-dot-border':!item.status}]"
-					 v-for="(item,index) in historyList" :key="index" :hidden="!moreStatus&&index > 2">
-						<view>
-							<view class="hsty-dot" :class="!item.status?'curr-dot':''"></view>
-							<view class="hsty-text" :class="{'curr-text-color':!item.status}">{{item.time}}</view>
-							<view class="hsty-text hsty-text-right" :class="{'curr-text-color':!item.status}">{{item.text}}</view>
+					<view v-for="(item,index) in historyList" :key="index" :hidden="!moreStatus&&index > 2">
+						<view class="hsty-item" :class="[{'border-none':index + 1 == historyList.length&&moreStatus},{'border-none':index == 2&&!moreStatus},{'left-dot-border':!item.status}]">
+							<view class="hsty-dot" :class="index == 0?'curr-dot':''"></view>
+							<view class="hsty-text" :class="{'curr-text-color':index == 0}">{{getTime(item.changeTime)}}</view>
+							<view class="hsty-text hsty-text-right" :class="{'curr-text-color':index == 0}">{{item.stepName}}</view>
 						</view>
 					</view>
 				</view>
-				<view class="more-box">
+				<view class="more-box" :style="historyList.length < 4?'height:0;margin-bottom:10rpx':''">
 					<button class="more-btn" @click="moreBtn" v-if="!moreStatus">查看更多</button>
 					<button class="more-btn" @click="closeBtn" v-if="moreStatus">收起</button>
 				</view>
 			</view>
 
-			<view class="auto-box data-box">
+			<view class="auto-box data-box" v-if="dataList.length > 0">
 				<view class="left-title">我的资料</view>
-				<view class="data-list">
+				<view class="data-list" v-for="(item,index) in dataList" :key="index">
 					<view>
 						<view class="data-name">
-							{{dataName}}
+							{{item.name}}
 						</view>
 						<view class="data-size">
-							{{dataSize}}
+							{{item.size}}
 						</view>
 					</view>
 					<image src="/static/image/user/icon_docx.png" mode="scaleToFill"></image>
@@ -72,12 +73,12 @@
 				<view class="pay-list" v-for="(item,index) in payHstyList" :key="index">
 					<view class="pay-info-box">
 						<view class="left-line"></view>
-						<view class="pay-title">{{item.title}}</view>
-						<view class="pay-money">{{item.money}}</view>
+						<view class="pay-title">{{item.clientName + '申请' + item.visasType}}</view>
+						<view class="pay-money">AUD {{item.payment}}</view>
 					</view>
 					<view class="pay-time-box">
-						<view class="iconfont icon-tupianx"></view>
-						<view>{{item.time}}</view>
+						<view class="iconfont icon-rili"></view>
+						<view>{{getTime(item.payTime)}}</view>
 					</view>
 				</view>
 			</view>
@@ -95,6 +96,7 @@
 		data() {
 			return {
 				userInfo: {},
+				userName: '',
 
 				school: 'Monash', //学校
 				major: '计算机', //专业
@@ -120,7 +122,7 @@
 					}
 				],
 
-				succLine: 15,
+				succLine: 0,
 
 				thingTime: '2019-10-01',
 				thingText: '等待支付学费',
@@ -157,14 +159,16 @@
 				dataName: '我的本科成绩单.Docx',
 				dataSize: '216K',
 
-				payHstyList: [{
-					title: 'Monash大学计算机专业',
-					money: 'AUD 1000',
-					time: '2019-10-9'
-				}]
+				payHstyList: [],
+
+				dataList: []
 			}
 		},
 		methods: {
+			getTime(time) {
+				return this.$commen.getNewDate(time)
+			},
+
 			closeBtn() {
 				this.moreStatus = false
 			},
@@ -185,15 +189,106 @@
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
+
+			getOrderByContractId(cnt) {
+				this.$api.getOrderByContractId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log('订单')
+						this.payHstyList = this.$util.tryParseJson(res.data.c)
+						console.log(this.payHstyList)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			getChangeRecordList(cnt) {
+				this.$api.getChangeRecordList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						this.succLine = obj.percentage * 100
+						let arr = obj.list
+						console.log(arr)
+						arr.reverse();
+						this.historyList = arr
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			getTaskByContractId(cnt) {
+				this.$api.getTaskByContractId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						console.log(obj)
+						this.dataList = this.$util.tryParseJson(obj.fileData)
+
+						let cnt1 = {
+							taskId: obj.taskId, // Long 任务id
+							count: 100, // Integer 
+							offset: 0, // Integer 
+						};
+						this.getChangeRecordList(cnt1)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			getContractList(cnt) {
+				this.$api.getContractList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						console.log(obj)
+						this.datas[0].value = this.$commen.getNewDate(obj[0].createTime, true)
+						if (obj[0].collectionItems.length > 0) {
+							this.datas[1].value = obj[0].collectionItems[0].item
+							this.datas[2].value = obj[0].collectionItems[0].major
+						}
+						this.datas[3].value = obj[0].visasType
+						this.userName = obj[0].clientName
+
+						let cnt1 = {
+							contractId: obj[0].conId, // Long 合同id
+						}
+						this.getTaskByContractId(cnt1)
+
+						let cnt2 = {
+							goodsId: obj[0].conId, // Long 商品id
+							count: 500, // Integer 
+							offset: 0, // Integer 
+						}
+						this.getOrderByContractId(cnt2)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			}
 		},
 		onLoad() {
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			this.userInfo = userInfo
 
-			this.datas[0].value = this.time
-			this.datas[1].value = this.school
-			this.datas[2].value = this.major
-			this.datas[3].value = this.visa
+			let cnt = {
+				studentId: userInfo.userId, // Long <选填> 学生编号
+				// status: status, // Byte <选填> 状态
+				count: 3, // Integer 
+				offset: 0, // Integer 
+			}
+			this.getContractList(cnt)
 		}
 	}
 </script>
@@ -395,6 +490,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		overflow: hidden;
 	}
 
 	.more-btn {

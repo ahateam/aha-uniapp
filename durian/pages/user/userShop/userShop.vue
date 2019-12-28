@@ -225,17 +225,17 @@
 
 			changeCard(index, e) {
 				if (e == 0) {
-					this.contentList[index].goodsType = 2
+					this.contentList[index].goodsType = this.$constData.goodsType[2].key
 				} else {
-					this.myGoods[index].goodsType = 2
+					this.myGoods[index].goodsType = this.$constData.goodsType[2].key
 				}
 			},
 
 			changeCardEnd(index, e) {
 				if (e == 0) {
-					this.contentList[index].goodsType = 1
+					this.contentList[index].goodsType = this.$constData.goodsType[1].key
 				} else {
-					this.myGoods[index].goodsType = 1
+					this.myGoods[index].goodsType = this.$constData.goodsType[1].key
 				}
 			},
 
