@@ -87,7 +87,7 @@
 					{
 						text: '收藏',
 						iconSrc: '/static/image/user/icon_scdlr.png',
-						path: ''
+						path: './userCollect/userCollect'
 					}
 				],
 

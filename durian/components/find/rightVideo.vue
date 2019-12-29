@@ -10,7 +10,8 @@
 
 		<view class="title">
 			<view :class="{'tag-show':tagType}">{{item.posting.postingTextDate}}</view>
-			<image class="tag-icon" v-show="tagType" src="/static/image/find/icon_new.png" mode="aspectFit"></image>
+			<image class="tag-icon" v-if="tagType" :src="tagType == 'new'?'/static/image/find/icon_new.png':'/static/image/icon/icon_fx_j.png'"
+			 mode="aspectFit"></image>
 		</view>
 
 		<view class="img">

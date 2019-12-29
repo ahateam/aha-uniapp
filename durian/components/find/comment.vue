@@ -20,14 +20,14 @@
 
 			<view class="textBox">{{list.reply.text}}</view>
 			<!-- 回复区 -->
-			<view class="replayBtn" v-if="list.reply.sequenceId">
+			<view class="replayBtn" @click="createComment(list,index)" v-if="list.reply.sequenceId">
 				回复
 			</view>
 			<view class="replayBox" v-if="list.comment.length > 0">
 				<view v-for="(item,index) in list.comment" :key="index" v-if="index == 0">
 					<text>{{item.commentInfo.upUserName}}：</text>
 					<text class="replayText">{{item.commentInfo.text}}</text>
-					<view v-if="item.totalCount > 1">共{{item.totalCount}}条回复</view>
+					<view v-if="item.totalCount > 1">共<text style="color: #00C8BE;">{{item.totalCount}}</text>条回复</view>
 				</view>
 			</view>
 		</view>
@@ -45,6 +45,10 @@
 		methods: {
 			zan(list, index) {
 				this.$emit('zan', list.reply.sequenceId, index)
+			},
+
+			createComment(list, index) {
+				this.$emit('createComment', list, index)
 			},
 
 			getTime(time) {

@@ -48,9 +48,9 @@
 					<!-- 最新最热 -->
 					<view v-else>
 						<right-video v-if="item.posting.postingType == constData.groupType[1].key||item.posting.postingType == constData.groupType[3].key"
-						 :item="item" :src="constData.oss + getJsonParse(item)" :listLength="getJsonParse(item,true)" :tagType="tagCurrtent == 0?'new':''"></right-video>
+						 :item="item" :src="constData.oss + getJsonParse(item)" :listLength="getJsonParse(item,true)" :tagType="navList[navCurrtent].tagCurrtent == 0?'new':'j'"></right-video>
 
-						<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key" :tagType="tagCurrtent == 0?'new':''"></only-text>
+						<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key" :tagType="navList[navCurrtent].tagCurrtent == 0?'new':'j'"></only-text>
 					</view>
 
 					<view class="abilityBox" @click.stop>
@@ -231,18 +231,18 @@
 				})
 			},
 
-			navTest() {
-				uni.navigateTo({
-					url: '/pages/shareView/shareView'
-				})
-			},
+			// navTest() {
+			// 	uni.navigateTo({
+			// 		url: '/pages/shareView/shareView'
+			// 	})
+			// },
 
 			shareBtn(item, index) {
 				this.shareData = item
 				this.shareIndex = index
 
 				uni.navigateTo({
-					url: '/pages/shareView/shareView'
+					url: `/pages/shareView/shareView?shareType=find&id=${item.posting.postingId}&type=${item.posting.postingType}`
 				})
 			},
 

@@ -1,6 +1,6 @@
 <template>
 	<view style="padding-bottom: 30rpx;">
-		<view class="succ-view" v-if="pageStatus != 'onload'">
+		<view v-if="pageStatus != 'onload'">
 			<view class="top-box">
 				<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
 				<view class="top-content">
@@ -468,10 +468,5 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.succ-view {
-		transition: all 1s;
-		opacity: 0;
 	}
 </style>

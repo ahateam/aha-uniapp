@@ -62,6 +62,9 @@
 		data() {
 			return {
 				constData: this.$constData,
+
+				shareType: '',
+
 				userInfo: {},
 				shareText: '我刚刚在「榴莲」APP成功获得签证…',
 
@@ -281,10 +284,21 @@
 				}, 300)
 			},
 		},
-		onLoad() {
+		onLoad(res) {
+			this.shareType = res.shareType
+			this.id = res.id
+			if (res.type) {
+				this.type = res.type
+			}
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			this.userInfo = userInfo
-			this.val = 'https://www.baidu.com'
+			if (res.shareType == 'find') {
+				if (res.type == this.$constData.groupType[3].key) {
+					this.val = `/pages/find/videoView/videoView?id=${res.id}`
+				} else {
+					this.val = `/pages/find/imgView/imgView?id=${res.id}`
+				}
+			}
 		}
 	}
 </script>

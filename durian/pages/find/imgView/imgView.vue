@@ -39,8 +39,8 @@
 					<view :class="{'curr-title':titleCurr == 1}" style="margin-left: 15rpx;" @click="changeCommen(1)">密信</view>
 				</view>
 				<view v-if="titleCurr == 0?commentList.length > 0:secretList.length > 0">
-					<comment :comment="commentList" @zan="zan" v-if="titleCurr == 0"></comment>
-					<secret :comment="secretList" v-else></secret>
+					<comment :comment="commentList" @zan="zan" @createComment="createComment" v-if="titleCurr == 0"></comment>
+					<secret :comment="secretList" @createComment="secretComment" v-else></secret>
 				</view>
 				<view v-if="titleCurr == 0?commentList.length == 0:secretList.length == 0&&commentApi" class="noCommentBox">
 					<view class="noComIcon">
@@ -53,17 +53,25 @@
 			</view>
 
 			<!-- 评论栏 -->
-			<view class="replayBox" :style="opacity">
+			<view class="replayBox" :style="opacity" v-if="!replyStatus&&!secretStatus">
 				<view class="inputBox">
 					<text class="iconfont icon-xie"></text>
 					<input type="text" v-model="replayText" placeholder="我也说两句…" />
 				</view>
-				<button class="submitBtn" @click="submit">发表</button>
+				<button class="submitBtn" @click="submit">公开</button>
 				<button class="secretBtn" @click="createSecretLetter">密信</button>
 			</view>
 
+			<view class="replayBox" v-else>
+				<view class="inputBox" style="width: 520rpx;">
+					<text class="iconfont icon-xie"></text>
+					<input focus type="text" v-model="replayText" :placeholder="'@'+replyUser.userName" />
+				</view>
+				<button class="submitBtn" style="right: 30rpx!important;" @click="replyBtn">回复</button>
+			</view>
 
-			<uni-load-more :status="titleCurr == 0?commenPageStatus:secretPageStatus" v-if="commentApi == false||commentList.length > 0&&commentApi == true"></uni-load-more>
+
+			<uni-load-more :status="titleCurr == 0?commenPageStatus:secretPageStatus" v-if="titleCurr == 0?commentList.length > 0:secretList.length > 0"></uni-load-more>
 			<sheet isShowBottom @closeBottom="closeSheet" @changeMoney="changeMoney" v-if="sheetStatus"></sheet>
 		</view>
 		<loading :status="commenPageStatus"></loading>
@@ -135,7 +143,13 @@
 				//收藏
 				isfavorite: false, //是否收藏
 
-				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo')),
+
+				replyId: '', // 回复的id
+				replyUser: {}, // 回复的用户
+				replyIndex: '', // 回复列表下标
+				replyStatus: false, // 回复的状态
+				secretStatus: false, // 密信回复
 			}
 		},
 
@@ -168,6 +182,25 @@
 		},
 
 		methods: {
+			createComment(list, index) {
+				console.log(list)
+				this.replyId = list.reply.sequenceId
+				this.replyUser = list.user
+				this.replyStatus = true
+				this.replyIndex = index
+			},
+
+			secretComment(list, index) {
+				console.log(list)
+				this.replyId = list.reply.sequenceId
+				this.replyUser = {
+					userName: list.user.userName,
+					userId: list.user.userId
+				}
+				this.secretStatus = true
+				this.replyIndex = index
+			},
+
 			// 切换密信评论
 			changeCommen(e) {
 				this.titleCurr = e
@@ -356,6 +389,98 @@
 				})
 			},
 
+			createCommentApi(cnt) {
+				this.$api.createComment(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log(this.$util.tryParseJson(res.data.c))
+						let totalCount = ''
+
+						if (this.commentList[this.replyIndex].comment.length > 0) {
+							totalCount = this.commentList[this.replyIndex].comment[0].totalCount
+						}
+						totalCount = totalCount * 1 + 1
+						let obj = {
+							commentInfo: {
+								upUserName: this.userInfo.userName,
+								text: this.replayText
+							},
+							totalCount: totalCount
+						}
+						if (this.replyStatus) {
+							this.commentList[this.replyIndex].comment.splice(0, 0, obj)
+						} else {
+							this.secretList[this.replyIndex].comment.splice(0, 0, obj)
+						}
+						this.replayText = ''
+						this.replyStatus = false
+						this.secretStatus = false
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			replyBtn() {
+				if (this.replayText) {
+					if (this.replyStatus) {
+						let cnt = {
+							replyId: this.replyId, // Long 一级评论id
+							upUserId: this.userInfo.userId, // Long 提交者编号
+							upUserHead: this.userInfo.userHead, // String 提交者头像
+							upUserName: this.userInfo.userName, // String 提交者昵称
+							text: this.replayText, // String 正文
+							// toUserId: this.replyUser.userId, // Long <选填> 目标用户编号
+							toUserName: this.replyUser.userName, // String <选填> 目标用户昵称
+						}
+
+						if (this.replyUser.userId) {
+							cnt.toUserId = this.replyUser.userId
+						}
+
+						this.createCommentApi(cnt)
+					} else if (this.secretStatus) {
+						let cnt = {
+							publishUserId: this.userInfo.userId, // Long 密信发布用户编号
+							text: this.replayText, // String 密信内容
+							postingId: this.replyId, // Long 回复帖子编号
+						}
+						this.$api.createSecretLetter(cnt, (res) => {
+							if (res.data.rc == this.$util.RC.SUCCESS) {
+								let totalCount = ''
+								if (this.secretList[this.replyIndex].comment.length > 0) {
+									totalCount = this.secretList[this.replyIndex].comment[0].totalCount
+								}
+								totalCount = totalCount * 1 + 1
+								let obj = {
+									commentInfo: {
+										upUserName: this.userInfo.userName,
+										text: this.replayText
+									},
+									totalCount: totalCount
+								}
+								this.secretList[this.replyIndex].comment.splice(0, 0, obj)
+
+								this.replayText = ''
+								this.secretStatus = false
+							} else {
+								uni.showToast({
+									title: res.data.rm,
+									icon: 'none'
+								})
+							}
+						})
+					}
+				} else {
+					uni.showToast({
+						title: '请输入回复内容',
+						icon: 'none'
+					})
+				}
+			},
+
 			submit() {
 				let cnt = {
 					// module: this.$constData.module, // String 隶属
@@ -374,6 +499,9 @@
 							title: '评论成功',
 							icon: 'none'
 						});
+
+
+
 						let time = new Date()
 						let y = time.getFullYear()
 						let m = 1 + time.getMonth()
@@ -395,7 +523,7 @@
 					} else {
 						uni.showToast({
 							title: "评论失败",
-							duration: 1000
+							icon: 'none'
 						});
 					}
 				})

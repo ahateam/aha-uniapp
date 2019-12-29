@@ -64,6 +64,11 @@ api.delUserFavorite = function(cnt, callback) {
 	util.call(baseUrl + '/posting/delUserFavorite', cnt, callback)
 }
 
+// 获取收藏列表
+api.getUserFavoriteList = function(cnt, callback) {
+	util.call(baseUrl + '/posting/getUserFavoriteList', cnt, callback)
+}
+
 /** 赞 */
 //内容点赞 
 api.createAppraise = function(cnt, callback) {
