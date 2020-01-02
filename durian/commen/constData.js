@@ -6,7 +6,7 @@
 
 const constData = {}
 
-constData.oss = 'https://durian-file.oss-ap-southeast-2.aliyuncs.com/'
+constData.oss = 'http://durian-file.oss-ap-southeast-2.aliyuncs.com/'
 
 constData.module = 1190
 

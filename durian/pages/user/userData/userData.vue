@@ -135,14 +135,14 @@
 				<button class="name-btn" @click="changeAcName">确定</button>
 			</view>
 		</uni-popup>
-		
+
 		<uni-popup :show="showBsb" type="bottom" :mask-click="true" @change="change">
 			<view class="name-input">
 				<input type="text" v-model="newBsb" placeholder="请输入BSB" />
 				<button class="name-btn" @click="changeBsb">确定</button>
 			</view>
 		</uni-popup>
-		
+
 		<uni-popup :show="showAccount" type="bottom" :mask-click="true" @change="change">
 			<view class="name-input">
 				<input type="text" v-model="newAccount" placeholder="请输入账户名" />
@@ -223,7 +223,6 @@
 						let imageSrc = res.tempFilePaths[0]
 						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
 						let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
-						// nameStr =  res.tempFilePaths[0]
 						console.log(nameStr)
 						uni.showLoading({
 							title: '上传中'
@@ -249,11 +248,11 @@
 					formData: {
 						name: nameStr,
 						'key': nameStr,
-						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+						'policy': 'eyJleHBpcmF0aW9uIjoiMjAzMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
 						'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
 						'success_action_status': '200',
 						//让服务端返回200,不然，默认会返回204
-						'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
+						'signature': 'Wf9Vmi5iwd2rmEH26ERwh8qnVd4=',
 					},
 					success: (res) => {
 						console.log(res)
@@ -276,13 +275,13 @@
 					}
 				})
 			},
-			
-			changeBsb(){
+
+			changeBsb() {
 				this.userInfo.BsbNumber = this.newBsb
 				this.showBsb = false
 			},
-			
-			changeAccount(){
+
+			changeAccount() {
 				this.userInfo.account = this.newAccount
 				this.showAccount = false
 			},
@@ -386,6 +385,11 @@
 						// fierNumber: fierNumber, // String FIER号
 						// naatiNumber: naatiNumber, // String NAATI号
 					}
+
+					if (this.headSrc) {
+						cnt.userHead = this.headSrc
+					}
+
 					if (this.userInfo.brithday) {
 						cnt.brithday = `${this.userInfo.brithday} 00:00:00`
 					}
@@ -398,8 +402,20 @@
 						cnt.school = this.userInfo.school
 					}
 
-					if (this.headSrc) {
-						cnt.userHead = this.headSrc
+					if (this.userInfo.email) {
+						cnt.email = this.userInfo.email
+					}
+
+					if (this.userInfo.accountName) {
+						cnt.accountName = this.userInfo.accountName
+					}
+
+					if (this.userInfo.BsbNumber) {
+						cnt.BsbNumber = this.userInfo.BsbNumber
+					}
+
+					if (this.userInfo.account) {
+						cnt.account = this.userInfo.account
 					}
 
 					this.$api.updateUser(cnt, (res) => {

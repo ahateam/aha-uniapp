@@ -95,7 +95,8 @@
 
 				applyTitle: 'Monash大学计算机专业申请',
 				applyHsty: '签字已提交',
-				hstyNumber: '25'
+				hstyNumber: '25',
+				historyList: []
 			}
 		},
 		methods: {
@@ -120,14 +121,81 @@
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
+
+			getContractList(cnt) {
+				this.$api.getContractList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						if (obj[0].collectionItems.length > 0) {
+							this.applyTitle = obj[0].collectionItems[0].item + obj[0].collectionItems[0].major + '申请'
+						} else {
+							this.applyTitle = obj[0].clientName + '移民申请'
+						}
+
+						let cnt1 = {
+							contractId: obj[0].conId, // Long 合同id
+						}
+						this.getTaskByContractId(cnt1)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			getTaskByContractId(cnt) {
+				this.$api.getTaskByContractId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						let cnt1 = {
+							taskId: obj.taskId, // Long 任务id
+							count: 100, // Integer 
+							offset: 0, // Integer 
+						};
+						this.getChangeRecordList(cnt1)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			getChangeRecordList(cnt) {
+				this.$api.getChangeRecordList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let obj = this.$util.tryParseJson(res.data.c)
+						this.hstyNumber = Math.round(obj.percentage * 100)
+						let arr = obj.list
+						console.log(arr)
+						arr.reverse();
+						this.applyHsty = arr[0].stepName
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
 		},
 		onShow() {
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
-			console.log(userInfo)
-			if (userInfo) {
-				this.name = userInfo.userName
-				this.imgSrc = userInfo.userHead
+			this.userInfo = userInfo
+
+			this.name = userInfo.userName
+			this.imgSrc = userInfo.userHead
+
+			let cnt = {
+				studentId: userInfo.userId, // Long <选填> 学生编号
+				// status: status, // Byte <选填> 状态
+				count: 3, // Integer 
+				offset: 0, // Integer 
 			}
+			this.getContractList(cnt)
 		}
 	}
 </script>

@@ -1,107 +1,114 @@
 <template>
 	<view>
-		<navBar :back="false" type="transparent" fontColor="#FFFFFF">
-			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
-		</navBar>
-		<image class="bg-img" src="/static/image/user/bg_wdsq.png" mode="widthFix"></image>
-		<view :style="{'padding-top': getNavHeight()}"></view>
-		<view style="position: relative;">
-			<view class="title-text">我的申请</view>
-			<view class="title-info" v-if="datas[1].value">{{datas[1].value}}{{datas[2].value}}专业申请</view>
-			<view class="title-info" v-else>{{userName}}移民申请</view>
+		<view v-if="pageStatus != 'onload'">
+			<navBar :back=" false" type="transparent" fontColor="#FFFFFF">
+				<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
+			</navBar>
+			<image class="bg-img" src="/static/image/user/bg_wdsq.png" mode="widthFix"></image>
+			<view :style="{'padding-top': getNavHeight()}"></view>
+			<view style="position: relative;">
+				<view class="title-text">我的申请</view>
+				<view class="title-info" v-if="datas[1].value">{{datas[1].value}}{{datas[2].value}}申请</view>
+				<view class="title-info" v-else>{{userName}}移民申请</view>
+			</view>
+
+			<view class="content-box">
+				<view v-for="(item,index) in datas" :key="index">
+					<view class="auto-box top-list" v-if="item.value">
+						<view class="left-title">{{item.name}}</view>
+						<view>{{item.value}}</view>
+					</view>
+				</view>
+				<view class="auto-box schedule-box">
+					<view class="left-title" style="line-height: 42rpx;">最新进展</view>
+					<view class="schedule-line-box">
+						<view class="succ-line" :style="{flex:succLine}" :class="succLine >= 100 ? 'radius':''">
+							<view class="succ-number" :style="{right: - succLine.toString().length / 2 + 'em'}">{{succLine}}%</view>
+						</view>
+						<view class="schedule-line" :style="{flex:100 - succLine}">
+							<view class="cut-line" v-if="succLine > 0 && succLine < 100"></view>
+						</view>
+					</view>
+
+					<view class="thing-box">
+						{{getTime(historyList[0].changeTime)}} {{historyList[0].stepName}}
+					</view>
+
+					<button class="pay-btn" @click="payBtn">支付 </button>
+				</view>
+
+				<view class="auto-box history-box">
+					<view class="left-title" style="line-height: 42rpx;">历史进展</view>
+					<view class="hsty-list">
+						<view v-for="(item,index) in historyList" :key="index" :hidden="!moreStatus&&index > 2">
+							<view class="hsty-item" :class="[{'border-none':index + 1 == historyList.length&&moreStatus},{'border-none':index == 2&&!moreStatus},{'left-dot-border':!item.status}]">
+								<view class="hsty-dot" :class="index == 0?'curr-dot':''"></view>
+								<view class="hsty-text" :class="{'curr-text-color':index == 0}">{{getTime(item.changeTime)}}</view>
+								<view class="hsty-text hsty-text-right" :class="{'curr-text-color':index == 0}">{{item.stepName}}</view>
+							</view>
+						</view>
+					</view>
+					<view class="more-box" :style="historyList.length < 4?'height:0;margin-bottom:10rpx':''">
+						<button class="more-btn" @click="moreBtn" v-if="!moreStatus">查看更多</button>
+						<button class="more-btn" @click="closeBtn" v-if="moreStatus">收起</button>
+					</view>
+				</view>
+
+				<view class="auto-box data-box" v-if="dataList.length > 0">
+					<view class="left-title">我的资料</view>
+					<view class="data-list" v-for="(item,index) in dataList" :key="index">
+						<view>
+							<view class="data-name">
+								{{item.name}}
+							</view>
+							<view class="data-size">
+								{{item.size}}
+							</view>
+						</view>
+						<image src="/static/image/user/icon_docx.png" mode="scaleToFill"></image>
+					</view>
+				</view>
+
+				<view class="pay-hsty-box">
+					<view class="left-title">支付历史</view>
+					<view class="pay-list" v-for="(item,index) in payHstyList" :key="index">
+						<view class="pay-info-box">
+							<view class="left-line"></view>
+							<view class="pay-title">{{item.clientName + '申请' + item.visasType}}</view>
+							<view class="pay-money">AUD {{item.payment}}</view>
+						</view>
+						<view class="pay-time-box">
+							<view class="iconfont icon-rili"></view>
+							<view>{{getTime(item.payTime)}}</view>
+						</view>
+					</view>
+				</view>
+			</view>
 		</view>
-
-		<view class="content-box">
-			<view v-for="(item,index) in datas" :key="index">
-				<view class="auto-box top-list" v-if="item.value">
-					<view class="left-title">{{item.name}}</view>
-					<view>{{item.value}}</view>
-				</view>
-			</view>
-			<view class="auto-box schedule-box">
-				<view class="left-title" style="line-height: 42rpx;">最新进展</view>
-				<view class="schedule-line-box">
-					<view class="succ-line" :style="{flex:succLine}" :class="succLine >= 100 ? 'radius':''">
-						<view class="succ-number" :style="{right: - succLine.toString().length / 2 + 'em'}">{{succLine}}%</view>
-					</view>
-					<view class="schedule-line" :style="{flex:100 - succLine}">
-						<view class="cut-line" v-if="succLine > 0 && succLine < 100"></view>
-					</view>
-				</view>
-
-				<view class="thing-box">
-					{{thingTime}} {{thingText}}
-				</view>
-
-				<button class="pay-btn" @click="payBtn">支付 </button>
-			</view>
-
-			<view class="auto-box history-box">
-				<view class="left-title" style="line-height: 42rpx;">历史进展</view>
-				<view class="hsty-list">
-					<view v-for="(item,index) in historyList" :key="index" :hidden="!moreStatus&&index > 2">
-						<view class="hsty-item" :class="[{'border-none':index + 1 == historyList.length&&moreStatus},{'border-none':index == 2&&!moreStatus},{'left-dot-border':!item.status}]">
-							<view class="hsty-dot" :class="index == 0?'curr-dot':''"></view>
-							<view class="hsty-text" :class="{'curr-text-color':index == 0}">{{getTime(item.changeTime)}}</view>
-							<view class="hsty-text hsty-text-right" :class="{'curr-text-color':index == 0}">{{item.stepName}}</view>
-						</view>
-					</view>
-				</view>
-				<view class="more-box" :style="historyList.length < 4?'height:0;margin-bottom:10rpx':''">
-					<button class="more-btn" @click="moreBtn" v-if="!moreStatus">查看更多</button>
-					<button class="more-btn" @click="closeBtn" v-if="moreStatus">收起</button>
-				</view>
-			</view>
-
-			<view class="auto-box data-box" v-if="dataList.length > 0">
-				<view class="left-title">我的资料</view>
-				<view class="data-list" v-for="(item,index) in dataList" :key="index">
-					<view>
-						<view class="data-name">
-							{{item.name}}
-						</view>
-						<view class="data-size">
-							{{item.size}}
-						</view>
-					</view>
-					<image src="/static/image/user/icon_docx.png" mode="scaleToFill"></image>
-				</view>
-			</view>
-
-			<view class="pay-hsty-box">
-				<view class="left-title">支付历史</view>
-				<view class="pay-list" v-for="(item,index) in payHstyList" :key="index">
-					<view class="pay-info-box">
-						<view class="left-line"></view>
-						<view class="pay-title">{{item.clientName + '申请' + item.visasType}}</view>
-						<view class="pay-money">AUD {{item.payment}}</view>
-					</view>
-					<view class="pay-time-box">
-						<view class="iconfont icon-rili"></view>
-						<view>{{getTime(item.payTime)}}</view>
-					</view>
-				</view>
-			</view>
-		</view>
+		<loading :status="pageStatus"></loading>
 	</view>
 </template>
 
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
+	import Loading from '@/components/Loading/Loading.vue'
 
 	export default {
 		components: {
-			navBar
+			navBar,
+			Loading
 		},
 		data() {
 			return {
 				userInfo: {},
 				userName: '',
 
-				school: 'Monash', //学校
-				major: '计算机', //专业
-				time: '2018年3月5日', //时间
-				visa: '500学生签证', //签证
+				pageStatus: 'onload',
+
+				school: '', //学校
+				major: '', //专业
+				time: '', //时间
+				visa: '', //签证
 
 
 				datas: [{
@@ -124,40 +131,12 @@
 
 				succLine: 0,
 
-				thingTime: '2019-10-01',
-				thingText: '等待支付学费',
 
-
-				historyList: [{
-						time: '2019-10-05',
-						text: '提交签证申请',
-						status: false
-					},
-					{
-						time: '2019-10-03',
-						text: '收到offer',
-						status: true
-					},
-					{
-						time: '2019-10-01',
-						text: '上传材料',
-						status: true
-					},
-					{
-						time: '2019-10-01',
-						text: '上传材料',
-						status: true
-					},
-					{
-						time: '2019-10-01',
-						text: '上传材料',
-						status: true
-					}
-				],
+				historyList: [],
 				moreStatus: false,
 
-				dataName: '我的本科成绩单.Docx',
-				dataSize: '216K',
+				dataName: '',
+				dataSize: '',
 
 				payHstyList: [],
 
@@ -196,6 +175,7 @@
 						console.log('订单')
 						this.payHstyList = this.$util.tryParseJson(res.data.c)
 						console.log(this.payHstyList)
+						this.pageStatus = 'succ'
 					} else {
 						uni.showToast({
 							title: res.data.rm,
@@ -209,7 +189,7 @@
 				this.$api.getChangeRecordList(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let obj = this.$util.tryParseJson(res.data.c)
-						this.succLine = obj.percentage * 100
+						this.succLine = Math.round(obj.percentage * 100)
 						let arr = obj.list
 						console.log(arr)
 						arr.reverse();

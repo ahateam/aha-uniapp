@@ -73,12 +73,10 @@
 			</view>
 
 			<view class="add-btn" @click="navToAdd">
+				<image src="/static/image/icon/icon_add_b.png" mode="aspectFit"></image>
+				<!-- <view class="iconfont icon-xie"></view> -->
 				<view>
-					<!-- <image src="/static/image/user/icon_xggrxx.png" mode="aspectFit"></image> -->
-					<view class="iconfont icon-xie"></view>
-					<view>
-						发帖
-					</view>
+					发帖
 				</view>
 			</view>
 
@@ -675,9 +673,11 @@
 		right: 50rpx;
 		width: 110rpx;
 		height: 110rpx;
-		background: linear-gradient(225deg, #01E9DE, #00C8BE);
+		opacity: .9;
+		background: linear-gradient(0deg, #01E9DE, #00C8BE);
 		border-radius: 50%;
-		box-shadow: 0 2rpx 36rpx 0 #00C8BE;
+		// box-shadow: 0 2rpx 36rpx 0 #00C8BE;
+		flex-direction: column;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -685,9 +685,10 @@
 		font-size: 24rpx;
 		text-align: center;
 
-		.icon-xie {
-			font-size: 30rpx;
-			margin: 0;
+		image {
+			width: 30rpx;
+			height: 30rpx;
+			margin: 0 0 10rpx;
 		}
 	}
 

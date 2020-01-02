@@ -200,9 +200,6 @@
 			"path": "pages/user/userShop/myGoods/myGoods",
 			"style": {}
 		}, {
-			"path": "pages/upload/upload",
-			"style": {}
-		}, {
 			"path": "pages/shop/addGoods/succView",
 			"style": {}
 		}, {
@@ -210,11 +207,11 @@
 			"style": {}
 		}
 
-	    ,{
-            "path" : "pages/find/search/search",
-            "style" : {}
-        }
-    ],
+		, {
+			"path": "pages/find/search/search",
+			"style": {}
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",

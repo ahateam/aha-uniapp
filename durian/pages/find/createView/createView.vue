@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<navBar :back="false">
+		<navBar :back="false" v-if="!imgUrl">
 			<image slot="left" class="back-icon" @click="navBack" src="/static/image/icon/icon_fh.png" mode="aspectFit"></image>
 			<view class="title">发帖</view>
 			<view slot="right" class="rightBtn">
@@ -63,23 +63,29 @@
 			<image src="/static/image/icon/icon_del.png" mode="aspectFit"></image>
 			<view>拖到此处删除</view>
 		</view>
+		
+		<kps-image-cutter @ok="onok" @cancel="oncancle" @restart="restart" :url="imgUrl" :fixed="false" :width="300" :height="300"></kps-image-cutter>
 	</view>
 </template>
 
 <script>
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import kpsImageCutter from "@/components/ksp-image-cutter/ksp-image-cutter.vue"
 
 
 	export default {
 		components: {
 			navBar,
-			uniPopup
+			uniPopup,
+			kpsImageCutter
 		},
 		data() {
 			return {
 				constData: this.$constData,
 				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo')),
+				
+				imgUrl:'',
 				
 				text:'',
 				imgList:[],
@@ -232,7 +238,8 @@
 							url:'/pages/find/find'
 						})
 						uni.showToast({
-							title:'发表成功'
+							title:'发表成功',
+							icon:'none'
 						})
 					}else{
 						uni.showToast({
@@ -253,10 +260,7 @@
 				let imgType = ["gif", "jpeg", "jpg", "bmp", "png"];
 				let videoType = ["avi","wmv","mkv","mp4","mov","rm","3gp","flv","mpg","rmvb"];
 				if(RegExp("\.(" + imgType.join("|") + ")$", "i").test(str.toLowerCase())) {
-					uni.showLoading({
-						title: '上传中'
-					})
-					this.upLoadImg(e,nameStr)
+					this.rectImg(e)
 				} else if(RegExp("\.(" + videoType.join("|") + ")$", "i").test(str.toLowerCase())) {
 					uni.showLoading({
 						title: '上传中'
@@ -270,6 +274,10 @@
 				}
 			},
 			
+			rectImg(imgSrc){
+				this.imgUrl = imgSrc
+			},
+			
 			choiceErr(e){
 				console.log('失败')
 				console.log(e)
@@ -278,24 +286,29 @@
 			
 			//相册添加图片
 			addImgs(e){
-				plus.io.requestFileSystem(plus.io.PRIVATE_WWW,function(e){
-					console.log(e)
-				},function(e){
-					console.log(e)
-				})
-				// this.showPopup = false
-				// if(e == 'album'){
-				// 	let type = ''
-				// 	if(this.imgList.length > 0){
-				// 		 type = 'image'
-				// 	}else{
-				// 		type = 'none'
-				// 	}
-				// 	plus.gallery.pick(this.choiceSucc, this.choiceErr,{filter: type});
-				// }else{
-				// 	let camera = plus.camera.getCamera();
-				// 	camera.captureImage(this.choiceSucc,this.choiceErr)
-				// }
+				// plus.io.requestFileSystem(plus.io.PRIVATE_WWW,function(e){
+				// 	console.log(e)
+				// },function(e){
+				// 	console.log(e)
+				// })
+				this.showPopup = false
+				if(e == 'album'){
+					let type = ''
+					if(this.imgList.length > 0){
+						 type = 'image'
+					}else{
+						type = 'none'
+					}
+					plus.gallery.pick(this.choiceSucc, this.choiceErr,{filter: type});
+				}else{
+					// #ifdef APP-PLUS
+					let camera = plus.camera.getCamera();
+					camera.captureImage(this.choiceSucc,this.choiceErr)
+					// #endif
+					// #ifdef MP
+					this.cameraChose()
+					// #endif
+				}
 			},
 			
 			// 拍照添加图片
@@ -336,11 +349,11 @@
 					formData:{
 							name: nameStr,
 							'key': nameStr,
-							'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+							'policy': 'eyJleHBpcmF0aW9uIjoiMjAzMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
 							'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
 							'success_action_status': '200',
 							//让服务端返回200,不然，默认会返回204
-							'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
+							'signature': 'Wf9Vmi5iwd2rmEH26ERwh8qnVd4=',
 					},success: (res) =>{
 						console.log(res)
 						uni.hideLoading()
@@ -365,11 +378,11 @@
 						formData:{
 							name: nameStr,
 							'key': nameStr,
-							'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+							'policy': 'eyJleHBpcmF0aW9uIjoiMjAzMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
 							'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
 							'success_action_status': '200',
 							//让服务端返回200,不然，默认会返回204
-							'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
+							'signature': 'Wf9Vmi5iwd2rmEH26ERwh8qnVd4=',
 					},success: (res) => {
 						console.log(res)
 						uni.hideLoading()
@@ -393,6 +406,33 @@
 			navBack() {
 				uni.navigateBack()
 			},
+			
+			restart() {
+				let a = ''
+				a = this.imgUrl
+				this.imgUrl = ''
+				setTimeout(() => {
+					this.imgUrl = a
+				}, 10)
+			},
+			
+			onok(ev) {
+				uni.showLoading({
+					title:'上传中...'
+				})
+				this.imgUrl = "";
+				let e = ev.path
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let tiemr = new Date()
+				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
+				let str = e.substr(e.lastIndexOf('.'))
+				let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
+				this.upLoadImg(e,nameStr)
+			},
+			oncancle() {
+				// url设置为空，隐藏控件
+				this.imgUrl = "";
+			}
 		},
 		
 		onLoad() {
