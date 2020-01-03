@@ -107,6 +107,10 @@
 					<view class="box" @tap="handRedEnvelopes">
 						<view class="icon hongbao"></view>
 					</view>
+
+					<view class="box" @tap="navToHt">
+						<image class="box-icon" src="/static/image/icon/icon_ht.png" mode="aspectFit"></image>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -403,21 +407,14 @@
 			// 加载初始页面消息
 			getMsgList(){
 				let list = this.$store.state.conversation.currentMessageList
-				
 				//获取消息中的图片,并处理显示尺寸
-
 				for(let i=0;i<list.length;i++){
 					if(list[i].type=='user'&&list[i].msg.type=="img"){
 						list[i].msg.content = this.setPicSize(list[i].msg.content);
 						this.msgImgList.push(list[i].msg.content.url);
 					}
 				}
-				
-				
 				this.msgList = list;
-			
-				
-			
 			},
 		
 			
@@ -475,6 +472,15 @@
 				});
 				this.hideDrawer();
 			},
+			
+			// 跳转合同页
+			navToHt(){
+				uni.navigateTo({
+					url:'/pages/news/contract/contract'
+				});
+				this.hideDrawer();
+			},
+			
 			//发送图片
 			sendImage(file) {
 				console.log('-------file----------')
@@ -789,5 +795,9 @@
 </script>
 <style lang="scss" scoped>
 	@import "@/static/tim/css/style.scss"; 
-
+	
+	.box-icon{
+		width: 56rpx;
+		height: 56rpx;
+	}
 </style>

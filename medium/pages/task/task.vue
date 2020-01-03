@@ -19,12 +19,14 @@
 		<!-- 顶部选项卡 end -->
 		<task-list :tasks="tasks" @getItem="navToInfo"></task-list>
 		<!-- 任务栏  task==任务栏-->
+		<uni-load-more :status="pageStatus"></uni-load-more>
 	</view>
 </template>
 
 <script>
 	import TaskList from '@/components/task/TaskList.vue'
 	import navBar from '@/components/zhouWei-navBar/index.vue'
+	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
 
 	let bitmap = null
 	import {
@@ -34,7 +36,8 @@
 	export default {
 		components: {
 			TaskList,
-			navBar
+			navBar,
+			uniLoadMore
 		},
 		watch: {
 			isSDKReady(val) {
@@ -349,7 +352,7 @@
 				let cnt = {
 					status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
 					count: this.count, // Integer 
-					offset: this.offset, // Integer 
+					offset: (this.page - 1) * this.count // Integer 
 				}
 				if (this.currIndex != 0) {
 					cnt.taskType = this.tagList[this.currIndex].key // Byte <选填> 任务类型

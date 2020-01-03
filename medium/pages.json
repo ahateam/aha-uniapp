@@ -168,7 +168,11 @@
 			"path": "pages/myTask/ediorTask/ediorTask",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/news/contract/contract",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": " ",

@@ -35,7 +35,7 @@
 						<view>{{applyTitle}}</view>
 						<view style="margin-top: 16rpx;">最新进展：<text class="apply-hsty">{{applyHsty}}</text></view>
 					</view>
-					<view class="apply-progress">
+					<view v-if="hstyNumber">
 						<progress-bar :progress_txt="hstyNumber"></progress-bar>
 					</view>
 				</view>
@@ -93,9 +93,9 @@
 
 				listIndex: -1,
 
-				applyTitle: 'Monash大学计算机专业申请',
-				applyHsty: '签字已提交',
-				hstyNumber: '25',
+				applyTitle: '获取数据中...',
+				applyHsty: '获取数据中...',
+				hstyNumber: '',
 				historyList: []
 			}
 		},

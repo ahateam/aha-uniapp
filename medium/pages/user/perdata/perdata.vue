@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar :back="false">
+		<nav-bar :back="false" v-if="!imgUrl">
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 			<view class="view-title">任务总览</view>
 			<view slot="right" class="save-Btn" @click="saveData">保存</view>
@@ -131,6 +131,8 @@
 			<sen-set-picker ref="setpicker" @colseBox="quxiaobutton" :shixian="shixian" @quxiaoButton="quxiaobutton"
 			 @quedingButton="quedingbutton"></sen-set-picker>
 		</view>
+
+		<kps-image-cutter @ok="onok" @cancel="oncancle" @restart="restart" :url="imgUrl" :fixed="false" :width="300" :height="300"></kps-image-cutter>
 	</view>
 </template>
 
@@ -138,13 +140,15 @@
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import uniPopup from "@/components/uni-popup/uni-popup.vue"
 	import senSetPicker from '@/components/sen-pickerview/picker-view-set.vue'
+	import KpsImageCutter from '@/components/ksp-image-cutter/ksp-image-cutter.vue'
 
 	export default {
 		name: 'userData',
 		components: {
 			navBar,
 			uniPopup,
-			senSetPicker
+			senSetPicker,
+			KpsImageCutter
 		},
 
 		data() {
@@ -153,6 +157,7 @@
 			})
 			return {
 				constData: this.$constData,
+				imgUrl: '',
 
 				headSrc: '',
 				showName: false,
@@ -177,6 +182,33 @@
 
 		},
 		methods: {
+			restart() {
+				let a = ''
+				a = this.imgUrl
+				this.imgUrl = ''
+				setTimeout(() => {
+					this.imgUrl = a
+				}, 10)
+			},
+
+			onok(ev) {
+				uni.showLoading({
+					title: '上传中...'
+				})
+				this.imgUrl = "";
+				let e = ev.path
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let tiemr = new Date()
+				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
+				let str = e.substr(e.lastIndexOf('.'))
+				let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
+				this.upLoadOss(e, nameStr)
+			},
+			oncancle() {
+				// url设置为空，隐藏控件
+				this.imgUrl = "";
+			},
+
 			getBirthday(date) {
 				let time = new Date(date)
 				// console.log(time)
@@ -200,14 +232,7 @@
 					sizeType: ['compressed'],
 					success: (res) => {
 						let imageSrc = res.tempFilePaths[0]
-						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
-						let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
-						// nameStr =  res.tempFilePaths[0]
-						console.log(nameStr)
-						uni.showLoading({
-							title: '上传中'
-						})
-						this.upLoadOss(imageSrc, nameStr)
+						this.imgUrl = imageSrc
 					}
 				})
 			},
@@ -222,11 +247,11 @@
 					formData: {
 						name: nameStr,
 						'key': nameStr,
-						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+						'policy': 'eyJleHBpcmF0aW9uIjoiMjAzMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
 						'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
 						'success_action_status': '200',
 						//让服务端返回200,不然，默认会返回204
-						'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
+						'signature': 'Wf9Vmi5iwd2rmEH26ERwh8qnVd4=',
 					},
 					success: (res) => {
 						console.log(res)

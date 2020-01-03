@@ -133,4 +133,13 @@ constData.taskStatus = [{
 	}
 ]
 
+constData.contractType = [{
+		name: '普通合同',
+		key: 0
+	},
+	{
+		name: '留学合同',
+		key: 1
+	}
+]
 export default constData

@@ -31,7 +31,7 @@
 					</view>
 
 					<view class="thing-box">
-						{{getTime(historyList[0].changeTime)}} {{historyList[0].stepName}}
+						{{lastHstyTime}} {{lastHstyInfo}}
 					</view>
 
 					<button class="pay-btn" @click="payBtn">支付 </button>
@@ -140,12 +140,17 @@
 
 				payHstyList: [],
 
-				dataList: []
+				dataList: [],
+
+				lastHstyTime: '',
+				lastHstyInfo: ''
 			}
 		},
 		methods: {
 			getTime(time) {
-				return this.$commen.getNewDate(time)
+				if (time) {
+					return this.$commen.getNewDate(time)
+				}
 			},
 
 			closeBtn() {
@@ -194,6 +199,8 @@
 						console.log(arr)
 						arr.reverse();
 						this.historyList = arr
+						this.lastHstyTime = this.getTime(arr[0].changeTime)
+						this.lastHstyInfo = arr[0].stepName
 					} else {
 						uni.showToast({
 							title: res.data.rm,

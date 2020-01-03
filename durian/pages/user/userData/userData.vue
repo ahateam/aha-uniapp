@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<nav-bar :back="false" fontColor="#333333" class="nav-box">
+		<nav-bar :back="false" fontColor="#333333" class="nav-box" v-if="!imgUrl">
 			<view slot="left" class="iconfont icon-fanhui" @click="navBack"></view>
 			<view slot="right" class="save-Btn" @click="saveData">保存</view>
 		</nav-bar>
@@ -152,6 +152,8 @@
 
 		<sen-set-picker ref="setpicker" @colseBox="quxiaobutton" :shixian="shixian" @quxiaoButton="quxiaobutton"
 		 @quedingButton="quedingbutton"></sen-set-picker>
+
+		<kps-image-cutter @ok="onok" @cancel="oncancle" @restart="restart" :url="imgUrl" :fixed="false" :width="300" :height="300"></kps-image-cutter>
 	</view>
 </template>
 
@@ -159,13 +161,15 @@
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import uniPopup from "@/components/uni-popup/uni-popup.vue"
 	import senSetPicker from '@/components/sen-pickerview/picker-view-set.vue'
+	import kpsImageCutter from "@/components/ksp-image-cutter/ksp-image-cutter.vue"
 
 	export default {
 		name: 'userData',
 		components: {
 			navBar,
 			uniPopup,
-			senSetPicker
+			senSetPicker,
+			kpsImageCutter
 		},
 
 		data() {
@@ -175,6 +179,7 @@
 			return {
 				constData: this.$constData,
 				userInfo: {},
+				imgUrl: '',
 				headSrc: '',
 				showName: false,
 				newName: '',
@@ -197,6 +202,33 @@
 
 		},
 		methods: {
+			restart() {
+				let a = ''
+				a = this.imgUrl
+				this.imgUrl = ''
+				setTimeout(() => {
+					this.imgUrl = a
+				}, 10)
+			},
+
+			onok(ev) {
+				uni.showLoading({
+					title: '上传中...'
+				})
+				this.imgUrl = "";
+				let e = ev.path
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let tiemr = new Date()
+				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
+				let str = e.substr(e.lastIndexOf('.'))
+				let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
+				this.upLoadOss(e, nameStr)
+			},
+			oncancle() {
+				// url设置为空，隐藏控件
+				this.imgUrl = "";
+			},
+
 			getBirthday(date) {
 				let time = new Date(date)
 				// console.log(time)
@@ -212,7 +244,6 @@
 			},
 
 			upLoadImg() {
-				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 				let tiemr = new Date()
 				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
 				uni.chooseImage({
@@ -221,13 +252,7 @@
 					sourceType: ['album', 'camera'],
 					success: (res) => {
 						let imageSrc = res.tempFilePaths[0]
-						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
-						let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
-						console.log(nameStr)
-						uni.showLoading({
-							title: '上传中'
-						})
-						this.upLoadOss(imageSrc, nameStr)
+						this.imgUrl = imageSrc
 					},
 					fail: (err) => {
 						uni.showToast({
@@ -374,16 +399,6 @@
 					let cnt = {
 						userId: this.userInfo.userId, // Long 用户编号
 						userName: this.userInfo.userName, // String 用户名
-						// sex: this.sex, // String 性别
-						// brithday: brithday, // Date 出生年月
-						// school: this.school, // String 学校
-						// accountName: accountName, // String 收款账户名
-						// BsbNumber: BsbNumber, // String BSB号
-						// account: account, // String 收款账户号
-						// email: email, // String 电子邮件
-						// marnNumber: marnNumber, // String MARN号
-						// fierNumber: fierNumber, // String FIER号
-						// naatiNumber: naatiNumber, // String NAATI号
 					}
 
 					if (this.headSrc) {
@@ -420,7 +435,9 @@
 
 					this.$api.updateUser(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
-							this.userInfo.userHead = this.headSrc
+							if (this.headSrc) {
+								this.userInfo.userHead = this.headSrc
+							}
 							let userInfo = JSON.stringify(this.userInfo)
 							uni.setStorageSync('userInfo', userInfo)
 
@@ -449,7 +466,7 @@
 		onLoad() {
 			this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			this.userInfo.brithday = this.getBirthday(this.userInfo.brithday)
-			this.userInfo.phone = this.userInfo.phone.substr(2)
+			// this.userInfo.phone = this.userInfo.phone.substr(2)
 		}
 	}
 </script>

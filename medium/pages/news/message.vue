@@ -35,16 +35,14 @@
 					userId: id
 				}
 				this.$api.getUserInfo(cnt, (res) => {
-					console.log('------阿斯顿撒多---------')
-
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.toUserInfo = this.$util.tryParseJson(res.data.c)
 						console.log(this.toUserInfo)
 						uni.setStorageSync('toUserInfo', res.data.c)
-
 					} else {
 						uni.showToast({
-							icon: '该用户不在线，请重新选择...'
+							title: '该用户不在线，请重新选择...',
+							icon:'none'
 						})
 						uni.navigateBack()
 					}
@@ -58,7 +56,6 @@
 				uni.reLaunch({
 					url: './news'
 				})
-
 			}
 		},
 		onLoad() {
@@ -66,8 +63,6 @@
 			let toUserId = uni.getStorageSync('toUserId')
 
 			this.getUserInfo(toUserId)
-
-
 		}
 	}
 </script>

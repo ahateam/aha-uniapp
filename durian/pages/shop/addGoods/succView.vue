@@ -7,7 +7,7 @@
 			<view class="flex-box share-box">
 				<view class="share-btn flex-box" :style="index == 0?'margin-left:0;':''" v-for="(item,index) in list" :key="index">
 					<view class="share-icon flex-box">
-						<image src="/static/image/icon/icon-mes.png" mode="aspectFit"></image>
+						<image :src="item.icon" mode="aspectFit"></image>
 					</view>
 					<view>{{item.name}}</view>
 				</view>
@@ -15,7 +15,7 @@
 			<view class="bottom-info">恭喜，大家已经看到你的商品了</br>然后可以在商城的产品清单和我的商品中可见</view>
 
 			<view class="close-btn flex-box" @click="navToHome">
-				<image src="/static/image/shop/icon_close.png" mode="aspectFit" ></image>
+				<image src="/static/image/shop/icon_close.png" mode="aspectFit"></image>
 			</view>
 		</view>
 	</view>
@@ -27,19 +27,19 @@
 			return {
 				list: [{
 						name: '聊天',
-						icon: ''
+						icon: '/static/image/icon/icon_lt.png'
 					},
 					{
 						name: '发现',
-						icon: ''
+						icon: '/static/image/icon/icon_fx.png'
 					},
 					{
 						name: '微信',
-						icon: ''
+						icon: '/static/image/icon/icon_wx.png'
 					},
 					{
 						name: '朋友圈',
-						icon: ''
+						icon: '/static/image/icon/icon_pyq.png'
 					}
 				]
 			};

@@ -123,4 +123,16 @@ api.getUserInter = function(cnt, callback) {
 api.getUserInfo = function(cnt, callback) {
 	util.call(baseUrl + '/user/getUserInfo', cnt, callback)
 }
+
+// 合同
+// 创建合同 
+api.createContract = function(cnt, callback) {
+	util.call(baseUrl + '/contract/createContract', cnt, callback)
+}
+
+// 生成pdf 
+api.setpPDF = function(cnt, callback) {
+	util.call(baseUrl + '/contract/setpPDF', cnt, callback)
+}
+
 export default api
