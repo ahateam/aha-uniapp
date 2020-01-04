@@ -211,7 +211,15 @@
 			"path": "pages/find/search/search",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/index/contract/contract",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/index/toAtutograph/toAtutograph",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",

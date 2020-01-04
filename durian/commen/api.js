@@ -236,4 +236,9 @@ api.getTaskByContractId = function(cnt, callback) {
 api.getChangeRecordList = function(cnt, callback) {
 	util.call(baseUrl + '/task/getChangeRecordList', cnt, callback)
 }
+
+// 学生合同签字 
+api.setStudentAutograph = function(cnt, callback) {
+	util.call(baseUrl + '/contract/setStudentAutograph', cnt, callback)
+}
 export default api

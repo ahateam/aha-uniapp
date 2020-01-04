@@ -1,7 +1,7 @@
 <template>
 	<view>
 
-		<view class="content" @touchstart="hideDrawer" >
+		<view class="content" @touchstart="hideDrawer">
 			<scroll-view class="msg-list" scroll-y="true" :scroll-with-animation="scrollAnimation" :scroll-top="scrollTop"
 			 :scroll-into-view="scrollToView" @scrolltoupper="loadHistory" upper-threshold="50">
 				<!-- 加载历史数据waitingUI -->
@@ -45,18 +45,22 @@
 								<view v-if="row.type=='img'" class="bubble img" @tap="showPic(row.msg)">
 									<image :src="row.msg.content.url" :style="{'width': row.msg.content.w+'px','height': row.msg.content.h+'px'}"></image>
 								</view>
-
+								<!-- 合同消息 -->
+								<view v-if="row.type=='TIMCustomElem'&&row.payload.data == 'contract'" class="bubble contract">
+									<view class="contract-text">{{row.payload.extension}}</view>
+									<image src="/static/image/icon/icon_ht.png" mode="aspectFit"></image>
+								</view>
 							</view>
 							<!-- 右-头像 -->
 							<view class="right">
-								<image :src="userInfo.userHead" mode="aspectFill"></image>
+								<image :src="constData.oss + userInfo.userHead" mode="aspectFill"></image>
 							</view>
 						</view>
 						<!-- 别人发出的消息 -->
 						<view class="other" v-else>
 							<!-- 左-头像 -->
 							<view class="left">
-								<image :src="toUserInfo.userHead" mode="aspectFill"></image>
+								<image :src="constData.oss + toUserInfo.userHead" mode="aspectFill"></image>
 							</view>
 							<!-- 右-用户名称-时间-消息 -->
 							<view class="right">
@@ -77,7 +81,11 @@
 								<view v-if="row.type=='img'" class="bubble img" @tap="showPic(row.msg)">
 									<image :src="row.msg.content.url" :style="{'width': row.msg.content.w+'px','height': row.msg.content.h+'px'}"></image>
 								</view>
-
+								<!-- 合同消息 -->
+								<view v-if="row.type=='TIMCustomElem'&&row.payload.data == 'contract'" class="bubble contract" @click="openDoc(row)">
+									<view class="contract-text">{{row.payload.extension}}</view>
+									<image src="/static/image/icon/icon_ht.png" mode="aspectFit"></image>
+								</view>
 
 							</view>
 						</view>
@@ -98,20 +106,38 @@
 			<!-- 更多功能 相册-拍照-红包 -->
 			<view class="more-layer" :class="{hidden:hideMore}">
 				<view class="list">
-					<view class="box" @tap="chooseImage">
-						<view class="icon tupian2"></view>
+					<view class="center-text">
+						<view class="box" @tap="chooseImage">
+							<view class="icon tupian2"></view>
+						</view>
+						<view class="margin-text">相片</view>
 					</view>
-					<view class="box" @tap="camera">
-						<view class="icon paizhao"></view>
+
+					<view class="center-text">
+						<view class="box" @tap="camera">
+							<view class="icon paizhao"></view>
+						</view>
+						<view class="margin-text">拍照</view>
 					</view>
-					<view class="box" @tap="handRedEnvelopes">
-						<view class="icon hongbao"></view>
+
+					<view class="center-text">
+						<view class="box" @tap="handRedEnvelopes">
+							<view class="icon hongbao"></view>
+						</view>
+						<view class="margin-text">打赏</view>
+					</view>
+
+					<view class="center-text" @click="navToHtList">
+						<view class="box">
+							<image class="box-icon" src="/static/image/icon/icon_ht.png" mode="aspectFit"></image>
+						</view>
+						<view class="margin-text">签约</view>
 					</view>
 				</view>
 			</view>
 		</view>
 		<!-- 底部输入栏 -->
-		<view class="input-box"  :class="popupLayerClass" @touchmove.stop.prevent="discard">
+		<view class="input-box" :class="popupLayerClass" @touchmove.stop.prevent="discard">
 			<!-- H5下不能录音，输入栏布局改动一下 -->
 
 			<view class="voice">
@@ -161,6 +187,8 @@
 		name:'list',
 		data() {
 			return {
+				constData: this.$constData,
+				
 				//tim
 				toUserInfo:null,
 				userInfo:null,
@@ -280,6 +308,15 @@
 			this.getMsgList();
 		},
 		methods:{
+			navToHtList(){
+				uni.navigateTo({
+					url:`/pages/index/contract/contract`
+				})
+			},
+			
+			openDoc(row){
+				
+			},
 			
 			//oss 上传文件
 			ossUploadFile(file,attr){ 
@@ -854,5 +891,43 @@
 </script>
 <style lang="scss" scoped>
 	@import "@/static/tim/css/style.scss"; 
-
+	
+	.box-icon{
+		width: 40rpx;
+		height: 40rpx;
+	}
+	
+	.contract{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background-color: #FFFFFF!important;
+		color: #587685!important;
+		border: 1rpx solid #CFDCE9;
+		font-size: 28rpx;
+		width: 460rpx;
+		
+		image{
+			width: 80rpx;
+			height: 80rpx;
+		}
+	}
+	
+	.contract-text{
+		max-width: 340rpx;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+	
+	.center-text{
+		text-align: center;
+		font-size: 22rpx;
+		line-height: 40rpx;
+		color: #999999;
+	}
+	
+	.margin-text{
+		margin-top: 10rpx;
+	}
 </style>

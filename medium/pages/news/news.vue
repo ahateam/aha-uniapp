@@ -111,6 +111,16 @@
 		},
 		methods: {
 			delItem(index) {
+				// let promise = this.tim.deleteConversation('C2CExample');
+				// promise.then(function(imResponse) {
+				// 	//删除成功。
+				// 	const {
+				// 		conversationID
+				// 	} = imResponse.data; // 被删除的会话 ID
+				// }).catch(function(imError) {
+				// 	console.warn('deleteConversation error:', imError); // 删除会话失败的相关信息
+				// });
+
 				uni.showToast({
 					title: '点击刪除',
 					icon: 'none'

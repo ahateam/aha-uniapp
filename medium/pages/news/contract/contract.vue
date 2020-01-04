@@ -9,7 +9,7 @@
 		<data-input :inputHidden="onshoreShow" title="副申请人姓名" hiddenIcon v-model="deputyApplicantName" placeholder="输入内容"></data-input>
 		<data-input :inputHidden="onshoreShow" title="客户家庭住址" hiddenIcon v-model="address" placeholder="输入内容"></data-input>
 		<data-input :inputHidden="onshoreShow" title="客户电话" hiddenIcon v-model="phone" placeholder="输入内容"></data-input>
-		<data-input :inputHidden="onshoreShow" title="你的E-Mail地址" hiddenIcon v-model="interEmail" placeholder="输入内容"></data-input>
+		<data-input :inputHidden="onshoreShow" title="学生的E-Mail地址" hiddenIcon v-model="interEmail" placeholder="输入内容"></data-input>
 		<data-input :inputHidden="onshoreShow" title="申请签证类别" hiddenIcon v-model="visasType" placeholder="输入内容"></data-input>
 		<data-input :inputHidden="onshoreShow" title="合同金额" hiddenIcon v-model="contractMoney" type="number" placeholder="输入内容"></data-input>
 		<data-input :inputHidden="onshoreShow" title="第一次金额" hiddenIcon v-model="oneMoney" type="number" placeholder="输入内容"></data-input>
@@ -183,22 +183,28 @@
 
 			setpPDF(cnt) {
 				uni.showLoading({
-					title: '合同生成中...'
+					title: '合同生成中，请勿操作'
 				})
 				this.$api.setpPDF(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.hideLoading()
-						console.log(this.$util.tryParseJson(res.data.c))
+						let obj = this.$util.tryParseJson(res.data.c)
+						console.log(obj)
+
+						let newObj = {
+							conId: obj.conId,
+							fileUrl: obj.fileUrl
+						}
 
 						let currentConversationType = 'C2C'
 
-						let message = tim.createCustomMessage({
+						let message = this.tim.createCustomMessage({
 							to: String(this.toUserId),
 							conversationType: currentConversationType,
 							payload: {
-								data: 'contract', // 用于标识该消息是骰子类型消息
-								description: this.$util.tryParseJson(res.data.c), // 获取骰子点数
-								extension: ''
+								data: 'contract', // 用于标识该消息的类型
+								description: JSON.stringify(newObj), // 消息
+								extension: obj.clientName + obj.visasType + '合同' // 扩展说明
 							}
 						});
 
@@ -209,7 +215,7 @@
 						pomise.then(res => {
 							this.$nextTick(() => {
 								// 滚动到底
-								this.scrollToView = res.data.message.ID
+								uni.navigateBack()
 							});
 						})
 					} else {

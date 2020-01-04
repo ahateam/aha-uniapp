@@ -62,8 +62,8 @@
 	transition: all .15s linear;
 	width: 96%;
 	height: 42vw;
-	padding: 20rpx 2%;
-	background-color: #f3f3f3;
+	padding: 25rpx 15rpx 45rpx;
+	background-color: rgba($color: #F7F9FA, $alpha: .88);
 	border-top: solid 1rpx #ddd;
 	position: fixed;
 	z-index: 20;
@@ -95,16 +95,18 @@
 			display: flex;
 			flex-wrap: wrap;
 			.box{
-				width: 18vw;
-				height: 18vw;
-				border-radius: 20rpx;
+				width: 110rpx;
+				height: 110rpx;
+				border-radius: 6rpx;
 				background-color: #fff;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				margin: 0 3vw 2vw 3vw;
+				margin: 20rpx 35rpx 0;
+				border: 1rpx solid #CFDCE9;
+				box-sizing: border-box;
 				.icon{
-					font-size: 70rpx;
+					font-size: 40rpx;
 				}
 			}
 		}

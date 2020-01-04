@@ -45,18 +45,22 @@
 								<view v-if="row.type=='img'" class="bubble img" @tap="showPic(row.msg)">
 									<image :src="row.msg.content.url" :style="{'width': row.msg.content.w+'px','height': row.msg.content.h+'px'}"></image>
 								</view>
-
+								<!-- 自定义消息__合同 -->
+								<view v-if="row.type=='TIMCustomElem'&&row.payload.data == 'contract'" class="bubble contract">
+									<view class="contract-text">{{row.payload.extension}}</view>
+									<image src="/static/image/icon/icon_ht.png" mode="aspectFit"></image>
+								</view>
 							</view>
 							<!-- 右-头像 -->
 							<view class="right">
-								<image :src="userInfo.userHead" mode="aspectFill"></image>
+								<image :src="constData.oss + userInfo.userHead" mode="aspectFill"></image>
 							</view>
 						</view>
 						<!-- 别人发出的消息 -->
 						<view class="other" v-else>
 							<!-- 左-头像 -->
 							<view class="left">
-								<image :src="toUserInfo.userHead" mode="aspectFill"></image>
+								<image :src="constData.oss + toUserInfo.userHead" mode="aspectFill"></image>
 							</view>
 							<!-- 右-用户名称-时间-消息 -->
 							<view class="right">
@@ -78,7 +82,11 @@
 									<image :src="row.msg.content.url" :style="{'width': row.msg.content.w+'px','height': row.msg.content.h+'px'}"></image>
 								</view>
 
-
+								<!-- 合同消息 -->
+								<view v-if="row.type=='TIMCustomElem'&&row.payload.data == 'contract'" class="bubble contract" @click="openDoc(row)">
+									<view class="contract-text">{{row.payload.extension}}</view>
+									<image src="/static/image/icon/icon_ht.png" mode="aspectFit"></image>
+								</view>
 							</view>
 						</view>
 					</block>
@@ -98,18 +106,32 @@
 			<!-- 更多功能 相册-拍照-红包 -->
 			<view class="more-layer" :class="{hidden:hideMore}">
 				<view class="list">
-					<view class="box" @tap="chooseImage">
-						<view class="icon tupian2"></view>
-					</view>
-					<view class="box" @tap="camera">
-						<view class="icon paizhao"></view>
-					</view>
-					<view class="box" @tap="handRedEnvelopes">
-						<view class="icon hongbao"></view>
+					<view class="center-text" @tap="chooseImage">
+						<view class="box">
+							<view class="icon tupian2"></view>
+						</view>
+						<view class="margin-text">相片</view>
 					</view>
 
-					<view class="box" @tap="navToHt">
-						<image class="box-icon" src="/static/image/icon/icon_ht.png" mode="aspectFit"></image>
+					<view class="center-text" @tap="camera">
+						<view class="box">
+							<view class="icon paizhao"></view>
+						</view>
+						<view class="margin-text">拍照</view>
+					</view>
+
+					<view class="center-text" @tap="handRedEnvelopes">
+						<view class="box">
+							<view class="icon hongbao"></view>
+						</view>
+						<view class="margin-text">打赏</view>
+					</view>
+					
+					<view class="center-text" @tap="navToHt">
+						<view class="box">
+							<image class="box-icon" src="/static/image/icon/icon_ht.png" mode="aspectFit"></image>
+						</view>
+						<view class="margin-text">合同</view>
 					</view>
 				</view>
 			</view>
@@ -163,6 +185,8 @@
 		name:'list',
 		data() {
 			return {
+				constData:this.$constData,
+				
 				//tim
 				toUserInfo:null,
 				userInfo:null,
@@ -288,6 +312,22 @@
 			this.getMsgList();
 		},
 		methods:{
+			openDoc(row){
+				uni.downloadFile({
+				  url: this.$constData.oss + this.$util.tryParseJson(row.payload.description).fileUrl,
+				  success: (res)=> {
+				    var filePath = res.tempFilePath;
+					console.log(filePath)
+				    // uni.openDocument({
+				    //   filePath: filePath,
+				    //   success: (res)=> {
+				    //     console.log('打开文档成功');
+				    //   }
+				    // });
+				  }
+				});
+			},
+			
 			//没有聊天室 初始化创建
 			createConcersation(){
 				if(!this.currentConversation.currentConversationID){
@@ -797,7 +837,41 @@
 	@import "@/static/tim/css/style.scss"; 
 	
 	.box-icon{
-		width: 56rpx;
-		height: 56rpx;
+		width: 40rpx;
+		height: 40rpx;
+	}
+	
+	.contract{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background-color: #FFFFFF!important;
+		color: #587685!important;
+		border: 1rpx solid #CFDCE9;
+		font-size: 28rpx;
+		width: 460rpx;
+		
+		image{
+			width: 80rpx;
+			height: 80rpx;
+		}
+	}
+	
+	.contract-text{
+		max-width: 340rpx;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+	
+	.center-text{
+		text-align: center;
+		font-size: 22rpx;
+		line-height: 40rpx;
+		color: #999999;
+	}
+	
+	.margin-text{
+		margin-top: 10rpx;
 	}
 </style>
