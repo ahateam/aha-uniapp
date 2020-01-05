@@ -43,6 +43,8 @@
 						<img-box v-else-if="item.posting.postingType == constData.groupType[1].key" :item="item" :imgList="$util.tryParseJson(item.posting.postingDate)"></img-box>
 
 						<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key"></only-text>
+
+						<share-list :item="item" v-else-if="item.posting.postingType == constData.groupType[4].key"></share-list>
 					</view>
 
 					<!-- 最新最热 -->
@@ -51,6 +53,8 @@
 						 :item="item" :src="constData.oss + getJsonParse(item)" :listLength="getJsonParse(item,true)" :tagType="navList[navCurrtent].tagCurrtent == 0?'new':'j'"></right-video>
 
 						<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key" :tagType="navList[navCurrtent].tagCurrtent == 0?'new':'j'"></only-text>
+
+						<share-list :item="item" v-else-if="item.posting.postingType == constData.groupType[4].key"></share-list>
 					</view>
 
 					<view class="abilityBox" @click.stop>
@@ -94,6 +98,7 @@
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
 	import Loading from '@/components/Loading/Loading.vue'
 	import rightVideo from '@/components/find/rightVideo.vue'
+	import ShareList from '@/components/share/ShareList.vue'
 
 	export default {
 		components: {
@@ -102,7 +107,8 @@
 			onlyText,
 			uniLoadMore,
 			Loading,
-			rightVideo
+			rightVideo,
+			ShareList
 		},
 		data() {
 			return {
@@ -238,9 +244,18 @@
 			shareBtn(item, index) {
 				this.shareData = item
 				this.shareIndex = index
+				let shareType = Number
+
+				if (this.navCurrtent == 0) {
+					shareType = this.$constData.shareType[2].key
+				} else {
+					shareType = this.$constData.shareType[1].key
+				}
+
+				uni.setStorageSync('shareText', item.posting.postingTextDate.substr(0, 20))
 
 				uni.navigateTo({
-					url: `/pages/shareView/shareView?shareType=find&id=${item.posting.postingId}&type=${item.posting.postingType}`
+					url: `/pages/shareView/shareView?shareType=${shareType}&id=${item.posting.postingId}&type=${item.posting.postingType}`
 				})
 			},
 

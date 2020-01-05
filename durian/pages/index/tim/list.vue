@@ -315,7 +315,19 @@
 			},
 			
 			openDoc(row){
-				
+				uni.downloadFile({
+				  url: this.$constData.oss + this.$util.tryParseJson(row.payload.description).fileUrl,
+				  success: (res)=> {
+				    var filePath = res.tempFilePath;
+					console.log(filePath)
+				    uni.openDocument({
+				      filePath: filePath,
+				      success: (res)=> {
+				        console.log('打开文档成功');
+				      }
+				    });
+				  }
+				});
 			},
 			
 			//oss 上传文件

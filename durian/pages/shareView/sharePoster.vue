@@ -76,9 +76,9 @@
 	}
 
 	.back-icon {
-		width: 50rpx;
-		height: 50rpx;
-		margin-left: 20rpx;
+		width: 30rpx;
+		height: 30rpx;
+		padding: 20rpx;
 	}
 
 	.app-icon {

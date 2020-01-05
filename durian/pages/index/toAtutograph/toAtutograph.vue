@@ -2,7 +2,7 @@
 	<view class="contents">
 		<nav-bar :back="false" class="navBox">
 			<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
-			<view>待签约合同</view>
+			<view>合同签名</view>
 		</nav-bar>
 		<canvas class='firstCanvas' canvas-id="firstCanvas" @touchmove='move' @touchstart='start($event)' @touchend='end'
 		 @touchcancel='cancel' @longtap='tap' disable-scroll='true' @error='error'>
@@ -30,7 +30,7 @@
 	uni.getSystemInfo({
 		success: function(res) {
 			canvasw = res.windowWidth;
-			canvash = res.windowHeight;
+			canvash = res.windowWidth;
 		},
 	})
 	export default {
@@ -65,11 +65,11 @@
 							console.log(res.tempFilePath)
 							console.log('完成签名')
 							//设置图片
-							_that.signImage = res.tempFilePath
-							uni.showLoading({
-								title: '上传签名中...'
-							})
-							this.upLoadOss(res.tempFilePath)
+							// _that.signImage = res.tempFilePath
+							// uni.showLoading({
+							// 	title: '上传签名中...'
+							// })
+							// this.upLoadOss(res.tempFilePath)
 
 							// uni.saveImageToPhotosAlbum({
 							// 	filePath: res.tempFilePath,
@@ -125,7 +125,7 @@
 						let cnt = {
 							studentId: userInfo.userId, // Long 学生编号
 							contractId: this.id, // Long 合同编号
-							url: nameStr, // String 学生签名图片地址
+							url: this.$constData.oss + nameStr, // String 学生签名图片地址
 						}
 						this.setStudentAutograph(cnt)
 					},
@@ -279,7 +279,7 @@
 		background-color: #DDDDDD;
 		width: 700rpx;
 		margin: 0 25rpx;
-		height: calc(100vh - 140rpx);
+		height: calc(100vw - 50rpx);
 	}
 
 	.contents {
@@ -295,19 +295,21 @@
 
 	.caozuo {
 		display: flex;
+		justify-content: space-between;
 		height: 100rpx;
 		width: 750rpx;
-		position: fixed;
-		left: 0;
-		bottom: 0;
+		margin-top: 15rpx;
+		box-sizing: border-box;
+		padding: 0 20rpx;
 	}
 
 	.caozuo view {
-		width: 375rpx;
+		width: 330rpx;
 		text-align: center;
 		height: 100rpx;
 		line-height: 100rpx;
 		color: #FFFFFF;
+		border-radius: 6rpx;
 	}
 
 	.caozuo view:active {

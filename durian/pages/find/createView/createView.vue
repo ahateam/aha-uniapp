@@ -17,9 +17,13 @@
 				<textarea v-model="text" placeholder="告诉大家你今天的分享…" />
 				</view>
 				
-			<movable-view class="video-box" direction="all" out-of-bounds @change="moveBox" @touchend="reSet" v-if="videoSrc">
+			<view class="video-box" v-if="videoSrc">
 				<video :src="videoSrc" controls></video>
-			</movable-view>
+			</view>
+			
+			<view style="margin: 0 30rpx;" v-if="shareInfo.shareType">
+				<share-box :shareInfo="shareInfo"></share-box>
+			</view>
 			
 			<movable-view 
 			class="movable-view"
@@ -36,7 +40,7 @@
 				<image class="img-list" :src="constData.oss + item" mode="aspectFill" :style="index == currIndex&&delImg?'opacity: 0.5':''"></image>
 			</movable-view>
 			
-			<view class="addImgBtn" :style="isLeftBtn()?'margin-left:60rpx':''" @click="openPopup" v-if="imgList.length < 9&&videoSrc == ''">
+			<view class="addImgBtn" :style="isLeftBtn()?'margin-left:60rpx':''" @click="openPopup" v-if="imgList.length < 9&&videoSrc == ''&&shareInfo.shareType == ''">
 				<text class="iconfont icon-jia"></text>
 			</view>
 			
@@ -72,44 +76,54 @@
 	import navBar from '@/components/zhouWei-navBar/index.vue'
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 	import kpsImageCutter from "@/components/ksp-image-cutter/ksp-image-cutter.vue"
+	import ShareBox from '@/components/share/ShareBox.vue'
 
 
 	export default {
 		components: {
 			navBar,
 			uniPopup,
-			kpsImageCutter
+			kpsImageCutter,
+			ShareBox
 		},
 		data() {
 			return {
 				constData: this.$constData,
 				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo')),
 				
-				imgUrl:'',
+				imgUrl: '',
 				
-				text:'',
-				imgList:[],
+				text: '',
+				imgList: [],
 				
-				videoSrc:'',
-				statusName:'公开',
-				showPopup:false,
-				statusIndex:0,
+				videoSrc: '',
+				statusName: '公开',
+				showPopup: false,
+				statusIndex: 0,
 				
-				choseImg:[
+				choseImg: [
 					{
-						name:'从相册选择',
-						type:'album'
+						name: '从相册选择',
+						type: 'album'
 					},
 					{
-						name:'立拍',
-						type:'camera'
+						name: '立拍',
+						type: 'camera'
 					}
 				],
 				
-				delImg:false,
-				delImgHover:false,
+				delImg: false,
+				delImgHover: false,
 				
-				currIndex:-1,
+				currIndex: -1,
+				
+				shareInfo:{
+					shareType: '',
+					shareId: '',
+					shareImg:'',
+					shareText: uni.getStorageSync('shareText'),
+					type: ''
+				}
 			}
 		},
 		methods:{
@@ -224,14 +238,29 @@
 					let data = this.videoSrc
 					cnt.data = data
 					cnt.type = this.$constData.groupType[2].key
-				}
-				else if(this.imgList.length == 0){
-					cnt.type = this.$constData.groupType[0].key
-				}else{
+				}else if(this.imgList.length > 0){
 					let data = JSON.stringify(this.imgList)
 					cnt.data = data
 					cnt.type = this.$constData.groupType[1].key
+				}else if(this.shareInfo.shareType){
+					cnt.type = this.$constData.groupType[4].key
+					let data = {
+						shareImg:this.shareInfo.shareImg,
+						shareType: this.shareInfo.shareType,
+						shareId: this.shareInfo.shareId,
+						shareText: this.shareInfo.shareText
+					}
+					if(this.shareInfo.shareType == this.$constData.shareType[1].key||this.shareInfo.shareType == this.$constData.shareType[2].key){
+						data.type = this.shareInfo.type
+					}
+					cnt.data = JSON.stringify(data)
+				}else if(this.imgList.length == 0){
+					cnt.type = this.$constData.groupType[0].key
 				}
+				this.createPosting(cnt)
+			},
+			
+			createPosting(cnt){
 				this.$api.createPosting(cnt,(res)=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
 						uni.switchTab({
@@ -435,7 +464,15 @@
 			}
 		},
 		
-		onLoad() {
+		onLoad(res) {
+			if(res.shareType){
+				if(res.shareType == this.$constData.shareType[1].key||res.shareType == this.$constData.shareType[2].key){
+					this.shareInfo.shareType = res.shareType
+					this.shareInfo.shareId = res.id
+					this.shareInfo.type = res.type
+					this.shareInfo.shareImg = this.$constData.shareType[res.shareType].img
+				}
+			}
 			uni.setStorageSync('createStatus',0)
 		},
 		
@@ -444,7 +481,7 @@
 				let status = uni.getStorageSync('createStatus')
 				this.statusIndex = status
 				this.statusName = this.$constData.postingStatus[status].val
-			},300)
+			},200)
 		}
 	}
 </script>
@@ -530,6 +567,27 @@
 		video{
 			width: 100%;
 			height: 100%;
+		}
+	}
+	
+	.share-box{
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background-color: $group-color-search;
+		margin: $group-margin-top $group-margin-left;
+		padding: 10rpx;
+		box-sizing: border-box;
+		
+		image{
+			width: 100rpx;
+			height: 100rpx;
+		}
+		
+		.share-text{
+			width: 500rpx;
+			color: $group-color-befor;
+			font-size: $group-font-befor;
 		}
 	}
 	

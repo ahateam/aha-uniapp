@@ -318,12 +318,12 @@
 				  success: (res)=> {
 				    var filePath = res.tempFilePath;
 					console.log(filePath)
-				    // uni.openDocument({
-				    //   filePath: filePath,
-				    //   success: (res)=> {
-				    //     console.log('打开文档成功');
-				    //   }
-				    // });
+				    uni.openDocument({
+				      filePath: filePath,
+				      success: (res)=> {
+				        console.log('打开文档成功');
+				      }
+				    });
 				  }
 				});
 			},

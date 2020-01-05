@@ -2,7 +2,7 @@
 	<view>
 		<view class="bg-view">
 			<view class="share-top" @click="navToPost">
-				<image class="share-img" src="/static/image/interest/bg_lx.png" mode="aspectFill"></image>
+				<image class="share-img" :src="typeImg" mode="aspectFill"></image>
 				<view class="share-info">
 					<view class="user-box">
 						<view class="share-user">
@@ -18,7 +18,7 @@
 			<view class="bottom-box">
 				<view class="bottom-title">分享</view>
 				<view class="bottom-list">
-					<view class="bottom-list-box" v-for="(item,index) in shareList" :key="index">
+					<view class="bottom-list-box" v-for="(item,index) in shareList" :key="index" @click="shareBtn(index)">
 						<view class="bottom-img">
 							<image :src="item.imgSrc" mode="aspectFit"></image>
 						</view>
@@ -62,8 +62,10 @@
 		data() {
 			return {
 				constData: this.$constData,
+				typeImg: '',
 
 				shareType: '',
+				type: '',
 
 				userInfo: {},
 				shareText: '我刚刚在「榴莲」APP成功获得签证…',
@@ -85,19 +87,19 @@
 
 				shareList: [{
 						name: '聊天',
-						imgSrc: '/static/image/icon/icon-mes.png',
+						imgSrc: '/static/image/icon/icon_lt.png',
 					},
 					{
 						name: '发现',
-						imgSrc: '/static/image/icon/icon-mes.png',
+						imgSrc: '/static/image/icon/icon_fx.png',
 					},
 					{
 						name: '微信',
-						imgSrc: '/static/image/icon/icon-mes.png',
+						imgSrc: '/static/image/icon/icon_wx.png',
 					},
 					{
 						name: '朋友圈',
-						imgSrc: '/static/image/icon/icon-mes.png',
+						imgSrc: '/static/image/icon/icon_pyq.png',
 					}
 				],
 
@@ -105,6 +107,18 @@
 			}
 		},
 		methods: {
+			shareBtn(e) {
+				if (e == 1) {
+					this.shareFind()
+				}
+			},
+
+			shareFind() {
+				uni.navigateTo({
+					url: `/pages/find/createView/createView?shareType=${this.shareType}&id=${this.id}&type=${this.type}`
+				})
+			},
+
 			navToPost() {
 				if (this.posterImg == '') {
 					uni.showLoading({
@@ -163,19 +177,8 @@
 				context.setFillStyle('#FFFFFF')
 				context.fillRect(0, 0, w, h)
 
-				let src =
-					'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1576931069518&di=a990568119111523cc5cc765377fba40&imgtype=0&src=http%3A%2F%2Fimage.biaobaiju.com%2Fuploads%2F20180917%2F22%2F1537193274-diLswpUDbH.jpg'
-				uni.downloadFile({
-					url: src,
-					success: (res) => {
-						context.drawImage(res.tempFilePath, 0, 0, w, 500)
-						this.getUpHead()
-					},
-					fail: (err) => {
-						context.drawImage(src, 0, 0, w, 500)
-						this.getUpHead()
-					}
-				})
+				context.drawImage(this.typeImg, 0, 0, w, 500)
+				this.getUpHead()
 			},
 
 			//生成up圆形头像
@@ -286,13 +289,16 @@
 		},
 		onLoad(res) {
 			this.shareType = res.shareType
+			this.type = res.type
 			this.id = res.id
 			if (res.type) {
 				this.type = res.type
 			}
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			this.userInfo = userInfo
-			if (res.shareType == 'find') {
+			if (res.shareType == this.$constData.shareType[1].key || res.shareType == this.$constData.shareType[2].key) {
+				this.typeImg = this.$constData.shareType[res.shareType].img
+				this.shareText = uni.getStorageSync('shareText')
 				if (res.type == this.$constData.groupType[3].key) {
 					this.val = `/pages/find/videoView/videoView?id=${res.id}`
 				} else {
@@ -438,6 +444,8 @@
 		width: 100%;
 		line-height: 98rpx;
 		border-radius: 0;
+		color: #999999;
+		font-size: 30rpx;
 
 		&:after {
 			border: none;
