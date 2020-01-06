@@ -41,7 +41,7 @@
 					<view class="left-title" style="line-height: 42rpx;">历史进展</view>
 					<view class="hsty-list">
 						<view v-for="(item,index) in historyList" :key="index" :hidden="!moreStatus&&index > 2">
-							<view class="hsty-item" :class="[{'border-none':index + 1 == historyList.length&&moreStatus},{'border-none':index == 2&&!moreStatus},{'left-dot-border':!item.status}]">
+							<view class="hsty-item" :class="[{'border-none':index + 1 == historyList.length&&moreStatus||historyList.length == 1},{'border-none':index == 2&&!moreStatus},{'left-dot-border':!item.status}]">
 								<view class="hsty-dot" :class="index == 0?'curr-dot':''"></view>
 								<view class="hsty-text" :class="{'curr-text-color':index == 0}">{{getTime(item.changeTime)}}</view>
 								<view class="hsty-text hsty-text-right" :class="{'curr-text-color':index == 0}">{{item.stepName}}</view>

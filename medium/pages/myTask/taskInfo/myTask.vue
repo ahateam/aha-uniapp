@@ -90,12 +90,12 @@
 					<view class="auto-box-gray space-box">
 						<view class="left-title bottom-font">完成状态</view>
 						<view class="hsty-list">
-							<view class="hsty-item" :class="[{'border-none':index == 0},{'left-dot-border':!item.status}]" v-for="(item,index) in task.historyList"
-							 :key="index">
+							<view class="hsty-item" :class="[{'border-none':index == 0},{'left-dot-border':task.historyList.length  == index+1}]"
+							 v-for="(item,index) in task.historyList" :key="index">
 								<view>
-									<view class="hsty-dot" :class="!item.status?'curr-dot':''"></view>
-									<view class="hsty-text" :class="{'curr-text-color':!item.status}">{{item.time}}</view>
-									<view class="hsty-text hsty-text-right" :class="{'curr-text-color':!item.status}">{{item.text}}</view>
+									<view class="hsty-dot" :class="task.historyList.length  == index+1?'curr-dot':''"></view>
+									<view class="hsty-text" :class="{'curr-text-color':task.historyList.length  == index+1}">{{getTime(item.changeTime)}}</view>
+									<view class="hsty-text hsty-text-right" :class="{'curr-text-color':task.historyList.length  == index+1}">{{item.stepName}}</view>
 								</view>
 							</view>
 						</view>
@@ -146,6 +146,8 @@
 		data() {
 			return {
 				constData: this.$constData,
+				count: 50,
+				offset: 0,
 
 				task: {
 					historyList: [{
@@ -163,12 +165,6 @@
 							text: '上传材料',
 							status: false
 						}
-					],
-					taskList: [
-						'',
-						'',
-						'',
-						''
 					]
 				},
 
@@ -180,6 +176,10 @@
 			}
 		},
 		methods: {
+			getTime(time) {
+				return this.$commen.getNewDate(time)
+			},
+
 			withdrawTask() {
 				let cnt = {
 					taskId: this.task.taskId
@@ -238,6 +238,20 @@
 			// 	})
 			// },
 
+			getChangeRecordList(cnt) {
+				this.$api.getChangeRecordList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c)
+						this.task.historyList = arr.list
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
 			getUserByTaskId(cnt) {
 				this.$api.getUserByTaskId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -281,6 +295,13 @@
 				userId: userInfo.userId
 			}
 			this.getUserByTaskId(cnt)
+
+			let cnt1 = {
+				taskId: res.id, // Long 任务id
+				count: this.count, // Integer 
+				offset: this.offset, // Integer 
+			}
+			this.getChangeRecordList(cnt1)
 		}
 	}
 </script>

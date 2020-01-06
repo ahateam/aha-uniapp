@@ -29,12 +29,12 @@
 
 				<view class="auto-box-white space-box">
 					<view class="left-title">任务名称</view>
-					<view class="right-info">{{task.taskTitle}}</view>
+					<view class="right-info">{{task.taskName}}</view>
 				</view>
 
 				<view class="auto-box-white no-border">
 					<view class="left-title">任务描述</view>
-					<view class="right-info" style="margin-top: 29rpx;">{{task.taskText}}</view>
+					<view class="right-info" style="margin-top: 29rpx;">{{task.taskDescribe}}</view>
 				</view>
 
 				<view class="block-box">
@@ -48,7 +48,7 @@
 					</view>
 					<view class="auto-box-gray space-box">
 						<view class="left-title bottom-font">最新状态</view>
-						<view class="right-info bottom-font" style="color: #24D4D0;">{{task.taskStatus}}</view>
+						<view class="right-info bottom-font" style="color: #24D4D0;">{{taskStatus}}</view>
 					</view>
 					<view class="auto-box-gray space-box" v-if="task.fileData.length > 0">
 						<view class="left-title bottom-font">共享文件</view>
@@ -93,22 +93,10 @@
 		data() {
 			return {
 				constData: this.$constData,
-				pageStatus: 'loading',
+				pageStatus: 'onload',
 
-				task: {
-					userHead: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574775543939&di=34f1f8a709ce6958adff33a33c218451&imgtype=0&src=http%3A%2F%2Fi2.hdslb.com%2Fbfs%2Fface%2F97ea0b38bc4afa00e0b00b9035eb31368fa94f11.jpg',
-					taskType: '全案助理',
-					taskTitle: '500签证全案助理',
-					taskText: '请帮忙填写签证相关内容，我是第一次申请，需要准备的资料还很多，听朋友说你们是专业的，拜托你们啦！',
-					taskTime: '2019-10-08',
-					taskStatus: '学校申请已经递交',
-					taskList: [
-						'',
-						'',
-						'',
-						''
-					]
-				}
+				task: {},
+				taskStatus: ''
 			}
 		},
 		methods: {
@@ -124,6 +112,22 @@
 
 			navBack() {
 				uni.navigateBack()
+			},
+
+			getChangeRecordList(cnt) {
+				this.$api.getChangeRecordList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let arr = this.$util.tryParseJson(res.data.c).list
+						arr.reverse
+						this.taskStatus = arr[0].stepName
+						console.log(arr)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			},
 
 			getUserByTaskId(cnt) {
@@ -171,6 +175,13 @@
 				userId: userInfo.userId
 			}
 			this.getUserByTaskId(cnt)
+
+			let cnt1 = {
+				taskId: res.id, // Long 任务id
+				count: 50, // Integer 
+				offset: 0, // Integer 
+			}
+			this.getChangeRecordList(cnt1)
 		}
 	}
 </script>

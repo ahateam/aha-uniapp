@@ -97,6 +97,7 @@
 						this.pageStatus = this.tagList[index].pageStatus
 					} else {
 						this.tasks = []
+						this.pageStatus = 'loading'
 						let cnt = {
 							// taskStatus: taskStatus, // Byte <选填> 任务状态
 							status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
@@ -348,7 +349,7 @@
 			if (!this.pageOver) {
 				this.page += 1
 				this.tagList[this.currIndex].page += 1
-
+				this.pageStatus = 'loading'
 				let cnt = {
 					status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
 					count: this.count, // Integer 

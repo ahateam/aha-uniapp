@@ -26,10 +26,12 @@
 					<view class="left-title">任务分类</view>
 					<view class="right-info">{{taskType[task.taskType].name}}</view>
 				</view>
+				
 				<view class="auto-box-white space-box">
 					<view class="left-title">任务名称</view>
 					<view class="right-info">{{task.taskName}}</view>
 				</view>
+				
 				<view class="auto-box-white no-border">
 					<view class="left-title">任务描述</view>
 					<view class="right-info" style="margin-top: 29rpx;">{{task.taskDescribe}}</view>

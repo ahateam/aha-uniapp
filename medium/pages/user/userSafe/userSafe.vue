@@ -40,7 +40,7 @@
 		},
 		data() {
 			return {
-				loginMethods: '微信',
+				loginMethods: '手机号',
 				telData: '',
 				wxBindStatus: false
 			}
