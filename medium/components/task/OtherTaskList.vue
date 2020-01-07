@@ -55,6 +55,10 @@
 		width: 690rpx;
 		height: 250rpx;
 		border-radius: 4rpx;
+		
+		&:active{
+			background-color: rgba($color: #f9f9f9, $alpha: .9);
+		}
 	}
 
 	.task-top {

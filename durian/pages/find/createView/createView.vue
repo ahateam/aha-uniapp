@@ -180,7 +180,6 @@
 								this.imgList.splice(this.imgList.length - 1 , 1)
 							}
 							this.delImgHover = false
-							console.log(this.imgList)
 						}, 50)
 					},50)
 				}else{
@@ -199,7 +198,6 @@
 								this.imgList.splice(this.imgList.length - 1 , 1)
 							}
 							this.delImgHover = false
-							console.log(this.imgList)
 						}, 50)
 					},50)
 				}
@@ -315,11 +313,6 @@
 			
 			//相册添加图片
 			addImgs(e){
-				// plus.io.requestFileSystem(plus.io.PRIVATE_WWW,function(e){
-				// 	console.log(e)
-				// },function(e){
-				// 	console.log(e)
-				// })
 				this.showPopup = false
 				if(e == 'album'){
 					let type = ''
@@ -355,7 +348,6 @@
 						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
 						let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
 						// nameStr =  res.tempFilePaths[0]
-						console.log(nameStr)
 						uni.showLoading({
 						    title: '上传中'
 						})
@@ -384,7 +376,6 @@
 							//让服务端返回200,不然，默认会返回204
 							'signature': 'Wf9Vmi5iwd2rmEH26ERwh8qnVd4=',
 					},success: (res) =>{
-						console.log(res)
 						uni.hideLoading()
 						uni.showToast({
 							title: '上传成功',
@@ -392,7 +383,6 @@
 						})
 						//只管这个变量
 						this.videoSrc = this.$constData.oss + nameStr
-						console.log(this.videoSrc)
 					}
 				})
 			},
@@ -413,7 +403,6 @@
 							//让服务端返回200,不然，默认会返回204
 							'signature': 'Wf9Vmi5iwd2rmEH26ERwh8qnVd4=',
 					},success: (res) => {
-						console.log(res)
 						uni.hideLoading()
 						uni.showToast({
 							title: '上传成功',
@@ -421,9 +410,7 @@
 						})
 						//只管这个变量
 						this.imgList.push(nameStr)
-						console.log(this.imgList)
 					},fail: (err) => {
-						console.log('uploadImage fail', err);
 						uni.showToast({
 							title: '上传失敗',
 							icon: 'none'

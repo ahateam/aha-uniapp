@@ -93,6 +93,11 @@
 		margin: 30rpx;
 		box-shadow: 0 0 15rpx 0 rgba($color: #B6C4D2, $alpha: .4);
 		border-radius: 4rpx;
+		transition: all .3s;
+		
+		&:active{
+			background-color: rgba($color: #f9f9f9, $alpha: .9);
+		}
 	}
 
 	.task-top {

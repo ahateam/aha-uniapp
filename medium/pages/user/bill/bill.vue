@@ -15,33 +15,33 @@
 		<view v-if="currIndex == 0">
 			<view class="content-box white" v-for="(item,index) in incomeList" :key="index">
 				<view class="content">
-					<view class="content-left">{{item.title}}</view>
-					<view class="content-right">{{item.price}}</view>
+					<view class="content-left">{{item.taskName}}</view>
+					<view class="content-right">{{item.taskBudget}}</view>
 				</view>
 				<view v-if="item.openStatus">
-					<view class="content">
+					<view class="content" v-if="item.ifuser">
 						<view class="content-left-color">客户</view>
-						<view class="content-right-color">{{item.acceptUser.name}}</view>
+						<view class="content-right-color">{{item.ifuser}}</view>
 					</view>
 					<view class="content">
 						<view class="content-left-color">收款时间</view>
-						<view class="content-right-color">{{item.payTime}}</view>
+						<view class="content-right-color">{{getTime(item.payTime)}}</view>
 					</view>
 					<view class="content">
 						<view class="content-left-color">已收款项</view>
 						<view class="content-right concolor content-right-color">
-							<image class="instruc" src="/static/image/task/icon_yskx_g.png" mode="aspectFit"></image>{{item.payMoney}}
+							<image class="instruc" src="/static/image/task/icon_yskx_g.png" mode="aspectFit"></image>{{item.payPrice}}
 						</view>
 					</view>
 					<view class="content">
 						<view class="content-left-color">应收款项</view>
-						<view class="content-right-color ">{{item.price}}</view>
+						<view class="content-right-color ">{{item.taskBudget}}</view>
 					</view>
 					<view class="content task-text">
 						<view class="content-left-color">任务发布人</view>
 						<view class="content-right-color">
-							<image class="headx" :src="item.upUser.head" mode="widthFix"></image>
-							<text>{{item.upUser.name}}</text>
+							<image class="headx" :src="constData.oss + item.pickUserHead" mode="widthFix"></image>
+							<text>{{item.userName}}</text>
 						</view>
 					</view>
 				</view>
@@ -56,33 +56,33 @@
 		<view v-else>
 			<view class="content-box white" v-for="(item,index) in payList" :key="index">
 				<view class="content">
-					<view class="content-left">{{item.title}}</view>
-					<view class="content-right">{{item.price}}</view>
+					<view class="content-left">{{item.taskName}}</view>
+					<view class="content-right">{{item.taskBudget}}</view>
 				</view>
 				<view v-if="item.openStatus">
-					<view class="content">
-						<view class="content-left-color pay-content-left-text">客户</view>
-						<view class="content-left-color">{{item.upUser.name}}</view>
+					<view class="content" v-if="item.ifuser">
+						<view class="content-left-color">客户</view>
+						<view class="content-right-color">{{item.ifuser}}</view>
 					</view>
 					<view class="content">
 						<view class="content-left-color pay-content-left-text">付款时间</view>
-						<view class="content-left-color">{{item.payTime}}</view>
+						<view class="content-left-color">{{getTime(item.payTime)}}</view>
 					</view>
 					<view class="content">
 						<view class="content-left-color pay-content-left-text">金额</view>
-						<view class="content-left-color">{{item.payMoney}}</view>
+						<view class="content-left-color">{{item.payPrice}}</view>
 					</view>
 					<view class="content task-text">
 						<view class="content-left-color pay-content-left-text">任务接收人</view>
 						<view class="content-left-color" style="position: relative;">
-							<image class="headx" :src="item.acceptUser.head" mode="widthFix"></image>
-							<text>{{item.acceptUser.name}}</text>
+							<image class="headx" :src="constData.oss + item.pickUserHead" mode="widthFix"></image>
+							<text>{{item.pickUserName}}</text>
 						</view>
 					</view>
 				</view>
 				<!-- 隐藏box -->
-				<view class="content more-box" style="padding-left: 0;" v-if="!item.openStatus">
-					<view class="content-cen" @click="changeTaskShow(index,1)"> 查看完整任务</view>
+				<view class="content more-box" style="padding-left: 0;" v-if="!item.openStatus" @click="changeTaskShow(index,1)">
+					<view class="content-cen"> 查看完整任务</view>
 					<image class="more-btn" src="/static/image/icon/user/task/icon_ckwzrw.png" mode="aspectFit"></image>
 				</view>
 			</view>
@@ -91,12 +91,13 @@
 		<view class="content-box white">
 			<view class="content">
 				<view class="content-left-color" :class="{'pay-content-left-text':currIndex == 1}">任务总数</view>
-				<view class="content-right-color">{{currIndex == 0?incomeList.length:payList.length}}</view>
+				<view class="content-right-color">{{currIndex == 0?incomeList[0].taskcount:payList[0].taskcount}}</view>
 			</view>
 			<view class="content">
 				<view class="content-left-color" v-if="currIndex == 0">收入总计</view>
 				<view class="content-left-color pay-content-left-text" v-else>支出总计</view>
-				<view class="content-right">AUD 600 <text class="content-b"> (含GST)</text></view>
+				<view class="content-right">AUD {{currIndex == 0?incomeList[0].taskmoney:payList[0].taskmoney}} <text class="content-b">
+						(含GST)</text></view>
 			</view>
 		</view>
 	</view>
@@ -112,59 +113,31 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
+				userInfo: {},
+
 				currIndex: 0,
 				list: [{
-						name: '我的收入'
+						name: '我的收入',
+						pageStatus: 'loading',
+						pageOver: false,
+						page: 1
 					},
 					{
-						name: '我的支出'
+						name: '我的支出',
+						pageStatus: 'loading',
+						pageOver: false,
+						page: 1
 					}
 				],
 
-				incomeList: [{
-						title: '500全案助理',
-						upUser: {
-							name: '小铭'
-						},
-						payTime: '2019-10-10',
-						payMoney: 'AUD 250',
-						price: 'AUD 300',
-						acceptUser: {
-							name: '阿芬',
-							head: '/static/image/icon/icon_docx.png',
-						},
-						openStatus: true
-					},
-					{
-						title: '500全案助理',
-						upUser: {
-							name: '小铭'
-						},
-						payTime: '2019-10-10',
-						payMoney: 'AUD 250',
-						price: 'AUD 300',
-						acceptUser: {
-							name: '阿芬',
-							head: '/static/image/icon/icon_docx.png',
-						},
-						openStatus: false
-					}
-				],
+				page: 1,
+				pageStatus: 'onload',
+				pageOver: false,
 
-				payList: [{
-					title: '500全案助理',
-					upUser: {
-						name: '小铭'
-					},
-					payTime: '2019-10-10',
-					payMoney: 'AUD 250',
-					price: 'AUD 300',
-					acceptUser: {
-						name: '阿芬',
-						head: '/static/image/icon/icon_docx.png',
-					},
-					openStatus: true
-				}, ]
+				incomeList: [],
+
+				payList: []
 			}
 		},
 		methods: {
@@ -173,6 +146,25 @@
 			},
 			currNav(index) {
 				this.currIndex = index
+
+				if (this.list[index].child) {
+					this.page = this.list[index].page
+					this.pageStatus = this.list[index].pageStatus
+					this.pageOver = this.list[index].pageOver
+					if (index == 0) {
+						this.incomeList = this.list[index].child
+					} else {
+						this.payList = this.list[index].child
+					}
+				} else {
+					let cnt = {
+						userId: this.userInfo.userId, // Long 用户id
+						count: 10, // Integer 
+						offset: 0, // Integer
+					}
+					this.getMyExpenditure(cnt)
+				}
+
 			},
 
 			changeTaskShow(index, e) {
@@ -181,7 +173,82 @@
 				} else {
 					this.incomeList[index].openStatus = true
 				}
+			},
+
+			getTime(time) {
+				return this.$commen.getNewDate(time)
+			},
+
+			getMyExpenditure(cnt) {
+				this.$api.getMyExpenditure(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let list = this.$util.tryParseJson(res.data.c)
+						this.tryList(list)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			getMyIncome(cnt) {
+				this.$api.getMyIncome(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let list = this.$util.tryParseJson(res.data.c)
+						this.tryList(list)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			tryList(list) {
+				for (let i = 0; i < list.length; i++) {
+					if (i == 0) {
+						list[i].openStatus = true
+					} else {
+						list[i].openStatus = false
+					}
+				}
+
+				console.log(list)
+
+				if (list.length < this.count) {
+					this.pageStatus = 'nomore'
+					this.pageOver = true
+				} else {
+					this.pageStatus = 'more'
+					this.pageOver = false
+				}
+				if (this.currIndex == 0) {
+					this.incomeList = this.incomeList.concat(list)
+					this.list[0].pageOver = this.pageOver
+					this.list[0].pageStatus = this.pageStatus
+					this.list[0].child = this.incomeList
+				} else {
+					this.payList = this.payList.concat(list)
+					this.list[1].pageOver = this.pageOver
+					this.list[1].pageStatus = this.pageStatus
+					this.list[1].child = this.payList
+				}
 			}
+
+		},
+		onLoad() {
+			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			this.userInfo = userInfo
+			let cnt = {
+				userId: userInfo.userId, // Long 用户id
+				count: 10, // Integer 
+				offset: 0, // Integer
+			}
+			this.getMyIncome(cnt) //收入
+			console.log('11')
 		}
 	}
 </script>

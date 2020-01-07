@@ -31,11 +31,11 @@
 		</view>
 
 		<view class="content-List">
-			<view class="content-box" @click="navToView('./bill/bill')">
+			<view class="content-box" @click="navToView('./bill/bill')" v-if="income != '' &&payMoney !=''">
 				<view class="left-box">
 					<image class="left-icon" src="/static/image/icon/user/icon_gzqaud.png" mode="aspectFill"></image>
-					<view>共赚取1000澳元</view>
-					<view class="pay-info">支出200澳元</view>
+					<view>共赚取{{income}}澳元</view>
+					<view class="pay-info">支出{{payMoney}}澳元</view>
 					<view class="pay-info pay-btn">明细</view>
 				</view>
 				<image class="right-icon" src="/static/image/icon/icon_enter.png" mode="aspectFill"></image>
@@ -92,6 +92,8 @@
 				hstyNumber: '25',
 				dataChangeStatus: false,
 
+				income: '', //收入
+				payMoney: '', //支出
 			}
 		},
 		methods: {
@@ -117,6 +119,32 @@
 			getNavHeight() {
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
+
+			getMyExpenditure(cnt) {
+				this.$api.getMyExpenditure(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.payMoney = this.$util.tryParseJson(res.data.c)[0].taskmoney
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			getMyIncome(cnt) {
+				this.$api.getMyIncome(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.income = this.$util.tryParseJson(res.data.c)[0].taskmoney
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			}
 		},
 		onShow() {
 			this.$commen.showTabIcon()
@@ -126,6 +154,14 @@
 			this.imgSrc = userInfo.userHead
 			this.money = userInfo.currency
 			// if(userInfo.) //需要判定資料完善顯示提醒
+
+			let cnt = {
+				userId: userInfo.userId, // Long 用户id
+				count: 1, // Integer 
+				offset: 0, // Integer
+			}
+			this.getMyExpenditure(cnt) //支出
+			this.getMyIncome(cnt) //收入
 		}
 	}
 </script>
@@ -216,6 +252,10 @@
 		justify-content: space-between;
 		padding: 34rpx 0 34rpx 20rpx;
 		border-bottom: 1rpx solid rgba($color: $group-color-border, $alpha: 0.7);
+		
+		&:active{
+			background-color: rgba($color: #f9f9f9, $alpha: .9);
+		}
 	}
 
 	.left-box {

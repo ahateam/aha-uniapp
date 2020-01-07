@@ -121,8 +121,8 @@
 					</view>
 					<view class="auto-box-gray space-box" style="border: none;" v-else-if="task.taskStatus == constData.taskStatus[3].key">
 						<view class="left-title bottom-font">支付信息</view>
-						<view class="right-info bottom-font">{{task.payTime}}</view>
-						<view class="pay-money-text">-{{task.payMoney}}</view>
+						<view class="right-info bottom-font">{{getTime(task.payTime)}}</view>
+						<view class="pay-money-text">-{{task.payPrice}}澳元</view>
 					</view>
 				</view>
 			</view>
@@ -150,22 +150,7 @@
 				offset: 0,
 
 				task: {
-					historyList: [{
-							time: '2019-10-05',
-							text: '提交签证申请',
-							status: true
-						},
-						{
-							time: '2019-10-03',
-							text: '收到offer',
-							status: true
-						},
-						{
-							time: '2019-10-01',
-							text: '上传材料',
-							status: false
-						}
-					]
+					historyList: []
 				},
 
 				pageStatus: 'onload',
@@ -279,6 +264,8 @@
 							this.btnName = '付款'
 						}
 						this.pageStatus = 'succ'
+
+						console.log(this.pickUpUser)
 					} else {
 						uni.showToast({
 							title: '服务器错误',

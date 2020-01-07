@@ -49,6 +49,16 @@ api.editUserAccountById = function(cnt, callback) {
 	util.call(baseUrl + '/user/editUserAccountById', cnt, callback)
 }
 
+// 查询用户支出金额 
+api.getMyExpenditure = function(cnt, callback) {
+	util.call(baseUrl + '/task/getMyExpenditure', cnt, callback)
+}
+
+// 查询用户收入金额
+api.getMyIncome = function(cnt, callback) {
+	util.call(baseUrl + '/task/getMyIncome', cnt, callback)
+}
+
 /* 任务相关 */
 // 查詢任務 
 api.getTaskList = function(cnt, callback) {

@@ -221,23 +221,24 @@
 					formData: {
 						name: nameStr,
 						'key': nameStr,
-						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+						'policy': 'eyJleHBpcmF0aW9uIjoiMjAzMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
 						'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
 						'success_action_status': '200',
 						//让服务端返回200,不然，默认会返回204
-						'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
+						'signature': 'Wf9Vmi5iwd2rmEH26ERwh8qnVd4=',
 					},
 					success: (res) => {
 						console.log(res)
 						uni.hideLoading()
 						uni.showToast({
 							title: '上传成功',
-							icon: 'success'
+							icon: 'none'
 						})
 						//只管这个变量
 						this.$store.commit('updateImgData', nameStr)
 					},
 					fail: (err) => {
+						uni.hideLoading()
 						console.log('uploadImage fail', err);
 						uni.showModal({
 							content: err.errMsg,

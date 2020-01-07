@@ -81,7 +81,7 @@
 			<view class="content-box">
 				<view class="left-box">注册手机号</view>
 				<view class="right-box">
-					<text>{{userInfo.phone}}</text>
+					<text>{{tel}}</text>
 					<image src="/static/image/icon/icon_enter.png" mode="aspectFit"></image>
 				</view>
 			</view>
@@ -169,6 +169,7 @@
 				inputValue: currentDate,
 				shixian: false,
 				userInfo: {},
+				tel: '',
 
 				showMarn: false,
 				newMarn: '',
@@ -438,7 +439,7 @@
 		onLoad() {
 			this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			this.userInfo.brithday = this.getBirthday(this.userInfo.brithday)
-			this.userInfo.phone = this.userInfo.phone.substr(2)
+			this.tel = this.userInfo.phone.substr(2)
 		}
 	}
 </script>

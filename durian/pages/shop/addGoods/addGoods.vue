@@ -80,8 +80,6 @@
 						let imageSrc = res.tempFilePaths[0]
 						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
 						let nameStr = userInfo.userId + '/' + address + tiemr.getTime() + str
-						// nameStr =  res.tempFilePaths[0]
-						console.log(nameStr)
 						uni.showLoading({
 							title: '上传中'
 						});
@@ -93,14 +91,13 @@
 							formData: {
 								name: nameStr,
 								'key': nameStr,
-								'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+								'policy': 'eyJleHBpcmF0aW9uIjoiMjAzMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
 								'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
 								'success_action_status': '200',
 								//让服务端返回200,不然，默认会返回204
-								'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
+								'signature': 'Wf9Vmi5iwd2rmEH26ERwh8qnVd4=',
 							},
 							success: (res) => {
-								console.log(res)
 								uni.hideLoading()
 								uni.showToast({
 									title: '上传成功',
@@ -109,10 +106,8 @@
 								})
 								//只管这个变量
 								this.imgList.push(nameStr)
-								console.log(this.imgList)
 							},
 							fail: (err) => {
-								console.log('uploadImage fail', err);
 								uni.showModal({
 									content: err.errMsg,
 									showCancel: false
