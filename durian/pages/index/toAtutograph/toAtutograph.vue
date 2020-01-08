@@ -59,17 +59,18 @@
 					})
 					uni.canvasToTempFilePath({
 						canvasId: 'firstCanvas',
-
+						destWidth: 400,
+						destHeight: 400,
 						success: (res) => {
 							//打印图片路径
 							console.log(res.tempFilePath)
 							console.log('完成签名')
 							//设置图片
-							// _that.signImage = res.tempFilePath
-							// uni.showLoading({
-							// 	title: '上传签名中...'
-							// })
-							// this.upLoadOss(res.tempFilePath)
+							_that.signImage = res.tempFilePath
+							uni.showLoading({
+								title: '上传签名中...'
+							})
+							this.upLoadOss(res.tempFilePath)
 
 							// uni.saveImageToPhotosAlbum({
 							// 	filePath: res.tempFilePath,
