@@ -34,7 +34,7 @@
 		},
 		data() {
 			return {
-				tel: uni.getStorageSync('userTel'),
+				tel: this.$util.tryParseJson(uni.getStorageSync('userInfo')).phone,
 				code: '',
 				passData: '',
 				passAgin: ''

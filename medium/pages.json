@@ -172,6 +172,10 @@
             "path" : "pages/news/contract/contract",
             "style" : {}
         }
+        ,{
+            "path" : "pages/user/helpcenter/helpInfo",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

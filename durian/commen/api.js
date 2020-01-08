@@ -123,6 +123,11 @@ api.updateUser = function(cnt, callback) {
 	util.call(baseUrl + '/user/updateUser', cnt, callback)
 }
 
+// 获取用户平台币 
+api.getUserCurrency = function(cnt, callback) {
+	util.call(baseUrl + '/user/getUserCurrency', cnt, callback)
+}
+
 /* 商城 */
 // 商城页商品列表 
 api.getGoods = function(cnt, callback) {
@@ -241,4 +246,16 @@ api.getChangeRecordList = function(cnt, callback) {
 api.setStudentAutograph = function(cnt, callback) {
 	util.call(baseUrl + '/contract/setStudentAutograph', cnt, callback)
 }
+
+/* 帮助中心 */
+// 帮助列表 
+api.getAutoReplyList = function(cnt, callback) {
+	util.call(baseUrl + '/help/getAutoReplyList', cnt, callback)
+}
+
+// 根据id查帮助文案 
+api.getAutoReply = function(cnt, callback) {
+	util.call(baseUrl + '/help/getAutoReply', cnt, callback)
+}
+
 export default api

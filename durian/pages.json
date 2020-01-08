@@ -219,6 +219,10 @@
             "path" : "pages/index/toAtutograph/toAtutograph",
             "style" : {}
         }
+        ,{
+            "path" : "pages/user/helpCenter/helpInfo",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

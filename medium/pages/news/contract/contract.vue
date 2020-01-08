@@ -182,41 +182,12 @@
 			},
 
 			setpPDF(cnt) {
-				uni.showLoading({
-					title: '合同生成中，请勿操作'
-				})
 				this.$api.setpPDF(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.hideLoading()
-						let obj = this.$util.tryParseJson(res.data.c)
-						console.log(obj)
-
-						let newObj = {
-							conId: obj.conId,
-							fileUrl: obj.fileUrl
-						}
-
-						let currentConversationType = 'C2C'
-
-						let message = this.tim.createCustomMessage({
-							to: String(this.toUserId),
-							conversationType: currentConversationType,
-							payload: {
-								data: 'contract', // 用于标识该消息的类型
-								description: JSON.stringify(newObj), // 消息
-								extension: obj.clientName + obj.visasType + '合同' // 扩展说明
-							}
-						});
-
-						console.log('-------sendMessage-------------')
-						this.$store.commit('pushCurrentMessageList', message)
-
-						let pomise = this.tim.sendMessage(message)
-						pomise.then(res => {
-							this.$nextTick(() => {
-								// 滚动到底
-								uni.navigateBack()
-							});
+						uni.navigateBack()
+						uni.showToast({
+							title: '合同生成后会自动发送',
+							icon: 'none'
 						})
 					} else {
 						uni.showToast({

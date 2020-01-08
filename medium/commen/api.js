@@ -49,6 +49,11 @@ api.editUserAccountById = function(cnt, callback) {
 	util.call(baseUrl + '/user/editUserAccountById', cnt, callback)
 }
 
+// 获取用户平台币 
+api.getUserCurrency = function(cnt, callback) {
+	util.call(baseUrl + '/user/getUserCurrency', cnt, callback)
+}
+
 // 查询用户支出金额 
 api.getMyExpenditure = function(cnt, callback) {
 	util.call(baseUrl + '/task/getMyExpenditure', cnt, callback)
@@ -150,4 +155,14 @@ api.setpPDF = function(cnt, callback) {
 	util.call(baseUrl + '/contract/setpPDF', cnt, callback)
 }
 
+/* 帮助中心 */
+// 帮助中心列表 
+api.getAutoReplyList = function(cnt, callback) {
+	util.call(baseUrl + '/help/getAutoReplyList', cnt, callback)
+}
+
+// 根据id查帮助文案 
+api.getAutoReply = function(cnt, callback) {
+	util.call(baseUrl + '/help/getAutoReply', cnt, callback)
+}
 export default api

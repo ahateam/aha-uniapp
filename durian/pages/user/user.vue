@@ -181,6 +181,19 @@
 					}
 				})
 			},
+
+			getUserCurrency(cnt) {
+				this.$api.getUserCurrency(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.money = this.$util.tryParseJson(res.data.c).currency
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			}
 		},
 		onShow() {
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
@@ -196,6 +209,11 @@
 				offset: 0, // Integer 
 			}
 			this.getContractList(cnt)
+
+			let cnt1 = {
+				userId: userInfo.userId, // Long 用户id
+			};
+			this.getUserCurrency(cnt1)
 		}
 	}
 </script>

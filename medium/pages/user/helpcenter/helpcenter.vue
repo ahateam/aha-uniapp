@@ -6,14 +6,17 @@
 		</nav-bar>
 		<view class="top">产品重要功能说明</view>
 
-		<view class="content-list" v-for="(item,index) in list" :key="index">
+		<view class="content-list" v-for="(item,index) in list" :key="index" @click="navToInfo(item)">
 			<view class="con-list-left">
-				<image class="con-list-img" :src="item.src" mode="widthFix"></image>
-				<view class="">{{item.text}}</view>
+				<view class="img-font-box">
+					<image class="con-list-img" src="/static/image/icon/help_bg.png" mode="widthFix"></image>
+					<view class="img-font" :style="index + 1 > 9?'width:90rpx':''">{{index + 1}}</view>
+					<view class="clip-box"></view>
+				</view>
+				<view class="text-box">{{item.tag}}</view>
 			</view>
 			<image class="jian-tou" src="/static/image/icon/icon_enter.png" mode="widthFix"></image>
 		</view>
-
 	</view>
 </template>
 
@@ -25,25 +28,56 @@
 		},
 		data() {
 			return {
-				list: [{
-						src: '/static/image/user/1.png',
-						text: '如何保证自己的费用按时收取'
-					},
-					{
-						src: '/static/image/user/2.png',
-						text: '什么人可以发布任务'
-					},
-					{
-						src: '/static/image/user/3.png',
-						text: '对中介的各种要求等等'
-					}
-				]
+				count: 10,
+				offset: 0,
+				page: 1,
+				pageStatus: 'onload',
+				pageOver: false,
+
+				list: []
 			}
 		},
 		methods: {
+			navToInfo(item) {
+				console.log(item)
+				uni.navigateTo({
+					url: `./helpInfo?id=${item.autoReplyId}`
+				})
+			},
+
 			navBack() {
 				uni.navigateBack()
+			},
+
+			getAutoReplyList(cnt) {
+				this.$api.getAutoReplyList(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let list = this.$util.tryParseJson(res.data.c)
+						if (list.length < this.count) {
+							this.pageStatus = 'nomore'
+							this.pageOver = true
+						} else {
+							this.pageStatus = 'more'
+							this.pageOver = false
+						}
+						this.list = this.list.concat(list)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			}
+		},
+		onLoad() {
+			let cnt = {
+				// tag: tag, // String <选填> 问题
+				type: 0, // Byte 类型（0:帮助 / 1:智能客服）
+				count: this.count, // Integer 
+				offset: this.offset, // Integer 
+			}
+			this.getAutoReplyList(cnt)
 		}
 	}
 </script>
@@ -62,11 +96,18 @@
 		justify-content: space-between;
 		background: #F2F5F7;
 		margin: 30rpx;
+		overflow: hidden;
+		transition: all .3s;
+		
+		&:active{
+			opacity: .6;
+		}
 	}
 
 	.con-list-img {
 		width: 120rpx;
 		height: 100rpx;
+		display: block;
 	}
 
 	.con-list-left {
@@ -74,12 +115,17 @@
 		align-items: center;
 	}
 
-	.con-list-left>view {
+	.text-box {
+		position: relative;
+		z-index: 1;
 		height: 42rpx;
 		line-height: 42rpx;
-		color: #587685;
+		color: $group-color;
 		font-size: 30rpx;
 		padding-left: 13rpx;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.jian-tou {
@@ -101,5 +147,30 @@
 		color: #333333;
 		font-size: 36rpx;
 		font-weight: normal;
+	}
+
+	.img-font-box {
+		position: relative;
+		color: $group-color;
+		font-size: 50rpx;
+	}
+
+	.img-font {
+		position: absolute;
+		top: 0;
+		line-height: 100rpx;
+		text-align: center;
+		width: 90%;
+	}
+
+	.clip-box {
+		position: absolute;
+		bottom: 0;
+		left: 32rpx;
+		width: 0;
+		height: 0;
+		border: 100rpx solid;
+		border-left: 88rpx solid;
+		border-color: transparent transparent $group-color-search;
 	}
 </style>

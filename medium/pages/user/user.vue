@@ -144,6 +144,19 @@
 						})
 					}
 				})
+			},
+
+			getUserCurrency(cnt) {
+				this.$api.getUserCurrency(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.money = this.$util.tryParseJson(res.data.c).currency
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			}
 		},
 		onShow() {
@@ -162,6 +175,7 @@
 			}
 			this.getMyExpenditure(cnt) //支出
 			this.getMyIncome(cnt) //收入
+			this.getUserCurrency(cnt)
 		}
 	}
 </script>
@@ -252,8 +266,8 @@
 		justify-content: space-between;
 		padding: 34rpx 0 34rpx 20rpx;
 		border-bottom: 1rpx solid rgba($color: $group-color-border, $alpha: 0.7);
-		
-		&:active{
+
+		&:active {
 			background-color: rgba($color: #f9f9f9, $alpha: .9);
 		}
 	}
