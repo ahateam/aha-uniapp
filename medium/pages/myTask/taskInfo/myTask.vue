@@ -4,7 +4,7 @@
 			<view class="top-box">
 				<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
 				<view class="top-content">
-					<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
+					<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @tap="navBack"></image>
 					<view class="top-info-box">
 						<view class="top-name">{{task.userName}}</view>
 						<view class="top-time"><text class="iconfont iconshengri"></text><text>{{getDateTime(task.brithday)}}</text></view>
@@ -17,7 +17,7 @@
 			</view>
 
 			<view class="content-box">
-				<!-- <view class="ditor-btn" v-if="task.taskStatus == $constData.taskStatus[0].key" @click="edtiorBtn">
+				<!-- <view class="ditor-btn" v-if="task.taskStatus == $constData.taskStatus[0].key" @tap="edtiorBtn">
 				<image class="btn-bg" src="/static/image/task/bg_xixi.png" mode="aspectFit"></image>
 				<view class="btn-content">
 					<image src="/static/image/task/icon_gxb.png" mode="aspectFit"></image>
@@ -65,10 +65,10 @@
 						<view class="left-title bottom-font">接收者所需证书</view>
 						<view class="right-info bottom-font">{{task.qualName}}</view>
 					</view>
-					<view class="auto-box-gray space-box" style="border: none;" v-if="task.fileData">
+					<view class="auto-box-gray space-box" style="border: none;" v-if="task.fileData.length > 0">
 						<view class="left-title bottom-font">共享文件</view>
 						<view class="right-info bottom-font">{{task.taskData.name}}</view>
-						<view class="data-box space-box" v-for="(item,index) in task.fileData" :key="index">
+						<view class="data-box space-box" v-for="(item,index) in task.fileData" @tap="openDoc(item)" :key="index">
 							<view>
 								<view class="data-title">{{item.name}}</view>
 								<view class="data-size">{{item.size}}</view>
@@ -100,10 +100,10 @@
 							</view>
 						</view>
 					</view>
-					<view class="auto-box-gray space-box" v-if="task.taskStatus < 3&&task.fileData">
+					<view class="auto-box-gray space-box" v-if="task.taskStatus < 3&&task.fileData.length > 0">
 						<view class="left-title bottom-font">共享文件</view>
 						<view class="right-info bottom-font">{{task.taskData.name}}</view>
-						<view class="data-box space-box" v-for="(item,index) in task.fileData" :key="index">
+						<view class="data-box space-box" v-for="(item,index) in task.fileData" @tap="openDoc(item)" :key="index">
 							<view>
 								<view class="data-title">{{item.name}}</view>
 								<view class="data-size">{{item.size}}</view>
@@ -114,7 +114,7 @@
 					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < 3&&task.imgData.length > 0">
 						<view class="left-title bottom-font">收回材料</view>
 						<view class="data-img-list">
-							<view class="data-img-box" v-for="(item,index) in task.imgData" :key="index" :class="{'no-margin':getIndex(index)}">
+							<view class="data-img-box" v-for="(item,index) in task.imgData" :key="index" @tap="watchImg(index)" :class="{'no-margin':getIndex(index)}">
 								<image :src="constData.oss + item" mode="aspectFill"></image>
 							</view>
 						</view>
@@ -128,7 +128,7 @@
 			</view>
 
 			<view v-if="task.taskStatus < 3" class="bottom-btn" :class="task.taskStatus == 0?'':'pay-btn'">
-				<button @click="bottomBtn">{{btnName}}</button>
+				<button @tap="bottomBtn">{{btnName}}</button>
 			</view>
 		</view>
 
@@ -161,6 +161,57 @@
 			}
 		},
 		methods: {
+			watchImg(index) {
+				uni.previewImage({
+					urls: this.task.imgData,
+					current: index,
+					longPressActions: {
+						itemList: ['保存图片'],
+						success: (data) => {
+							console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+							if (data.tapIndex == 0) {
+								uni.saveImageToPhotosAlbum({
+									filePath: this.task.imgData[data.index],
+									success: (res) => {
+
+									}
+								})
+							}
+						},
+						fail: (err) => {
+							console.log(err.errMsg);
+						}
+					}
+				});
+			},
+
+			openDoc(item) {
+				uni.showLoading({
+					title: '下载中...'
+				})
+				uni.downloadFile({
+					url: this.$constData.oss + item.url,
+					success: (res) => {
+						uni.hideLoading()
+						var filePath = res.tempFilePath;
+						uni.openDocument({
+							filePath: filePath,
+							success: (res) => {
+								console.log('打开文档成功');
+							},
+							fail(err) {
+								console.log(err)
+							}
+						});
+					},
+					fail: (err) => {
+						uni.showModal({
+							title: err
+						})
+					}
+				})
+			},
+
 			getTime(time) {
 				return this.$commen.getNewDate(time)
 			},
@@ -257,6 +308,7 @@
 						this.task = { ...this.task,
 							...obj.publishUser
 						}
+						console.log(this.task)
 						this.pickUpUser = obj.pickUpUser
 						if (this.task.taskStatus == 0) {
 							this.btnName = '撤回'
@@ -265,7 +317,7 @@
 						}
 						this.pageStatus = 'succ'
 
-						console.log(this.pickUpUser)
+						// console.log(this.pickUpUser)
 					} else {
 						uni.showToast({
 							title: '服务器错误',
