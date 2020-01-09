@@ -462,6 +462,7 @@
 			}
 			this.contentList = []
 			this.pageStatus = 'loading'
+			this.page = 1
 			this.getPostingList(cnt)
 		},
 

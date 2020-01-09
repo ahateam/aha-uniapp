@@ -1,5 +1,5 @@
 <template>
-	<view style="padding-bottom: 102rpx;">
+	<view>
 		<view v-if="pageStatus != 'onload'">
 			<view class="top-box">
 				<image class="top-bg" src="/static/image/task/bg_rwmx.png" mode="aspectFill"></image>
@@ -60,21 +60,28 @@
 							</view>
 							<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
 						</view>
-					</view>
-
-					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;">
-						<view class="left-title bottom-font">提交完成文件</view>
 						<view class="data-img-list">
-							<view class="data-img-box" v-for="(item,index) in task.imgData" :key="index" :class="{'no-margin':getIndex(index)}">
+							<view class="data-img-box" v-for="(item,index) in task.imgData" :key="index" @tap="watchImg(index)" :class="{'no-margin':getIndex(index)}">
 								<image :src="constData.oss + item" mode="aspectFill"></image>
 							</view>
-							<view class="iconfont iconjia data-img-box"></view>
+						</view>
+					</view>
+
+					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus > constData.taskStatus[2].key&&task.translateFileData.length > 0||task.taskStatus < constData.taskStatus[2].key">
+						<view class="left-title bottom-font">提交完成文件</view>
+						<view class="data-img-list">
+							<view class="data-img-box" v-for="(item,index) in task.translateFileData" :key="index" :class="{'no-margin':getIndex(index)}">
+								<image :src="constData.oss + item" mode="aspectFill"></image>
+								<view class="iconfont iconguanbi" @click.stop="delImg(index)" v-if="task.taskStatus < constData.taskStatus[2].key"></view>
+							</view>
+							<view :class="{'no-margin':task.translateFileData.length == 2||task.translateFileData.length == 5||task.translateFileData.length == 8}"
+							 class="iconfont iconjia data-img-box" @tap="upLoad" v-if="task.taskStatus < constData.taskStatus[2].key"></view>
 						</view>
 					</view>
 				</view>
 			</view>
-			<view class="fixed-btn">
-				<next-btn title="确定" @click="navBack"></next-btn>
+			<view class="fixed-btn" v-if="task.taskStatus < constData.taskStatus[2].key">
+				<next-btn title="确定" @click="changeTask"></next-btn>
 			</view>
 		</view>
 
@@ -101,8 +108,132 @@
 			}
 		},
 		methods: {
+			changeTask() {
+				let cnt = {
+					taskId: this.task.taskId, // Long 任务id
+					taskStatus: this.$constData.taskStatus[2].key, // Byte <选填> 任务状态
+					translateFileData: JSON.stringify(this.task.translateFileData), // String <选填> 翻译文件地址
+				}
+				this.updateTaskByTaskId(cnt)
+			},
+
+			delImg(index) {
+				this.task.translateFileData.splice(index, 1)
+			},
+
+			upLoad() {
+				let tiemr = new Date()
+				let address = tiemr.getFullYear() + '' + (tiemr.getMonth() + 1) + '' + tiemr.getDate() + '/';
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['compressed'],
+					success: (res) => {
+						let imageSrc = res.tempFilePaths[0]
+						let str = res.tempFilePaths[0].substr(res.tempFilePaths[0].lastIndexOf('.'))
+						let nameStr = this.userInfo.userId + '/' + address + tiemr.getTime() + str
+						// nameStr =  res.tempFilePaths[0]
+						console.log(nameStr)
+						uni.showLoading({
+							title: '上传中'
+						})
+						this.upLoadImg(imageSrc, nameStr)
+					}
+				})
+			},
+
+			// 上传至服务器
+			upLoadImg(imageSrc, nameStr) {
+				uni.uploadFile({
+					url: this.$constData.oss,
+					filePath: imageSrc,
+					fileType: 'image',
+					name: 'file',
+					formData: {
+						name: nameStr,
+						'key': nameStr,
+						'policy': 'eyJleHBpcmF0aW9uIjoiMjAzMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+						'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
+						'success_action_status': '200',
+						//让服务端返回200,不然，默认会返回204
+						'signature': 'Wf9Vmi5iwd2rmEH26ERwh8qnVd4=',
+					},
+					success: (res) => {
+						console.log(res)
+						uni.hideLoading()
+						uni.showToast({
+							title: '上传成功',
+							icon: 'none'
+						})
+						//只管这个变量
+						this.task.translateFileData.push(nameStr)
+						console.log(this.task)
+					},
+					fail: (err) => {
+						uni.hideLoading()
+						console.log('uploadImage fail', err);
+						uni.showModal({
+							content: err.errMsg,
+							showCancel: false
+						})
+					}
+				})
+			},
+
+			watchImg(index) {
+				let list = []
+				this.task.imgData.map((item, index) => {
+					list.push(this.$constData.oss + item)
+				})
+				uni.previewImage({
+					current: index,
+					urls: list,
+					longPressActions: {
+						itemList: ['保存图片'],
+						success: (data) => {
+							if (data.tapIndex == 0) {
+								uni.saveImageToPhotosAlbum({
+									filePath: list[data.index],
+									success: (res) => {
+										uni.showToast({
+											title: '保存成功！',
+											icon: 'none'
+										})
+									}
+								})
+							}
+						},
+						fail: (err) => {
+							console.log(err.errMsg);
+						}
+					}
+				});
+			},
+
 			downFile(item) {
-				console.log(item)
+				uni.showLoading({
+					title: '下载中...'
+				})
+				uni.downloadFile({
+					url: this.$constData.oss + item.url,
+					success: (res) => {
+						uni.hideLoading()
+						var filePath = res.tempFilePath;
+						uni.openDocument({
+							filePath: filePath,
+							success: (res) => {
+								console.log('打开文档成功');
+							},
+							fail(err) {
+								console.log(err)
+							}
+						});
+					},
+					fail: (err) => {
+						uni.showModal({
+							title: err
+						})
+					}
+				})
 			},
 
 			getDateTime(time) {
@@ -117,6 +248,25 @@
 
 			navBack() {
 				uni.navigateBack()
+			},
+
+			updateTaskByTaskId(cnt) {
+				this.$api.updateTaskByTaskId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url:'../myTask'
+						})
+						uni.showToast({
+							title: '已提交文件',
+							icon: 'none'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
 			},
 
 			getChangeRecordList(cnt) {
@@ -150,6 +300,12 @@
 							obj.publishUser.fileData = []
 						}
 
+						if (obj.publishUser.translateFileData) {
+							obj.publishUser.translateFileData = this.$util.tryParseJson(obj.publishUser.translateFileData)
+						} else {
+							obj.publishUser.translateFileData = []
+						}
+
 						this.task = { ...this.task,
 							...obj.publishUser
 						}
@@ -172,6 +328,7 @@
 
 		onLoad(res) {
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			this.userInfo = userInfo
 			let cnt = {
 				taskId: res.id, // Long 任务id
 				userId: userInfo.userId
@@ -395,6 +552,7 @@
 
 
 	.data-img-box {
+		position: relative;
 		margin: 0 15rpx 15rpx 0;
 		width: 200rpx;
 		height: 200rpx;
@@ -413,8 +571,8 @@
 	}
 
 	.fixed-btn {
-		position: fixed;
-		bottom: 0;
+		// position: fixed;
+		// bottom: 0;
 		width: 100%;
 	}
 
@@ -428,5 +586,19 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	.iconguanbi {
+		position: absolute;
+		right: 8rpx;
+		top: 8rpx;
+		width: 38rpx;
+		height: 38rpx;
+		border-radius: 50%;
+		background-color: #EE455A;
+		color: $group-color-w;
+		font-size: 17rpx;
+		line-height: 38rpx;
+		text-align: center;
 	}
 </style>

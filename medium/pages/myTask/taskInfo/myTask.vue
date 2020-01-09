@@ -44,7 +44,7 @@
 					<view class="right-info" style="margin-top: 29rpx;">{{task.taskDescribe}}</view>
 				</view>
 
-				<view class="block-box" v-if="task.taskStatus == 0">
+				<view class="block-box" v-if="task.taskStatus == constData.taskStatus[0].key">
 					<view class="auto-box-gray space-box">
 						<view class="left-title bottom-font">任务发布时间</view>
 						<view class="right-info bottom-font">{{getDateTime(task.taskCreateTime)}}</view>
@@ -100,7 +100,7 @@
 							</view>
 						</view>
 					</view>
-					<view class="auto-box-gray space-box" v-if="task.taskStatus < 3&&task.fileData.length > 0">
+					<view class="auto-box-gray space-box" v-if="task.taskStatus < constData.taskStatus[3].key&&task.fileData.length > 0">
 						<view class="left-title bottom-font">共享文件</view>
 						<view class="right-info bottom-font">{{task.taskData.name}}</view>
 						<view class="data-box space-box" v-for="(item,index) in task.fileData" @tap="openDoc(item)" :key="index">
@@ -111,7 +111,7 @@
 							<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
 						</view>
 					</view>
-					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < 3&&task.imgData.length > 0">
+					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < constData.taskStatus[3].key&&task.imgData.length > 0">
 						<view class="left-title bottom-font">收回材料</view>
 						<view class="data-img-list">
 							<view class="data-img-box" v-for="(item,index) in task.imgData" :key="index" @tap="watchImg(index)" :class="{'no-margin':getIndex(index)}">
@@ -127,7 +127,7 @@
 				</view>
 			</view>
 
-			<view v-if="task.taskStatus < 3" class="bottom-btn" :class="task.taskStatus == 0?'':'pay-btn'">
+			<view v-if="task.taskStatus < constData.taskStatus[3].key" class="bottom-btn" :class="task.taskStatus == constData.taskStatus[0].key?'':'pay-btn'">
 				<button @tap="bottomBtn">{{btnName}}</button>
 			</view>
 		</view>
@@ -146,6 +146,7 @@
 		data() {
 			return {
 				constData: this.$constData,
+				userInfo: {},
 				count: 50,
 				offset: 0,
 
@@ -162,18 +163,24 @@
 		},
 		methods: {
 			watchImg(index) {
+				let list = []
+				this.task.imgData.map((item, index) => {
+					list.push(this.$constData.oss + item)
+				})
 				uni.previewImage({
-					urls: this.task.imgData,
+					urls: list,
 					current: index,
 					longPressActions: {
 						itemList: ['保存图片'],
 						success: (data) => {
-							console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
 							if (data.tapIndex == 0) {
 								uni.saveImageToPhotosAlbum({
-									filePath: this.task.imgData[data.index],
+									filePath: list[data.index],
 									success: (res) => {
-
+										uni.showToast({
+											title: '保存成功！',
+											icon: 'none'
+										})
 									}
 								})
 							}
@@ -246,10 +253,29 @@
 						break;
 					default:
 						cnt = {
-
+							taskId: this.task.taskId, // Long 任务id
+							taskStatus: this.$constData.taskStatus[3].key, // Byte <选填> 任务状态
+							payPrice: this.task.taskBudget, // Double <选填> 付款金额
+							payTime: this.nowTime(), // Date <选填> 付款时间
 						}
 						this.updateTaskByTaskId(cnt)
+						let cnt1 = {
+							orderType: this.$constData.orderType[2].key, // Byte 订单类型
+							buyerId: this.userInfo.userId, // Long 买家id
+							goodsId: this.task.taskId, // Long 商品id
+							sellerId: this.pickUpUser.pickUpUserId, // Long 卖家id
+							goodsNumber: 1, // Integer 商品数量
+							payment: this.task.taskBudget, // Double 支付金额
+							addressId: 1, // Long 收货地址id
+							addressName: '任务', // String 收货地址名称
+							// remark: remark, // String <选填> 备注
+						}
+						this.createDurianOrder(cnt1)
 				}
+			},
+
+			nowTime() {
+				return this.$commen.dateTimeFliter(new Date())
 			},
 
 			getIndex(index) {
@@ -274,6 +300,39 @@
 			// 	})
 			// },
 
+			createDurianOrder(cnt) {
+				console.log('111111')
+				this.$api.createDurianOrder(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log(this.$util.tryParseJson(res.data.c))
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			updateTaskByTaskId(cnt) {
+				this.$api.updateTaskByTaskId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.showToast({
+							title: '已付款！',
+							icon: 'none'
+						})
+						uni.switchTab({
+							url: '../myTask'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
 			getChangeRecordList(cnt) {
 				this.$api.getChangeRecordList(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -292,9 +351,8 @@
 				this.$api.getUserByTaskId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let obj = this.$util.tryParseJson(res.data.c)
-						// console.log(obj)
 						if (obj.publishUser.imgData) {
-							obj.publishUser.imgData = this.$util.tryParseJson(obj.imgData)
+							obj.publishUser.imgData = this.$util.tryParseJson(obj.publishUser.imgData)
 						} else {
 							obj.publishUser.imgData = []
 						}
@@ -329,6 +387,7 @@
 		},
 		onLoad(res) {
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			this.userInfo = userInfo
 			let cnt = {
 				taskId: res.id, // Long 任务id
 				userId: userInfo.userId

@@ -165,4 +165,10 @@ api.getAutoReplyList = function(cnt, callback) {
 api.getAutoReply = function(cnt, callback) {
 	util.call(baseUrl + '/help/getAutoReply', cnt, callback)
 }
+
+/* 订单 */
+ // 创建订单 
+ api.createDurianOrder = function(cnt, callback) {
+ 	util.call(baseUrl + '/goods/createDurianOrder', cnt, callback)
+ }
 export default api
