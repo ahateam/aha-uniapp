@@ -44,7 +44,7 @@
 				</button>
 				<view class="img-list" v-else>
 					<view class="img-list-box" v-for="(item,index) in imgList" :key="index">
-						<image :src="item" mode="aspectFill"></image>
+						<image :src="constData.oss + item" mode="aspectFill"></image>
 						<view class="iconfont iconguanbi" @click.stop="delImg(index)"></view>
 					</view>
 					<view class="iconfont iconjia img-list-box" @click="upImgStar"></view>
@@ -79,7 +79,7 @@
 				</view>
 			</view>
 		</uni-popup>
-		
+
 		<loading :status="pageStatus"></loading>
 	</view>
 </template>
@@ -159,6 +159,7 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
 				pageStatus: 'onload',
 
 				type: '',
@@ -279,11 +280,11 @@
 					formData: {
 						name: nameStr,
 						'key': nameStr,
-						'policy': 'eyJleHBpcmF0aW9uIjoiMjAyMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
+						'policy': 'eyJleHBpcmF0aW9uIjoiMjAzMC0wMS0wMVQxMjowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF1dfQ==',
 						'OSSAccessKeyId': 'LTAI4FqngBZhahjCXBPUDwSu',
 						'success_action_status': '200',
 						//让服务端返回200,不然，默认会返回204
-						'signature': '5n38HJgZyzC55khl0sPEf2oATtQ=',
+						'signature': 'Wf9Vmi5iwd2rmEH26ERwh8qnVd4=',
 					},
 					success: (res) => {
 						console.log(res)
@@ -293,7 +294,7 @@
 							icon: 'success'
 						})
 						//只管这个变量
-						this.$store.commit('updateImgData', this.$constData.oss + nameStr)
+						this.$store.commit('updateImgData', nameStr)
 					},
 					fail: (err) => {
 						console.log('uploadImage fail', err);

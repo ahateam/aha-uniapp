@@ -109,12 +109,20 @@
 		},
 		methods: {
 			changeTask() {
-				let cnt = {
-					taskId: this.task.taskId, // Long 任务id
-					taskStatus: this.$constData.taskStatus[2].key, // Byte <选填> 任务状态
-					translateFileData: JSON.stringify(this.task.translateFileData), // String <选填> 翻译文件地址
+				if (this.task.translateFileData.length > 0) {
+					let cnt = {
+						taskId: this.task.taskId, // Long 任务id
+						taskStatus: this.$constData.taskStatus[2].key, // Byte <选填> 任务状态
+						translateFileData: JSON.stringify(this.task.translateFileData), // String <选填> 翻译文件地址
+					}
+					this.updateTaskByTaskId(cnt)
+				} else {
+					uni.showToast({
+						title: '请上传完成文件',
+						icon: 'none'
+					})
 				}
-				this.updateTaskByTaskId(cnt)
+
 			},
 
 			delImg(index) {
@@ -254,7 +262,7 @@
 				this.$api.updateTaskByTaskId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.switchTab({
-							url:'../myTask'
+							url: '../myTask'
 						})
 						uni.showToast({
 							title: '已提交文件',
@@ -273,8 +281,9 @@
 				this.$api.getChangeRecordList(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let arr = this.$util.tryParseJson(res.data.c).list
-						arr.reverse
-						this.taskStatus = arr[0].stepName
+						console.log('状态栏')
+						console.log(arr)
+						this.taskStatus = arr[arr.length - 1].stepName
 					} else {
 						uni.showToast({
 							title: res.data.rm,

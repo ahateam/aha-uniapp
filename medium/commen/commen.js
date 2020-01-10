@@ -34,12 +34,17 @@ commen.showTabIcon = () => {
 }
 
 commen.hiddenTabIcon = () => {
-	// #ifdef APP-PLUS
 	let icon = plus.nativeObj.View.getViewById("icon");
 	setTimeout(function() {
 		icon.hide();
 	}, 100);
-	// #endif
+}
+
+commen.clearTabIcon = () => {
+	let icon = plus.nativeObj.View.getViewById("icon");
+	setTimeout(function() {
+		icon.close();
+	}, 100);
 }
 
 

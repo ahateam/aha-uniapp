@@ -81,6 +81,7 @@
 			outLogin() {
 				uni.clearStorageSync()
 				this.$store.dispatch('logout')
+				this.$commen.clearTabIcon()
 				uni.reLaunch({
 					url: '/pages/login/mobilePassword'
 				})

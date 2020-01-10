@@ -110,11 +110,18 @@
 							</view>
 							<image class="data-icon" src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
 						</view>
-					</view>
-					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < constData.taskStatus[3].key&&task.imgData.length > 0">
-						<view class="left-title bottom-font">收回材料</view>
+
 						<view class="data-img-list">
 							<view class="data-img-box" v-for="(item,index) in task.imgData" :key="index" @tap="watchImg(index)" :class="{'no-margin':getIndex(index)}">
+								<image :src="constData.oss + item" mode="aspectFill"></image>
+							</view>
+						</view>
+					</view>
+					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < constData.taskStatus[3].key&&task.translateFileData.length > 0">
+						<view class="left-title bottom-font">收回材料</view>
+						<view class="data-img-list">
+							<view class="data-img-box" v-for="(item,index) in task.translateFileData" :key="index" @tap="watchImg(index,true)"
+							 :class="{'no-margin':getIndex(index)}">
 								<image :src="constData.oss + item" mode="aspectFill"></image>
 							</view>
 						</view>
@@ -162,11 +169,17 @@
 			}
 		},
 		methods: {
-			watchImg(index) {
+			watchImg(index,e) {
 				let list = []
-				this.task.imgData.map((item, index) => {
-					list.push(this.$constData.oss + item)
-				})
+				if(e){
+					this.task.translateFileData.map((item, index) => {
+						list.push(this.$constData.oss + item)
+					})
+				}else{
+					this.task.imgData.map((item, index) => {
+						list.push(this.$constData.oss + item)
+					})
+				}
 				uni.previewImage({
 					urls: list,
 					current: index,
@@ -361,6 +374,12 @@
 							obj.publishUser.fileData = this.$util.tryParseJson(obj.publishUser.fileData)
 						} else {
 							obj.publishUser.fileData = []
+						}
+
+						if (obj.publishUser.translateFileData) {
+							obj.publishUser.translateFileData = this.$util.tryParseJson(obj.publishUser.translateFileData)
+						} else {
+							obj.publishUser.translateFileData = []
 						}
 
 						this.task = { ...this.task,
