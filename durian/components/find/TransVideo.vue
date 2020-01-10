@@ -6,7 +6,8 @@
 				{{item.posting.postingTextDate}}
 			</text>
 		</view>
-		<video class="videoBox" :class="{verticalVideo:type == 0}" :src="JSON.parse(item.posting.postingDate)[0]" controls></video>
+		<video class="videoBox" :poster="constData.oss + item.posting.postingDate + constData.ossClip" :class="{verticalVideo:type == 0}"
+		 :src="constData.oss + item.posting.postingDate" controls></video>
 	</view>
 </template>
 
@@ -25,6 +26,7 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
 				// type:0
 			}
 		},
@@ -49,8 +51,8 @@
 		display: block;
 		margin-bottom: 14rpx;
 	}
-	
-	.verticalVideo{
+
+	.verticalVideo {
 		width: 320rpx;
 		height: 480rpx;
 	}

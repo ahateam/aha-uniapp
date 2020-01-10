@@ -14,7 +14,8 @@
 					{{text}}
 				</view>
 				<view class="imgList" v-if="imgList.length > 0">
-					<image :src="constData.oss + item" mode="aspectFill" v-for="(item,index) in imgList" :key="index" :style="index == 2?'margin:0':''"></image>
+					<image :style="index == 2||index == 5||index == 8?'margin-right:0':''" v-for="(item,index) in imgList" :key="index"
+					 @tap="watchImg(index)" :src="constData.oss + item" mode="aspectFill"></image>
 				</view>
 				<view class="abilityBox">
 					<view class="icon-box">
@@ -182,6 +183,36 @@
 		},
 
 		methods: {
+			watchImg(index) {
+				let list = []
+				this.imgList.map((item, index) => {
+					list.push(this.$constData.oss + item)
+				})
+				uni.previewImage({
+					urls: list,
+					current: index,
+					longPressActions: {
+						itemList: ['保存图片'],
+						success: (data) => {
+							if (data.tapIndex == 0) {
+								uni.saveImageToPhotosAlbum({
+									filePath: list[data.index],
+									success: (res) => {
+										uni.showToast({
+											title: '保存成功！',
+											icon: 'none'
+										})
+									}
+								})
+							}
+						},
+						fail: (err) => {
+							console.log(err.errMsg);
+						}
+					}
+				});
+			},
+
 			createComment(list, index) {
 				console.log(list)
 				this.replyId = list.reply.sequenceId
@@ -642,13 +673,14 @@
 		display: flex;
 		flex-direction: row;
 		width: 690rpx;
+		flex-wrap: wrap;
 		// justify-content: space-between;
 
 
 		image {
 			height: 220rpx;
 			width: 220rpx;
-			margin-right: 15rpx;
+			margin: 0 15rpx 15rpx 0;
 			border-radius: 4rpx;
 			overflow: hidden;
 		}

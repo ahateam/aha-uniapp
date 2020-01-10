@@ -176,7 +176,7 @@
 				if (e) {
 					return this.$util.tryParseJson(item.posting.postingDate).length
 				} else if (item.posting.postingType == this.$constData.groupType[3].key) {
-					return this.$util.tryParseJson(item.posting.postingDate)
+					return item.posting.postingDate
 				} else if (item.posting.postingType == this.$constData.groupType[1].key) {
 					return this.$util.tryParseJson(item.posting.postingDate)[0]
 				}
@@ -378,7 +378,9 @@
 				return this.$commen.getNewDate(time)
 			},
 			navToContent(item) {
-				if (item.posting.postingType == this.$constData.groupType[3].key) {
+				if (item.posting.postingType == this.$constData.groupType[4].key) {
+					console.log('share')
+				} else if (item.posting.postingType == this.$constData.groupType[3].key) {
 					uni.navigateTo({
 						url: `/pages/find/videoView/videoView?id=${item.posting.postingId}`
 					})

@@ -83,6 +83,10 @@
 		box-sizing: border-box;
 		border-radius: 6rpx;
 		padding: 15rpx 20rpx 15rpx 30rpx;
+		
+		&:active{
+			background-color: rgba($color: #fffcf3, $alpha: 1.0);
+		}
 	}
 
 	.stuty-img {

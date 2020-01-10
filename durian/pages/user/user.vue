@@ -24,7 +24,7 @@
 		</view>
 
 		<view class="content-List">
-			<view class="content-box" style="flex-wrap: wrap;" @click="navToView('/pages/user/userApply/userApply')">
+			<view class="content-box" style="flex-wrap: wrap;" @click="navToView('/pages/user/userApply/userApply')" v-if="applyTitle != '获取数据中...'">
 				<view class="left-box">
 					<image class="left-icon" src="/static/image/user/icon_wdsq.png" mode="aspectFit"></image>
 					<text>我的申请</text>
@@ -126,16 +126,18 @@
 				this.$api.getContractList(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let obj = this.$util.tryParseJson(res.data.c)
-						if (obj[0].collectionItems.length > 0) {
-							this.applyTitle = obj[0].collectionItems[0].item + obj[0].collectionItems[0].major + '申请'
-						} else {
-							this.applyTitle = obj[0].clientName + '移民申请'
-						}
+						if (obj.length > 0) {
+							if (obj[0].collectionItems.length > 0) {
+								this.applyTitle = obj[0].collectionItems[0].item + obj[0].collectionItems[0].major + '申请'
+							} else {
+								this.applyTitle = obj[0].clientName + '移民申请'
+							}
 
-						let cnt1 = {
-							contractId: obj[0].conId, // Long 合同id
+							let cnt1 = {
+								contractId: obj[0].conId, // Long 合同id
+							}
+							this.getTaskByContractId(cnt1)
 						}
-						this.getTaskByContractId(cnt1)
 					} else {
 						uni.showToast({
 							title: res.data.rm,

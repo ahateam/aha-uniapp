@@ -13,7 +13,8 @@
 				<view class="textBox">
 					{{text}}
 				</view>
-				<video class="videoBox" :src="constData.oss + videoSrc" controls></video>
+				<video :poster="constData.oss + videoSrc + constData.ossClip" class="videoBox" :src="constData.oss + videoSrc"
+				 controls></video>
 				<view class="abilityBox">
 					<view class="icon-box">
 						<image src="/static/image/find/icon_llrs.png" mode="aspectFit"></image>
@@ -453,8 +454,9 @@
 						this.upName = data.posting.userName
 						this.upHead = data.posting.userHead
 						this.text = data.posting.postingTextDate
-						this.videoSrc = this.$util.tryParseJson(data.posting.postingDate).videoSrc
+						this.videoSrc = data.posting.postingDate
 						this.time = this.getTime(data.posting.postingCreateTime)
+						console.log(this.videoSrc)
 					} else {
 						console.log('error')
 					}

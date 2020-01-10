@@ -145,6 +145,7 @@
 				this.$api.createReceivingAddress(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log(this.$util.tryParseJson(res.data.c))
+						this.addressId = this.$util.tryParseJson(res.data.c).addressId
 						let cnt1 = {
 							orderType: this.$constData.orderType[0].key, // Byte 订单类型
 							buyerId: this.userInfo.userId, // Long 买家id

@@ -20,7 +20,7 @@
 			<view class="replayBtn" @click="createComment(list,index)" v-if="list.reply.sequenceId">
 				回复
 			</view>
-			<view class="replayBox" v-if="list.comment.length > 0">
+			<view class="replayBox" v-if="list.comment[0].commentInfo">
 				<view v-for="(item,index) in list.comment" :key="index" v-if="index == 0">
 					<text>{{item.commentInfo.upUserName}}：</text>
 					<text class="replayText">{{item.commentInfo.text}}</text>

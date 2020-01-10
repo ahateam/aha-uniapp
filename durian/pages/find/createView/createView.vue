@@ -12,13 +12,13 @@
 		<view class="hidden-box">{{imgList[imgList.length-1]}}</view>
 		<!-- end -->
 
-		<movable-area class="imgBox">
+		<movable-area class="imgBox" v-if="!imgUrl">
 			<view class="textBox">
 				<textarea v-model="text" placeholder="告诉大家你今天的分享…" />
 				</view>
 				
 			<view class="video-box" v-if="videoSrc">
-				<video :src="videoSrc" controls></video>
+				<video :src="constData.oss + videoSrc" controls></video>
 			</view>
 			
 			<view style="margin: 0 30rpx;" v-if="shareInfo.shareType">
@@ -222,7 +222,6 @@
 			},
 			
 			addContent(){
-				
 				let cnt = {
 					moduleId: this.$constData.module, // String 模块编号
 					// ownerId: ownerId, // Long 持有者内容编号
@@ -235,7 +234,7 @@
 				if(this.videoSrc){
 					let data = this.videoSrc
 					cnt.data = data
-					cnt.type = this.$constData.groupType[2].key
+					cnt.type = this.$constData.groupType[3].key
 				}else if(this.imgList.length > 0){
 					let data = JSON.stringify(this.imgList)
 					cnt.data = data
@@ -261,6 +260,13 @@
 			createPosting(cnt){
 				this.$api.createPosting(cnt,(res)=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
+						if(this.shareInfo.shareType){
+							let cnt1 ={
+								userId: this.userInfo.userId, // Long 用户id
+								ownerId: this.shareInfo.shareId, // Long 内容id
+							}
+							this.createUserShare(cnt1)
+						}
 						uni.switchTab({
 							url:'/pages/find/find'
 						})
@@ -271,6 +277,19 @@
 					}else{
 						uni.showToast({
 							title:'服务器错误！',
+							icon:'none'
+						})
+					}
+				})
+			},
+			
+			createUserShare(cnt){
+				this.$api.getTaskByContractId(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						console.log(this.$util.tryParseJson(res.data.c))
+					} else {
+						uni.showToast({
+							title:res.data.rm,
 							icon:'none'
 						})
 					}
@@ -382,7 +401,7 @@
 							icon: 'none'
 						})
 						//只管这个变量
-						this.videoSrc = this.$constData.oss + nameStr
+						this.videoSrc = nameStr
 					}
 				})
 			},

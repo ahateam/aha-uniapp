@@ -8,6 +8,8 @@ const constData = {}
 
 constData.oss = 'http://durian-file.oss-ap-southeast-2.aliyuncs.com/'
 
+constData.ossClip = '?spm=a2c4g.11186623.2.9.73b7218cJYI9Vf&x-oss-process=video/snapshot,t_3000,f_jpg,w_0,h_0,m_fast'
+
 constData.module = 1190
 
 

@@ -104,14 +104,31 @@
 		},
 		onLoad(res) {
 			this.id = res.id
-			let cnt = {
-				goodsId: this.id, // Long 商品id
-			}
-			this.getByGoodId(cnt)
-
 			this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+			let cnt1 = {
+				userId: this.userInfo.userId, // Long 用户id
+			};
+			this.getUserCurrency(cnt1)
 		},
 		methods: {
+			getUserCurrency(cnt) {
+				this.$api.getUserCurrency(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.money = this.$util.tryParseJson(res.data.c).currency
+
+						let cnt = {
+							goodsId: this.id, // Long 商品id
+						}
+						this.getByGoodId(cnt)
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
 			getMoney() {
 				return this.price / 10
 			},
@@ -141,7 +158,7 @@
 
 			changeStatus() {
 				//判断用户的钱数是否大于平台币100的数量 大于平台币 true
-				if (this.price > this.userInfo.currency) {
+				if (this.price > this.money) {
 					this.buyStatus = false
 				} else {
 					this.buyStatus = true

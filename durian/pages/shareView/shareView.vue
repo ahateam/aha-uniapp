@@ -104,6 +104,7 @@
 				],
 
 				posterImg: '',
+				cilickPost: false
 			}
 		},
 		methods: {
@@ -121,6 +122,7 @@
 
 			navToPost() {
 				if (this.posterImg == '') {
+					this.cilickPost = true
 					uni.showLoading({
 						title: '海报生成中...'
 					})
@@ -282,6 +284,9 @@
 							uni.setStorageSync('posterImg', this.posterImg)
 							this.val = ''
 							uni.hideLoading()
+							if (this.cilickPost) {
+								this.navToPost()
+							}
 						}
 					})
 				}, 300)
