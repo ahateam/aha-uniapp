@@ -91,6 +91,8 @@
 				constData: this.$constData,
 				userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo')),
 				
+				uplogin:false,
+				
 				imgUrl: '',
 				
 				text: '',
@@ -222,44 +224,51 @@
 			},
 			
 			addContent(){
-				let cnt = {
-					moduleId: this.$constData.module, // String 模块编号
-					// ownerId: ownerId, // Long 持有者内容编号
-					show: this.statusIndex, // Byte <选填> 校内外可见
-					upUserId: this.userInfo.userId, // Long 创建者用户编号
-					text: this.text, // String <选填> 文本
-					// data: data, // String <选填> 其他图片视频数据
-					// ext: ext, // String <选填> 扩展数据
-				}
-				if(this.videoSrc){
-					let data = this.videoSrc
-					cnt.data = data
-					cnt.type = this.$constData.groupType[3].key
-				}else if(this.imgList.length > 0){
-					let data = JSON.stringify(this.imgList)
-					cnt.data = data
-					cnt.type = this.$constData.groupType[1].key
-				}else if(this.shareInfo.shareType){
-					cnt.type = this.$constData.groupType[4].key
-					let data = {
-						shareImg:this.shareInfo.shareImg,
-						shareType: this.shareInfo.shareType,
-						shareId: this.shareInfo.shareId,
-						shareText: this.shareInfo.shareText
+				if(!this.uplogin){
+					this.uplogin = true
+					uni.showLoading({
+						title:'帖子上传中'
+					})
+					let cnt = {
+						moduleId: this.$constData.module, // String 模块编号
+						// ownerId: ownerId, // Long 持有者内容编号
+						show: this.statusIndex, // Byte <选填> 校内外可见
+						upUserId: this.userInfo.userId, // Long 创建者用户编号
+						text: this.text, // String <选填> 文本
+						// data: data, // String <选填> 其他图片视频数据
+						// ext: ext, // String <选填> 扩展数据
 					}
-					if(this.shareInfo.shareType == this.$constData.shareType[1].key||this.shareInfo.shareType == this.$constData.shareType[2].key){
-						data.type = this.shareInfo.type
+					if(this.videoSrc){
+						let data = this.videoSrc
+						cnt.data = data
+						cnt.type = this.$constData.groupType[3].key
+					}else if(this.imgList.length > 0){
+						let data = JSON.stringify(this.imgList)
+						cnt.data = data
+						cnt.type = this.$constData.groupType[1].key
+					}else if(this.shareInfo.shareType){
+						cnt.type = this.$constData.groupType[4].key
+						let data = {
+							shareImg:this.shareInfo.shareImg,
+							shareType: this.shareInfo.shareType,
+							shareId: this.shareInfo.shareId,
+							shareText: this.shareInfo.shareText
+						}
+						if(this.shareInfo.shareType == this.$constData.shareType[1].key||this.shareInfo.shareType == this.$constData.shareType[2].key){
+							data.type = this.shareInfo.type
+						}
+						cnt.data = JSON.stringify(data)
+					}else if(this.imgList.length == 0){
+						cnt.type = this.$constData.groupType[0].key
 					}
-					cnt.data = JSON.stringify(data)
-				}else if(this.imgList.length == 0){
-					cnt.type = this.$constData.groupType[0].key
+					this.createPosting(cnt)
 				}
-				this.createPosting(cnt)
 			},
 			
 			createPosting(cnt){
 				this.$api.createPosting(cnt,(res)=>{
 					if(res.data.rc == this.$util.RC.SUCCESS){
+						uni.hideLoading()
 						if(this.shareInfo.shareType){
 							let cnt1 ={
 								userId: this.userInfo.userId, // Long 用户id

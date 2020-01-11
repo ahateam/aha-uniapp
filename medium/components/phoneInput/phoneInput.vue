@@ -9,6 +9,7 @@
 
 <script>
 	export default {
+		name:'phoneInput',
 		props:{
 			value:String,
 		},

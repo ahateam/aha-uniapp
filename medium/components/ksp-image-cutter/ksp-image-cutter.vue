@@ -36,6 +36,7 @@
 
 <script>
 	export default {
+		name: 'kspImageCutter',
 		props: {
 			url: {
 				type: String,
@@ -400,6 +401,9 @@
 				}));
 			},
 			onok() {
+				uni.showLoading({
+					title: '图片生成中'
+				})
 				var scale = this.image.width / this.real.width;
 				var x = (this.frame.left - this.image.left) / scale;
 				var y = (this.frame.top - this.image.top) / scale;
@@ -430,6 +434,7 @@
 						uni.canvasToTempFilePath({
 							canvasId: "target",
 							success: (res) => {
+								uni.hideLoading()
 								var path = res.tempFilePath;
 								// #ifdef H5
 								if (this.blob) {
@@ -450,8 +455,8 @@
 			oncancle() {
 				this.$emit("cancel");
 			},
-			
-			restart(){
+
+			restart() {
 				this.$emit("restart");
 			}
 		}

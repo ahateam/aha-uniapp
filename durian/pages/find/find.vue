@@ -57,7 +57,7 @@
 						<share-list :item="item" v-else-if="item.posting.postingType == constData.groupType[4].key"></share-list>
 					</view>
 
-					<view class="abilityBox" @click.stop>
+					<view class="abilityBox" v-if="item.posting.postingType != constData.groupType[4].key" @click.stop>
 						<view class="icon-box">
 							<image src="/static/image/find/icon_llrs.png" mode="aspectFit"></image>
 							<text class="iconText">{{item.posting.postingPageView}}</text>
@@ -422,6 +422,10 @@
 			getNavHeight() {
 				return uni.getSystemInfoSync()['statusBarHeight']
 			},
+		},
+
+		onShow() {
+			uni.removeStorageSync('shareText')
 		},
 
 		onLoad() {

@@ -13,6 +13,7 @@
 
 <script>
 	export default {
+		name: 'LFile',
 		props: {
 			top: {
 				type: String,

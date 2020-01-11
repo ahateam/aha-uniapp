@@ -49,7 +49,7 @@
 		watch: {
 			isSDKReady(newVal) {
 				if (newVal) {
-					
+
 					uni.reLaunch({
 						url: '../task/task'
 					})
@@ -98,6 +98,7 @@
 						this.$store.commit("toggleIsLogin", true);
 						this.$store.commit("startComputeCurrent");
 						if (this.$store.state.user.isSDKReady) {
+							uni.hideLoading()
 							uni.reLaunch({
 								url: '../task/task'
 							})
@@ -126,16 +127,20 @@
 						icon: 'none'
 					})
 				} else {
+					uni.showLoading({
+						title: 'login'
+					})
 					let cnt = {
 						phone: this.areaCode + this.phoneNumber, // String 手机号
 						pwd: this.passData, // String 密码
+						userType: 1
 					}
 					this.$api.login(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
 							this.userInfo = this.$util.tryParseJson(res.data.c)
 							uni.setStorageSync('userInfo', JSON.stringify(this.userInfo))
 							this.timLogin()
-							
+
 						} else {
 							uni.showToast({
 								title: '登录失败，用户名或密码错误',

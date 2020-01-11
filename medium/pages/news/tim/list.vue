@@ -46,7 +46,7 @@
 									<image :src="row.msg.content.url" :style="{'width': row.msg.content.w+'px','height': row.msg.content.h+'px'}"></image>
 								</view>
 								<!-- 自定义消息__合同 -->
-								<view v-if="row.type=='TIMCustomElem'&&row.payload.data == 'contract'" class="bubble contract">
+								<view v-if="row.type=='TIMCustomElem'&&row.payload.data == 'contract'" class="bubble contract" @tap="openDoc(row)">
 									<view class="contract-text">{{row.payload.extension}}</view>
 									<image src="/static/image/icon/icon_ht.png" mode="aspectFit"></image>
 								</view>
@@ -83,7 +83,7 @@
 								</view>
 
 								<!-- 合同消息 -->
-								<view v-if="row.type=='TIMCustomElem'&&row.payload.data == 'contract'" class="bubble contract" @click="openDoc(row)">
+								<view v-if="row.type=='TIMCustomElem'&&row.payload.data == 'contract'" class="bubble contract" @tap="openDoc(row)">
 									<view class="contract-text">{{row.payload.extension}}</view>
 									<image src="/static/image/icon/icon_ht.png" mode="aspectFit"></image>
 								</view>

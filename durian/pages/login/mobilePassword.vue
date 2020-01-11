@@ -98,9 +98,16 @@
 						this.$store.commit("toggleIsLogin", true);
 						this.$store.commit("startComputeCurrent");
 						if (this.$store.state.user.isSDKReady) {
-							uni.reLaunch({
-								url: '../index/index'
-							})
+							if (this.userInfo.isFirstLogin) {
+								uni.hideLoading()
+								uni.reLaunch({
+									url: '../guide/guide'
+								})
+							} else {
+								uni.reLaunch({
+									url: '../index/index'
+								})
+							}
 						}
 					})
 					.catch(error => {
@@ -126,13 +133,18 @@
 						icon: 'none'
 					})
 				} else {
+					uni.showLoading({
+						title: 'login...'
+					})
 					let cnt = {
 						phone: this.areaCode + this.phoneNumber, // String 手机号
 						pwd: this.passData, // String 密码
+						userType: 2
 					}
 					this.$api.login(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
 							this.userInfo = this.$util.tryParseJson(res.data.c)
+							console.log(this.userInfo)
 							uni.setStorageSync('userInfo', JSON.stringify(this.userInfo))
 							this.timLogin()
 							// uni.reLaunch({

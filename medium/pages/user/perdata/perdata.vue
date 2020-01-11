@@ -287,17 +287,17 @@
 			},
 
 			changeMarn() {
-				this.userInfo.MARN = this.newMarn
+				this.userInfo.marnNumber = this.newMarn
 				this.showMarn = false
 			},
 
 			changeFier() {
-				this.userInfo.FIER = this.newFier
+				this.userInfo.fierNumber = this.newFier
 				this.showFier = false
 			},
 
 			changeNaati() {
-				this.userInfo.NAATI = this.newNaati
+				this.userInfo.naatiNumber = this.newNaati
 				this.showNaati = false
 			},
 

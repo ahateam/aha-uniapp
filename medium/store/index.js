@@ -6,6 +6,7 @@ import user from './modules/user'
 import friend from './modules/friend'
 import blacklist from './modules/blacklist'
 import task from './modules/task'
+import contract from './modules/contract.js'
 
 Vue.use(Vuex)
 
@@ -15,7 +16,7 @@ export default new Vuex.Store({
 		intervalID: 0,
 		message: undefined,
 	},
-	
+
 	mutations: {
 		//tim
 		startComputeCurrent(state) {
@@ -46,6 +47,7 @@ export default new Vuex.Store({
 		friend,
 		blacklist,
 		user,
-		task
+		task,
+		contract
 	}
 })

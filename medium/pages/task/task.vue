@@ -317,16 +317,10 @@
 					this.timLogin()
 				}
 			} else {
-				uni.showToast({
-					icon: 'none',
-					title: '用户身份失效，请重新登录!'
+				uni.reLaunch({
+					url: '../login/mobilePassword'
 				})
-				setTimeout(() => {
-					uni.reLaunch({
-						url: '../login/mobilePassword'
-					})
-					this.$commen.hiddenTabIcon()
-				}, 300)
+				this.$commen.hiddenTabIcon()
 			}
 		},
 		onPullDownRefresh() {

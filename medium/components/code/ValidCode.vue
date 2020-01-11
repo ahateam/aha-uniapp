@@ -49,6 +49,7 @@ isPwd：是否是密码模式
 
 <script>
 	export default {
+		name: 'ValidCode',
 		props: {
 			//最大长度 值为4或者6
 			maxlength: {

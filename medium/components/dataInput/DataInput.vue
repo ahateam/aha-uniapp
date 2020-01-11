@@ -14,6 +14,7 @@
 
 <script>
 	export default {
+		name: 'DataInput',
 		props: {
 			value: String,
 			title: String,

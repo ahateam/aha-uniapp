@@ -62,7 +62,7 @@
 				</view>
 			</view>
 
-			<view class="bottom-btn">
+			<view class="bottom-btn" v-if="task.taskStatus == constData.taskWall[0].key">
 				<button @click="acceptTask">接任务</button>
 			</view>
 		</view>

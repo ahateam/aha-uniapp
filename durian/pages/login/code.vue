@@ -106,9 +106,15 @@
 						this.$store.commit("startComputeCurrent");
 						if (this.$store.state.user.isSDKReady) {
 							uni.setStorageSync('page', 'normal')
-							uni.reLaunch({
-								url: '../task/task'
-							})
+							if (this.userInfo.isFirstLogin) {
+								uni.reLaunch({
+									url: '../guide/guide'
+								})
+							} else {
+								uni.reLaunch({
+									url: '../index/index'
+								})
+							}
 						}
 					})
 					.catch(error => {
@@ -144,6 +150,7 @@
 					let cnt = {
 						phone: this.moblie, // String 手机号
 						code: this.code, // String 验证码
+						userType: 2
 					}
 					this.$api.loginByCode(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {

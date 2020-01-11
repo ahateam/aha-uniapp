@@ -151,8 +151,8 @@
 						}
 						cnt.collectionItems = this.collectionItems
 					}
-
-					this.createContractApi(cnt)
+					this.updateContract(cnt)
+					// this.createContractApi(cnt)
 				} else {
 					uni.showToast({
 						title: '请将信息输入完整',
@@ -160,6 +160,13 @@
 					})
 				}
 
+			},
+
+			updateContract(cnt) {
+				this.$store.commit('updateContract', cnt)
+				uni.navigateTo({
+					url: './toAtutograph'
+				})
 			},
 
 			createContractApi(cnt) {

@@ -9,6 +9,15 @@
 </template>
 
 <script>
+	export default {
+		name: 'LoadingIcons',
+		props: {
+			status: {
+				type: String,
+				default: 'onload'
+			}
+		}
+	}
 </script>
 
 <style lang="scss" scoped>

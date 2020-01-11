@@ -154,17 +154,22 @@
 		methods: {
 			changeList() {
 				let cnt = {
-					sellerId: this.userInfo.userId, // Long <选填> 发布者id
-					buyerId: this.userInfo.userId, // Long 买家id
+					userId: this.userInfo.userId, // Long 用户id
 					// startTime: startTime, // String <选填> 起始时间
 					// endTime: endTime, // String <选填> 结束时间
 					startMoney: this.smallPrice, // Double <选填> 起始金额
 					endMoney: this.bigPrice, // Double <选填> 结束金额
-					count: this.count, // Integer 
-					offset: this.offset, // Integer 
+					count: this.count, // Integer
+					offset: this.offset, // Integer
 				}
-				this.getOrderBySellerId(cnt)
-				this.getOrderByBuyerId(cnt)
+				if (this.navCurr == 1) {
+					cnt.isFinish = true // Boolean 订单是否完成（false进行中，true完成）
+				} else {
+					cnt.isFinish = false // Boolean 订单是否完成（false进行中，true完成）
+				}
+				this.contentList = []
+				this.myGoods = []
+				this.getOrderList(cnt)
 
 				this.moneyFilter = false
 			},
@@ -189,13 +194,13 @@
 
 			navToOrder(item) {
 				uni.navigateTo({
-					url: `./myGoods/myGoods?id=${item.orderId}&addressId=${item.addressId}`
+					url: `./myGoods/myGoods?id=${item.orderId}&addressId=${item.addressId}&status=${item.orderStatus}`
 				})
 			},
 
 			navToInfo(item) {
 				uni.navigateTo({
-					url: `./myShop/myShop?id=${item.orderId}&addressId=${item.addressId}`
+					url: `./myShop/myShop?id=${item.orderId}&addressId=${item.addressId}&status=${item.orderStatus}`
 				})
 			},
 
@@ -252,34 +257,27 @@
 						this.buy = false
 					}
 
-					if (this.navList[e].buyChild) {
+					if (this.navList[e].buyChild && this.navList[e].sellChild) {
 						this.contentList = this.navList[e].buyChild
 						this.buyPage = this.navList[e].buyPage
 						this.buyStatus = this.navList[e].buyStatus
 						this.buyOver = this.navList[e].buyOver
 					} else {
-						let cnt = {
-							buyerId: this.userInfo.userId, // Long 买家id
-							count: this.count, // Integer 
-							offset: this.offset, // Integer 
-						}
 						this.buyStatus = 'loading'
-						this.getOrderByBuyerId(cnt)
-					}
-
-					if (this.navList[e].sellChild) {
-						this.myGoods = this.navList[e].sellChild
-						this.sellPage = this.navList[e].sellPage
-						this.sellStatus = this.navList[e].sellStatus
-						this.sellOver = this.navList[e].sellOver
-					} else {
-						let cnt1 = {
-							sellerId: this.userInfo.userId, // Long <选填> 发布者id
-							count: this.count, // Integer 
-							offset: this.offset, // Integer 
-						}
 						this.sellStatus = 'loading'
-						this.getOrderBySellerId(cnt1)
+						this.contentList = []
+						this.myGoods = []
+						let cnt = {
+							userId: this.userInfo.userId, // Long 用户id
+							// startTime: startTime, // String <选填> 起始时间
+							// endTime: endTime, // String <选填> 结束时间
+							// startMoney: startMoney, // Double <选填> 起始金额
+							// endMoney: endMoney, // Double <选填> 结束金额
+							isFinish: true, // Boolean 订单是否完成（false进行中，true完成）
+							count: this.count, // Integer
+							offset: this.offset, // Integer
+						}
+						this.getOrderList(cnt)
 					}
 				}
 			},
@@ -288,64 +286,37 @@
 				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
 			},
 
-			tryListPush(obj) {
-				if (obj.completed.length < this.count && obj.ongoing.length < this.count) {
-					this.buyOver = true
-					this.buyStatus = 'nomore'
-				} else {
-					this.buyOver = false
-					this.buyStatus = 'more'
-				}
-				if (this.navCurr == 0) {
-					this.contentList = obj.ongoing
-				} else {
-					this.contentList = obj.completed
-				}
-				this.navList[this.navCurr].buyChild = this.contentList
-				this.navList[this.navCurr].buyOver = this.buyOver
-				this.navList[this.navCurr].buyStatus = this.buyStatus
-			},
-
-			tryObjPush(obj) {
-				console.log(obj)
-				if (obj.completed.length < this.count && obj.ongoing.length < this.count) {
-					this.sellOver = true
+			tryList(obj) {
+				if (obj.sell.length < this.count) {
 					this.sellStatus = 'nomore'
+					this.sellOver = true
 				} else {
-					this.sellOver = false
 					this.sellStatus = 'more'
+					this.sellOver = false
 				}
-				if (this.navCurr == 0) {
-					this.myGoods = obj.ongoing
+				if (obj.buy.length < this.count) {
+					this.buyStatus = 'nomore'
+					this.buyOver = true
 				} else {
-					this.myGoods = obj.completed
+					this.buyStatus = 'more'
+					this.buyOver = false
 				}
-				this.navList[this.navCurr].sellChild = this.myGoods
-				this.navList[this.navCurr].sellOver = this.sellOver
+				this.navList[this.navCurr].buyStatus = this.buyStatus
+				this.navList[this.navCurr].buyOver = this.buyOver
 				this.navList[this.navCurr].sellStatus = this.sellStatus
+				this.navList[this.navCurr].sellOver = this.sellOver
+				this.contentList = this.contentList.concat(obj.buy)
+				this.myGoods = this.contentList.concat(obj.sell)
+				this.navList[this.navCurr].buyChild = this.contentList
+				this.navList[this.navCurr].sellChild = this.myGoods
 			},
 
-			getOrderByBuyerId(cnt) {
-				this.$api.getOrderByBuyerId(cnt, (res) => {
+			getOrderList(cnt) {
+				this.$api.getOrderList(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.stopPullDownRefresh()
 						let obj = this.$util.tryParseJson(res.data.c)
-						// this.contentList = list
-						this.tryListPush(obj)
-					} else {
-						uni.showToast({
-							title: res.data.rm,
-							icon: 'none'
-						})
-						this.buyStatus = 'error'
-					}
-				})
-			},
-
-			getOrderBySellerId(cnt) {
-				this.$api.getOrderBySellerId(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let obj = this.$util.tryParseJson(res.data.c)
-						this.tryObjPush(obj)
+						this.tryList(obj)
 					} else {
 						this.sellStatus = 'error'
 						uni.showToast({
@@ -354,19 +325,46 @@
 						})
 					}
 				})
-			},
+			}
 		},
 		onLoad() {
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 			this.userInfo = userInfo
 			let cnt = {
-				sellerId: userInfo.userId, // Long <选填> 发布者id
-				buyerId: userInfo.userId, // Long 买家id
-				count: this.count, // Integer 
-				offset: this.offset, // Integer 
+				userId: userInfo.userId, // Long 用户id
+				// startTime: startTime, // String <选填> 起始时间
+				// endTime: endTime, // String <选填> 结束时间
+				// startMoney: startMoney, // Double <选填> 起始金额
+				// endMoney: endMoney, // Double <选填> 结束金额
+				isFinish: false, // Boolean 订单是否完成（false进行中，true完成）
+				count: this.count, // Integer
+				offset: this.offset, // Integer
 			}
-			this.getOrderBySellerId(cnt)
-			this.getOrderByBuyerId(cnt)
+			this.getOrderList(cnt)
+		},
+
+		onPullDownRefresh() {
+			console.log(123)
+			let cnt = {
+				userId: this.userInfo.userId, // Long 用户id
+				// startTime: startTime, // String <选填> 起始时间
+				// endTime: endTime, // String <选填> 结束时间
+				// startMoney: startMoney, // Double <选填> 起始金额
+				// endMoney: endMoney, // Double <选填> 结束金额
+				count: this.count, // Integer
+				offset: this.offset, // Integer
+			}
+			if (this.navCurr) {
+				cnt.isFinish = true
+			} else {
+				cnt.isFinish = false
+			}
+			this.contentList = []
+			this.myGoods = []
+			this.buyStatus = 'loading'
+			this.sellStatus = 'loading'
+			this.getOrderList(cnt)
+
 		}
 	}
 </script>

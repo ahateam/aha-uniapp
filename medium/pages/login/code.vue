@@ -105,6 +105,7 @@
 						this.$store.commit("toggleIsLogin", true);
 						this.$store.commit("startComputeCurrent");
 						if (this.$store.state.user.isSDKReady) {
+							uni.hideLoading()
 							uni.setStorageSync('page', 'normal')
 							uni.reLaunch({
 								url: '../task/task'
@@ -141,9 +142,13 @@
 						url: `./resetPassword?code=${this.code}&tell=${this.moblie}`
 					})
 				} else {
+					uni.showLoading({
+						title: 'login...'
+					})
 					let cnt = {
 						phone: this.moblie, // String 手机号
 						code: this.code, // String 验证码
+						userType: 1
 					}
 					this.$api.loginByCode(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {

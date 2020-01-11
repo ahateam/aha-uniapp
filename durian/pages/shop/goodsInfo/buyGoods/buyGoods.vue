@@ -48,7 +48,9 @@
 				phone: '', //电话
 				userInfo: '',
 
-				addressId: ''
+				addressId: '',
+
+				free: false
 			}
 		},
 
@@ -97,7 +99,11 @@
 							if (this.remark) {
 								cnt.remark = this.remark // String 备注
 							}
-							this.createDurianOrder(cnt)
+							if (this.free) {
+								this.exchangeGoods(cnt)
+							} else {
+								this.createDurianOrder(cnt)
+							}
 						}
 					}
 				} else {
@@ -131,7 +137,11 @@
 						if (this.remark) {
 							cnt1.remark = this.remark // String 备注
 						}
-						this.createDurianOrder(cnt1)
+						if (this.free) {
+							this.exchangeGoods(cnt1)
+						} else {
+							this.createDurianOrder(cnt1)
+						}
 					} else {
 						uni.showToast({
 							title: res.data.rm,
@@ -159,7 +169,11 @@
 						if (this.remark) {
 							cnt1.remark = this.remark // String 备注
 						}
-						this.createDurianOrder(cnt1)
+						if (this.free) {
+							this.exchangeGoods(cnt1)
+						} else {
+							this.createDurianOrder(cnt1)
+						}
 					} else {
 						uni.showToast({
 							title: res.data.rm,
@@ -171,6 +185,25 @@
 
 			createDurianOrder(cnt) {
 				this.$api.createDurianOrder(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						uni.switchTab({
+							url: '/pages/shop/shop'
+						})
+						uni.showToast({
+							title: '下单成功',
+							icon: 'none'
+						})
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						})
+					}
+				})
+			},
+
+			exchangeGoods(cnt) {
+				this.$api.exchangeGoods(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						uni.switchTab({
 							url: '/pages/shop/shop'
@@ -228,8 +261,9 @@
 			this.upUserId = res.upId
 			this.price = res.price
 			this.phone = this.userInfo.phone.substr(2)
-
-
+			if (res.free) {
+				this.free = true
+			}
 		}
 	}
 </script>

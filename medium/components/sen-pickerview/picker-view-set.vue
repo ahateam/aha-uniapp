@@ -5,7 +5,8 @@
 				<view class="quniu" @click="quxiaobutton">取消</view>
 				<view class="queniu" @click="quedingbutton">确定</view>
 			</view>
-			<picker-view v-if="visible" class="shigun" indicator-class="currStyle" :indicator-style="indicatorStyle" :value="values" @change="bindChange">
+			<picker-view v-if="visible" class="shigun" indicator-class="currStyle" :indicator-style="indicatorStyle" :value="values"
+			 @change="bindChange">
 				<picker-view-column>
 					<view class="itemd" v-for="(item,index) in years" :key="index">{{item}}</view>
 				</picker-view-column>
@@ -22,6 +23,7 @@
 
 <script>
 	export default {
+		name: 'pickerViewSet',
 		props: {
 			shixian: Boolean
 		},
@@ -93,8 +95,8 @@
 				console.log(this.year, this.month, this.day)
 				this.$emit('quedingButton', this.year, this.month, this.day);
 			},
-			
-			colseBox(){
+
+			colseBox() {
 				this.$emit('colseBox')
 			}
 		}
@@ -180,8 +182,8 @@
 		text-align: center;
 		justify-content: center;
 	}
-	
-	.currStyle{
+
+	.currStyle {
 		font-size: 36rpx;
 	}
 </style>

@@ -335,7 +335,6 @@
 				this.$api.getUserByTaskId(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let obj = this.$util.tryParseJson(res.data.c).publishUser
-						obj.finishDate = this.$commen.getFullDate(obj.finishDate)
 						if (obj.imgData) {
 							obj.imgData = this.$util.tryParseJson(obj.imgData)
 						}

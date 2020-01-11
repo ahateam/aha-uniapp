@@ -6,6 +6,7 @@
 
 <script>
 	export default {
+		name:'uniSwipeAction',
 		data() {
 			return {
 

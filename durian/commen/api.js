@@ -160,14 +160,19 @@ api.createDurianOrder = function(cnt, callback) {
 	util.call(baseUrl + '/goods/createDurianOrder', cnt, callback)
 }
 
-// 根据买家id查询订单
-api.getOrderByBuyerId = function(cnt, callback) {
-	util.call(baseUrl + '/goods/getOrderByBuyerId', cnt, callback)
-}
+// // 根据买家id查询订单
+// api.getOrderByBuyerId = function(cnt, callback) {
+// 	util.call(baseUrl + '/goods/getOrderByBuyerId', cnt, callback)
+// }
 
-// 根据卖家id查询订单
-api.getOrderBySellerId = function(cnt, callback) {
-	util.call(baseUrl + '/goods/getOrderBySellerId', cnt, callback)
+// // 根据卖家id查询订单
+// api.getOrderBySellerId = function(cnt, callback) {
+// 	util.call(baseUrl + '/goods/getOrderBySellerId', cnt, callback)
+// }
+
+// 查询订单
+api.getOrderList = function(cnt, callback) {
+	util.call(baseUrl + '/goods/getOrderList', cnt, callback)
 }
 
 // 根据订单id查询订单

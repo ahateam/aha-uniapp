@@ -20,16 +20,18 @@
 
 		<view class="express-box" style="margin-top: -30rpx;">
 			<view class="title-box">快递公司</view>
-			<view>{{express.name}}</view>
+			<input type="number" v-model="express.name" placeholder="请输入快递公司" v-if="status < constData.orderStatus[1].key" />
+			<view v-else>{{express.name}}</view>
 		</view>
 
 		<view class="express-box" style="padding-bottom: 234rpx;">
 			<view class="title-box">快递单号</view>
-			<view>{{express.id}}</view>
+			<input type="number" v-model="express.id" placeholder="请输入快递单号" v-if="status < constData.orderStatus[1].key" />
+			<view v-else>{{express.id}}</view>
 		</view>
 
 		<view class="bottom-box">
-			<button class="success-btn" @click="setOrderStatus">已发货</button>
+			<button class="success-btn" @click="setOrderStatus" v-if="status < constData.orderStatus[1].key">已发货</button>
 			<button class="nomrl-btn">联系买家</button>
 		</view>
 	</view>
@@ -44,7 +46,9 @@
 		},
 		data() {
 			return {
+				constData: this.$constData,
 				id: '',
+				status: '',
 
 				froms: [{
 						name: '收货人',
@@ -64,8 +68,8 @@
 					}
 				],
 				express: {
-					name: '顺丰速运',
-					id: '8000049957229'
+					name: '',
+					id: ''
 				}
 
 			}
@@ -121,6 +125,9 @@
 						} else {
 							this.froms[3].value = '(无)'
 						}
+						if (obj.order.shippingInfo) {
+							this.express = obj.order.shippingInfo
+						}
 					} else {
 						uni.showToast({
 							title: res.data.rm,
@@ -149,6 +156,8 @@
 
 		onLoad(res) {
 			this.id = res.id
+			this.status = res.status
+			console.log(this.status)
 			let cnt = {
 				orderId: res.id, // Long 订单id
 			};

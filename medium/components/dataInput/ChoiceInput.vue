@@ -13,6 +13,7 @@
 
 <script>
 	export default {
+		name:'ChoiceInput',
 		props: {
 			value: String,
 			title: String,

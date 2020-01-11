@@ -11,6 +11,10 @@
 		<view class="content-list">
 			<shopList :list="contentList" @change="change" @changeEnd="changeEnd" @emitItem="navToInfo"></shopList>
 		</view>
+
+		<view style="text-align: center;" v-if="apiStatus && contentList.length == 0">
+			沒有搜索到商品哦~
+		</view>
 	</view>
 </template>
 
@@ -31,7 +35,8 @@
 				page: 1,
 				pageStatus: 'onload',
 
-				contentList: []
+				contentList: [],
+				apiStatus: false
 			};
 		},
 		methods: {
@@ -75,6 +80,7 @@
 			getByGoodsName(cnt) {
 				this.$api.getByGoodsName(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.apiStatus = true
 						let arr = this.$util.tryParseJson(res.data.c)
 						if (arr.length < this.count) {
 							this.pageStatus = 'nomore'
@@ -109,7 +115,7 @@
 		align-items: center;
 		box-sizing: border-box;
 		background-color: $group-color-search;
-		width: 600rpx;
+		flex: 1;
 		height: 70rpx;
 		padding: 0 30rpx;
 		border-radius: 4rpx;
@@ -128,6 +134,8 @@
 
 	.back-text {
 		color: $group-color;
+		line-height: 70rpx;
+		padding: 0 20rpx;
 	}
 
 	.content-list {

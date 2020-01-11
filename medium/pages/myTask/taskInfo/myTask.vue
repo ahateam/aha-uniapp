@@ -117,8 +117,16 @@
 							</view>
 						</view>
 					</view>
-					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus < constData.taskStatus[3].key&&task.translateFileData.length > 0">
+					<view v-if="task.taskStatus < constData.taskStatus[3].key&&task.translateFileData.length > 0" class="auto-box-gray"
+					 style="border: none;padding-bottom: 15rpx;">
 						<view class="left-title bottom-font">收回材料</view>
+						<view v-for="(item,index) in task.otherReturnData" @tap="openDoc(item)" :key="index" class="up-file-btn file-list">
+							<view>
+								<view class="file-name">{{item.name}}</view>
+								<view class="file-size">{{item.size}}</view>
+							</view>
+							<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
+						</view>
 						<view class="data-img-list">
 							<view class="data-img-box" v-for="(item,index) in task.translateFileData" :key="index" @tap="watchImg(index,true)"
 							 :class="{'no-margin':getIndex(index)}">
@@ -169,13 +177,13 @@
 			}
 		},
 		methods: {
-			watchImg(index,e) {
+			watchImg(index, e) {
 				let list = []
-				if(e){
+				if (e) {
 					this.task.translateFileData.map((item, index) => {
 						list.push(this.$constData.oss + item)
 					})
-				}else{
+				} else {
 					this.task.imgData.map((item, index) => {
 						list.push(this.$constData.oss + item)
 					})
@@ -380,6 +388,13 @@
 							obj.publishUser.translateFileData = this.$util.tryParseJson(obj.publishUser.translateFileData)
 						} else {
 							obj.publishUser.translateFileData = []
+						}
+
+						// 
+						if (obj.publishUser.otherReturnData) {
+							obj.publishUser.otherReturnData = this.$util.tryParseJson(obj.publishUser.otherReturnData)
+						} else {
+							obj.publishUser.otherReturnData = []
 						}
 
 						this.task = { ...this.task,
@@ -772,5 +787,48 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	.up-file-btn {
+		margin-top: 30rpx;
+		width: 100%;
+		height: 88rpx;
+		line-height: 88rpx;
+		font-size: $group-font-befor;
+		text-align: center;
+		background-color: $group-color-search;
+		color: $group-color;
+		border-radius: 4rpx;
+		box-sizing: border-box;
+	}
+
+	.file-list {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		height: 120rpx;
+		padding: 20rpx;
+		margin-top: 20rpx;
+		font-size: 28rpx;
+		line-height: 30rpx;
+
+		image {
+			width: 79rpx;
+			height: 79rpx;
+		}
+	}
+
+	.file-name {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.file-size {
+		margin-top: 12rpx;
+		font-size: 24rpx;
+		color: $group-color-befor;
+		line-height: 20rpx;
+		text-align: left;
 	}
 </style>

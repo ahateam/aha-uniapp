@@ -451,6 +451,7 @@
 		line-height: 42rpx;
 		color: #666666;
 		padding-bottom: 50rpx;
+		margin-bottom: 104rpx;
 	}
 
 	.btn {

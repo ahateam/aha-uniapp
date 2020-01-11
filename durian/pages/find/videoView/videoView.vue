@@ -5,7 +5,7 @@
 				<image slot="left" class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit" @click="navBack"></image>
 				<view slot="right" class="rightNav">
 					<text class="iconfont icon-xing navMargin" @click="createCollect"></text>
-					<text class="iconfont icon-fenxiang"></text>
+					<text class="iconfont icon-fenxiang" @click="share"></text>
 				</view>
 			</navBar>
 			<view :style="opacity">
@@ -141,6 +141,8 @@
 				replyUser: {}, // 回复的用户
 				replyIndex: '', // 回复列表下标
 				replyStatus: false, // 回复的状态
+
+				titleCurr: 0
 			}
 		},
 
@@ -173,6 +175,14 @@
 		},
 
 		methods: {
+			share() {
+				let shareType = this.$constData.shareType[1].key
+				uni.setStorageSync('shareText', this.text.substr(0, 20))
+				uni.navigateTo({
+					url: `/pages/shareView/shareView?shareType=${shareType}&id=${this.id}&type=${this.$constData.groupType[3].key}`
+				})
+			},
+
 			createComment(list, index) {
 				console.log(list)
 				this.replyId = list.reply.sequenceId
@@ -351,21 +361,15 @@
 				}
 				this.$api.createSecretLetter(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.showToast({
-							title: '已私信',
-							icon: 'none'
-						});
-						let time = new Date()
-						let y = time.getFullYear()
-						let m = 1 + time.getMonth()
-						let d = time.getDate()
-
 						let data = {
-							letterTime: Math.round(new Date()),
-							text: this.replayText,
-							userName: this.userInfo.userName,
-							userHead: this.userInfo.userHead,
-							...this.$util.tryParseJson(res.data.c)
+							user: {
+								userName: this.userInfo.userName,
+								userHead: this.userInfo.userHead
+							},
+							reply: {
+								createTime: Math.round(new Date()),
+								text: this.replayText
+							}
 						}
 						this.secretList.splice(0, 0, data)
 						console.log('_________________密信_______________________')
@@ -394,15 +398,6 @@
 				}
 				this.$api.createReply(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.showToast({
-							title: '评论成功',
-							icon: 'none'
-						});
-						let time = new Date()
-						let y = time.getFullYear()
-						let m = 1 + time.getMonth()
-						let d = time.getDate()
-
 						let data = {
 							user: {
 								userName: this.userInfo.userName,
@@ -458,6 +453,28 @@
 						this.time = this.getTime(data.posting.postingCreateTime)
 						console.log(this.videoSrc)
 					} else {
+						console.log('error')
+					}
+				})
+			},
+
+			getSecretLetter(cnt) {
+				this.$api.getSecretLetter(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						let list = this.$util.tryParseJson(res.data.c)
+						this.secretList = list
+						console.log('--------------密信列表-----------------')
+						console.log(this.secretList)
+						if (this.secretList.length < this.count) {
+							this.secretPageStatus = 'nomore'
+							this.secretPageOver = true
+						} else {
+							this.secretPageStatus = 'more'
+							this.secretPageOver = false
+						}
+					} else {
+						this.secretPageStatus = 'nomore'
+						this.secretPageOver = true
 						console.log('error')
 					}
 				})

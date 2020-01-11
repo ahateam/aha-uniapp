@@ -347,39 +347,10 @@
 			},
 
 			share() {
-				uni.share({
-					scene: "WXSceneSession",
-					type: 0,
-					href: `http://weapp.datanc.cn/kkqt/app/android/${this.$constData.version}/kkqt.apk`,
-					title: "表揚表揚TA",
-					summary: item.posting.postingTextDate,
-					imageUrl: this.$util.tryParseJson(item.posting.postingDate)[0],
-					success: (res) => {
-						uni.showToast({
-							title: '分享成功！'
-						})
-						let cnt1 = {
-							userId: uni.getStorageSync('userId'), // Long 用户id
-							ownerId: this.id, // Long 内容id
-						}
-						this.createUserShare(cnt1)
-					},
-					fail: (err) => {
-						uni.showToast({
-							title: '分享失败',
-							icon: 'none'
-						})
-					}
-				})
-			},
-
-			createUserShare(cnt, index) {
-				this.$api.createUserShare(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						console.log('成功')
-					} else {
-						console.log('错误')
-					}
+				let shareType = this.$constData.shareType[1].key
+				uni.setStorageSync('shareText', this.text.substr(0, 20))
+				uni.navigateTo({
+					url: `/pages/shareView/shareView?shareType=${shareType}&id=${this.id}&type=${this.$constData.groupType[1].key}`
 				})
 			},
 
@@ -391,21 +362,15 @@
 				}
 				this.$api.createSecretLetter(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.showToast({
-							title: '已私信',
-							icon: 'none'
-						});
-						let time = new Date()
-						let y = time.getFullYear()
-						let m = 1 + time.getMonth()
-						let d = time.getDate()
-
 						let data = {
-							letterTime: Math.round(new Date()),
-							text: this.replayText,
-							userName: this.userInfo.userName,
-							userHead: this.userInfo.userHead,
-							...this.$util.tryParseJson(res.data.c)
+							user: {
+								userName: this.userInfo.userName,
+								userHead: this.userInfo.userHead
+							},
+							reply: {
+								createTime: Math.round(new Date()),
+								text: this.replayText
+							}
 						}
 						this.secretList.splice(0, 0, data)
 						console.log('_________________密信_______________________')
@@ -526,18 +491,6 @@
 				}
 				this.$api.createReply(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
-						uni.showToast({
-							title: '评论成功',
-							icon: 'none'
-						});
-
-
-
-						let time = new Date()
-						let y = time.getFullYear()
-						let m = 1 + time.getMonth()
-						let d = time.getDate()
-
 						let data = {
 							user: {
 								userName: this.userInfo.userName,

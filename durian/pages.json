@@ -1,12 +1,11 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/guide/guide",
+			"path": "pages/index/index",
 			"style": {}
 		},
-
 		{
-			"path": "pages/index/index",
+			"path": "pages/guide/guide",
 			"style": {}
 		},
 		{
@@ -179,7 +178,7 @@
 		}, {
 			"path": "pages/user/userShop/userShop",
 			"style": {
-
+				"enablePullDownRefresh": true
 			}
 		}, {
 			"path": "pages/shareView/shareView",
@@ -210,20 +209,17 @@
 		, {
 			"path": "pages/find/search/search",
 			"style": {}
+		}, {
+			"path": "pages/index/contract/contract",
+			"style": {}
+		}, {
+			"path": "pages/index/toAtutograph/toAtutograph",
+			"style": {}
+		}, {
+			"path": "pages/user/helpCenter/helpInfo",
+			"style": {}
 		}
-	    ,{
-            "path" : "pages/index/contract/contract",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/index/toAtutograph/toAtutograph",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/user/helpCenter/helpInfo",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",

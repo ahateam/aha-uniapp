@@ -69,6 +69,28 @@
 
 					<view class="auto-box-gray" style="border: none;padding-bottom: 15rpx;" v-if="task.taskStatus > constData.taskStatus[2].key&&task.translateFileData.length > 0||task.taskStatus < constData.taskStatus[2].key">
 						<view class="left-title bottom-font">提交完成文件</view>
+
+						<uni-swipe-action v-if="task.taskStatus < constData.taskStatus[2].key">
+							<uni-swipe-action-item :options="options" v-for="(item,index) in task.otherReturnData" :key="index" btnMargin="20rpx 0 0 20rpx"
+							 @click="delFile(index)">
+								<view class="up-file-btn file-list">
+									<view>
+										<view class="file-name">{{item.name}}</view>
+										<view class="file-size">{{item.size}}</view>
+									</view>
+									<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
+								</view>
+							</uni-swipe-action-item>
+						</uni-swipe-action>
+						<view class="up-file-btn file-list" v-for="(item,index) in task.otherReturnData" :key="index" v-else>
+							<view>
+								<view class="file-name">{{item.name}}</view>
+								<view class="file-size">{{item.size}}</view>
+							</view>
+							<image src="/static/image/icon/icon_docx.png" mode="aspectFit"></image>
+						</view>
+						<button class="up-file-btn" @click="upFile" v-if="task.taskStatus < constData.taskStatus[2].key">点击上传</button>
+
 						<view class="data-img-list">
 							<view class="data-img-box" v-for="(item,index) in task.translateFileData" :key="index" :class="{'no-margin':getIndex(index)}">
 								<image :src="constData.oss + item" mode="aspectFill"></image>
@@ -85,6 +107,8 @@
 			</view>
 		</view>
 
+		<l-file ref="lFile" @up-success="onSuccess"></l-file>
+
 		<loading :status="pageStatus"></loading>
 	</view>
 </template>
@@ -92,11 +116,17 @@
 <script>
 	import NextBtn from '@/components/NextBtn/NextBtn.vue'
 	import Loading from '@/components/Loading/Loading.vue'
+	import lFile from '@/components/l-file/l-file.vue'
+	import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue'
+	import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue'
 
 	export default {
 		components: {
 			NextBtn,
-			Loading
+			Loading,
+			uniSwipeActionItem,
+			uniSwipeAction,
+			lFile
 		},
 		data() {
 			return {
@@ -104,16 +134,58 @@
 				pageStatus: 'onload',
 
 				task: {},
-				taskStatus: ''
+				taskStatus: '',
+
+				options: [{
+					text: '删除',
+					style: {
+						backgroundColor: '#EE455A',
+						fontSize: '26rpx'
+					}
+				}],
 			}
 		},
 		methods: {
+			delFile(index) {
+				this.task.splice(index, 1)
+			},
+
+			onSuccess(res) {
+				// console.log('上传成功回调', JSON.stringify(res));
+				// console.log('文件上传的地址不包含url')
+				// console.log(res.frontFileName)
+				// console.log('文件上传的完整地址，包含url')
+				// console.log(res.fileUrl)
+				if (res.frontFileName != 'index.html') {
+					let fileName = res.frontFileName.substr(res.frontFileName.lastIndexOf('/') + 1)
+					let obj = {
+						name: fileName,
+						url: res.frontFileName,
+						size: res.fileSize
+					}
+					this.task.otherReturnData.push(obj)
+				}
+			},
+
+			upFile() {
+				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+				let time = new Date()
+				this.$refs.lFile.upload({
+					// #ifdef APP-PLUS
+					currentWebview: this.$mp.page.$getAppWebview(),
+					// #endif
+					url: this.$constData.oss,
+					front: `${userInfo.userId}/${time.getFullYear()}${time.getMonth() * 1 + 1}${time.getDate()}`,
+				});
+			},
+
 			changeTask() {
-				if (this.task.translateFileData.length > 0) {
+				if (this.task.translateFileData.length > 0 && this.task.otherReturnData.length > 0) {
 					let cnt = {
 						taskId: this.task.taskId, // Long 任务id
 						taskStatus: this.$constData.taskStatus[2].key, // Byte <选填> 任务状态
 						translateFileData: JSON.stringify(this.task.translateFileData), // String <选填> 翻译文件地址
+						otherReturnData: JSON.stringify(this.task.otherReturnData)
 					}
 					this.updateTaskByTaskId(cnt)
 				} else {
@@ -315,6 +387,12 @@
 							obj.publishUser.translateFileData = []
 						}
 
+						if (obj.publishUser.otherReturnData) {
+							obj.publishUser.otherReturnData = this.$util.tryParseJson(obj.publishUser.otherReturnData)
+						} else {
+							obj.publishUser.otherReturnData = []
+						}
+
 						this.task = { ...this.task,
 							...obj.publishUser
 						}
@@ -357,6 +435,12 @@
 <style lang="scss" scoped>
 	view {
 		box-sizing: border-box;
+	}
+
+	button {
+		&:after {
+			border: none;
+		}
 	}
 
 	.top-box {
@@ -609,5 +693,48 @@
 		font-size: 17rpx;
 		line-height: 38rpx;
 		text-align: center;
+	}
+
+	.up-file-btn {
+		margin-top: 30rpx;
+		width: 100%;
+		height: 88rpx;
+		line-height: 88rpx;
+		font-size: $group-font-befor;
+		text-align: center;
+		background-color: $group-color-search;
+		color: $group-color;
+		border-radius: 4rpx;
+		box-sizing: border-box;
+	}
+
+	.file-list {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		height: 120rpx;
+		padding: 20rpx;
+		margin-top: 20rpx;
+		font-size: 28rpx;
+		line-height: 30rpx;
+
+		image {
+			width: 79rpx;
+			height: 79rpx;
+		}
+	}
+
+	.file-name {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.file-size {
+		margin-top: 12rpx;
+		font-size: 24rpx;
+		color: $group-color-befor;
+		line-height: 20rpx;
+		text-align: left;
 	}
 </style>

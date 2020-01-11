@@ -178,6 +178,7 @@
 		return false;
 	}
 	export default {
+		name: 'wPicker',
 		data() {
 			return {
 				result: [],

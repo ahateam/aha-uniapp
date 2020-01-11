@@ -15,6 +15,10 @@
 				<only-text :item="item" v-else-if="item.posting.postingType == constData.groupType[0].key"></only-text>
 			</view>
 		</view>
+
+		<view style="text-align: center;" v-if="apiStatus && contentList.length == 0">
+			沒有搜索到内容哦~
+		</view>
 	</view>
 </template>
 
@@ -40,7 +44,9 @@
 
 				contentList: [],
 
-				userInfo: {}
+				userInfo: {},
+
+				apiStatus: false
 			};
 		},
 		methods: {
@@ -110,6 +116,7 @@
 			getPostingList(cnt) {
 				this.$api.getPostingList(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.apiStatus = true
 						let list = this.$util.tryParseJson(res.data.c)
 						this.tryDataList(list)
 						uni.stopPullDownRefresh()

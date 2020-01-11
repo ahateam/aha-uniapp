@@ -176,6 +176,10 @@
             "path" : "pages/user/helpcenter/helpInfo",
             "style" : {}
         }
+        ,{
+            "path" : "pages/news/contract/toAtutograph",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

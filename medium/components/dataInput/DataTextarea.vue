@@ -18,6 +18,7 @@
 
 <script>
 	export default {
+		name:'DataTextarea',
 		props: {
 			value: String,
 			title: String,

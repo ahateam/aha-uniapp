@@ -48,6 +48,7 @@
 	//白色表达值
 	const whiteList = ["#FFF", "#FFFFFF", "white", "rgb(255,255,255)", "rgba(255,255,255,1)"];
 	export default {
+		name: 'ZhouWeiNavBar',
 		props: {
 			//是否显示返回按钮
 			back: {

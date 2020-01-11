@@ -101,6 +101,8 @@
 	// #endif
 
 	export default {
+		name: 'uniSwipeActionItem',
+
 		// #ifdef APP-VUE|| MP-WEIXIN||H5
 		mixins: [mpwxs],
 		// #endif
@@ -193,7 +195,7 @@
 		flex: 1;
 		/* #endif */
 		font-size: 14px;
-		background-color: #fff;
+		// background-color: #fff;
 	}
 
 	.uni-swipe_button-group {

@@ -21,7 +21,7 @@
 		</view>
 
 		<view class="bottom-box">
-			<button class="success-btn" @click="setOrderStatus">已收货</button>
+			<button class="success-btn" @click="setOrderStatus" v-if="status < constData.orderStatus[2].key">已收货</button>
 			<button class="nomrl-btn">联系卖家</button>
 		</view>
 	</view>
@@ -133,11 +133,12 @@
 				this.$api.getReceivingAddressById(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let obj = this.$util.tryParseJson(res.data.c)
+						console.log(obj)
 						this.froms[0].value = obj.addressUserName
 						this.froms[1].value = obj.address
 						this.froms[2].value = obj.addressPhone
-						this.status = obj.orderStatus
 						this.addressId = obj.addressId
+						console.log(this.status)
 					} else {
 						uni.showToast({
 							title: res.data.rm,
@@ -149,8 +150,8 @@
 		},
 		onLoad(res) {
 			this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
-
 			this.id = res.id
+			this.status = res.status
 			// let cnt = {
 			// 	orderId: res.id, // Long 订单id
 			// };
