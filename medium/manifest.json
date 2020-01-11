@@ -106,22 +106,7 @@
                 }
             }
         },
-        "nativePlugins" : {
-            "TIM-SdkWX" : {
-                "__plugin_info__" : {
-                    "name" : "IM腾讯即时通讯原生插件(含UI)",
-                    "description" : "IM腾讯即时通讯原生插件(含UI)",
-                    "platforms" : "iOS",
-                    "url" : "",
-                    "android_package_name" : "",
-                    "ios_bundle_id" : "",
-                    "isCloud" : false,
-                    "bought" : -1,
-                    "pid" : "",
-                    "parameters" : {}
-                }
-            }
-        }
+        "nativePlugins" : {}
     },
     /* 快应用特有相关 */
     "quickapp" : {},
