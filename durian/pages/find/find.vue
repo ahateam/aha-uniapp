@@ -324,7 +324,7 @@
 							offset: this.offset,
 							moduleId: this.$constData.module,
 							userId: this.userInfo.userId,
-							// show: this.$constData.postingStatus[], // Byte <选填> 可见范围
+							showRange: this.$constData.postingStatus[0].key, // Byte <选填> 可见范围
 							sort: true
 						}
 						this.contentList = []
@@ -460,6 +460,8 @@
 			} else {
 				if (this.navList[this.navCurrtent].tagCurrtent == 1) {
 					cnt.selected = 1
+				} else {
+					cnt.showRange = this.$constData.postingStatus[0].key
 				}
 			}
 			this.contentList = []
@@ -496,6 +498,8 @@
 				} else {
 					if (this.navList[this.navCurrtent].tagCurrtent == 1) {
 						cnt.selected = 1
+					} else {
+						cnt.showRange = this.$constData.postingStatus[0].key
 					}
 				}
 				this.pageStatus = 'loading'

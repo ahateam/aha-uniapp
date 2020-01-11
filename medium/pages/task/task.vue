@@ -294,6 +294,7 @@
 					status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
 					count: this.count, // Integer 
 					offset: this.offset, // Integer 
+					// taskStatus: this.$constData, // Byte <选填> 任务状态
 				}
 				this.getTaskList(cnt)
 				// tim登录

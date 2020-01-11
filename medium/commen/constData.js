@@ -96,6 +96,11 @@ constData.taskWall = [{
 		key: 2,
 		val: '草稿',
 		icon: '/static/image/icon/task/icon_cg.png'
+	},
+	{
+		key: 3,
+		val: '过审中',
+		icon: '/static/image/icon/task/icon_cg.png'
 	}
 ]
 

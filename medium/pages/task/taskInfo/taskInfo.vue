@@ -26,12 +26,12 @@
 					<view class="left-title">任务分类</view>
 					<view class="right-info">{{taskType[task.taskType].name}}</view>
 				</view>
-				
+
 				<view class="auto-box-white space-box">
 					<view class="left-title">任务名称</view>
 					<view class="right-info">{{task.taskName}}</view>
 				</view>
-				
+
 				<view class="auto-box-white no-border">
 					<view class="left-title">任务描述</view>
 					<view class="right-info" style="margin-top: 29rpx;">{{task.taskDescribe}}</view>
@@ -77,7 +77,7 @@
 			</view>
 		</uni-popup>
 
-			<loading :status="pageStatus"></loading>
+		<loading :status="pageStatus"></loading>
 	</view>
 </template>
 
@@ -136,13 +136,20 @@
 
 			// 接收任务
 			acceptTask() {
-				let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
-				if (userInfo.accountName && userInfo.BsbNumber && userInfo.account) {
-					this.popupShow = true
-				} else {
-					uni.navigateTo({
-						url: `../acceptTask/acceptTask?id=${this.task.taskId}`
+				if (this.task.taskStatus > this.$constData.taskWall[0].key) {
+					uni.showToast({
+						title: '任务已被接受',
+						icon: 'none'
 					})
+				} else {
+					let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'))
+					if (userInfo.accountName && userInfo.BsbNumber && userInfo.account) {
+						this.popupShow = true
+					} else {
+						uni.navigateTo({
+							url: `../acceptTask/acceptTask?id=${this.task.taskId}`
+						})
+					}
 				}
 			},
 

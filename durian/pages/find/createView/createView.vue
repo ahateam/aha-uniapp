@@ -284,7 +284,7 @@
 			},
 			
 			createUserShare(cnt){
-				this.$api.getTaskByContractId(cnt, (res) => {
+				this.$api.createUserShare(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						console.log(this.$util.tryParseJson(res.data.c))
 					} else {
