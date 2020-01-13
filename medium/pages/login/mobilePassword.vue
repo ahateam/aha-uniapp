@@ -49,7 +49,7 @@
 		watch: {
 			isSDKReady(newVal) {
 				if (newVal) {
-
+					uni.hideLoading()
 					uni.reLaunch({
 						url: '../task/task'
 					})

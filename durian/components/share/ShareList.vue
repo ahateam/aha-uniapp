@@ -22,6 +22,7 @@
 	import ShareBox from '@/components/share/ShareBox.vue'
 
 	export default {
+		name: 'ShareList',
 		components: {
 			ShareBox
 		},

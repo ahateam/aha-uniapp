@@ -9,6 +9,7 @@
 
 <script>
 	export default {
+		name: 'ShareBox',
 		props: ['shareInfo'],
 		data() {
 			return {
@@ -17,7 +18,8 @@
 		},
 		methods: {
 			click() {
-				if (this.shareInfo.shareType == this.$constData.shareType[1].key || this.shareInfo.shareType == this.$constData.shareType[2].key) {
+				if (this.shareInfo.shareType == this.$constData.shareType[1].key || this.shareInfo.shareType == this.$constData.shareType[
+						2].key) {
 					if (this.shareInfo.type == this.$constData.groupType[3].key) {
 						uni.navigateTo({
 							url: `/pages/find/videoView/videoView?id=${this.shareInfo.shareId}`

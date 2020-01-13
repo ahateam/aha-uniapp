@@ -50,6 +50,7 @@
 			isSDKReady(newVal) {
 				if (newVal) {
 					uni.setStorageSync('page', 'normal')
+					uni.hideLoading()
 					uni.reLaunch({
 						url: '../index/index'
 					})
@@ -98,8 +99,8 @@
 						this.$store.commit("toggleIsLogin", true);
 						this.$store.commit("startComputeCurrent");
 						if (this.$store.state.user.isSDKReady) {
+							uni.hideLoading()
 							if (this.userInfo.isFirstLogin) {
-								uni.hideLoading()
 								uni.reLaunch({
 									url: '../guide/guide'
 								})

@@ -259,6 +259,7 @@
 
 					if (this.navList[e].buyChild && this.navList[e].sellChild) {
 						this.contentList = this.navList[e].buyChild
+						this.myGoods = this.navList[e].sellChild
 						this.buyPage = this.navList[e].buyPage
 						this.buyStatus = this.navList[e].buyStatus
 						this.buyOver = this.navList[e].buyOver
@@ -306,7 +307,7 @@
 				this.navList[this.navCurr].sellStatus = this.sellStatus
 				this.navList[this.navCurr].sellOver = this.sellOver
 				this.contentList = this.contentList.concat(obj.buy)
-				this.myGoods = this.contentList.concat(obj.sell)
+				this.myGoods = this.myGoods.concat(obj.sell)
 				this.navList[this.navCurr].buyChild = this.contentList
 				this.navList[this.navCurr].sellChild = this.myGoods
 			},

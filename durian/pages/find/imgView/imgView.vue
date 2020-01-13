@@ -43,7 +43,7 @@
 					<comment :comment="commentList" @zan="zan" @createComment="createComment" v-if="titleCurr == 0"></comment>
 					<secret :comment="secretList" @createComment="secretComment" v-else></secret>
 				</view>
-				<view v-if="titleCurr == 0?commentList.length == 0:secretList.length == 0&&commentApi" class="noCommentBox">
+				<view v-if="titleCurr == 0?commentApi && commentList.length == 0:secretList.length == 0 && secretApi" class="noCommentBox">
 					<view class="noComIcon">
 						<image src="/static/image/find/bg-ly.png" mode="aspectFit"></image>
 						<view class="noComText">
@@ -113,7 +113,7 @@
 				commenPageOver: false,
 				commenPageStatus: 'onload',
 
-
+				secretApi: false,
 				secretPage: 1,
 				secretPageOver: false,
 				secretPageStatus: 'loading',
@@ -355,34 +355,41 @@
 			},
 
 			createSecretLetter() {
-				let cnt = {
-					publishUserId: this.userInfo.userId, // Long 密信发布用户编号
-					text: this.replayText, // String 密信内容
-					postingId: this.id, // Long 回复帖子编号
-				}
-				this.$api.createSecretLetter(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let data = {
-							user: {
-								userName: this.userInfo.userName,
-								userHead: this.userInfo.userHead
-							},
-							reply: {
-								createTime: Math.round(new Date()),
-								text: this.replayText
-							}
-						}
-						this.secretList.splice(0, 0, data)
-						console.log('_________________密信_______________________')
-						console.log(this.secretList)
-						this.replayText = ''
-					} else {
-						uni.showToast({
-							title: res.data.rm,
-							icon: 'none'
-						})
+				if (this.replayText) {
+					let cnt = {
+						publishUserId: this.userInfo.userId, // Long 密信发布用户编号
+						text: this.replayText, // String 密信内容
+						postingId: this.id, // Long 回复帖子编号
 					}
-				})
+					this.$api.createSecretLetter(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							let data = {
+								user: {
+									userName: this.userInfo.userName,
+									userHead: this.userInfo.userHead
+								},
+								reply: {
+									createTime: Math.round(new Date()),
+									text: this.replayText
+								}
+							}
+							this.secretList.splice(0, 0, data)
+							console.log('_________________密信_______________________')
+							console.log(this.secretList)
+							this.replayText = ''
+						} else {
+							uni.showToast({
+								title: res.data.rm,
+								icon: 'none'
+							})
+						}
+					})
+				} else {
+					uni.showToast({
+						title: '请输入回复内容',
+						icon: 'none'
+					})
+				}
 			},
 
 			createCommentApi(cnt) {
@@ -478,39 +485,45 @@
 			},
 
 			submit() {
-				let cnt = {
-					// module: this.$constData.module, // String 隶属
-					ownerId: this.id, // Long 内容编号
-					upUserId: this.userInfo.userId, // Long 用户编号
-					text: this.replayText, // String 评论内容
-					// data: [], // String 其他数据
-					atUserId: 0, // Long <选填> @对象编号
-					atUserName: '0', // String <选填> @对象名称
-					title: 'title', // String <选填> 标题
-					ext: '0', // String <选填> 扩展
-				}
-				this.$api.createReply(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						let data = {
-							user: {
-								userName: this.userInfo.userName,
-								userHead: this.userInfo.userHead
-							},
-							reply: {
-								createTime: Math.round(new Date()),
-								text: this.replayText
-							}
-						}
-						this.commentList.splice(0, 0, data)
-						console.log(this.commentList)
-						this.replayText = ''
-					} else {
-						uni.showToast({
-							title: "评论失败",
-							icon: 'none'
-						});
+				if (this.replayText) {
+					let cnt = {
+						// module: this.$constData.module, // String 隶属
+						ownerId: this.id, // Long 内容编号
+						upUserId: this.userInfo.userId, // Long 用户编号
+						text: this.replayText, // String 评论内容
+						// data: [], // String 其他数据
+						atUserId: 0, // Long <选填> @对象编号
+						atUserName: '0', // String <选填> @对象名称
+						title: 'title', // String <选填> 标题
+						ext: '0', // String <选填> 扩展
 					}
-				})
+					this.$api.createReply(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							let data = {
+								user: {
+									userName: this.userInfo.userName,
+									userHead: this.userInfo.userHead
+								},
+								reply: {
+									createTime: Math.round(new Date()),
+									text: this.replayText
+								}
+							}
+							this.commentList.splice(0, 0, data)
+							this.replayText = ''
+						} else {
+							uni.showToast({
+								title: res.data.rm,
+								icon: 'none'
+							});
+						}
+					})
+				} else {
+					uni.showToast({
+						title: '请输入回复内容',
+						icon: 'none'
+					})
+				}
 			},
 
 			closeSheet() {
@@ -554,9 +567,15 @@
 				this.$api.getSecretLetter(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						let list = this.$util.tryParseJson(res.data.c)
-						this.secretList = list
+						console.log(list)
+						if (list[0].reply) {
+							this.secretList = list
+						} else {
+							this.secretList = []
+						}
 						console.log('--------------密信列表-----------------')
 						console.log(this.secretList)
+						this.secretApi = true
 						if (this.secretList.length < this.count) {
 							this.secretPageStatus = 'nomore'
 							this.secretPageOver = true
@@ -740,11 +759,19 @@
 		right: 180rpx !important;
 		color: $group-color-w;
 		background-color: #00C8BE;
+
+		&:active {
+			opacity: .8;
+		}
 	}
 
 	.secretBtn {
 		color: #8296A0;
 		background-color: #CFDCE9;
+
+		&:active {
+			opacity: .8;
+		}
 	}
 
 	.noCommentBox {

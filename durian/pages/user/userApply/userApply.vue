@@ -272,7 +272,7 @@
 			let cnt = {
 				studentId: userInfo.userId, // Long <选填> 学生编号
 				// status: status, // Byte <选填> 状态
-				count: 3, // Integer 
+				count: 100, // Integer 
 				offset: 0, // Integer 
 			}
 			this.getContractList(cnt)

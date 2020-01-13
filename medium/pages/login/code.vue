@@ -70,8 +70,9 @@
 			},
 			isSDKReady(newVal) {
 				if (newVal) {
+					uni.hideLoading()
 					uni.reLaunch({
-						url: '../index/index'
+						url: '../task/task'
 					})
 				}
 			}
