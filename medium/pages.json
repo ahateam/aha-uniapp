@@ -191,7 +191,7 @@
 	"tabBar": {
 		"color": "#587685",
 		"selectedColor": "#00C8BE",
-		"borderStyle": "rgba(182,196,210,0.4)", // 小程序必须注释掉
+		// "borderStyle": "rgba(182,196,210,0.4)", // 小程序必须注释掉
 		"backgroundColor": "#ffffff",
 		"iconWidth": "20px",
 		"height": "55px",

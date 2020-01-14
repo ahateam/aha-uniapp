@@ -101,6 +101,11 @@ api.loginByCode = function(cnt, callback) {
 	util.call(baseUrl + '/user/loginByCode', cnt, callback)
 }
 
+// 微信登录 
+api.wxLogin = function(cnt, callback) {
+	util.call(baseUrl + '/user/wxLogin', cnt, callback)
+}
+
 // 设置密码 
 api.setPwd = function(cnt, callback) {
 	util.call(baseUrl + '/user/setPwd', cnt, callback)

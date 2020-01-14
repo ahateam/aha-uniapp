@@ -28,6 +28,11 @@ api.loginByCode = function(cnt, callback) {
 	util.call(baseUrl + '/user/loginByCode', cnt, callback)
 }
 
+// 微信登录 
+api.wxLogin = function(cnt, callback) {
+	util.call(baseUrl + '/user/wxLogin', cnt, callback)
+}
+
 // 设置密码 
 api.setPwd = function(cnt, callback) {
 	util.call(baseUrl + '/user/setPwd', cnt, callback)
@@ -167,8 +172,8 @@ api.getAutoReply = function(cnt, callback) {
 }
 
 /* 订单 */
- // 创建订单 
- api.createDurianOrder = function(cnt, callback) {
- 	util.call(baseUrl + '/goods/createDurianOrder', cnt, callback)
- }
+// 创建订单 
+api.createDurianOrder = function(cnt, callback) {
+	util.call(baseUrl + '/goods/createDurianOrder', cnt, callback)
+}
 export default api
