@@ -7,13 +7,9 @@ import constData from './commen/constData.js'
 import commen from './commen/commen.js'
 import store from './store/index.js'
 import './static/icon/iconfont.css'
-import tim from './commen/tim/tim'
-import TIM from 'tim-js-sdk'
 
 Vue.use(Vuex)
 Vue.config.productionTip = false
-Vue.prototype.tim = tim
-Vue.prototype.TIM = TIM
 Vue.prototype.$api = api
 Vue.prototype.$util = util
 Vue.prototype.$commen = commen

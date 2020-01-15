@@ -50,7 +50,7 @@ export default {
 				});
 			} else {
 				uni.redirectTo({
-					url: `./code?tell=86${this.phoneNumber}&type=${this.$constData.codeType[2].key}`
+					url: `./code?tell=${this.areaCode}${this.phoneNumber}&type=${this.$constData.codeType[2].key}`
 				});
 			}
 		},

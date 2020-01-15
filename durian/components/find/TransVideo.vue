@@ -32,7 +32,7 @@
 		},
 		methods: {
 			newTime(time) {
-				return this.$commen.getNewDate(time)
+				return this.$commen.getTimeAgo(time);
 			}
 		}
 	}

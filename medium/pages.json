@@ -25,18 +25,6 @@
 			}
 		},
 		{
-			"path": "pages/news/message",
-			"style": {
-				"app-plus": {
-					"softinputMode": "adjustResize"
-				}
-			}
-		},
-		{
-			"path": "pages/news/conversation",
-			"style": {}
-		},
-		{
 			"path": "pages/user/user",
 			"style": {}
 		}, {
@@ -167,20 +155,19 @@
 		}, {
 			"path": "pages/myTask/ediorTask/ediorTask",
 			"style": {}
+		}, {
+			"path": "pages/news/contract/contract",
+			"style": {}
+		}, {
+			"path": "pages/user/helpcenter/helpInfo",
+			"style": {}
+		}, {
+			"path": "pages/news/chat",
+			"style": {
+
+			}
 		}
-	    ,{
-            "path" : "pages/news/contract/contract",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/user/helpcenter/helpInfo",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/news/contract/toAtutograph",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": " ",
@@ -191,7 +178,7 @@
 	"tabBar": {
 		"color": "#587685",
 		"selectedColor": "#00C8BE",
-		// "borderStyle": "rgba(182,196,210,0.4)", // 小程序必须注释掉
+		"borderStyle": "rgba(182,196,210,0.4)", // 小程序必须注释掉
 		"backgroundColor": "#ffffff",
 		"iconWidth": "20px",
 		"height": "55px",

@@ -1,0 +1,38 @@
+{
+  "name": "IM腾讯即时通讯原生插件(含UI)",  
+  "id": "TIM-SdkWX",  
+  "version": "1.0",  
+  "description": "IM腾讯即时通讯原生插件(含UI)",  
+  "_dp_type":"nativeplugin",  
+  "_dp_nativeplugin":{ 
+	"ios": {
+	  "plugins": [  
+	    {  
+	      "type": "module",  
+	      "name": "TIM-SdkWX",  
+	      "class": "TIMSdkWXModule"   
+	    }
+	  ],  
+	  "hooksClass": "TIMSdkAppProxy",
+	  "integrateType": "library", 
+	  "frameworks": [ 
+		  "ImSDK.framework"
+	  ],
+	  "embedFrameworks": [
+		  "ImSDK.framework"
+	  ],
+	  "resources": [ 
+		  "TUIKitFace.bundle",
+		  "TUIKitResource.bundle"
+	  ],  
+	  "headers":[
+	  ],
+	  "privacies": [
+		  "NSCameraUsageDescription",
+		  "NSMicrophoneUsageDescription",
+		  "NSPhotoLibraryUsageDescription"
+	  ],  
+	  "deploymentTarget": "9.0" 
+	}
+  }
+}

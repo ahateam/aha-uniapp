@@ -1,237 +1,175 @@
 <template>
 	<view>
-		<view class="nav-bar" :style="{'height':navHeight}"></view>
-		<view :style="{'padding-top':navHeight}"></view>
+		<view class="nav-bar" :style="{ height: navHeight }"></view>
+		<view :style="{ 'padding-top': navHeight }"></view>
 		<view class="view-title">发布任务</view>
 
 		<view class="content-list">
-			<view class="list-box" :class="{'curr-box':currIndex == index}" v-for="(item,index) in taskList" :key="index"
-			 @touchstart="changeCurr(index)" @touchend="resetStyle()" @click="navToAdd(item)">
+			<view
+				class="list-box"
+				:class="{ 'curr-box': currIndex == index }"
+				v-for="(item, index) in taskList"
+				:key="index"
+				@touchstart="changeCurr(index)"
+				@touchend="resetStyle()"
+				@click="navToAdd(item)"
+			>
 				<image :src="item.img" mode="aspectFit"></image>
-				<view>{{item.name}}</view>
+				<view>{{ item.name }}</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import {
-		mapState
-	} from 'vuex'
+import { mapState } from 'vuex';
 
-	let getNumber = 0;
+let getNumber = 0;
 
-	export default {
-		name: 'index',
-		data() {
-			return {
-				navHeight: this.getNavHeight(),
-				taskList: this.$constData.taskType,
-				currIndex: -1,
-				userInfo: ''
+export default {
+	name: 'index',
+	data() {
+		return {
+			navHeight: this.getNavHeight(),
+			taskList: this.$constData.taskType,
+			currIndex: -1,
+			userInfo: ''
+		};
+	},
+	watch: {
+		isSDKReady(newVal) {
+			if (newVal) {
+				this.getUserProfile();
 			}
+		}
+	},
+	computed: {
+		...mapState({
+			isLogin: state => state.user.isLogin,
+			isSDKReady: state => state.user.isSDKReady
+		})
+	},
+	methods: {
+		getNavHeight() {
+			return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px';
+			uni.getStorageSync('userInfo');
 		},
-		watch: {
-			isSDKReady(newVal) {
-				if (newVal) {
-					this.getUserProfile()
-				}
-			}
+
+		changeCurr(index) {
+			this.currIndex = index;
 		},
-		computed: {
-			...mapState({
-				isLogin: state => state.user.isLogin,
-				isSDKReady: state => state.user.isSDKReady,
-			}),
+
+		resetStyle() {
+			this.currIndex = -1;
 		},
-		methods: {
-			getNavHeight() {
-				return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px'
-				uni.getStorageSync('userInfo')
-			},
 
-			changeCurr(index) {
-				this.currIndex = index
-			},
-
-			resetStyle() {
-				this.currIndex = -1
-			},
-
-			navToAdd(item) {
-				if (item.src) {
-					this.$store.dispatch('setStore').then((res) => {
-						if (res == 'succ') {
-							this.$store.commit('updateType', item.key)
-							uni.navigateTo({
-								url: item.src,
-								success: () => {
-									let icon = plus.nativeObj.View.getViewById("icon");
-									setTimeout(function() {
-										icon.hide();
-									}, 100);
-								}
-							})
-						} else {
-							uni.showToast({
-								title: 'error!',
-								icon: 'none'
-							})
-						}
-					})
-
-				}
-			},
-			//获取tim个人信息--并初次更新用户信息
-			getUserProfile() {
-				let promise = this.tim.getMyProfile();
-				promise.then((res) => {
-					if (res.data.nick == '') {
-						let promise = this.tim.updateMyProfile({
-							nick: this.userInfo.userName,
-							avatar: this.userInfo.userHead,
-							gender: this.TIM.TYPES.GENDER_MALE,
-							selfSignature: '这个人很懒...',
-							allowType: this.TIM.TYPES.ALLOW_TYPE_ALLOW_ANY,
-							role: this.userInfo.userType
-						});
-						promise.then((res1) => {
-							this.$store.commit("updateCurrentUserProfile", res1.data);
-						}).catch((err1) => {
-
-							console.warn('updateMyProfile error:', err1); // 更新资料失败的相关信息
+		navToAdd(item) {
+			if (item.src) {
+				this.$store.dispatch('setStore').then(res => {
+					if (res == 'succ') {
+						this.$store.commit('updateType', item.key);
+						uni.navigateTo({
+							url: item.src,
+							success: () => {
+								let icon = plus.nativeObj.View.getViewById('icon');
+								setTimeout(function() {
+									icon.hide();
+								}, 100);
+							}
 						});
 					} else {
-						this.$store.commit("updateCurrentUserProfile", res.data);
+						uni.showToast({
+							title: 'error!',
+							icon: 'none'
+						});
 					}
-				}).catch((err) => {
-					console.warn('getMyProfile error:', err); // 获取个人资料失败的相关信息
 				});
-			},
-			//登录tim
-			loginTim() {
-				this.tim
-					.login({
-						userID: String(this.userInfo.userId),
-						userSig: this.userInfo.userSig
-					})
-					.then(res => {
-						this.$store.commit("toggleIsLogin", true);
-						this.$store.commit("startComputeCurrent");
-						this.getUserProfile()
-					})
-					.catch(error => {
-						if (!this.$store.state.user.isLogin) {
-							setTimeout(() => {
-								this.loginTim()
-							}, 500)
-						}
-					});
-			},
+			}
+		},
 
-			getByQualId(cnt) {
-				this.$api.getByQualId(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.$store.commit('updateQualList', this.$util.tryParseJson(res.data.c))
+		getByQualId(cnt) {
+			this.$api.getByQualId(cnt, res => {
+				if (res.data.rc == this.$util.RC.SUCCESS) {
+					this.$store.commit('updateQualList', this.$util.tryParseJson(res.data.c));
+				} else {
+					if (getNumber == 2) {
+						uni.showToast({
+							title: '服务器错误',
+							icon: 'none'
+						});
 					} else {
-						if (getNumber == 2) {
-							uni.showToast({
-								title: '服务器错误',
-								icon: 'none'
-							})
-						} else {
-							setTimeout(() => {
-								getNumber += 1
-								let cnt1 = {
-									count: 100,
-									offset: 0
-								}
-								this.getByQualId(cnt1)
-							}, 500)
-						}
+						setTimeout(() => {
+							getNumber += 1;
+							let cnt1 = {
+								count: 100,
+								offset: 0
+							};
+							this.getByQualId(cnt1);
+						}, 500);
 					}
-				})
-			}
-		},
-		onShow() {
-			this.$commen.showTabIcon()
-		},
-		onLoad() {
-			this.userInfo = JSON.parse(uni.getStorageSync('userInfo'))
-			let timeOut = Number(this.userInfo.userSigCreateTime) + 604800000
-			let timeNow = new Date();
-			timeNow = timeNow.getTime()
-			console.log(timeNow)
-			if (this.userInfo.userSig && (timeNow < timeOut)) {
-				if (!this.$store.state.user.isLogin) {
-					this.loginTim();
 				}
-			} else {
-				uni.showToast({
-					icon: 'none',
-					title: '用户身份失效，请重新登录'
-				})
-				uni.reLaunch({
-					url: '../login/mobilePassword'
-				});
-			}
-
-
-			if (this.$store.state.task.qualiList.length == 0) {
-				let cnt = {
-					count: 100,
-					offset: 0
-				}
-				this.getByQualId(cnt)
-			}
-		},
+			});
+		}
+	},
+	onShow() {
+		this.$commen.showTabIcon();
+	},
+	onLoad() {
+		if (this.$store.state.task.qualiList.length == 0) {
+			let cnt = {
+				count: 100,
+				offset: 0
+			};
+			this.getByQualId(cnt);
+		}
 	}
+};
 </script>
 
 <style lang="scss" scoped>
-	.view-title {
-		color: #333333;
-		font-size: 50rpx;
-		margin-left: 30rpx;
-	}
+.view-title {
+	color: #333333;
+	font-size: 50rpx;
+	margin-left: 30rpx;
+}
 
-	.nav-bar {
-		position: fixed;
-		z-index: 1;
-		width: 100%;
-		background-color: #FFFFFF;
-	}
+.nav-bar {
+	position: fixed;
+	z-index: 1;
+	width: 100%;
+	background-color: #ffffff;
+}
 
-	.list-box {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		transition: all .3s;
-		width: 330rpx;
-		height: 250rpx;
-		margin: 0 30rpx 30rpx 0;
-		background-color: $group-color-search;
-		border-radius: 4rpx;
-		font-size: $group-font-befor;
-		color: $group-color;
-		line-height: 42rpx;
+.list-box {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	transition: all 0.3s;
+	width: 330rpx;
+	height: 250rpx;
+	margin: 0 30rpx 30rpx 0;
+	background-color: $group-color-search;
+	border-radius: 4rpx;
+	font-size: $group-font-befor;
+	color: $group-color;
+	line-height: 42rpx;
 
-		image {
-			width: 40rpx;
-			height: 40rpx;
-			margin-bottom: 18rpx;
-		}
+	image {
+		width: 40rpx;
+		height: 40rpx;
+		margin-bottom: 18rpx;
 	}
+}
 
-	.content-list {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		padding: 40rpx 0 0 30rpx;
-	}
+.content-list {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 40rpx 0 0 30rpx;
+}
 
-	.curr-box {
-		background-color: rgba($color: #182F45, $alpha: .2);
-	}
+.curr-box {
+	background-color: rgba($color: #182f45, $alpha: 0.2);
+}
 </style>

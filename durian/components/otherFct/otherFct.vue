@@ -2,8 +2,8 @@
 	<view class="otherFct">
 		<view class="otherTitle">其他登录方式</view>
 		<view class="loginIcon">
-			<view class="otherLogin" @click="loginWx"><view class="iconfont iconwechat"></view></view>
-			<view class="otherLogin" @click="loginQQ"><view class="iconfont iconqq"></view></view>
+			<view class="otherLogin" @click="loginWx"><view class="iconfont icon-wechat"></view></view>
+			<view class="otherLogin" @click="loginQQ"><view class="iconfont icon-qq"></view></view>
 		</view>
 		<view class="tipBox">
 			登录即代表同意

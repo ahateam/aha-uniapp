@@ -269,6 +269,6 @@
 	/* #endif */
 
 	.radius-btn {
-		border-radius: 4rpx 0 0 4rpx;
+
 	}
 </style>

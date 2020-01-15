@@ -70,9 +70,8 @@
 			},
 			isSDKReady(newVal) {
 				if (newVal) {
-					uni.hideLoading()
 					uni.reLaunch({
-						url: '../task/task'
+						url: '../index/index'
 					})
 				}
 			}
@@ -106,7 +105,6 @@
 						this.$store.commit("toggleIsLogin", true);
 						this.$store.commit("startComputeCurrent");
 						if (this.$store.state.user.isSDKReady) {
-							uni.hideLoading()
 							uni.setStorageSync('page', 'normal')
 							uni.reLaunch({
 								url: '../task/task'
@@ -144,19 +142,20 @@
 					})
 				} else {
 					uni.showLoading({
-						title: 'login...'
+						title:'login...'
 					})
 					let cnt = {
 						phone: this.moblie, // String 手机号
 						code: this.code, // String 验证码
-						userType: 1
 					}
 					this.$api.loginByCode(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
+							uni.hideLoading()
 							this.userInfo = this.$util.tryParseJson(res.data.c)
 							uni.setStorageSync('userInfo', JSON.stringify(this.userInfo))
-							this.timLogin()
-
+							uni.switchTab({
+								url: '/pages/task/task'
+							})
 						} else {
 							uni.showToast({
 								title: res.data.rm,
