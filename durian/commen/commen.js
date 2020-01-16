@@ -14,7 +14,11 @@ commen.getNewDate = (time, type) => {
 		return `${y}-${m}-${d}`
 	}
 }
-// @timestamp type:Unix时间戳
+
+/**
+ * @timestamp type:Unix时间戳
+ * @return '1年/月/周/天/小时/分钟前'
+ **/
 commen.getTimeAgo = (timestamp) => {
 	// 补全为13位
 	var arrTimestamp = (timestamp + '').split('');
