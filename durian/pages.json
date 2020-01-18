@@ -88,14 +88,14 @@
 			}
 		}, {
 			"path": "pages/user/user",
+			"style": {}
+		}, {
+			"path": "pages/shop/addGoods/addGoods",
 			"style": {
 				"app-plus": {
 					"bounce": "none"
 				}
 			}
-		}, {
-			"path": "pages/shop/addGoods/addGoods",
-			"style": {}
 		}, {
 			"path": "pages/shop/goodsInfo/studyGoods",
 			"style": {}
@@ -206,6 +206,13 @@
 		},
 		{
 			"path": "pages/index/chat",
+			"style": {}
+		},
+		{
+			"path": "pages/index/consult/choose",
+			"style": {}
+		}, {
+			"path": "pages/shareView/agentView",
 			"style": {}
 		}
 	],

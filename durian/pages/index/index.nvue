@@ -12,12 +12,11 @@
 					<view class="colse-box"><image src="/static/image/icon/icon_close_yellow.png" class="msg-close-btn"></image></view>
 				</view>
 			</view>
-
 			<conversation_view ref="conversationView" style="width: 750rpx;" :style="{ height: bodyHeight }"></conversation_view>
 		</view>
 		<view :class="currId == navList[0].id ? 'hidden-box' : ''">
 			<!-- <contact_view ref="contactView" :style="[{ width: width }, { height: bodyHeight }]"></contact_view> -->
-			<text class="type-title">签约客户</text>
+			<text class="type-title">我的代理人</text>
 			<view class="user-list">
 				<uni-swipe-action>
 					<uni-swipe-action-item :options="options" v-for="(item, index) in list1" :key="index" btnMargin="0" @click="delBtn(item, index)">
@@ -28,18 +27,10 @@
 					</uni-swipe-action-item>
 				</uni-swipe-action>
 			</view>
-
-			<text class="type-title">咨询客户</text>
-			<view class="user-list">
-				<uni-swipe-action>
-					<uni-swipe-action-item :options="options" v-for="(item, index) in list1" :key="index" btnMargin="0" @click="delBtn(item, index)">
-						<view class="user-list-box">
-							<image class="user-head" src="/static/image/login/mobileBG.png" mode="aspectFill"></image>
-							<text class="user-name">{{ item.name }}</text>
-						</view>
-					</uni-swipe-action-item>
-				</uni-swipe-action>
-			</view>
+		</view>
+		<view class="bottom-btn" @click="newMess()">
+			<text class="btn-font" style="font-weight:bold;font-size: 32rpx;">+</text>
+			<text class="btn-font">发起新的咨询</text>
 		</view>
 	</view>
 </template>
@@ -119,6 +110,12 @@ export default {
 		}
 	},
 	methods: {
+		newMess() {
+			uni.navigateTo({
+				url: './consult/choose'
+			});
+		},
+
 		timLogin() {
 			//登录
 			let userId = String(this.userInfo.userId);
@@ -265,5 +262,28 @@ export default {
 .hidden-box {
 	height: 0;
 	overflow: hidden;
+}
+
+.bottom-btn {
+	position: fixed;
+	bottom: 30rpx;
+	margin: 0 30rpx;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	height: 102rpx;
+	border-radius: 6rpx;
+	width: 690rpx;
+	background-color: #00c8be;
+
+	&:active {
+		// background-color: #00b4c8;
+		opacity: 0.8;
+	}
+}
+
+.btn-font {
+	color: #ffffff;
+	font-size: 30rpx;
 }
 </style>

@@ -167,42 +167,57 @@ constData.postingStatus = [{
 constData.shareType = [{
 		key: 0,
 		value: '代理人分享',
-		img:'/static/image/share/0.png'
+		img: '/static/image/share/0.png'
 	},
 	{
 		key: 1,
 		value: '热点文章分享',
-		img:'/static/image/share/1.png'
+		img: '/static/image/share/1.png'
 	},
 	{
 		key: 2,
 		value: '校内校外帖子分享',
-		img:'/static/image/share/2.png'
+		img: '/static/image/share/2.png'
 	},
 	{
 		key: 3,
 		value: '购买自由商品分享',
-		img:'/static/image/share/3.png'
+		img: '/static/image/share/3.png'
 	},
 	{
 		key: 4,
 		value: '购买平台商品分享',
-		img:'/static/image/share/4.png'
+		img: '/static/image/share/4.png'
 	},
 	{
 		key: 5,
 		value: '签约成功分享',
-		img:'/static/image/share/5.png'
+		img: '/static/image/share/5.png'
 	},
 	{
 		key: 6,
 		value: '获得签证分享',
-		img:'/static/image/share/6.png'
+		img: '/static/image/share/6.png'
 	},
 	{
 		key: 7,
 		value: '发布商品分享',
-		img:'/static/image/share/7.png'
+		img: '/static/image/share/7.png'
 	}
 ]
+
+constData.TIM_TYPE = [{
+		key: 1,
+		value: 'TIM_C2C'
+	},
+	{
+		key: 2,
+		value: 'TIM_GROUP'
+	},
+	{
+		key: 3,
+		value: 'TIM_SYSTEM'
+	}
+]
+
 export default constData

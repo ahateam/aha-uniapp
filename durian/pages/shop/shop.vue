@@ -29,6 +29,7 @@
 					<view style="margin-top: 30rpx;">暂无商品</view>
 				</view>
 				<shopList :list="studyList" @emitItem="navToInfo"></shopList>
+				<uni-load-more :status="pageStatus"></uni-load-more>
 			</view>
 		</view>
 		<view v-if="netStatus == 404" class="error-view">
@@ -44,11 +45,13 @@
 <script>
 import shopList from '@/components/shopList/shopList.vue';
 import Loading from '@/components/Loading/Loading.vue';
+import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 
 export default {
 	components: {
 		shopList,
-		Loading
+		Loading,
+		uniLoadMore
 	},
 	data() {
 		return {
@@ -108,8 +111,8 @@ export default {
 
 		getGoodsAgin() {
 			let cnt = {
-				count: 5, // Integer
-				offset: 0 // Integer
+				count: this.count, // Integer
+				offset: this.offset // Integer
 			};
 			this.getGoods(cnt);
 		},
@@ -150,6 +153,7 @@ export default {
 		this.page = 1;
 		this.contentList = [];
 		this.studyList = [];
+		this.pageStatus = 'onload';
 		let cnt = {
 			count: this.count, // Integer
 			offset: this.offset // Integer
@@ -160,6 +164,7 @@ export default {
 	onReachBottom() {
 		if (!this.pageOver) {
 			this.page += 1;
+			this.pageStatus = 'loading';
 			let cnt = {
 				count: this.count, // Integer
 				offset: (this.page - 1) * this.count // Integer

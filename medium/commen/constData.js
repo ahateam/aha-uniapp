@@ -147,4 +147,18 @@ constData.contractType = [{
 		key: 1
 	}
 ]
+
+constData.TIM_TYPE = [{
+		key: 1,
+		value: 'TIM_C2C'
+	},
+	{
+		key: 2,
+		value: 'TIM_GROUP'
+	},
+	{
+		key: 3,
+		value: 'TIM_SYSTEM'
+	}
+]
 export default constData

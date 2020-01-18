@@ -59,8 +59,8 @@ export default {
 			} else if (res.title == '上传文件') {
 				chatView.selectFileForSend();
 			} else if (res.title == '收藏代理') {
-				uni.showModal({
-					content: res.title
+				uni.navigateTo({
+					url: `/pages/shareView/shareView?shareType=0` //0为代理人分享类型
 				});
 			} else if (res.title == '打赏') {
 				uni.showModal({
