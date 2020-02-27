@@ -1,0 +1,142 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/task/task",
+			"style": {
+				
+			}
+		},{
+			"path": "pages/task/taskInfo/taskInfo",
+			"style": {
+				
+			}
+		},
+		{
+			"path": "pages/login/code",
+			"style": {
+				
+			}
+		},
+		{
+			"path": "pages/login/mobile",
+			"style": {
+				
+			}
+		},
+		{
+			"path": "pages/login/mobilePassword",
+			"style": {
+				
+			}
+		},
+		{
+			"path": "pages/login/resetPassword",
+			"style": {
+				
+			}
+		},
+		{
+			"path": "pages/login/resetPhone",
+			"style": {
+				
+			}
+		}, {
+			"path": "pages/user/user",
+			"style": {}
+		}, {
+			"path": "pages/myTask/ediorTask/ediorTask",
+			"style": {}
+		}, {
+			"path": "pages/myTask/myTask",
+			"style": {}
+		}, {
+			"path": "pages/myTask/taskInfo/myTask",
+			"style": {}
+		}, {
+			"path": "pages/myTask/taskInfo/taskInfo",
+			"style": {}
+		}, {
+			"path": "pages/news/chat",
+			"style": {}
+		}, {
+			"path": "pages/news/contract/contract",
+			"style": {}
+		}, {
+			"path": "pages/news/news",
+			"style": {}
+		}
+
+	    ,{
+            "path" : "pages/addTask/addTask",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/addTask/addTaskInfo",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/addTask/taskPrice",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/addTask/success",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/task/taskInfo/accTask",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/myTask/taskInfo/choiceView",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/myTask/taskInfo/userView",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/task/accSuccess/accSuccess",
+            "style" : {}
+        }
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"navigationStyle": "custom"
+	},
+	"tabBar": {
+		"color": "#587685",
+		"selectedColor": "#64BCCC",
+		"borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"iconWidth": "20px",
+		"midButton": {
+			"iconPath":"static/tabIcon/midiu.png",
+			"iconWidth":"35px",
+			"height":"44px"
+		},
+		"list": [{
+			"pagePath": "pages/task/task",
+			"iconPath": "static/tabIcon/tab_syrw.png",
+			"selectedIconPath": "static/tabIcon/tab_syrw-curr.png",
+			"text": "所有任务"
+		}, {
+			"pagePath": "pages/myTask/myTask",
+			"iconPath": "static/tabIcon/tab_wdrw.png",
+			"selectedIconPath": "static/tabIcon/tab_wdrw-curr.png",
+			"text": "我的任务"
+		}, {
+			"pagePath": "pages/news/news",
+			"iconPath": "static/tabIcon/tab_xx.png",
+			"selectedIconPath": "static/tabIcon/tab_xx-curr.png",
+			"text": "消息"
+		}, {
+			"pagePath": "pages/user/user",
+			"iconPath": "static/tabIcon/tan_qt.png",
+			"selectedIconPath": "static/tabIcon/tab_qt-curr.png",
+			"text": "我的"
+		}]
+	}
+}

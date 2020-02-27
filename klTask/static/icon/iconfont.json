@@ -1,0 +1,51 @@
+{
+  "id": "1531244",
+  "name": "medium",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "榴莲中介端",
+  "glyphs": [
+    {
+      "icon_id": "871628",
+      "name": "微信",
+      "font_class": "wechat",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "1185470",
+      "name": "qq",
+      "font_class": "qq",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "1200187",
+      "name": "返回",
+      "font_class": "fanhui",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "1517637",
+      "name": "关闭",
+      "font_class": "guanbi",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "3926267",
+      "name": "加",
+      "font_class": "jia",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
+      "icon_id": "4485029",
+      "name": "生日",
+      "font_class": "shengri",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    }
+  ]
+}
