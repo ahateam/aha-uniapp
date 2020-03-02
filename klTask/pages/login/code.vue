@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import ValidCode from '../../components/code/ValidCode.vue';
+import ValidCode from '@/components/code/ValidCode.vue';
 import loginBtn from '@/components/otherFct/loginBtn.vue';
 //tim
 import { mapState } from 'vuex';

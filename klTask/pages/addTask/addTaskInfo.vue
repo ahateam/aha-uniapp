@@ -1,34 +1,37 @@
 <template>
 	<view class="page">
-		<view class="nav-box flex-box">
-			<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
-			<view class="view-title">发布任务</view>
-		</view>
-
-		<data-input v-model="name" title="任务名称" placeholder="任务名称"></data-input>
-
-		<data-textarea v-model="text" title="任务描述" placeholder="任务描述"></data-textarea>
-
-		<view class="auto-title">
-			<view class="right-title">拍照上传</view>
-			<text>*</text>
-		</view>
-		<view class="tip-info">为了更合理的估价,请您上传相关照片,特别是房屋修理和搬运的工作。</view>
-		<view class="img-list-box flex-box">
-			<image
-				v-for="(item, index) in imgList"
-				:key="index"
-				class="list-img"
-				:style="(index + 1) % 3 == 0 ? 'margin-right:0' : ''"
-				:src="ossSrc + item"
-				mode="aspectFill"
-			></image>
-			<view class="add-btn flex-box" :style="(imgList.length + 1) % 3 == 0 ? 'margin-right:0' : ''" @click="addImg">
-				<image src="/static/image/icon/icon_add_b.png" mode="aspectFit"></image>
+		<image class="view-bg" src="/static/image/bg_c.png" mode="widthFix"></image>
+		<view style="position: relative;">
+			<view class="nav-box flex-box">
+				<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image>
+				<view class="view-title">发布任务</view>
 			</view>
-		</view>
 
-		<view class="bottom-btn" @click="nextBtn">下一步</view>
+			<data-input v-model="name" title="任务名称" placeholder="任务名称"></data-input>
+
+			<data-textarea v-model="text" title="任务描述" placeholder="任务描述"></data-textarea>
+
+			<view class="auto-title">
+				<view class="right-title">拍照上传</view>
+				<text>*</text>
+			</view>
+			<view class="tip-info">为了更合理的估价,请您上传相关照片,特别是房屋修理和搬运的工作。</view>
+			<view class="img-list-box flex-box">
+				<image
+					v-for="(item, index) in imgList"
+					:key="index"
+					class="list-img"
+					:style="(index + 1) % 3 == 0 ? 'margin-right:0' : ''"
+					:src="ossSrc + item"
+					mode="aspectFill"
+				></image>
+				<view class="add-btn flex-box" :style="(imgList.length + 1) % 3 == 0 ? 'margin-right:0' : ''" @click="addImg">
+					<image src="/static/image/icon/icon_add_b.png" mode="aspectFit"></image>
+				</view>
+			</view>
+
+			<view class="bottom-btn" @click="nextBtn">下一步</view>
+		</view>
 	</view>
 </template>
 
@@ -73,9 +76,11 @@ export default {
 				url: './taskPrice'
 			});
 		},
+		
 		navBack() {
 			uni.navigateBack();
 		},
+		
 		addImg() {
 			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'));
 			let tiemr = new Date();
@@ -142,6 +147,14 @@ export default {
 	min-height: 100vh;
 	padding-bottom: 1px;
 	box-sizing: border-box;
+}
+
+.view-bg {
+	position: absolute;
+	top: 0;
+	z-index: 0;
+	width: 100vw;
+	height: 100vh;
 }
 
 .view-title {

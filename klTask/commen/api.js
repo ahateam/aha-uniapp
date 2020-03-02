@@ -95,6 +95,11 @@ api.getTaskApplys = function(cnt, callback) {
 	util.call(baseUrl + '/cltask/getTaskApplys', cnt, callback)
 }
 
+// 查寻订单详情 
+api.getTaskApply = function(cnt, callback) {
+	util.call(baseUrl + '/cltask/getTaskApply', cnt, callback)
+}
+
 // 通过报价 
 api.TaskApplyConfirm = function(cnt, callback) {
 	util.call(baseUrl + '/cltask/TaskApplyConfirm', cnt, callback)
@@ -153,6 +158,11 @@ api.updateTaskByTaskId = function(cnt, callback) {
 // 删除任务 
 api.deletDurianTaskByTaskId = function(cnt, callback) {
 	util.call(baseUrl + '/task/deletDurianTaskByTaskId', cnt, callback)
+}
+
+// 查询任务标签列表(所有标签) 
+api.getTaskTags = function(cnt, callback) {
+	util.call(baseUrl + '/cltask/getTaskTags', cnt, callback)
 }
 
 // 查询语种 
@@ -217,4 +227,16 @@ api.getReplys = function(cnt, callback) {
 api.createReply = function(cnt, callback) {
 	util.call(baseUrl + '/reply/createReply', cnt, callback)
 }
+
+/* 评价 */
+// 获取用户评价 
+api.getEvaluateList = function(cnt, callback) {
+	util.call(baseUrl + '/evaluate/getEvaluateList', cnt, callback)
+}
+
+/* 文件 */
+ // 上传文件 
+ api.uploadFile = function(cnt, callback) {
+ 	util.call(baseUrl + '/cltask/uploadFile', cnt, callback)
+ }
 export default api

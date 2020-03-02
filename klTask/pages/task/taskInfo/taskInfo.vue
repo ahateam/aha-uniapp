@@ -257,8 +257,8 @@ export default {
 					console.log(obj);
 					console.log('______________________________________');
 					this.task = obj;
-					this.getAddress();
 					this.pageStatus = 'succ';
+					this.getAddress();
 				} else {
 					uni.showToast({
 						title: '服务器错误',

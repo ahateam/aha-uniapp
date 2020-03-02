@@ -1,57 +1,81 @@
 <template>
 	<view>
+		<image class="top-bg" src="/static/image/bg_c.png" mode="aspectFill"></image>
 		<view :style="{ 'padding-top': `calc(${getNavHeight()} - 20rpx)` }"></view>
-		<view class="user-box" :style="dataChangeStatus ? '' : 'padding-bottom: 37rpx;'">
+		<view class="flex-box user-box" :style="dataChangeStatus ? '' : 'padding-bottom: 37rpx;'">
 			<view class="flex-box">
 				<image class="user-head" :src="constData.oss + imgSrc" mode="aspectFill"></image>
 				<view class="btns-box">
 					<view class="user-name">{{ name }}</view>
 					<view class="money-box">
-						<image src="/static/image/icon/user/icon_ptb.png" mode="aspectFill"></image>
-						<text>平台币{{ money }}</text>
+						<image src="/static/image/icon/icon_star_bg.png" mode="aspectFit"></image>
+						<view class="money-text">
+							我的评分
+							<text>9.5</text>
+						</view>
 					</view>
 				</view>
 			</view>
 			<view class="flex-box right-box">
-				<view class="editor-box btns-box" @click="navToUser">
-					<image src="/static/image/icon/user/edior.png" mode="aspectFill"></image>
+				<view class="editor-box btns-box flex-box" @click="navToUser">
+					<image src="/static/image/icon/editor.png" mode="aspectFill"></image>
 					<text>修改个人资料</text>
-				</view>
-				<view class="tip-box flex-box right-box" :hidden="dataChangeStatus">
-					<view class="tip-radius flex-box"><view class="radius-samll"></view></view>
-					<view class="tip-line"></view>
-					<view class="tip-card-box">
-						<image class="tip-card" src="/static/image/icon/user/tips.png" mode="aspectFit"></image>
-						<view class="tip-text">完善个人信息，可以获得更多的任务哦</view>
-					</view>
 				</view>
 			</view>
 		</view>
-		<view class="tobe-tasker flex-box">
-			<view>
+
+		<view class="bill-box">
+			<image class="bill-bg" src="/static/image/task/bg_sr.png" mode="widthFix"></image>
+			<view class="bill-top">
+				<view class="auto-title">
+					<view class="flex-box">
+						<image src="/static/image/icon/icon_gzqaud.png" mode=""></image>
+						<view>总收入 澳元</view>
+					</view>
+					<view class="bill-money">{{ income }}</view>
+				</view>
+				<view class="bill-line"></view>
+				<view class="auto-title">
+					<view class="flex-box">
+						<image src="/static/image/icon/icon_gzqaud.png" mode=""></image>
+						<view>总收入 澳元</view>
+					</view>
+					<view class="bill-money">{{ income }}</view>
+				</view>
+			</view>
+
+			<view class="bill-bottom flex-box">
+				<view class="flex-box">
+					<view class="bill-icon-box flex-box"><image src="/static/image/icon/ixon_ckmx.png" mode=""></image></view>
+					查看明细
+				</view>
+				<image class="enter-icon" src="/static/image/icon/icon_enter.png" mode=""></image>
+			</view>
+		</view>
+
+		<view class="tobe-tasker flex-box" @tap="navTasker">
+			<image class="tasker-bg" src="/static/image/user/pic_wdrwzrz.png" mode="aspectFit"></image>
+			<view style="position: relative;">
 				<view class="tasker-top">我的任务者认证</view>
 				<view class="tasker-center">来吧, 只有任务者才知道的世界</view>
 				<view class="tasker-btn">马上认证</view>
 			</view>
-			<image class="tasker-bg" src="/static/image/icon/task/icon_wjsd_p.png" mode="aspectFit"></image>
 		</view>
-		<view class="content-List">
-			<view class="content-box" @click="navToView('./bill/bill')" v-if="income != '' && payMoney != ''">
-				<view class="left-box">
-					<image class="left-icon" src="/static/image/icon/user/icon_gzqaud.png" mode="aspectFill"></image>
-					<view>共赚取{{ income }}澳元</view>
-					<view class="pay-info">支出{{ payMoney }}澳元</view>
-					<view class="pay-info pay-btn">明细</view>
-				</view>
-				<image class="right-icon" src="/static/image/icon/icon_enter.png" mode="aspectFill"></image>
-			</view>
 
-			<view class="content-box" v-for="(item, index) in contentList" :key="index" @click="navToView(item.path)">
-				<view class="left-box">
-					<image class="left-icon" :src="item.iconSrc" mode="aspectFill"></image>
-					<text>{{ item.text }}</text>
+		<view class="bottom-box">
+			<view class="auto-bottom flex-box bottom-line" @tap="navToSafe">
+				<view class="bottom-left flex-box">
+					<image src="/static/image/icon/icon_cl.png" mode="aspectFit"></image>
+					登陆账户安全
 				</view>
-				<image class="right-icon" src="/static/image/icon/icon_enter.png" mode="aspectFill"></image>
+				<image class="enter-icon" src="/static/image/icon/icon_enter.png" mode="aspectFit"></image>
+			</view>
+			<view class="auto-bottom flex-box">
+				<view class="bottom-left flex-box">
+					<image src="/static/image/icon/icon_bzzx.png" mode="aspectFit"></image>
+					帮助中心
+				</view>
+				<image class="enter-icon" src="/static/image/icon/icon_enter.png" mode="aspectFit"></image>
 			</view>
 		</view>
 	</view>
@@ -66,63 +90,34 @@ export default {
 			constData: this.$constData,
 			userInfo: {},
 			// imgSrc: uni.getStorageSync('userHead'),
-			imgSrc:
-				'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1575299763852&di=29607e81f528164e31fa7e0fde3e8c2f&imgtype=0&src=http%3A%2F%2F04imgmini.eastday.com%2Fmobile%2F20191022%2F2019102213_68c92b59f9a34b9b85fd586fa71112bc_7805_cover_mwpm_03201609.jpg',
+			imgSrc: '',
 			// name: uni.getStorageSync('userName'),
-			name: '印第安老斑鸠',
+			name: '',
 			money: 0,
-			contentList: [
-				{
-					text: '任务总览及浏览历史',
-					iconSrc: '/static/image/icon/user/icon_rwzljllls.png',
-					path: './task/task'
-				},
-				{
-					text: '收款账户',
-					iconSrc: '/static/image/icon/user/icon_skzh.png',
-					path: './newUserInfo/setUserInfo'
-				},
-				{
-					text: '账户安全',
-					iconSrc: '/static/image/icon/user/icon_zhaq.png',
-					path: './userSafe/userSafe'
-				},
-				{
-					text: '帮助中心',
-					iconSrc: '/static/image/icon/user/icon_bzzx.png',
-					path: './helpcenter/helpcenter'
-				}
-			],
-
-			applyTitle: 'Monash大学计算机专业申请',
-			applyHsty: '签字已提交',
-			hstyNumber: '25',
-			dataChangeStatus: false,
 
 			income: '', //收入
 			payMoney: '' //支出
 		};
 	},
 	methods: {
-		navToUser() {
+		navToSafe() {
 			uni.navigateTo({
-				url: './perdata/perdata',
-				success: () => {
-					this.$commen.hiddenTabIcon();
-				}
+				url: 'userSafe/userSafe'
 			});
 		},
 
-		navToView(url) {
-			if (url) {
-				uni.navigateTo({
-					url: url,
-					success: () => {
-						this.$commen.hiddenTabIcon();
-					}
-				});
-			}
+		navTasker() {
+			uni.navigateTo({
+				url: 'toBeTasker/toBeTasker'
+			});
 		},
+
+		navToUser() {
+			uni.navigateTo({
+				url: './perdata/perdata'
+			});
+		},
+
 		getNavHeight() {
 			return 44 + uni.getSystemInfoSync()['statusBarHeight'] + 'px';
 		},
@@ -167,7 +162,6 @@ export default {
 		}
 	},
 	onShow() {
-		this.$commen.showTabIcon();
 		let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'));
 		console.log(userInfo);
 		this.name = userInfo.userName;
@@ -188,14 +182,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.padding-top-box {
-	padding-top: calc(64px - 20rpx);
-}
-
-.icon-fanhui {
-	font-size: 33rpx;
+.top-bg {
 	position: absolute;
-	left: 29rpx;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
 }
 
 .user-head {
@@ -203,18 +194,19 @@ export default {
 	height: 150rpx;
 	border-radius: 50%;
 	margin-right: 30rpx;
+	border: 4rpx solid #ffffff;
 }
 
 .user-box {
-	display: flex;
-	align-items: center;
+	position: relative;
+	align-items: flex-start !important;
 	justify-content: space-between;
 	padding: 3rpx 40rpx 0;
 }
 
 .user-name {
 	font-size: 34rpx;
-	color: $group-color;
+	color: #ffffff;
 	line-height: 48rpx;
 }
 
@@ -227,94 +219,40 @@ export default {
 }
 
 .money-box {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 25rpx;
-	background-color: #fff8e5;
-	box-sizing: border-box;
-	border: 1rpx solid #fff8e5;
-	color: #ffa405;
-	margin-top: 22rpx;
-	font-size: 24rpx;
-	line-height: 34rpx;
-	padding: 0 10rpx 0 4rpx;
+	position: relative;
+	margin-top: 24rpx;
+	color: #ffffff;
 
 	image {
-		width: 26rpx;
-		height: 26rpx;
-		margin-right: 6rpx;
+		width: 200rpx;
+		height: 45rpx;
+		display: block;
+	}
+}
+
+.money-text {
+	position: absolute;
+	left: 10rpx;
+	bottom: 3rpx;
+	font-size: 24rpx;
+	line-height: 35rpx;
+	vertical-align: bottom;
+
+	text {
+		font-size: 30rpx;
+		margin-left: 10rpx;
 	}
 }
 
 .editor-box {
-	display: flex;
-	align-items: center;
 	justify-content: center;
 	width: 180rpx;
 	font-size: 20rpx;
 	height: 50rpx;
 	box-sizing: border-box;
-	border-radius: 25rpx;
-	border: 1rpx solid #00c8be;
-	color: #00c8be;
-}
-
-.content-List {
-	margin-top: 52rpx;
-	padding: 0 40rpx;
-	font-size: 30rpx;
-	color: #333333;
-}
-
-.content-box {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 34rpx 0 34rpx 20rpx;
-	border-bottom: 1rpx solid rgba($color: $group-color-border, $alpha: 0.7);
-
-	&:active {
-		background-color: rgba($color: #f9f9f9, $alpha: 0.9);
-	}
-}
-
-.left-box {
-	display: flex;
-	align-items: center;
-}
-
-.left-icon {
-	width: 40rpx;
-	height: 40rpx;
-	margin-right: 37rpx;
-}
-
-.right-icon {
-	width: 12rpx;
-	height: 21rpx;
-}
-
-.apply-info {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 596rpx;
-	height: 120rpx;
-	margin: 30rpx 0 0 74rpx;
-	padding: 0 44rpx 0 24rpx;
-	background-color: rgba($color: $group-color-search, $alpha: 0.36);
-	border: 1rpx solid rgba($color: #cfdce9, $alpha: 0.36);
-}
-
-.apply-text {
-	font-size: 24rpx;
-	line-height: 33rpx;
-	color: $group-color;
-}
-
-.apply-hsty {
-	color: #00c8be;
+	background-color: #0f1b07;
+	border-radius: 6rpx;
+	color: #ffffff;
 }
 
 .flex-box {
@@ -324,90 +262,63 @@ export default {
 
 .right-box {
 	position: relative;
+	margin-top: 24rpx;
 	width: 180rpx;
 	justify-content: center;
 	align-items: flex-end;
 	flex-direction: column;
 }
 
-.tip-radius {
+.bill-box {
 	position: relative;
-	justify-content: center;
-	z-index: 1;
-	width: 30rpx;
-	height: 30rpx;
-	border-radius: 50%;
-	// background-color: rgba($color: #00C8BE, $alpha: .1);
-	margin-right: 77rpx;
-}
-
-.radius-content {
-	width: 22rpx;
-	height: 22rpx;
-	border-radius: 50%;
-	// background-color: rgba($color: #00C8BE, $alpha: .2);
-}
-
-.radius-samll {
-	position: absolute;
-	width: 14rpx;
-	height: 14rpx;
-	border-radius: 50%;
-	background-color: #00c8be;
-	box-shadow: 0 0 0 4rpx rgba($color: #00c8be, $alpha: 0.2), 0 0 0 8rpx rgba($color: #00c8be, $alpha: 0.1);
-}
-
-.tip-box {
-	position: absolute;
-	bottom: -15rpx;
-}
-
-.tip-line {
-	position: absolute;
-	top: 15rpx;
-	width: 0;
-	height: 73rpx;
-	border-left: 2rpx solid #d3f6f6;
-	right: 90rpx;
-}
-
-.tip-card-box {
-	position: absolute;
-	bottom: -125rpx;
-}
-
-.tip-card {
-	display: block;
-	width: 482rpx;
-	height: 71rpx;
-}
-
-.tip-text {
-	position: absolute;
-	top: 23rpx;
-	left: 20rpx;
-	color: #00c8be;
-	font-size: 26rpx;
-	line-height: 37rpx;
-}
-
-.pay-info {
-	color: $group-color-befor;
-	font-size: 26rpx;
-	margin-left: 30rpx;
-}
-
-.pay-btn {
-	background-color: $group-color-search;
-	width: 92rpx;
-	line-height: 48rpx;
+	width: 690rpx;
+	height: 230rpx;
+	margin: 0 auto;
+	overflow: hidden;
 	border-radius: 6rpx;
-	text-align: center;
+
+	.bill-bg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.bill-top {
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	padding: 43rpx 52rpx 0;
+	color: #ffffff;
+	font-size: 24rpx;
+	line-height: 33rpx;
+}
+
+.auto-title {
+	image {
+		width: 34rpx;
+		height: 34rpx;
+		margin-right: 26rpx;
+	}
+}
+
+.bill-money {
+	font-size: 40rpx;
+	line-height: 47rpx;
+	margin: 10rpx 0 0 60rpx;
+}
+
+.bill-line {
+	border-left: 1rpx solid rgba($color: #ffffff, $alpha: 0.5);
+	margin: 7rpx 50rpx 0 105rpx;
+	height: 52rpx;
+	width: 1rpx;
 }
 
 .tobe-tasker {
 	position: relative;
-	top: 40rpx;
 	justify-content: space-between;
 	background-color: #fee18b;
 	border-radius: 6rpx;
@@ -441,7 +352,76 @@ export default {
 }
 
 .tasker-bg {
-	width: 260rpx;
-	height: 80%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 688rpx;
+	height: 250rpx;
+}
+
+.bill-bottom {
+	position: absolute;
+	justify-content: space-between;
+	bottom: 0;
+	width: 690rpx;
+	height: 80rpx;
+	padding: 0 32rpx 0 52rpx;
+	backdrop-filter: blur(5px);
+	background-color: rgba($color: #ffffff, $alpha: 0.5);
+	box-sizing: border-box;
+}
+
+.bill-icon-box {
+	border-radius: 50%;
+	width: 40rpx;
+	height: 40rpx;
+	background-color: rgba($color: #0f1b07, $alpha: 0.5);
+	justify-content: center;
+	margin-right: 20rpx;
+
+	image {
+		height: 24rpx;
+		width: 20rpx;
+	}
+}
+
+.enter-icon {
+	width: 12rpx;
+	height: 21rpx;
+}
+
+.bottom-box {
+	position: relative;
+	background-color: #ffffff;
+	border-radius: 6rpx;
+	margin: 0 auto;
+	width: 690rpx;
+	box-sizing: border-box;
+	padding: 0 10rpx 10rpx;
+}
+
+.auto-bottom {
+	justify-content: space-between;
+	padding: 40rpx 30rpx 40rpx 20rpx;
+
+	&:active {
+		background-color: rgba($color: #f9f9f9, $alpha: 1);
+	}
+}
+
+.bottom-left {
+	font-size: 30rpx;
+	color: #666666;
+	line-height: 42rpx;
+
+	image {
+		width: 40rpx;
+		height: 40rpx;
+		margin-right: 37rpx;
+	}
+}
+
+.bottom-line {
+	border-bottom: 1rpx solid #eef1f2;
 }
 </style>

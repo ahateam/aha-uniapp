@@ -3,42 +3,42 @@
 		{
 			"path": "pages/task/task",
 			"style": {
-				
+
 			}
-		},{
+		}, {
 			"path": "pages/task/taskInfo/taskInfo",
 			"style": {
-				
+
 			}
 		},
 		{
 			"path": "pages/login/code",
 			"style": {
-				
+
 			}
 		},
 		{
 			"path": "pages/login/mobile",
 			"style": {
-				
+
 			}
 		},
 		{
 			"path": "pages/login/mobilePassword",
 			"style": {
-				
+
 			}
 		},
 		{
 			"path": "pages/login/resetPassword",
 			"style": {
-				
+
 			}
 		},
 		{
 			"path": "pages/login/resetPhone",
 			"style": {
-				
+
 			}
 		}, {
 			"path": "pages/user/user",
@@ -66,39 +66,78 @@
 			"style": {}
 		}
 
-	    ,{
-            "path" : "pages/addTask/addTask",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/addTask/addTaskInfo",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/addTask/taskPrice",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/addTask/success",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/task/taskInfo/accTask",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/myTask/taskInfo/choiceView",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/myTask/taskInfo/userView",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/task/accSuccess/accSuccess",
-            "style" : {}
-        }
-    ],
+		, {
+			"path": "pages/addTask/addTask",
+			"style": {}
+		}, {
+			"path": "pages/addTask/addTaskInfo",
+			"style": {}
+		}, {
+			"path": "pages/addTask/taskPrice",
+			"style": {}
+		}, {
+			"path": "pages/addTask/success",
+			"style": {}
+		}, {
+			"path": "pages/task/taskInfo/accTask",
+			"style": {}
+		}, {
+			"path": "pages/myTask/taskInfo/choiceView",
+			"style": {}
+		}, {
+			"path": "pages/myTask/taskInfo/userView",
+			"style": {}
+		}, {
+			"path": "pages/task/accSuccess/accSuccess",
+			"style": {}
+		}, {
+			"path": "pages/user/toBeTasker/toBeTasker",
+			"style": {}
+		}, {
+			"path": "pages/user/toBeTasker/choiceSkill",
+			"style": {}
+		}, {
+			"path": "pages/user/certificate/certificate",
+			"style": {}
+		}, {
+			"path": "pages/user/certificate/userID/userID",
+			"style": {}
+		}, {
+			"path": "pages/user/certificate/userAccount/userAccount",
+			"style": {}
+		}, {
+			"path": "pages/addTask/cleanTask/cleanTask",
+			"style": {}
+		}, {
+			"path": "pages/addTask/cleanTask/cleanInfo",
+			"style": {}
+		}, {
+			"path": "pages/addTask/CarryTask/CarryTask",
+			"style": {}
+		}, {
+			"path": "pages/addTask/CarryTask/CarryPrice",
+			"style": {}
+		}, {
+			"path": "pages/addTask/specialCar/specialCar",
+			"style": {}
+		}, {
+			"path": "pages/addTask/specialCar/carPrice",
+			"style": {}
+		}, {
+			"path": "pages/user/userSafe/userSafe"
+		}, {
+			"path": "pages/user/userSafe/setNewPass/noPass"
+		},
+		{
+			"path": "pages/user/userSafe/setNewPass/setNewPass"
+		},
+		{
+			"path": "pages/user/userSafe/setNewPass/setPass"
+		},
+		{
+			"path": "pages/user/perdata/perdata"
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
@@ -113,9 +152,9 @@
 		"backgroundColor": "#ffffff",
 		"iconWidth": "20px",
 		"midButton": {
-			"iconPath":"static/tabIcon/midiu.png",
-			"iconWidth":"35px",
-			"height":"44px"
+			"iconPath": "static/tabIcon/midiu.png",
+			"iconWidth": "35px",
+			"height": "44px"
 		},
 		"list": [{
 			"pagePath": "pages/task/task",

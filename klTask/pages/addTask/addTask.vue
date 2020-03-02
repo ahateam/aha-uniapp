@@ -1,17 +1,20 @@
 <template>
 	<view class="page">
-		<view class="view-title">发布任务</view>
-		<view class="view-tip">最近的热门任务</view>
-		<view class="content-box">
-			<view class="task-type-box">
-				<view v-for="(item, index) in list" :key="index">
-					<view :style="(index + 1) % 3 == 0 ? 'margin-right:0;' : ''" class="task-type-list" @click="navToAdd()">
-						<image src="/static/image/login/codeBG.png" mode="aspectFill"></image>
-						<view>家庭清洁</view>
+		<image class="view-bg" src="/static/image/bg_c.png" mode="aspectFill"></image>
+		<view style="position: relative;">
+			<view class="view-title">发布任务</view>
+			<view class="view-tip">最近的热门任务</view>
+			<view class="content-box">
+				<view class="task-type-box">
+					<view v-for="(item, index) in list" :key="index">
+						<view :style="(index + 1) % 3 == 0 ? 'margin-right:0;' : ''" class="task-type-list" @click="navToAdd(item)">
+							<image src="/static/image/login/codeBG.png" mode="aspectFill"></image>
+							<view>{{ item.name }}</view>
+						</view>
 					</view>
 				</view>
+				<view class="bottom-btn">其他所有</view>
 			</view>
-			<view class="bottom-btn">其他所有</view>
 		</view>
 	</view>
 </template>
@@ -20,15 +23,77 @@
 export default {
 	data() {
 		return {
-			list: [{}, {}, {}]
+			list: [
+				{
+					name: '房屋维修'
+				},
+				{
+					name: '翻译业务'
+				},
+				{
+					name: '清洁保洁'
+				},
+				{
+					name: '专车接送'
+				},
+				{
+					name: '搬家搬运'
+				},
+				{
+					name: '签证办理'
+				},
+				{
+					name: '花园维护'
+				},
+				{
+					name: '宠物寄养'
+				},
+				{
+					name: '专业摄影'
+				}
+			]
 		};
 	},
 	methods: {
-		navToAdd() {
-			uni.navigateTo({
-				url: './addTaskInfo'
+		navToAdd(item) {
+			if (item.name == '清洁保洁') {
+				uni.navigateTo({
+					url: 'cleanTask/cleanTask'
+				});
+			} else if (item.name == '搬家搬运') {
+				uni.navigateTo({
+					url: 'CarryTask/CarryTask'
+				});
+			} else if (item.name == '专车接送') {
+				uni.navigateTo({
+					url: 'specialCar/specialCar'
+				});
+			} else {
+				uni.navigateTo({
+					url: './addTaskInfo'
+				});
+			}
+		},
+		getTaskTags(cnt) {
+			this.$api.getTaskTags(cnt, res => {
+				if (res.data.rc == this.$util.RC.SUCCESS) {
+					console.log(this.$util.tryParseJson(res.data.rc));
+				} else {
+					uni.showToast({
+						title: res.data.rm,
+						icon: 'none'
+					});
+				}
 			});
 		}
+	},
+	onLoad() {
+		let cnt = {
+			groupId: 1, // Long 分类id
+			count: 10, // int
+			offset: 0 // int
+		};
+		this.getTaskTags(cnt);
 	}
 };
 </script>
@@ -40,6 +105,14 @@ export default {
 	color: #ffffff;
 	box-sizing: border-box;
 	padding-bottom: 30rpx;
+}
+
+.view-bg {
+	position: absolute;
+	top: 0;
+	z-index: 0;
+	width: 100vw;
+	height: 100vh;
 }
 
 .view-title {

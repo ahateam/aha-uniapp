@@ -1,7 +1,8 @@
 <template>
 	<view>
 		<!-- 任务栏组件 -->
-		<view class="task-box" :class="{ 'my-task': showStatus() && item.updateTime }" v-for="(item, index) in tasks" :key="index" @click="getItem(item)">
+		<view class="task-box" v-for="(item, index) in tasks" :key="index" @click="getItem(item)">
+			<view class="radius-box" v-if="type"></view>
 			<view>
 				<view class="task-top flex-box">
 					<view class="task-l-img"></view>
@@ -9,7 +10,7 @@
 				</view>
 				<view class="task-address auto-font flex-box">
 					<image src="/static/image/icon/position.png" mode="aspectFit"></image>
-					<view>
+					<view class="address-text">
 						BOX HILL
 						<text>(距我10公里)</text>
 					</view>
@@ -32,8 +33,7 @@
 					收到报价
 					<text>0</text>
 				</view>
-
-				<view class="flex-box status-box" :style="!item.acceptTime ? 'margin-top: 30rpx;' : ''" v-if="showStatus()">
+				<view class="flex-box status-box" v-if="showStatus()">
 					<image :src="getIcon(item)" mode="aspectFit"></image>
 					<view>{{ getStatus(item) }}</view>
 				</view>
@@ -105,16 +105,28 @@ export default {
 	align-items: center;
 }
 
+.radius-box {
+	position: absolute;
+	top: 0;
+	right: 91rpx;
+	border-radius: 0 0 87rpx 87rpx;
+	width: 182rpx;
+	height: 87rpx;
+	background-color: rgba($color: #ffcd34, $alpha: 0.1);
+}
+
 .task-box {
+	position: relative;
 	display: flex;
 	justify-content: space-between;
 	background-color: #ffffff;
 	width: 690rpx;
-	height: 300rpx;
+	// height: 300rpx;
+	padding-bottom: 21rpx;
 	margin: 30rpx;
 	box-shadow: 0 0 15rpx 0 rgba($color: #b6c4d2, $alpha: 0.4);
 	border-radius: 6rpx;
-	transition: all 0.3s;
+	transition: background-color 0.3s;
 	padding-right: 50rpx;
 	box-sizing: border-box;
 
@@ -175,6 +187,16 @@ export default {
 	}
 }
 
+.address-text {
+	font-size: 28rpx;
+	line-height: 40rpx;
+	color: #666666;
+
+	text {
+		font-size: $group-font;
+	}
+}
+
 .left-icon {
 	width: 12rpx;
 	height: 12rpx;
@@ -191,12 +213,10 @@ export default {
 	}
 }
 
-.my-task {
-	height: 388rpx;
-}
-
 .status-box {
-	margin: 50rpx 0 0 40rpx;
+	position: relative;
+	margin: 30rpx 0 0 40rpx;
+	padding-top: 20rpx;
 	color: $group-color-btn;
 	font-size: $group-font;
 	line-height: 37rpx;
@@ -205,6 +225,15 @@ export default {
 		width: 28rpx;
 		height: 28rpx;
 		margin-right: 10rpx;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 630rpx;
+		border-top: 1rpx solid #eef1f2;
 	}
 }
 

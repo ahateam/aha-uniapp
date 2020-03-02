@@ -66,12 +66,10 @@
 </template>
 
 <script>
-import ChoiceInput from '@/components/dataInput/ChoiceInput.vue';
 import SenPickerView from '@/components/sen-pickerview/picker-view-set.vue';
 
 export default {
 	components: {
-		ChoiceInput,
 		SenPickerView
 	},
 	data() {
@@ -164,8 +162,6 @@ export default {
 				}
 			});
 		},
-
-		choiceTime() {},
 
 		navBack() {
 			uni.navigateBack();

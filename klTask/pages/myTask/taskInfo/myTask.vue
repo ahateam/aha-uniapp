@@ -50,7 +50,7 @@
 					<view class="left-dot" style="background-color: #508324;"></view>
 					<view class="status-text">{{ getStatus(task.status) }}</view>
 
-					<view class="tasker-price-box" v-if="task.applyNum > 0">
+					<view class="tasker-price-box" v-if="task.applyNum > 0" @tap="navToChoice">
 						<image src="/static/image/task/icon_sdlgbj.png" mode="aspectFit"></image>
 						<view>
 							收到
@@ -126,7 +126,7 @@
 		<uni-popup animation :show="revokeShow" @change="colsePopup">
 			<view class="revoke-box">
 				<view class="revoke-radius"></view>
-				<view class="revoke-title">撤销报价后</view>
+				<view class="revoke-title">撤销任务后</view>
 				<view>任务者就看不到了，但可以再次发布</view>
 				<view class="btn-box flex-box">
 					<view class="auto-btn succ-btn" @tap="revokeTask">确定</view>
@@ -184,6 +184,12 @@ export default {
 		};
 	},
 	methods: {
+		navToChoice() {
+			uni.navigateTo({
+				url: `./choiceView?id=${this.taskId}`
+			});
+		},
+
 		revokeTask() {
 			let cnt = {
 				taskId: this.taskId // Long 任务id
@@ -449,6 +455,7 @@ export default {
 					console.log(obj);
 					console.log('______________________________________');
 					this.task = obj;
+					uni.setStorageSync('taskInfo', [obj]);
 					// #ifdef APP-PLUS
 					this.getAddress();
 					// #endif

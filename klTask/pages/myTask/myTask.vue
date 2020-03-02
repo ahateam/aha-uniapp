@@ -122,6 +122,7 @@ export default {
 				if (res.data.rc == this.$util.RC.SUCCESS) {
 					uni.stopPullDownRefresh();
 					let list = this.$util.tryParseJson(res.data.c);
+					// list.splice(0, 1);
 					this.tryData(list);
 				} else {
 					uni.showToast({
@@ -165,6 +166,11 @@ export default {
 			console.log(this.tasks);
 		}
 	},
+
+	onShow() {
+		uni.removeStorageSync('taskInfo');
+	},
+
 	onLoad() {
 		let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'));
 		this.userInfo = userInfo;
