@@ -9,8 +9,7 @@ let percent = 0;
 /**oss上传*/
 var client = new OSS.Wrapper({
 	region: "oss-ap-southeast-2", //阿里云获取
-	accessKeyId: "",
-	accessKeySecret: "",
+	
 	bucket: "durian-file" //要存储的目录名
 });
 console.log(client)

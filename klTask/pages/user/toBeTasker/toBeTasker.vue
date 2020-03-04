@@ -37,6 +37,10 @@ export default {
 			uni.navigateTo({
 				url: 'choiceSkill'
 			});
+		},
+
+		navBack() {
+			uni.navigateBack();
 		}
 	}
 };

@@ -118,14 +118,14 @@ export default {
 				cnt.advanceAmount = this.price;
 			}
 
-			if (this.status == 1) {
-				let pos = {
-					address: this.district,
-					postalCode: this.postalCode
-				};
-				pos = JSON.stringify(pos);
-				cnt.pos = pos;
-			}
+			// if (this.status == 1) {
+			// 	let pos = {
+			// 		address: this.district,
+			// 		postalCode: this.postalCode
+			// 	};
+			// 	pos = JSON.stringify(pos);
+			// 	cnt.pos = pos;
+			// }
 			// console.log(cnt);
 			this.createTask(cnt);
 		},

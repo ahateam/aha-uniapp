@@ -101,7 +101,8 @@ export default {
 						status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
 						taskType: item.key, // Byte <选填> 任务类型
 						count: this.count, // Integer
-						offset: this.offset // Integer
+						offset: this.offset ,// Integer
+						userId: this.userInfo.userId // 用户id
 					};
 					this.getTasks(cnt);
 				}
@@ -217,7 +218,8 @@ export default {
 				module: this.$constData.module, // Long <选填> 模块编号
 				// status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
 				count: this.count, // Integer
-				offset: this.offset // Integer
+				offset: this.offset ,// Integer
+				userId: this.userInfo.userId
 			};
 			this.getTasks(cnt);
 
@@ -246,13 +248,15 @@ export default {
 		this.tagList[this.currIndex].page = 1;
 
 		let cnt = {
-			status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
+			module: this.$constData.module, // Long <选填> 模块编号
+			// status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
 			count: this.count, // Integer
-			offset: this.offset // Integer
+			offset: this.offset ,// Integer
+			userId: this.userInfo.userId
 		};
-		if (this.currIndex != 0) {
-			cnt.taskType = this.tagList[this.currIndex].key; // Byte <选填> 任务类型
-		}
+		// if (this.currIndex != 0) {
+		// 	cnt.taskType = this.tagList[this.currIndex].key; // Byte <选填> 任务类型
+		// }
 		this.getTasks(cnt);
 	},
 	onReachBottom() {
@@ -263,7 +267,8 @@ export default {
 			let cnt = {
 				status: this.$constData.taskWall[0].key, // Byte <选填> 状态（是否删除）
 				count: this.count, // Integer
-				offset: (this.page - 1) * this.count // Integer
+				offset: (this.page - 1) * this.count ,// Integer
+				userId: this.userInfo.userId
 			};
 			if (this.currIndex != 0) {
 				cnt.taskType = this.tagList[this.currIndex].key; // Byte <选填> 任务类型

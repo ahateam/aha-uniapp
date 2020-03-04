@@ -168,7 +168,7 @@ export default {
 				id: this.orderId, // Long 任务订单id
 				taskDate: '无' // String <选填> 上传作品数据
 			};
-			this.$editApplyTaskData(cnt, res => {
+			this.$api.editApplyTaskData(cnt, res => {
 				if (res.data.rc == this.$util.RC.SUCCESS) {
 					uni.showToast({
 						title: '任务完成',

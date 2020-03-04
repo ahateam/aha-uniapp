@@ -75,14 +75,18 @@ export default {
 		},
 
 		outLogin() {
-			let timSdk = uni.requireNativePlugin('TIM-SdkWX');
-			timSdk.logout(res2 => {
-				console.log(res2);
-				uni.clearStorageSync();
-				this.$commen.clearTabIcon();
-				uni.reLaunch({
-					url: '/pages/login/mobilePassword'
-				});
+			// let timSdk = uni.requireNativePlugin('TIM-SdkWX');
+			// timSdk.logout(res2 => {
+			// 	console.log(res2);
+			// 	uni.clearStorageSync();
+			// 	this.$commen.clearTabIcon();
+			// 	uni.reLaunch({
+			// 		url: '/pages/login/mobilePassword'
+			// 	});
+			// });
+			uni.clearStorageSync();
+			uni.reLaunch({
+				url: '/pages/login/mobilePassword'
 			});
 		}
 	},

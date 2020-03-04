@@ -1,7 +1,9 @@
 <template>
 	<view>
 		<image class="top-bg" src="/static/image/addTask/pic_qjbj.png" mode="aspectFill"></image>
-		<view class="nav-box flex-box"><image class="back-icon" src="/static/image/icon/icon_back_w.png" @tap="navBack" mode="aspectFit"></image></view>
+		<view class="nav-box flex-box">
+			<image class="back-icon" src="/static/image/icon/icon_back_w.png" @tap="navBack" mode="aspectFit"></image>
+		</view>
 		<view class="bottom-content">
 			<view>
 				<view class="flex-box title-box">
@@ -50,7 +52,8 @@
 			</view>
 
 			<view class="flex-box bottom-change" @tap="priceStatus = priceType[2].key" :style="priceStatus == priceType[2].key ? 'color:#FFCD34' : ''">
-				<image :src="priceStatus == priceType[2].key ? '/static/image/icon/addTask/user-curr.png' : '/static/image/icon/addTask/user.png'" mode="aspectFit"></image>
+				<image :src="priceStatus == priceType[2].key ? '/static/image/icon/addTask/user-curr.png' : '/static/image/icon/addTask/user.png'"
+				 mode="aspectFit"></image>
 				由任务者报价
 			</view>
 
@@ -62,203 +65,220 @@
 </template>
 
 <script>
-import SenPickerView from '@/components/sen-pickerview/picker-view-set.vue';
+	import SenPickerView from '@/components/sen-pickerview/picker-view-set.vue';
 
-export default {
-	components: {
-		SenPickerView
-	},
-	data() {
-		return {
-			priceType: this.$constData.priceType,
-			showTime: false,
-			price: '',
-			priceStatus: 0,
-			time: '',
-			addressInfo: {},
-			district: '',
-			postalCode: ''
-		};
-	},
-	methods: {
-		changeTime(y, m, d) {
-			this.time = `${y}-${m}-${d}`;
-			this.showTime = false;
+	export default {
+		components: {
+			SenPickerView
 		},
+		data() {
+			return {
+				priceType: this.$constData.priceType,
+				showTime: false,
+				price: '',
+				priceStatus: 0,
+				time: '',
+				addressInfo: {},
+				address:'',
+				district: '',
+				postalCode: ''
+			};
+		},
+		methods: {
+			changeTime(y, m, d) {
+				this.time = `${y}-${m}-${d}`;
+				this.showTime = false;
+			},
 
-		getAddress() {
-			uni.getLocation({
-				geocode: true,
-				success: res => {
-					this.addressInfo = res;
-					this.district = res.address.district;
-					if (res.daaress.postalCode) {
-						this.postalCode = res.daaress.postalCode;
+			getAddress() {
+				uni.getLocation({
+					geocode: true,
+					success: res => {
+						console.log(res)
+						let cnt = {
+							address:res.latitude+','+res.longitude
+						}
+						this.getMapName(cnt)
+						this.addressInfo = res;
+						this.district = res.address.district;
+						if (res.daaress.postalCode) {
+							this.postalCode = res.daaress.postalCode;
+						}
+					},
+					fail: err => {
+						console.log(err);
 					}
-				},
-				fail: err => {
-					console.log(err);
-				}
-			});
-		},
-
-		navBack() {
-			uni.navigateBack();
+				});
+			},
+			getMapName(cnt) {
+				this.$api.getMapName(cnt, res => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.postalCode = this.$util.tryParseJson(res.data.c).postal_code;
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						});
+					}
+				});
+			},
+			navBack() {
+				uni.navigateBack();
+			}
 		}
-	}
-};
+	};
 </script>
 
 <style lang="scss" scoped>
-.flex-box {
-	display: flex;
-	align-items: center;
-}
-
-.nav-box {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 1;
-	padding-top: $status-height;
-	height: 88rpx;
-}
-
-.back-icon {
-	position: absolute;
-	left: 0;
-	padding: 10rpx 29rpx;
-	width: 33rpx;
-	height: 33rpx;
-}
-
-.top-bg {
-	width: 100vw;
-	height: 380rpx;
-}
-
-.bottom-content {
-	padding: 35rpx 30rpx 30rpx;
-}
-
-.title-box {
-	justify-content: space-between;
-	color: #666666;
-	font-size: $group-font-befor;
-	line-height: $group-font-befor-line;
-	padding: 15rpx 10rpx 0;
-
-	text {
-		color: #ffd75d;
-		margin-left: 10rpx;
-	}
-}
-
-.gps-btn {
-	color: $group-color-btn;
-}
-
-.address-box {
-	padding: 8rpx 30rpx 10rpx;
-	border: 1rpx solid #dddfde;
-	border-radius: 6rpx;
-	margin-top: 31rpx;
-	font-size: 30rpx;
-
-	input {
-		width: 210rpx;
-		margin-left: 24rpx;
-	}
-}
-
-.center-line {
-	width: 1rpx;
-	height: 70rpx;
-	border-left: 1rpx solid $group-color-border;
-	margin-right: 30rpx;
-}
-
-.auto-box {
-	margin-top: 39rpx;
-	font-size: $group-font-befor;
-	line-height: $group-font-befor-line;
-	color: #666666;
-
-	text {
-		color: #ffd75d;
-	}
-}
-
-.auto-input {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-top: 30rpx;
-	height: 88rpx;
-	border: 1rpx solid #dddfde;
-	border-radius: 6rpx;
-	padding: 0 30rpx;
-	color: $group-color-article;
-
-	image {
-		width: 12rpx;
-		height: 21rpx;
-	}
-}
-
-.right-title {
-	display: inline-block;
-	margin-right: 10rpx;
-}
-
-.tip-info {
-	color: #999999;
-	font-size: 22rpx;
-	line-height: 36rpx;
-	margin-top: 30rpx;
-}
-
-.price-right-box {
-	color: #666666;
-	font-size: 30rpx;
-
-	.price-btn {
-		background-color: #f6f6f6;
-		border-radius: 4rpx;
-		line-height: 50rpx;
-		padding: 0 15rpx;
-		font-size: 26rpx;
-		color: #999999;
-		margin-left: 20rpx;
+	.flex-box {
+		display: flex;
+		align-items: center;
 	}
 
-	.active-price {
-		background-color: $group-color-bg;
-		color: #ffffff;
+	.nav-box {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+		padding-top: $status-height;
+		height: 88rpx;
 	}
-}
 
-.bottom-change {
-	margin-top: 30rpx;
-	color: #999999;
-	font-size: $group-font;
-	line-height: 37rpx;
+	.back-icon {
+		position: absolute;
+		left: 0;
+		padding: 10rpx 29rpx;
+		width: 33rpx;
+		height: 33rpx;
+	}
 
-	image {
-		width: 36rpx;
-		height: 36rpx;
+	.top-bg {
+		width: 100vw;
+		height: 380rpx;
+	}
+
+	.bottom-content {
+		padding: 35rpx 30rpx 30rpx;
+	}
+
+	.title-box {
+		justify-content: space-between;
+		color: #666666;
+		font-size: $group-font-befor;
+		line-height: $group-font-befor-line;
+		padding: 15rpx 10rpx 0;
+
+		text {
+			color: #ffd75d;
+			margin-left: 10rpx;
+		}
+	}
+
+	.gps-btn {
+		color: $group-color-btn;
+	}
+
+	.address-box {
+		padding: 8rpx 30rpx 10rpx;
+		border: 1rpx solid #dddfde;
+		border-radius: 6rpx;
+		margin-top: 31rpx;
+		font-size: 30rpx;
+
+		input {
+			width: 210rpx;
+			margin-left: 24rpx;
+		}
+	}
+
+	.center-line {
+		width: 1rpx;
+		height: 70rpx;
+		border-left: 1rpx solid $group-color-border;
+		margin-right: 30rpx;
+	}
+
+	.auto-box {
+		margin-top: 39rpx;
+		font-size: $group-font-befor;
+		line-height: $group-font-befor-line;
+		color: #666666;
+
+		text {
+			color: #ffd75d;
+		}
+	}
+
+	.auto-input {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-top: 30rpx;
+		height: 88rpx;
+		border: 1rpx solid #dddfde;
+		border-radius: 6rpx;
+		padding: 0 30rpx;
+		color: $group-color-article;
+
+		image {
+			width: 12rpx;
+			height: 21rpx;
+		}
+	}
+
+	.right-title {
+		display: inline-block;
 		margin-right: 10rpx;
 	}
-}
 
-.bottom-btn {
-	background-color: #0f1b07;
-	border-radius: 6rpx;
-	margin: 50rpx auto 20rpx;
-	width: 690rpx;
-	line-height: 102rpx;
-	color: #ffffff;
-	font-size: 36rpx;
-	text-align: center;
-}
+	.tip-info {
+		color: #999999;
+		font-size: 22rpx;
+		line-height: 36rpx;
+		margin-top: 30rpx;
+	}
+
+	.price-right-box {
+		color: #666666;
+		font-size: 30rpx;
+
+		.price-btn {
+			background-color: #f6f6f6;
+			border-radius: 4rpx;
+			line-height: 50rpx;
+			padding: 0 15rpx;
+			font-size: 26rpx;
+			color: #999999;
+			margin-left: 20rpx;
+		}
+
+		.active-price {
+			background-color: $group-color-bg;
+			color: #ffffff;
+		}
+	}
+
+	.bottom-change {
+		margin-top: 30rpx;
+		color: #999999;
+		font-size: $group-font;
+		line-height: 37rpx;
+
+		image {
+			width: 36rpx;
+			height: 36rpx;
+			margin-right: 10rpx;
+		}
+	}
+
+	.bottom-btn {
+		background-color: #0f1b07;
+		border-radius: 6rpx;
+		margin: 50rpx auto 20rpx;
+		width: 690rpx;
+		line-height: 102rpx;
+		color: #ffffff;
+		font-size: 36rpx;
+		text-align: center;
+	}
 </style>

@@ -210,7 +210,7 @@ export default {
 		},
 
 		addPrice() {
-			uni.setStorageSync('accTaskTitle', this.task.title);
+			console.log(uni.getStorageSync('accTaskTitle'))
 			uni.navigateTo({
 				url: `./accTask?id=${this.task.id}`
 			});
@@ -240,6 +240,9 @@ export default {
 			// 		});
 			// 	}
 			// });
+			
+			uni.removeStorageSync('accTaskTitle');
+			uni.setStorageSync('accTaskTitle', this.task.title);
 			uni.navigateTo({
 				url: `./accTask?id=${this.task.id}&advanceType=${this.task.advanceType}&price=${this.task.advanceAmount}`
 			});

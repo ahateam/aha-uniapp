@@ -84,14 +84,13 @@ export default {
 	methods: {
 		upFile(e) {
 			this.fileType = e;
-			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'));
 			let time = new Date();
 			this.$refs.lFile.upload({
 				// #ifdef APP-PLUS
 				currentWebview: this.$mp.page.$getAppWebview(),
 				// #endif
 				url: this.$constData.oss,
-				front: `${userInfo.userId}/${time.getFullYear()}${time.getMonth() * 1 + 1}${time.getDate()}`
+				front: `${this.userInfo.userId}/${time.getFullYear()}${time.getMonth() * 1 + 1}${time.getDate()}`
 			});
 		},
 
@@ -125,12 +124,20 @@ export default {
 
 		navNext() {
 			let cnt = {
-				userId:this.userInfo.userId,
-				introduction:this.text
-			}
-			this.$api.updateUser(cnt);
-			uni.navigateTo({
-				url: 'userID/userID'
+				userId: this.userInfo.userId,
+				introduction: this.text
+			};
+			this.$api.updateUser(cnt, res => {
+				if (res.data.rc == this.$util.RC.SUCCESS) {
+					uni.navigateTo({
+						url: 'userID/userID'
+					});
+				} else {
+					uni.showToast({
+						title: res.data.rm,
+						icon: 'none'
+					});
+				}
 			});
 		},
 

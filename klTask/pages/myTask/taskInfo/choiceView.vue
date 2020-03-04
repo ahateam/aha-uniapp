@@ -2,7 +2,7 @@
 	<view>
 		<view v-if="pageStatus != 'onload'">
 			<view class="nav-box flex-box"><image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit" @click="navBack"></image></view>
-			<image class="view-bg" src="/static/image/bg_c.png" mode="widthFix"></image>
+			<image class="view-bg" src="/static/image/bg_c.png" mode="aspectFill"></image>
 
 			<view style="position: relative;"><task-list :tasks="tasks" type="1"></task-list></view>
 			<view class="bottom-box">
@@ -54,6 +54,7 @@ export default {
 	},
 	methods: {
 		navToUser(item) {
+			uni.setStorageSync('itemUserText', item.data);
 			uni.navigateTo({
 				url: `./userView?id=${item.id}&userId=${item.user.userId}&taskId=${this.taskId}`
 			});
@@ -123,7 +124,8 @@ export default {
 	top: 0;
 	z-index: 0;
 	width: 100vw;
-	height: 100vh;
+	height: 50vh;
+	overflow: hidden;
 }
 
 .user-list {
@@ -146,7 +148,7 @@ export default {
 	position: relative;
 	background-color: #ffffff;
 	border-radius: 20rpx 20rpx 0 0;
-	min-height: calc(100vh - var(--status-bar-height) - 440rpx);
+	min-height: calc(100vh - var(--status-bar-height) - 470rpx);
 }
 
 .list-title {

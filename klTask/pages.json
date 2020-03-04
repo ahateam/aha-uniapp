@@ -3,7 +3,7 @@
 		{
 			"path": "pages/task/task",
 			"style": {
-
+				"enablePullDownRefresh": true
 			}
 		}, {
 			"path": "pages/task/taskInfo/taskInfo",
@@ -48,7 +48,9 @@
 			"style": {}
 		}, {
 			"path": "pages/myTask/myTask",
-			"style": {}
+			"style": {
+				"enablePullDownRefresh": true
+			}
 		}, {
 			"path": "pages/myTask/taskInfo/myTask",
 			"style": {}
@@ -137,7 +139,19 @@
 		{
 			"path": "pages/user/perdata/perdata"
 		}
-	],
+	    ,{
+            "path" : "pages/user/bill/bill",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/helpcenter/helpcenter",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/myTask/taskInfo/userCertificate/userCertificate",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

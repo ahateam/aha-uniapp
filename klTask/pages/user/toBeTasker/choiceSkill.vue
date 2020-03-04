@@ -51,54 +51,13 @@ export default {
 	},
 	data() {
 		return {
-			userInfo:{},
-			list: [
-				{
-					name: '房屋维修',
-					status: false
-				},
-				{
-					name: '翻译业务',
-					status: false
-				},
-				{
-					name: '专车接送',
-					status: false
-				},
-				{
-					name: '花园维护',
-					status: false
-				},
-				{
-					name: '专业摄影',
-					status: false
-				},
-				{
-					name: '清洁保洁',
-					status: false
-				},
-				{
-					name: '签证办理',
-					status: false
-				},
-				{
-					name: '宠物寄养',
-					status: false
-				},
-				{
-					name: '搬家搬运',
-					status: false
-				},
-				{
-					name: '全能帮手',
-					status: false
-				}
-			],
+			list: [],
 			text: '',
 			skill: '',
 			Pinyin: '',
 			choiceList: [],
-			popupShow: false
+			popupShow: false,
+			userInfo: {}
 		};
 	},
 
@@ -136,21 +95,15 @@ export default {
 		navNext() {
 			let list = [...this.choiceList];
 			list.push(this.skill);
-			this.$store.commit('updataSkillList', list);
 			let cnt = {
-				userId:this.userInfo.userId,
-				hobbyTag: this.choiceList
-			}
-			this.$api.updateUser(cnt);
-			uni.navigateTo({
-				url: '../certificate/certificate'
-			});
-		},
-
-		getTaskTags(cnt) {
-			this.$api.getTaskTags(cnt, res => {
+				userId: this.userInfo.userId,
+				hobbyTag: list
+			};
+			this.$api.updateUser(cnt, res => {
 				if (res.data.rc == this.$util.RC.SUCCESS) {
-					console.log(this.$util.tryParseJson(res.data.rc));
+					uni.navigateTo({
+						url: '../certificate/certificate'
+					});
 				} else {
 					uni.showToast({
 						title: res.data.rm,
@@ -158,6 +111,28 @@ export default {
 					});
 				}
 			});
+		},
+
+		getTaskTags(cnt) {
+			this.$api.getTaskTags(cnt, res => {
+				if (res.data.rc == this.$util.RC.SUCCESS) {
+					let list = [];
+					this.$util.tryParseJson(res.data.c).map((item, index) => {
+						let newObj = { ...item, status: false };
+						list.push(newObj);
+					});
+					this.list = list;
+				} else {
+					uni.showToast({
+						title: res.data.rm,
+						icon: 'none'
+					});
+				}
+			});
+		},
+
+		navBack() {
+			uni.navigateBack();
 		}
 	},
 

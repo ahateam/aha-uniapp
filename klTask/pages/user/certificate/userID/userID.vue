@@ -19,11 +19,11 @@
 			</view>
 			<view class="auto-tip">请上传你的ID证明(驾照或护照)</view>
 
-			<view class="up-file-btn" @tap="upFile(3)">上传文件</view>
+			<view class="up-file-btn" @tap="upFile(2)">上传文件</view>
 			<view class="radius-btn flex-box" @tap="navNext"><image src="/static/image/icon/icon_back_w.png" mode="aspectFit"></image></view>
-			
-			<l-file ref="lFile" @up-success="onSuccess"></l-file>
 		</view>
+
+		<l-file ref="lFile" @up-success="onSuccess"></l-file>
 	</view>
 </template>
 
@@ -40,12 +40,15 @@ export default {
 		return {
 			list: [{ name: '上传证书' }, { name: '验证身份' }, { name: '收款账户' }, { name: '成为任务者' }],
 			fileType: '',
-			idList: []
+			idList: [],
+			userInfo: {}
 		};
 	},
 	methods: {
 		navNext() {
-			console.log(2333);
+			// #ifdef MP
+			console.log('请用手机测试好嘛');
+			// #endif
 			uni.navigateTo({
 				url: '../userAccount/userAccount'
 			});
@@ -57,14 +60,13 @@ export default {
 
 		upFile(e) {
 			this.fileType = e;
-			let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'));
 			let time = new Date();
 			this.$refs.lFile.upload({
 				// #ifdef APP-PLUS
 				currentWebview: this.$mp.page.$getAppWebview(),
 				// #endif
 				url: this.$constData.oss,
-				front: `${userInfo.userId}/${time.getFullYear()}${time.getMonth() * 1 + 1}${time.getDate()}`
+				front: `${this.userInfo.userId}/${time.getFullYear()}${time.getMonth() * 1 + 1}${time.getDate()}`
 			});
 		},
 
@@ -84,7 +86,7 @@ export default {
 				let cnt = {
 					localFileUrl: obj.url, // String OSS文件路径
 					userId: this.userInfo.userId, // Long 用户id
-					type: 3 // Byte 上传文件类型（专业证书：0，无犯罪记录：1，ID：3）
+					type: this.fileType // Byte 上传文件类型（专业证书：0，无犯罪记录：1，ID：3）
 				};
 				this.uploadFile(cnt, obj);
 			}
@@ -93,7 +95,7 @@ export default {
 		uploadFile(cnt, obj) {
 			this.$api.uploadFile(cnt, res => {
 				if (res.data.rc == this.$util.RC.SUCCESS) {
-					this.idList.splice(this.idList.length, 0);
+					this.idList.splice(this.idList.length, 0, obj);
 				} else {
 					uni.showToast({
 						title: res.data.rm,
@@ -102,6 +104,9 @@ export default {
 				}
 			});
 		}
+	},
+	onLoad() {
+		this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'));
 	}
 };
 </script>
@@ -219,5 +224,12 @@ export default {
 		width: 79rpx;
 		height: 79rpx;
 	}
+}
+
+.file-tile {
+	color: #666666;
+	font-size: 28rpx;
+	line-height: 30rpx;
+	margin-bottom: 12rpx;
 }
 </style>

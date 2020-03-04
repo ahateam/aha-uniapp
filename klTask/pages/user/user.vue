@@ -24,7 +24,7 @@
 			</view>
 		</view>
 
-		<view class="bill-box">
+		<view class="bill-box" @tap="navToBill">
 			<image class="bill-bg" src="/static/image/task/bg_sr.png" mode="widthFix"></image>
 			<view class="bill-top">
 				<view class="auto-title">
@@ -70,7 +70,7 @@
 				</view>
 				<image class="enter-icon" src="/static/image/icon/icon_enter.png" mode="aspectFit"></image>
 			</view>
-			<view class="auto-bottom flex-box">
+			<view class="auto-bottom flex-box" @tap="navToHelp">
 				<view class="bottom-left flex-box">
 					<image src="/static/image/icon/icon_bzzx.png" mode="aspectFit"></image>
 					帮助中心
@@ -100,6 +100,18 @@ export default {
 		};
 	},
 	methods: {
+		navToHelp() {
+			uni.navigateTo({
+				url: 'helpcenter/helpcenter'
+			});
+		},
+
+		navToBill() {
+			uni.navigateTo({
+				url: 'bill/bill'
+			});
+		},
+
 		navToSafe() {
 			uni.navigateTo({
 				url: 'userSafe/userSafe'

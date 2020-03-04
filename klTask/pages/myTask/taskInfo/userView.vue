@@ -8,10 +8,10 @@
 			<view class="task-cplt">已完成{{ getTaskNumber() }}个任务</view>
 		</view>
 
-		<view class="tags-content flex-box">
-			<view class="tag-box flex-box" v-for="(item, index) in [1, 2, 3]" :key="index">
+		<view class="tags-content flex-box" v-if="itemUserInfo.hobbyTag.length > 0">
+			<view class="tag-box flex-box" v-for="(item, index) in itemUserInfo.hobbyTag" :key="index">
 				<view class="tag-dot"></view>
-				<view style="margin-left: 10rpx;">婴儿护理</view>
+				<view style="margin-left: 10rpx;">{{ item }}</view>
 			</view>
 			<view class="tag-dot"></view>
 
@@ -24,9 +24,11 @@
 			</view>
 		</view>
 
-		<view class="certificate flex-box">
-			<image src="/static/image/icon/icon_dlr_xz.png" mode="aspectFit"></image>
-			查看任务者证书
+		<view style="position: relative;" @tap="navToCer">
+			<view class="certificate flex-box">
+				<image src="/static/image/icon/icon_dlr_xz.png" mode="aspectFit"></image>
+				查看任务者证书
+			</view>
 		</view>
 
 		<view class="top-title">
@@ -81,8 +83,7 @@ export default {
 			taskId: '',
 			userId: '',
 			itemUserInfo: {},
-			text:
-				'由于热爱这一神圣的事业，看到宝宝在我们细心的照顾下逐渐成长，心里莫名地感觉到幸福，他们充满欣慰而温暖的笑容是我的幸福，能为这一光荣的事业奉献是我的一份真情，并在这个过程中不断学习进步，希望能帮助到每一个新生儿家庭！',
+			text: uni.getStorageSync('itemUserText'),
 			exaluateList: []
 		};
 	},
@@ -130,6 +131,12 @@ export default {
 			});
 		},
 
+		navToCer() {
+			uni.navigateTo({
+				url: `userCertificate/userCertificate?userId=${this.userId}`
+			});
+		},
+
 		navBack() {
 			uni.navigateBack();
 		},
@@ -137,7 +144,10 @@ export default {
 		getUserInfo(cnt) {
 			this.$api.getUserInfo(cnt, res => {
 				if (res.data.rc == this.$util.RC.SUCCESS) {
-					this.itemUserInfo = this.$util.tryParseJson(res.data.c);
+					let userInfo = this.$util.tryParseJson(res.data.c);
+					userInfo.hobbyTag = this.$util.tryParseJson(userInfo.hobbyTag);
+					this.itemUserInfo = userInfo;
+					console.log(this.itemUserInfo);
 				} else {
 					uni.showToast({
 						title: res.data.rm,

@@ -69,6 +69,16 @@ api.getMyIncome = function(cnt, callback) {
 	util.call(baseUrl + '/task/getMyIncome', cnt, callback)
 }
 
+// 支出列表 
+api.myExpend = function(cnt, callback) {
+	util.call(baseUrl + '/cltask/myExpend', cnt, callback)
+}
+
+// 收入列表 	
+api.myIncome = function(cnt, callback) {
+	util.call(baseUrl + '/cltask/myIncome', cnt, callback)
+}
+
 /* 任务相关 */
 // 查詢任務 
 api.getTasks = function(cnt, callback) {
@@ -235,8 +245,13 @@ api.getEvaluateList = function(cnt, callback) {
 }
 
 /* 文件 */
- // 上传文件 
- api.uploadFile = function(cnt, callback) {
- 	util.call(baseUrl + '/cltask/uploadFile', cnt, callback)
- }
+// 上传文件 
+api.uploadFile = function(cnt, callback) {
+	util.call(baseUrl + '/cltask/uploadFile', cnt, callback)
+}
+
+// 获取地址
+api.getMapName = function(cnt, callback) {
+	util.call(baseUrl + '/map/getMapName', cnt, callback)
+}
 export default api

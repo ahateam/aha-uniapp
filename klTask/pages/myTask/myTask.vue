@@ -122,7 +122,6 @@ export default {
 				if (res.data.rc == this.$util.RC.SUCCESS) {
 					uni.stopPullDownRefresh();
 					let list = this.$util.tryParseJson(res.data.c);
-					// list.splice(0, 1);
 					this.tryData(list);
 				} else {
 					uni.showToast({
@@ -190,8 +189,6 @@ export default {
 		this.tasks = [];
 
 		let cnt = {
-			// taskStatus: taskStatus, // Byte <选填> 任务状态
-			// status: status, // Byte <选填> 状态（是否删除）
 			count: this.count, // Integer
 			offset: this.offset // Integer
 		};

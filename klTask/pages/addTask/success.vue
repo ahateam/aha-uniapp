@@ -14,7 +14,9 @@ export default {
 	},
 	methods: {
 		navBack() {
-			uni.navigateBack();
+			uni.navigateBack({
+				delta : 99,
+			});
 		}
 	}
 };
