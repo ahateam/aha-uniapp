@@ -14,7 +14,7 @@
 			<view style="margin-left: 10rpx;">你的报价</view>
 
 			<view class="auto-input flex-box">
-				<input type="number" v-model="price" />
+				<input type="number" v-model="price" :disabled="inputStatus" />
 				<view class="right-box">澳元</view>
 			</view>
 			<view class="auto-info flex-box">
@@ -49,7 +49,9 @@ export default {
 			text: '',
 			taskId: '',
 			advanceType: '',
-			off: 0.1
+			off: 0.1,
+
+			inputStatus: false
 		};
 	},
 	methods: {
@@ -100,6 +102,7 @@ export default {
 		this.advanceType = res.advanceType;
 		if (res.advanceType != 2) {
 			this.price = res.price;
+			this.inputStatus = true;
 		}
 	}
 };

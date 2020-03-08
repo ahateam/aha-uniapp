@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+		<meta charset="utf-8">
+		<title>Places Search Box</title>
+		<style>
+			/* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+		box-sizing: border-box;
+      }
+      #description {
+        /* font-family: Roboto; */
+        font-size: 15px;
+        font-weight: 300;
+      }
+
+      #infowindow-content .title {
+        font-weight: bold;
+      }
+
+      #infowindow-content {
+        display: none;
+      }
+
+      #map #infowindow-content {
+        display: inline;
+      }
+
+      .pac-card {
+        margin: 10px 10px 0 0;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        /* font-family: Roboto; */
+      }
+
+      #pac-container {
+        padding-bottom: 12px;
+        margin-right: 12px;
+      }
+
+      .pac-controls {
+        display: inline-block;
+        padding: 5px 11px;
+      }
+
+      .pac-controls label {
+        /* font-family: Roboto; */
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+      #pac-input {
+        background-color: #fff;
+        /* font-family: Roboto; */
+        font-size: 15px;
+        font-weight: 300;
+        margin: 12px auto;
+        text-overflow: ellipsis;
+		width:130px;
+		height: 30px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      #title {
+        color: #fff;
+        background-color: #4d90fe;
+        font-size: 25px;
+        font-weight: 500;
+        padding: 6px 12px;
+      }
+      #target {
+        width: 345px;
+      }
+    </style>
+		<!-- uni 的 SDK -->
+		<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
+		<script type="text/javascript">
+			document.addEventListener('UniAppJSBridgeReady', () => {
+				uni.getEnv(function(res) {
+					console.log('当前环境：' + JSON.stringify(res));
+				});
+			});
+			var plusReady = function(callback) {
+				if (window.plus) {
+					callback();
+				} else {
+					document.addEventListener('plusready', callback);
+				}
+			};
+			plusReady(function() {
+				document.getElementById('page').style.paddingTop = plus.navigator.getStatusbarHeight() + 'px';
+			});
+		</script>
+	</head>
+	<body id="page">
+		<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+		<div id="map"></div>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIbnE_hIkA3MpsvZ72eKyMXzbyhVIjIeI&libraries=places&callback=initAutocomplete"
+		 async defer></script>
+		<script>
+			function initAutocomplete() {
+				var infoWindow;
+				var map = new google.maps.Map(document.getElementById('map'), {
+					center: {
+						lat: -33.8688,
+						lng: 151.2195
+					},
+					zoom: 13,
+					mapTypeId: 'roadmap'
+				});
+				google.maps.event.addListener(map, "click", function(event) {
+					console.log('触发点击事件,点击的地址信息======可按需传参========================================');
+					console.log("详细点击地址详细:")
+					showAddress(event.latLng, 'tap');
+				});
+				infoWindow = new google.maps.InfoWindow;
+				// Try HTML5 geolocation.
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						var pos = {
+							lat: position.coords.latitude,
+							lng: position.coords.longitude
+						};
+
+						infoWindow.setPosition(pos);
+						infoWindow.setContent('你的位置');
+						infoWindow.open(map);
+						map.setCenter(pos);
+						//
+						console.log("定位的坐标==========按需传值到服务端========================================")
+						console.log(JSON.stringify(pos))
+						console.log("详细定位地址详细:")
+						showAddress(pos, 'pos')
+					}, function() {
+						handleLocationError(true, infoWindow, map.getCenter());
+					});
+				} else {
+					// Browser doesn't support Geolocation
+					handleLocationError(false, infoWindow, map.getCenter());
+				}
+
+				// Create the search box and link it to the UI element.
+				var input = document.getElementById('pac-input');
+				var searchBox = new google.maps.places.SearchBox(input);
+				map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+				// Bias the SearchBox results towards current map's viewport.
+				map.addListener('bounds_changed', function() {
+					searchBox.setBounds(map.getBounds());
+				});
+
+				var markers = [];
+				// Listen for the event fired when the user selects a prediction and retrieve
+				// more details for that place.
+				searchBox.addListener('places_changed', function() {
+					var places = searchBox.getPlaces();
+
+					if (places.length == 0) {
+						return;
+					}
+
+					// Clear out the old markers.
+					markers.forEach(function(marker) {
+						marker.setMap(null);
+					});
+					markers = [];
+
+					// For each place, get the icon, name and location.
+					var bounds = new google.maps.LatLngBounds();
+					places.forEach((place) => {
+						if (!place.geometry) {
+							console.log("Returned place contains no geometry");
+							return;
+						}
+						var icon = {
+							url: place.icon,
+							size: new google.maps.Size(71, 71),
+							origin: new google.maps.Point(0, 0),
+							anchor: new google.maps.Point(17, 34),
+							scaledSize: new google.maps.Size(25, 25)
+						};
+
+						// Create a marker for each place.
+						markers.push(new google.maps.Marker({
+							map: map,
+							icon: icon,
+							title: place.name,
+							position: place.geometry.location
+						}));
+
+						console.log("用户在搜索框选中后的地址坐标，按需传值到服务端==================================")
+						showAddress(place.geometry.location, 'search')
+						if (place.geometry.viewport) {
+							// Only geocodes have viewport.
+							bounds.union(place.geometry.viewport);
+						} else {
+							bounds.extend(place.geometry.location);
+						}
+					});
+					map.fitBounds(bounds);
+				});
+			}
+
+			function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+				infoWindow.setPosition(pos);
+				infoWindow.setContent(browserHasGeolocation ?
+					'Error: The Geolocation service failed.' :
+					'Error: Your browser doesn\'t support geolocation.');
+				infoWindow.open(map);
+			}
+
+			function showAddress(location, type) {
+				var geocoder = new google.maps.Geocoder();
+				//根据经纬度获取地址信息
+				geocoder.geocode({
+					'latLng': location
+				}, (results, status) => {
+					if (status == google.maps.GeocoderStatus.OK) {
+						console.log(JSON.stringify(results))
+						if (results[1]) {
+							console.log(results[0].formatted_address)
+							var address = results[1].formatted_address;
+							// address = results[0].formatted_address;
+							//根据经纬度获取信息/////////////////////////////////////////////
+							console.log(address)
+							if (type == 'tap' || type == 'search') {
+								uni.postMessage({
+									data: {
+										pos: location,
+										address: address
+									}
+								});
+								uni.navigateBack();
+							}
+						}
+					} else {
+						alert("Geocoder failed due to: " + status);
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

@@ -72,7 +72,8 @@ export default {
 				let cnt = {
 					phone: this.areaCode + this.phoneNumber, // String 手机号
 					pwd: this.passData, // String 密码
-					userType: 2
+					userType: 2,
+					cid: plus.push.getClientInfo().clientid
 				};
 				this.$api.login(cnt, res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {

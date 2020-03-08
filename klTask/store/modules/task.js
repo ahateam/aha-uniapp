@@ -6,6 +6,8 @@ const taskModules = {
 			imgData: [],
 			qualifications: '',
 			qualName: '',
+			house: 0,
+			totlet: 0
 		}, //任务信息
 		qualiList: [], //资质列表
 	},
@@ -19,43 +21,37 @@ const taskModules = {
 			state.taskInfo.taskType = taskType
 		},
 
-		// （表格、文书）具体类别
-		updateCategory(state, taskCategory) {
-			state.taskInfo.taskCategory = taskCategory
+		// 清洁房间数量
+		updataHouse(state, house) {
+			state.taskInfo.house = house
 		},
 
-		// 任务所需资质
-		updateQualifications(state, item) {
-			state.taskInfo.qualifications = item.qualId
-			state.taskInfo.qualName = item.qualName
+		// 清洁卫生间数量
+		updataTotlet(state, totlet) {
+			state.taskInfo.totlet = totlet
 		},
-		// 申请人数
-		updateApplyNumber(state, applyNumber) {
-			state.taskInfo.applyNumber = applyNumber
+
+		// 出发地
+		updaTaskFrom(state, address) {
+			state.taskInfo.fromAddress = address
+			let newTaskInfo = { ...state.taskInfo
+			};
+			state.taskInfo = null
+			state.taskInfo = newTaskInfo
 		},
-		// 主申请人国籍
-		updateApplicantNationality(state, applicantNationality) {
-			state.taskInfo.applicantNationality = applicantNationality
+
+		// 目的地
+		updaTaskTo(state, address) {
+			state.taskInfo.toAddress = address
+			let newTaskInfo = { ...state.taskInfo
+			};
+			state.taskInfo = null
+			state.taskInfo = newTaskInfo
 		},
-		// 主申请人年龄
-		updateApplicantAge(state, applicantAge) {
-			state.taskInfo.applicantAge = applicantAge
-		},
+
 		// 任务描述
 		updateTaskDescribe(state, taskDescribe) {
 			state.taskInfo.taskDescribe = taskDescribe
-		},
-		// 其他说明 
-		updateOtherDescribe(state, otherDescribe) {
-			state.taskInfo.otherDescribe = otherDescribe
-		},
-		//   低于18岁副申请人人数
-		updateViceApplicantAge(state, viceApplicantAge) {
-			state.taskInfo.viceApplicantAge = viceApplicantAge
-		},
-		// (翻译)页数 
-		updatePageNumber(state, pageNumber) {
-			state.taskInfo.pageNumber = pageNumber
 		},
 		// 内容 
 		updateTaskcontent(state, Taskcontent) {
@@ -89,6 +85,10 @@ const taskModules = {
 		// 任务完成时间 
 		updateFinishDate(state, finishDate) {
 			state.taskInfo.finishDate = finishDate
+			let newTaskInfo = { ...state.taskInfo
+			};
+			state.taskInfo = null
+			state.taskInfo = newTaskInfo
 		},
 
 		// 计算属性get()不同步时,强制刷新页面
@@ -97,27 +97,6 @@ const taskModules = {
 			};
 			state.taskInfo = null
 			state.taskInfo = newTaskInfo
-		},
-
-		// 获取资质列表
-		updateQualList(state, list) {
-			state.qualiList = list
-			state.taskInfo.qualifications = list[0].qualId
-			state.taskInfo.qualName = list[0].qualName
-			let obj = {
-				qualId: '',
-				qualName: '不需要',
-			}
-			state.qualiList.push(obj)
-		},
-
-		// 翻译任务原语种 
-		updateOldLanguage(state, oldLanguage) {
-			state.taskInfo.oldLanguage = oldLanguage
-		},
-
-		updateNewLanguage(state, newLanguage) {
-			state.taskInfo.newLanguage = newLanguage
 		},
 
 		// 初始化store的数据
@@ -134,7 +113,9 @@ const taskModules = {
 				taskStatus: 0,
 				fileData: [],
 				imgData: [],
-				...state.taskInfo
+				house: 0,
+				totlet: 0,
+				...state.taskInfo,
 			}
 		},
 

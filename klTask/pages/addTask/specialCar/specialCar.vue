@@ -7,17 +7,25 @@
 				<view class="view-title">发布任务</view>
 			</view>
 			<view class="content-box">
-				<view class="auto-address flex-box">
+				<view class="auto-address flex-box" @tap="choiceAddress('from')">
 					<view class="address-left flex-box">
 						<view class="left-dot"></view>
-						起始地
+						<view class="address-text" v-if="addressInfo.address.street">
+							{{ addressInfo.address.district + addressInfo.address.street + addressInfo.address.streetNum }}
+						</view>
+						<view class="address-text" v-else-if="addressInfo.pos">{{ addressInfo.address }}</view>
+						<view v-else>起始地</view>
 					</view>
-					<view class="get-address">定位</view>
+					<view class="get-address" @tap.stop="getAddress">定位</view>
 				</view>
-				<view class="auto-address flex-box">
+				<view class="auto-address flex-box" @tap="choiceAddress('to')">
 					<view class="address-left flex-box">
 						<view class="left-dot" style="background-color: #FFCD34;"></view>
-						目的地
+						<view class="address-text" v-if="toAddressInfo.address.street">
+							{{ toAddressInfo.address.district + toAddressInfo.address.street + toAddressInfo.address.streetNum }}
+						</view>
+						<view class="address-text" v-else-if="toAddressInfo.pos">{{ toAddressInfo.address }}</view>
+						<view v-else>目的地</view>
 					</view>
 				</view>
 
@@ -29,7 +37,7 @@
 			</view>
 
 			<view class="auto-title bottom-title">特别要求</view>
-			<data-textarea v-if="!showTime" hiddenTitle v-model="text" placeholder="例如:三个桌子 两个沙发 一个电视机"></data-textarea>
+			<data-textarea v-if="!showTime" hiddenTitle v-model="text" placeholder="例如:车内不能有异味 要有儿童座椅"></data-textarea>
 
 			<view class="bottom-btn" @tap="navNext">下一步</view>
 		</view>
@@ -47,25 +55,54 @@ export default {
 		SenPickerView,
 		DataTextarea
 	},
+	computed: {
+		getAddress(){
+			uni.navigateTo({
+				url: '../webView/webView?type=pos'
+			});
+		},
+		time() {
+			return this.$store.state.task.taskInfo.finishDate;
+		},
+		addressInfo() {
+			return this.$store.state.task.taskInfo.fromAddress;
+		},
+		toAddressInfo() {
+			return this.$store.state.task.taskInfo.toAddress;
+		},
+		text: {
+			get() {
+				return this.$store.state.task.taskInfo.taskDescribe;
+			},
+			set(val) {
+				return this.$store.commit('updateTaskDescribe', val);
+			}
+		}
+	},
 	data() {
 		return {
-			time: '',
 			showTime: false,
-			text: '',
 			people: Number,
 
 			imgList: []
 		};
 	},
 	methods: {
+		choiceAddress(e) {
+			uni.navigateTo({
+				url: '../webView/webView?type=' + e
+			});
+		},
+
 		navNext() {
 			uni.navigateTo({
-				url: 'carPrice'
+				url: `carPrice?people=${this.people}`
 			});
 		},
 
 		changeTime(y, m, d) {
-			this.time = `${y}-${m}-${d}`;
+			let time = `${y}-${m}-${d}`;
+			this.$store.commit('updateFinishDate', time);
 			this.showTime = false;
 		},
 
@@ -138,6 +175,14 @@ export default {
 
 .address-left {
 	color: #999999;
+}
+
+.address-text {
+	width: 490rpx;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .left-dot {

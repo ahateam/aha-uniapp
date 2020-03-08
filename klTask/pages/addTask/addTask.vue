@@ -56,23 +56,25 @@ export default {
 	},
 	methods: {
 		navToAdd(item) {
-			if (item.name == '清洁保洁') {
-				uni.navigateTo({
-					url: 'cleanTask/cleanTask'
-				});
-			} else if (item.name == '搬家搬运') {
-				uni.navigateTo({
-					url: 'CarryTask/CarryTask'
-				});
-			} else if (item.name == '专车接送') {
-				uni.navigateTo({
-					url: 'specialCar/specialCar'
-				});
-			} else {
-				uni.navigateTo({
-					url: './addTaskInfo'
-				});
-			}
+			this.$store.dispatch('setStore').then(res => {
+				if (item.name == '清洁保洁') {
+					uni.navigateTo({
+						url: 'cleanTask/cleanTask'
+					});
+				} else if (item.name == '搬家搬运') {
+					uni.navigateTo({
+						url: 'CarryTask/CarryTask'
+					});
+				} else if (item.name == '专车接送') {
+					uni.navigateTo({
+						url: 'specialCar/specialCar'
+					});
+				} else {
+					uni.navigateTo({
+						url: './addTaskInfo'
+					});
+				}
+			});
 		},
 		getTaskTags(cnt) {
 			this.$api.getTaskTags(cnt, res => {

@@ -10,14 +10,14 @@
 			</view>
 		</view>
 		<view class="bottom-content">
-			<view v-if="status == 1">
+			<view v-if="status == 0">
 				<view class="flex-box title-box">
 					<view>我的位置</view>
 					<view class="gps-btn" @click="getAddress">定位</view>
 				</view>
 				<view class="address-box flex-box">
 					<view>区域</view>
-					<input v-model="district" />
+					<input v-model="district.address" />
 					<view class="center-line"></view>
 					<view>邮编</view>
 					<input type="text" v-model="postalCode" />
@@ -72,6 +72,22 @@ export default {
 	components: {
 		SenPickerView
 	},
+	computed: {
+		district: {
+			get() {
+				if (this.$store.state.task.taskInfo.fromAddress.pos) {
+					let cnt = {
+						address: this.$store.state.task.taskInfo.fromAddress.pos
+					};
+					this.getMapName(cnt);
+				}
+				return this.$store.state.task.taskInfo.fromAddress;
+			},
+			set(val) {
+				this.$store.commit('updaTaskFrom', val);
+			}
+		}
+	},
 	data() {
 		return {
 			priceType: this.$constData.priceType,
@@ -80,8 +96,6 @@ export default {
 			price: '',
 			priceStatus: 0,
 			time: '',
-			addressInfo: {},
-			district: '',
 			postalCode: ''
 		};
 	},
@@ -94,39 +108,39 @@ export default {
 		nextBtn() {
 			let detail = {
 				imgList: this.$store.state.task.taskInfo.imgData,
-				text: this.$store.state.task.taskInfo.taskDescribe
+				text: this.$store.state.task.taskInfo.taskDescribe,
+				postalCode: this.postalCode
 			};
-			detail = JSON.stringify(detail);
+
+			if (this.status == 0) {
+				detail.address = this.$store.state.task.taskInfo.fromAddress;
+			}
 
 			let finishTime = `${this.time} 23:59:59`;
 
 			let cnt = {
 				module: this.$constData.module, // Long 模块编号
-				ask: 0, // Byte 诉求分类（0求表扬，1求陪玩，2求分享，3求制作）
 				type: 0, // Byte 类型（0图文,1视频,2gif表情,3音频,4描述）
 				upUserId: this.$util.tryParseJson(uni.getStorageSync('userInfo')).userId, // Long 创建者
 				// tags: tags, // String <选填> 标签
 				title: this.$store.state.task.taskInfo.title, // String 标题
-				detail: detail, // String 需求详细
-				// deposit: deposit, // Double 保证金 <选填>
-				// advanceAmount: , // Double 预付款 <选填>
-				// pos: pos, // String <选填> 位置
+				detail: JSON.stringify(detail), // String 需求详细
 				finishTime: finishTime, // Date <选填> 任务完成时间
 				advanceType: this.priceStatus // Byte <选填> 预算金额类型
 			};
+			if (detail.address) {
+				cnt.ask = 1;
+			} else {
+				cnt.ask = 0;
+			}
+
+			if (this.status == 0) {
+				cnt.pos = this.$store.state.task.taskInfo.fromAddress.pos;
+			}
+
 			if (this.priceStatus != this.$constData.priceType[2].key) {
 				cnt.advanceAmount = this.price;
 			}
-
-			// if (this.status == 1) {
-			// 	let pos = {
-			// 		address: this.district,
-			// 		postalCode: this.postalCode
-			// 	};
-			// 	pos = JSON.stringify(pos);
-			// 	cnt.pos = pos;
-			// }
-			// console.log(cnt);
 			this.createTask(cnt);
 		},
 
@@ -148,23 +162,26 @@ export default {
 		},
 
 		getAddress() {
-			uni.getLocation({
-				geocode: true,
-				success: res => {
-					this.addressInfo = res;
-					this.district = res.address.district;
-					if (res.daaress.postalCode) {
-						this.postalCode = res.daaress.postalCode;
-					}
-				},
-				fail: err => {
-					console.log(err);
-				}
+			uni.navigateTo({
+				url: 'webView/webView?type=pos'
 			});
 		},
 
 		navBack() {
 			uni.navigateBack();
+		},
+
+		getMapName(cnt) {
+			this.$api.getMapName(cnt, res => {
+				if (res.data.rc == this.$util.RC.SUCCESS) {
+					this.postalCode = this.$util.tryParseJson(res.data.c).postal_code;
+				} else {
+					uni.showToast({
+						title: res.data.rm,
+						icon: 'none'
+					});
+				}
+			});
 		}
 	}
 };

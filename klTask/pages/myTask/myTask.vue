@@ -17,9 +17,7 @@
 				</view>
 			</view>
 		</view>
-		<!-- 顶部选项卡 end -->
 		<task-list :tasks="tasks" @getItem="navToInfo" type="1" :myOrder="currIndex == 1"></task-list>
-		<!-- 任务栏  task==任务栏-->
 	</view>
 </template>
 
@@ -171,11 +169,11 @@ export default {
 	},
 
 	onLoad() {
-		let userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'));
-		this.userInfo = userInfo;
+		this.userInfo = this.$util.tryParseJson(uni.getStorageSync('userInfo'));
 		let cnt = {
 			module: this.$constData.module, // Long <选填> 模块编号
-			upUserId: userInfo.userId, // Long <选填> 创建者编号
+			upUserId: this.userInfo.userId, // Long <选填> 创建者编号
+			userId: this.userInfo.userId, // Long <选填> 创建者编号
 			count: this.count, // Integer
 			offset: this.offset // Integer
 		};

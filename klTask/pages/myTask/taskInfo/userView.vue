@@ -31,12 +31,12 @@
 			</view>
 		</view>
 
-		<view class="top-title">
+		<view class="top-title" :hidden="!orderId">
 			<image src="/static/image/mytask/bg_bt.png" mode="aspectFill"></image>
 			<view style="position: relative;">为什么选择此任务者？</view>
 		</view>
 
-		<view class="top-info">{{ text }}</view>
+		<view class="top-info" :hidden="!orderId">{{ text }}</view>
 
 		<view class="bottom-box">
 			<view class="bottom-title">
@@ -69,7 +69,7 @@
 				</view>
 			</view>
 
-			<view class="bottom-btn" @click="TaskApplyConfirm">接受报价，马上付款</view>
+			<view :hidden="!orderId" class="bottom-btn" @click="TaskApplyConfirm">接受报价，马上付款</view>
 		</view>
 	</view>
 </template>

@@ -1,7 +1,8 @@
 <template>
 	<view>
-		<view :style="{ 'padding-top': statusHeight + 'px' }" class="top-box">
-			<image class="back-icon" src="/static/image/icon/icon_fh.png" mode="aspectFit"></image>
+		<view :style="{ 'padding-top': statusHeight + 'px' }"></view>
+		<view class="top-box">
+			<image class="back-icon" src="/static/image/icon/icon_back_w.png" mode="aspectFit"></image>
 			<text class="title-box">{{ name }}</text>
 		</view>
 		<chat_view ref="chatView" style="width: 750rpx;" :style="{ height: bodyHeight + 'px' }"></chat_view>
@@ -33,23 +34,23 @@ export default {
 			moreMenus: [
 				{
 					title: '拍照',
-					image: '/Pandora/apps/__UNI__A970FA6/www/static/image/IM/icon_pz.png'
+					image: '/Pandora/apps/__UNI__EA90918/www/static/image/IM/icon_pz.png'
 				},
 				{
 					title: '上传文件',
-					image: '/Pandora/apps/__UNI__A970FA6/www/static/image/IM/icon_scwj.png'
+					image: '/Pandora/apps/__UNI__EA90918/www/static/image/IM/icon_scwj.png'
 				},
 				{
-					title: '收藏代理',
-					image: '/Pandora/apps/__UNI__A970FA6/www/static/image/IM/icon_scdlr.png'
+					title: '收藏',
+					image: '/Pandora/apps/__UNI__EA90918/www/static/image/IM/icon_scdlr.png'
 				},
 				{
 					title: '打赏',
-					image: '/Pandora/apps/__UNI__A970FA6/www/static/image/IM/icon_ds.png'
+					image: '/Pandora/apps/__UNI__EA90918/www/static/image/IM/icon_ds.png'
 				},
 				{
 					title: '合同',
-					image: '/Pandora/apps/__UNI__A970FA6/www/static/image/IM/icon_ht.png'
+					image: '/Pandora/apps/__UNI__EA90918/www/static/image/IM/icon_ht.png'
 				}
 			]
 		});
@@ -58,7 +59,7 @@ export default {
 				chatView.takePictureForSend();
 			} else if (res.title == '上传文件') {
 				chatView.selectFileForSend();
-			} else if (res.title == '收藏代理') {
+			} else if (res.title == '收藏') {
 				uni.showModal({
 					content: res.title
 				});
@@ -78,8 +79,7 @@ export default {
 			uni.getSystemInfo({
 				success: res => {
 					this.statusHeight = res.statusBarHeight;
-					this.bodyHeight = res.windowHeight - res.statusBarHeight - (res.windowHeight / 750) * 88;
-					this.width = res.windowWidth;
+					this.bodyHeight = res.windowHeight - res.statusBarHeight - (res.windowWidth / 750) * 88;
 				}
 			});
 		}

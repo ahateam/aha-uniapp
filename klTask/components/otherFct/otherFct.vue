@@ -57,7 +57,8 @@ export default {
 								wxOpenid: res.authResult.openid, // String 微信oppenId
 								name: res1.userInfo.nickName, // String 用户名
 								head: res1.userInfo.avatarUrl, // String 头像
-								userType: 1 // Byte 用户类型
+								userType: 2, // Byte 用户类型
+								cid: plus.push.getClientInfo().clientid
 							};
 							this.wxLogin(cnt);
 						}

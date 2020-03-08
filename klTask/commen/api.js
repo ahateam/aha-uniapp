@@ -110,6 +110,11 @@ api.getTaskApply = function(cnt, callback) {
 	util.call(baseUrl + '/cltask/getTaskApply', cnt, callback)
 }
 
+// 撤销报价 	
+api.revokeTaskApply = function(cnt, callback) {
+	util.call(baseUrl + '/cltask/revokeTaskApply', cnt, callback)
+}
+
 // 通过报价 
 api.TaskApplyConfirm = function(cnt, callback) {
 	util.call(baseUrl + '/cltask/TaskApplyConfirm', cnt, callback)
@@ -253,5 +258,10 @@ api.uploadFile = function(cnt, callback) {
 // 获取地址
 api.getMapName = function(cnt, callback) {
 	util.call(baseUrl + '/map/getMapName', cnt, callback)
+}
+
+// 急速接单
+api.accpetTask = function(cnt, callback) {
+	util.call(baseUrl + '/cltask/accpetTask', cnt, callback)
 }
 export default api

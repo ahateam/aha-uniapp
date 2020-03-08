@@ -34,40 +34,73 @@ export default {
 	data() {
 		return {
 			priceType: this.$constData.priceType,
-			showTime: false,
 			price: '',
 			priceStatus: 0,
-			time: '',
-			addressInfo: {},
-			district: '',
-			postalCode: ''
+			people: Number,
+			userInfo: this.$util.tryParseJson(uni.getStorageSync('userInfo'))
 		};
 	},
 	methods: {
-		changeTime(y, m, d) {
-			this.time = `${y}-${m}-${d}`;
-			this.showTime = false;
+		nextBtn() {
+			let tag = ['专车接送'];
+			let detail = {
+				text: this.$store.state.task.taskInfo.taskDescribe,
+				address: this.$store.state.task.taskInfo.fromAddress,
+				toAddress: this.$store.state.task.taskInfo.toAddress,
+				people: this.people
+			};
+			let cnt = {
+				module: this.$constData.module, // Long 模块编号
+				type: 0, // Byte 类型（0图文,1视频,2gif表情,3音频,4描述）
+				upUserId: this.userInfo.userId, // Long 创建者
+				tags: JSON.stringify(tag), // String <选填> 标签
+				title: '专车接送任务', // String 标题
+				detail: JSON.stringify(detail), // String 需求详细
+				// deposit: deposit, // Double <选填> 保证金
+				// advanceAmount: advanceAmount, // Double <选填> 预付款
+				pos: detail.address.pos, // String <选填> 位置
+				finishTime: this.$store.state.task.taskInfo.finishDate + ' 23:59:59', // Date <选填> 任务完成时间
+				advanceType: this.priceStatus, // Byte <选填> 预算金额类型
+				ask: 1
+			};
+			if (this.priceStatus != this.$constData.priceType[2].key) {
+				if (this.price) {
+					cnt.advanceAmount = this.price;
+					this.createTask(cnt);
+				} else {
+					uni.showToast({
+						title: '请输入报价',
+						icon: 'none'
+					});
+				}
+			} else {
+				this.createTask(cnt);
+			}
 		},
-		
-		getAddress() {
-			uni.getLocation({
-				geocode: true,
-				success: res => {
-					this.addressInfo = res;
-					this.district = res.address.district;
-					if (res.daaress.postalCode) {
-						this.postalCode = res.daaress.postalCode;
-					}
-				},
-				fail: err => {
-					console.log(err);
+
+		createTask(cnt) {
+			this.$api.createTask(cnt, res => {
+				if (res.data.rc == this.$util.RC.SUCCESS) {
+					console.log(this.$util.tryParseJson(res.data.c));
+					uni.navigateTo({
+						url: '../success'
+					});
+				} else {
+					console.log(res);
+					uni.showToast({
+						title: res.data.rm,
+						icon: 'none'
+					});
 				}
 			});
 		},
-		
+
 		navBack() {
 			uni.navigateBack();
 		}
+	},
+	onLoad(res) {
+		this.people = res.people;
 	}
 };
 </script>

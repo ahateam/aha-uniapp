@@ -74,7 +74,8 @@ export default {
 				let cnt = {
 					phone: this.moblie, // String 手机号
 					code: this.code, // String 验证码
-					userType: 1 //中介1 学生2
+					userType: 2 ,//中介1 学生2
+					cid: plus.push.getClientInfo().clientid
 				};
 				this.$api.loginByCode(cnt, res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {

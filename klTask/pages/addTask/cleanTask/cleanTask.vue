@@ -20,15 +20,15 @@
 					房间数量
 					<text>*</text>
 				</view>
-				<view class="number-input"><number-input @reduceBtn="houseNumber--" @addBtn="houseNumber++" :much="houseNumber"></number-input></view>
+				<view class="number-input"><number-input @reduceBtn="changeHouse('-')" @addBtn="changeHouse('+')" :much="house"></number-input></view>
 
 				<view class="auto-title">卫生间数量</view>
-				<view class="number-input"><number-input @reduceBtn="TOILET--" @addBtn="TOILET++" :much="TOILET"></number-input></view>
+				<view class="number-input"><number-input @reduceBtn="changeTitlet('-')" @addBtn="changeTitlet('+')" :much="totlet"></number-input></view>
 
 				<view class="auto-title">清洁厨房吗</view>
 				<view class="btn-box flex-box">
-					<view class="auto-btn" :class="{ 'curr-btn': need }" @tap="need = true">需要</view>
-					<view class="auto-btn" :class="{ 'curr-btn': !need }" @tap="need = false">不要</view>
+					<view class="auto-btn" :class="{ 'curr-btn': need }" @tap="need = 1">需要</view>
+					<view class="auto-btn" :class="{ 'curr-btn': !need }" @tap="need = 0">不要</view>
 				</view>
 
 				<view class="bottom-btn" @tap="navNext">下一步</view>
@@ -44,17 +44,43 @@ export default {
 	components: {
 		NumberInput
 	},
+	computed: {
+		house() {
+			return this.$store.state.task.taskInfo.house;
+		},
+		totlet() {
+			return this.$store.state.task.taskInfo.totlet;
+		}
+	},
 	data() {
 		return {
-			houseNumber: 0,
-			TOILET: 0,
-			need: true
+			need: 1
 		};
 	},
 	methods: {
+		changeTitlet(e) {
+			let i = this.totlet;
+			if (e == '+') {
+				i++;
+			} else {
+				i--;
+			}
+			this.$store.commit('updataTotlet', i);
+		},
+
+		changeHouse(e) {
+			let i = this.house;
+			if (e == '+') {
+				i++;
+			} else {
+				i--;
+			}
+			this.$store.commit('updataHouse', i);
+		},
+
 		navNext() {
 			uni.navigateTo({
-				url: 'cleanInfo'
+				url: `cleanInfo?need=${this.need}`
 			});
 		},
 

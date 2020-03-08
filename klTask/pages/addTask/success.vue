@@ -15,9 +15,16 @@ export default {
 	methods: {
 		navBack() {
 			uni.navigateBack({
-				delta : 99,
+				delta: 99
 			});
 		}
+	},
+	onBackPress(e) {
+		if (e.from === 'navigateBack') {
+			return false;
+		}
+		this.navBack();
+		return true;
 	}
 };
 </script>

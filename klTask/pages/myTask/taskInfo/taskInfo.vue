@@ -7,7 +7,7 @@
 			</view>
 			<image class="view-bg" src="/static/image/bg_c.png" mode="widthFix"></image>
 
-			<view class="top-user-box flex-box">
+			<view class="top-user-box flex-box" @tap="navToUser">
 				<view class="top-user-left">
 					<view class="top-user-name">{{ task.upUser.userName }}</view>
 					<view>{{ getTimeAgo(task.createTime) }}</view>
@@ -72,7 +72,7 @@
 				<view class="comment-list" v-else><comment :comment="commentList"></comment></view>
 			</view>
 
-			<view class="fixed-btn" @click="editApplyTaskData">任务完成 申请收款</view>
+			<view class="fixed-btn" @click="editApplyTaskData" v-if="task.status == constData.taskWall[0].key || task.status == constData.taskWall[1].key">任务完成 申请收款</view>
 
 			<view class="bottom-input flex-box" :class="{ 'fouse-bg': fouseStatus }" @click="closeInput">
 				<view style="width: 100%;" class="flex-box" :class="{ 'fouse-input': fouseStatus }" @click.stop>
@@ -183,7 +183,32 @@ export default {
 			});
 		},
 
+		navToUser() {
+			uni.navigateTo({
+				url: `userView?userId=${this.task.upUserId}`
+			});
+		},
+
 		revokeTask() {
+			let cnt = {
+				id: this.orderId // Long 报价id
+			};
+			this.$api.revokeTaskApply(cnt, res => {
+				if (res.data.rc == this.$util.RC.SUCCESS) {
+					uni.switchTab({
+						url: '/pages/myTask/myTask'
+					});
+					uni.showToast({
+						title: '任务已撤销',
+						icon: 'none'
+					});
+				} else {
+					uni.showToast({
+						title: res.data.rm,
+						icon: 'none'
+					});
+				}
+			});
 			// let cnt = {
 			// 	taskId: this.taskId // Long 任务id
 			// };
@@ -319,7 +344,7 @@ export default {
 				longitude: Number(arr[1])
 			};
 
-			let mapSearch = weex.requireModule('mapSearch');
+			// let mapSearch = weex.requireModule('mapSearch');
 
 			this.markers.splice(0, 0, {
 				id: 1,
@@ -335,21 +360,21 @@ export default {
 
 			this.getMargin(arr);
 
-			mapSearch.reverseGeocode(
-				{
-					point: {
-						latitude: Number(arr[0]),
-						longitude: Number(arr[1])
-					}
-				},
-				res => {
-					if (res.type == 'success') {
-						this.address = res.address;
-					} else {
-						this.address = res.message;
-					}
-				}
-			);
+			// mapSearch.reverseGeocode(
+			// 	{
+			// 		point: {
+			// 			latitude: Number(arr[0]),
+			// 			longitude: Number(arr[1])
+			// 		}
+			// 	},
+			// 	res => {
+			// 		if (res.type == 'success') {
+			// 			this.address = res.address;
+			// 		} else {
+			// 			this.address = res.message;
+			// 		}
+			// 	}
+			// );
 		},
 
 		getMargin(arr) {

@@ -7,17 +7,25 @@
 				<view class="view-title">发布任务</view>
 			</view>
 			<view class="content-box">
-				<view class="auto-address flex-box">
+				<view class="auto-address flex-box" @tap="choiceAddress('from')">
 					<view class="address-left flex-box">
 						<view class="left-dot"></view>
-						起始地
+						<view class="address-text" v-if="addressInfo.address.street">
+							{{ addressInfo.address.district + addressInfo.address.street + addressInfo.address.streetNum }}
+						</view>
+						<view class="address-text" v-else-if="addressInfo.pos">{{ addressInfo.address }}</view>
+						<view v-else>起始地</view>
 					</view>
-					<view class="get-address">定位</view>
+					<view class="get-address" @tap.stop="getAddress">定位</view>
 				</view>
-				<view class="auto-address flex-box">
+				<view class="auto-address flex-box" @tap="choiceAddress('to')">
 					<view class="address-left flex-box">
 						<view class="left-dot" style="background-color: #FFCD34;"></view>
-						目的地
+						<view class="address-text" v-if="toAddressInfo.address.street">
+							{{ toAddressInfo.address.district + toAddressInfo.address.street + toAddressInfo.address.streetNum }}
+						</view>
+						<view class="address-text" v-else-if="toAddressInfo.pos">{{ toAddressInfo.address }}</view>
+						<view v-else>目的地</view>
 					</view>
 				</view>
 
@@ -60,16 +68,46 @@ export default {
 		SenPickerView,
 		DataTextarea
 	},
+	computed: {
+		imgList() {
+			return this.$store.state.task.taskInfo.imgData;
+		},
+		text: {
+			get() {
+				return this.$store.state.task.taskInfo.taskDescribe;
+			},
+			set(val) {
+				return this.$store.commit('updateTaskDescribe', val);
+			}
+		},
+		time() {
+			return this.$store.state.task.taskInfo.finishDate;
+		},
+		addressInfo() {
+			return this.$store.state.task.taskInfo.fromAddress;
+		},
+		toAddressInfo() {
+			return this.$store.state.task.taskInfo.toAddress;
+		}
+	},
 	data() {
 		return {
-			time: '',
-			showTime: false,
-			text: '',
-
-			imgList: []
+			showTime: false
 		};
 	},
 	methods: {
+		choiceAddress(e) {
+			uni.navigateTo({
+				url: '../webView/webView?type=' + e
+			});
+		},
+
+		getAddress() {
+			uni.navigateTo({
+				url: '../webView/webView?type=pos'
+			});
+		},
+
 		navNext() {
 			uni.navigateTo({
 				url: 'CarryPrice'
@@ -77,7 +115,8 @@ export default {
 		},
 
 		changeTime(y, m, d) {
-			this.time = `${y}-${m}-${d}`;
+			let time = `${y}-${m}-${d}`;
+			this.$store.commit('updateFinishDate', time);
 			this.showTime = false;
 		},
 
@@ -125,8 +164,8 @@ export default {
 						icon: 'none'
 					});
 					//只管这个变量
-					// this.$store.commit('updateImgData', nameStr);
-					this.imgList.splice(this.imgList.length, 0, nameStr);
+					this.$store.commit('updateImgData', nameStr);
+					// this.imgList.splice(this.imgList.length, 0, nameStr);
 				},
 				fail: err => {
 					uni.hideLoading();
@@ -138,9 +177,9 @@ export default {
 				}
 			});
 		},
-		
-		navBack(){
-			uni.navigateBack()
+
+		navBack() {
+			uni.navigateBack();
 		}
 	}
 };
@@ -153,6 +192,7 @@ export default {
 	font-size: 30rpx;
 	line-height: 42rpx;
 	padding-bottom: 30rpx;
+	box-sizing: border-box;
 }
 
 .flex-box {
@@ -208,6 +248,14 @@ export default {
 
 .address-left {
 	color: #999999;
+}
+
+.address-text {
+	width: 490rpx;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .left-dot {
@@ -285,6 +333,7 @@ export default {
 }
 
 .bottom-btn {
+	position: relative;
 	background-color: #0f1b07;
 	line-height: 102rpx;
 	width: 690rpx;

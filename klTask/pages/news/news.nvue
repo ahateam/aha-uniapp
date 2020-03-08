@@ -4,42 +4,30 @@
 			<text v-for="(item, index) in navList" :key="index" class="navTitle" :class="{ currTitle: currId == item.id }" @tap="change(item.id)">{{ item.name }}</text>
 		</view>
 		<view :class="currId == navList[1].id ? 'hidden-box' : ''" v-if="bodyHeight">
-			<view class="msg">
+			<view class="msg" :class="{ 'hidden-box': pushStatus || closeTip }">
 				<image class="msg-bg" src="/static/image/bg_tz_y.png" mode="aspectFill"></image>
 				<view class="msg-box">
 					<text class="msg-font">重要通知第一时间知晓,开启消息通知~</text>
-					<view class="msg-btn"><text class="msg-font">去开启</text></view>
-					<view class="colse-box"><image src="/static/image/icon/icon_close_yellow.png" class="msg-close-btn"></image></view>
+					<view class="msg-btn"><text class="msg-font" @tap="openPush">去开启</text></view>
+					<view class="colse-box" @tap="closeTip = true"><image src="/static/image/icon/icon_close_yellow.png" class="msg-close-btn"></image></view>
 				</view>
 			</view>
-
 			<conversation_view ref="conversationView" style="width: 750rpx;" :style="{ height: bodyHeight }"></conversation_view>
 		</view>
 		<view :class="currId == navList[0].id ? 'hidden-box' : ''">
-			<!-- <contact_view ref="contactView" :style="[{ width: width }, { height: bodyHeight }]"></contact_view> -->
-			<text class="type-title">签约客户</text>
+			<!-- <contact_view ref="contactView" :style="[{ width:750rpx }, { height: bodyHeight }]"></contact_view> -->
+			<text class="type-title">我的代理人</text>
 			<view class="user-list">
 				<uni-swipe-action>
 					<uni-swipe-action-item :options="options" v-for="(item, index) in list1" :key="index" btnMargin="0" @click="delBtn(item, index)">
-						<view class="user-list-box">
-							<image class="user-head" src="/static/image/login/mobileBG.png" mode="aspectFill"></image>
-							<text class="user-name">{{ item.name }}</text>
+						<view class="user-list-box" @click="navChat(item)">
+							<image class="user-head" :src="getUserInfo(item, 'head')" mode="aspectFill"></image>
+							<text class="user-name">{{ getUserInfo(item, 'name') }}</text>
 						</view>
 					</uni-swipe-action-item>
 				</uni-swipe-action>
 			</view>
-
-			<text class="type-title">咨询客户</text>
-			<view class="user-list">
-				<uni-swipe-action>
-					<uni-swipe-action-item :options="options" v-for="(item, index) in list1" :key="index" btnMargin="0" @click="delBtn(item, index)">
-						<view class="user-list-box">
-							<image class="user-head" src="/static/image/login/mobileBG.png" mode="aspectFill"></image>
-							<text class="user-name">{{ item.name }}</text>
-						</view>
-					</uni-swipe-action-item>
-				</uni-swipe-action>
-			</view>
+			<view style="padding-left: 20rpx;" v-if="listStatus == 'onload'">拉取数据中...</view>
 		</view>
 	</view>
 </template>
@@ -47,6 +35,12 @@
 <script>
 import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
 import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue';
+import constData from '@/commen/constData.js';
+
+import url from '@/commen/url.js';
+
+// let sdkwx = uni.requireNativePlugin('TIM-SdkWX');
+let reg = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\/])+$/;
 
 export default {
 	components: {
@@ -59,6 +53,10 @@ export default {
 			conversationId: '',
 			statusHeight: 0,
 			bodyHeight: 0,
+			pushStatus: false,
+			closeTip: false,
+
+			userInfo: {},
 
 			options: [
 				{
@@ -82,51 +80,172 @@ export default {
 			],
 			currId: 1,
 
-			list1: [
-				{
-					name: '小名小名小名小名小名小名小名小名小名小名小名'
-				},
-				{
-					name: '小名'
-				},
-				{
-					name: '小名'
-				}
-			]
+			list1: [],
+
+			listStatus: 'onload'
 		};
 	},
 	mounted() {
 		setTimeout(() => {
 			let conversationView = this.$refs.conversationView;
+			//加载会话列表
 			conversationView.setTapCallback(res => {
 				this.navToChat(res);
 			});
-		}, 0);
-	},
-	onLoad() {
-		this.getHeight();
-	},
-	onShow() {
-		let icon = plus.nativeObj.View.getViewById('icon');
-		setTimeout(() => {
-			icon.show();
+			conversationView.loadConversation({
+				backgroundColor: '#FFFFFF', //背景颜色
+				separatorColor: '#efeff0' //分割线颜色
+			});
 		}, 100);
 	},
+	onShow() {
+		setTimeout(() => {
+			if (this.userInfo.userId) {
+				let cnt = {
+					fromUserId: this.userInfo.userId, // String 指定要拉取好友数据的用户的 UserID
+					startIndex: 0 // Integer 分页的起始位置
+				};
+				let c = { ...cnt };
+				let data = {
+					c: c
+				};
+				data = JSON.stringify(data);
+				this.getFriend(data);
+			}
+		}, 300);
+	},
+	onLoad() {
+		// sdkwx.getUserNotificationSettings(res => {
+		// 	if (res == 0 || res == '0') {
+		// 		//开启通知
+		// 		// sdkwx.openUserNotificationSettings();
+		// 		this.pushStatus = false;
+		// 	} else {
+		// 		this.pushStatus = true;
+		// 	}
+		// 	this.getHeight();
+		// });
+		if (uni.getStorageSync('userInfo')) {
+			this.userInfo = JSON.parse(uni.getStorageSync('userInfo'));
+			this.timLogin();
+		} else {
+			uni.reLaunch({
+				url: '/pages/login/mobilePassword'
+			});
+		}
+	},
 	methods: {
+		delBtn(item, index) {
+			let cnt = {
+				fromUserId: this.userInfo.userId, // String 需要删除该 UserID 的好友
+				toUserId: item.To_Account // String 待删除的好友的 UserID 列表
+			};
+			let data = {
+				c: cnt
+			};
+			data = JSON.stringify(data);
+			this.delFriend(data, index);
+		},
+
+		delFriend(data, index) {
+			uni.request({
+				url: url.baseUrl + '/friend/delFriend', //仅为示例，并非真实接口地址。
+				data: data,
+				method: 'POST',
+				success: res => {
+					console.log(res);
+					// this.list1.splice(index, 1);
+				},
+				fail: (readyState, status, error) => {
+					callback({
+						rc: RC.AJAXERROR,
+						rm: readyState + '&' + status + '&' + error
+					});
+				}
+			});
+		},
+
+		navChat(item) {
+			uni.navigateTo({
+				url: './chat?type=' + constData.TIM_TYPE[0].key + '&conversationId=' + item.To_Account
+			});
+		},
+
+		getUserInfo(item, e) {
+			if (e == 'head') {
+				for (let i = 0; i < item.SnsProfileItem.length; i++) {
+					if (item.SnsProfileItem[i].Tag == 'Tag_Profile_IM_Image') {
+						if (!reg.test(item.SnsProfileItem[i].Value)) {
+							return constData.oss + item.SnsProfileItem[i].Value;
+						} else {
+							return item.SnsProfileItem[i].Value;
+						}
+					}
+				}
+			} else {
+				for (let i = 0; i < item.SnsProfileItem.length; i++) {
+					if (item.SnsProfileItem[i].Tag == 'Tag_Profile_IM_Nick') {
+						return item.SnsProfileItem[i].Value;
+					}
+				}
+			}
+		},
+
+		getFriend(data) {
+			uni.request({
+				url: url.baseUrl + '/friend/getFriend', //仅为示例，并非真实接口地址。
+				data: data,
+				method: 'POST',
+				success: res => {
+					console.log(res);
+					if (res.data.rc == 'succ') {
+						this.listStatus = 'succ';
+						let arr = JSON.parse(res.data.c);
+						let newArr = JSON.parse(arr);
+						this.list1 = newArr.InfoItem;
+					} else {
+						uni.showToast({
+							title: res.data.rm,
+							icon: 'none'
+						});
+					}
+				},
+				fail: (readyState, status, error) => {
+					callback({
+						rc: RC.AJAXERROR,
+						rm: readyState + '&' + status + '&' + error
+					});
+				}
+			});
+		},
+
+		openPush() {
+			sdkwx.openUserNotificationSettings();
+		},
+
+		timLogin() {
+			//登录
+			let userId = String(this.userInfo.userId);
+			let userSig = this.userInfo.userSig; //参考腾讯官方文档
+			sdkwx.login(userId, userSig, function(res) {
+				console.log(res);
+				if (res.code == 0 || res.code == '0') {
+					let busiId = '17378'; //busiId腾讯后台生成
+					//设置推送token
+					sdkwx.setToken(busiId, function(res2) {
+						console.log(res);
+					});
+				}
+			});
+		},
+
 		navToChat(res) {
+			console.log(res);
 			uni.setStorageSync('toUserId', res.conversationId);
 			let path = './chat?type=' + res.type + '&conversationId=' + res.conversationId;
 			uni.navigateTo({
 				url: path
 			});
-			this.hideTabIcon();
-		},
-
-		hideTabIcon() {
-			let icon = plus.nativeObj.View.getViewById('icon');
-			setTimeout(function() {
-				icon.hide();
-			}, 100);
 		},
 
 		change(e) {
@@ -137,7 +256,11 @@ export default {
 			uni.getSystemInfo({
 				success: res => {
 					this.statusHeight = res.statusBarHeight;
-					this.bodyHeight = res.windowHeight - res.statusBarHeight - (res.windowHeight / 750) * 358;
+					if (this.pushStatus) {
+						this.bodyHeight = res.windowHeight - res.statusBarHeight - (res.windowWidth / 750) * 420;
+					} else {
+						this.bodyHeight = res.windowHeight - res.statusBarHeight - (res.windowWidth / 750) * 520;
+					}
 				}
 			});
 		}
@@ -250,5 +373,9 @@ export default {
 .hidden-box {
 	height: 0;
 	overflow: hidden;
+}
+
+.mes-list {
+	position: relative;
 }
 </style>

@@ -12,7 +12,7 @@
 					<image src="/static/image/icon/position.png" mode="aspectFit"></image>
 					<view class="address-text">
 						BOX HILL
-						<text>(距我10公里)</text>
+						<text>(距我{{ getMargin(item) }}公里)</text>
 					</view>
 				</view>
 
@@ -54,7 +54,7 @@
 <script>
 export default {
 	name: 'TaskList',
-	props: ['tasks', 'type', 'myOrder'],
+	props: ['tasks', 'type', 'myOrder', 'coords'],
 	data() {
 		return {
 			taskStatus: this.$constData.taskStatus,
@@ -62,6 +62,19 @@ export default {
 		};
 	},
 	methods: {
+		getMargin(item) {
+			if (this.coords && item.pos) {
+				let lat1 = this.coords.latitude;
+				let lng1 = this.coords.longitude;
+				let xy2 = item.pos.split(',');
+				let lat2 = xy2[0];
+				let lng2 = xy2[1];
+				return this.$commen.GetDistance(lat1, lng1, lat2, lng2);
+			} else {
+				return '0';
+			}
+		},
+
 		getIcon(item) {
 			if (this.myOrder) {
 				return this.taskStatus[item.status].icon;

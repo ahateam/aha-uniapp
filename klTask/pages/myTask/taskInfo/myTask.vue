@@ -326,7 +326,7 @@ export default {
 				longitude: Number(arr[1])
 			};
 
-			let mapSearch = weex.requireModule('mapSearch');
+			// let mapSearch = weex.requireModule('mapSearch');
 
 			this.markers.splice(0, 0, {
 				id: 1,
@@ -342,21 +342,21 @@ export default {
 
 			this.getMargin(arr);
 
-			mapSearch.reverseGeocode(
-				{
-					point: {
-						latitude: Number(arr[0]),
-						longitude: Number(arr[1])
-					}
-				},
-				res => {
-					if (res.type == 'success') {
-						this.address = res.address;
-					} else {
-						this.address = res.message;
-					}
-				}
-			);
+			// mapSearch.reverseGeocode(
+			// 	{
+			// 		point: {
+			// 			latitude: Number(arr[0]),
+			// 			longitude: Number(arr[1])
+			// 		}
+			// 	},
+			// 	res => {
+			// 		if (res.type == 'success') {
+			// 			this.address = res.address;
+			// 		} else {
+			// 			this.address = res.message;
+			// 		}
+			// 	}
+			// );
 		},
 
 		getMargin(arr) {
